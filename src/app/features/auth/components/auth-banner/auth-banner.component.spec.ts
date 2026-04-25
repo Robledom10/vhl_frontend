@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AppAuthBannerComponent } from './app-auth-banner.component';
+import { AppAuthBannerComponent } from './auth-banner.component';
 
 describe('AppAuthBannerComponent', () => {
   let component: AppAuthBannerComponent;

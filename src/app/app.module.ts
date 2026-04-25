@@ -1,16 +1,17 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { AuthBannerComponent } from './ruta/auth-banner/auth-banner.component';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
-    AuthBannerComponent
+    AppComponent
   ],
   imports: [
-    CommonModule
+    BrowserModule,
+    AppRoutingModule,
   ],
-  exports: [
-    AuthBannerComponent   // 👈 ESTO ES CLAVE
-  ]
+  providers: [],
+  bootstrap: [AppComponent]
 })
-export class AuthModule { }
+export class AppModule { }
