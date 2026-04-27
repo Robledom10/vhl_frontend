@@ -1,0 +1,51 @@
+*{
+    margin: 0;
+    box-sizing: border-box;
+}
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 150px;
+  background-color: #e5e5e5;
+  font-family: "Open Sans", sans-serif;
+}
+
+.navbar-icon img {
+  width: 70px;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 40px;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+.navbar-auth {
+  display: flex;
+  gap: 20px;
+  text-align: center;
+}
+
+.btn-ingresar {
+  padding: 6px 14px;
+  border: 2px solid #3fa2db;
+  border-radius: 8px;
+  color: #3fa2db;
+  text-decoration: none;
+    width: 120px
+}
+
+.btn-registrarse {
+  padding: 6px 14px;
+  background-color: #3fa2db;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+    width: 120px
+}

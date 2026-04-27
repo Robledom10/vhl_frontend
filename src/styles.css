@@ -1,4 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
+*{
+	margin: 0;
+}
+
+:root {
+  /* Colores base */
+  --color-fondo: #ffffff;
+  --color-primario: #3fa2db;
+  --color-primario-claro: #b5e5ff;
+  --color-primario-oscuro: #123862;
+  --color-navegador: #f8f8f8;
+
+  /* Texto */
+  --color-texto-principal: #000000;
+  --color-texto-secundario: #6b7280;
+}an add global styles to this file, and also import other style files */
 body{
 	font-family: "Open Sans", sans-serif;
 }
