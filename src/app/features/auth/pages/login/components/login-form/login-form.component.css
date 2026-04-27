@@ -1,0 +1,166 @@
+/* Estilos generales del formulario */
+.form-login {
+	width: auto;
+	padding: 40px 20px;
+}
+
+.form-login h1 {
+	font-size: 30px;
+	font-weight: 600;
+	color: black;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+.form-login p {
+	font-size: 14px;
+	color: #6b7280;
+	margin-bottom: 30px;
+	text-align: center;
+}
+
+.form-login form {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+/* Grupo de formulario */
+.form-group {
+	position: relative;
+	width: 100%;
+}
+
+/* Estilos para los inputs */
+.form-group input {
+	width: 100%;
+	padding: 10px 16px;
+	border: 1px solid #d1d5db;
+	border-radius: 25px;
+	font-size: 14px;
+	color: #333;
+	outline: none;
+	transition: all 0.3s ease;
+	box-sizing: border-box;
+	font-family: "Open Sans", sans-serif;
+}
+
+.form-group input:focus {
+	border-color: #3FA2DB;
+}
+
+.form-group input::placeholder {
+	color: transparent;
+}
+
+/* Labels flotantes */
+.form-group label {
+	position: absolute;
+	left: 16px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #6b7280;
+	font-size: 14px;
+	pointer-events: none;
+	transition: all 0.3s ease;
+	background: white;
+	padding: 0 4px;
+}
+
+.form-group input:focus+label,
+.form-group input:not(:placeholder-shown)+label {
+	top: -2px;
+	font-size: 12px;
+	color: #3FA2DB;
+	left: 12px;
+}
+
+/* Inputs con contenido (para mostrar el label arriba) */
+.form-group input:valid {
+	border-color: #3FA2DB;
+}
+
+/* Contenedor de iconos para contraseña */
+.form-group-password {
+	position: relative;
+}
+
+/* Iconos de ojo - ocultar por defecto */
+.form-group-password .fa-eye,
+.form-group-password .fa-eye-slash {
+	position: absolute;
+	right: 16px;
+	top: 50%;
+	transform: translateY(-50%);
+	cursor: pointer;
+	transition: opacity 0.3s, color 0.3s;
+	color: #6b7280;
+}
+
+/* Mostrar ojo cerrado cuando el input es de tipo password */
+.form-group-password .fa-eye {
+	display: block;
+	opacity: 0.5;
+}
+
+.form-group-password .fa-eye-slash {
+	display: none;
+	opacity: 0.5;
+}
+
+/* Cuando el input tiene valor, cambiar color del icono */
+.form-group-password input:valid~.fa-eye,
+.form-group-password input:valid~.fa-eye-slash {
+	color: #3FA2DB;
+	opacity: 1;
+}
+
+/* Hover en los iconos */
+.form-group-password .fa-eye:hover,
+.form-group-password .fa-eye-slash:hover {
+	opacity: 1;
+}
+
+/* Estados cuando la contraseña es visible (tipo text) */
+.form-group-password input[type="text"]~.fa-eye {
+	display: none;
+}
+
+.form-group-password input[type="text"]~.fa-eye-slash {
+	display: block;
+}
+
+/* Botón de registro */
+button[type="submit"] {
+	width: 100%;
+	padding: 10px 16px;
+	background: #3FA2DB;
+	color: white;
+	border: none;
+	border-radius: 25px;
+	font-size: 16px;
+	font-weight: 500;
+	cursor: pointer;
+	margin-top: 10px;
+}
+
+
+/* Texto de login */
+.login-text {
+	text-align: center;
+	margin-top: 20px;
+	font-size: 14px;
+	color: #6b7280;
+}
+
+.login-text a {
+	color: #3FA2DB;
+	text-decoration: none;
+	font-weight: 500;
+	transition: color 0.3s;
+	
+}
+
+.login-text a:hover {
+	text-decoration: underline;
+}

@@ -6,6 +6,7 @@ import { RegisterComponent } from './pages/register/register.component';
 import { AuthBannerComponent } from './components/auth-banner/auth-banner.component';
 import { LoginFormComponent } from './pages/login/components/login-form/login-form.component';
 import { RegisterFormComponent } from './pages/register/components/register-form/register-form.component';
+import { LoginTypesComponent } from './components/login-types/login-types.component';
 
 /**
  * Módulo de Autenticación (AuthModule)
@@ -55,7 +56,8 @@ import { RegisterFormComponent } from './pages/register/components/register-form
     /**
      * Componente visual (banner) usado en las vistas de autenticación
      */
-    AuthBannerComponent
+    AuthBannerComponent,
+    LoginTypesComponent
   ],
 
   /**

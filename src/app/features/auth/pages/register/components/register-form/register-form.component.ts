@@ -13,4 +13,12 @@ export class RegisterFormComponent {
       input.type = input.type === 'password' ? 'text' : 'password';
     }
   }
+
+  openDatePicker(event: any) {
+    const input = event.target as HTMLInputElement;
+
+    if (input.showPicker) {
+      input.showPicker();
+    }
+  }
 }

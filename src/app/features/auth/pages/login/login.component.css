@@ -1,0 +1,13 @@
+.body{
+	display: flex;
+	width: 80%;
+	height: 100vh;
+	justify-content: space-between;
+	align-items: center;
+	margin: auto;
+}
+
+.body > * {
+	flex: 1;
+	min-width: 0; /* evita desbordes raros */
+}

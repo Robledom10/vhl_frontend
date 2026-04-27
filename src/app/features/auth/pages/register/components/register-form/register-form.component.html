@@ -19,7 +19,7 @@
 		</div>
 
 		<div class="form-group">
-			<input type="date" id="birthdate" name="birthdate" placeholder="Fecha de nacimiento" required />
+			<input type="date" id="birthdate" name="birthdate" placeholder="Fecha de nacimiento" required (click)="openDatePicker($event)"/>
 			<label for="birthdate">Fecha de nacimiento</label>
 		</div>
 
@@ -46,23 +46,8 @@
 	</form>
 
 	<div class="login-text">
-		Ya tienes cuenta? <a href="/src/app/features/auth/pages/login/login.component.html">Inicia Sesión</a>
+		¿Ya tienes cuenta? <a href="/auth/login">Inicia Sesión</a>
 	</div>
 
-	<div class="divider">o inicia sesión con</div>
-
-	<div class="social-buttons">
-		<button class="social-button">
-			<img src="google-icon.svg" alt="Google">
-			Google
-		</button>
-		<button class="social-button">
-			<img src="facebook-icon.svg" alt="Facebook">
-			Facebook
-		</button>
-		<button class="social-button">
-			<img src="phone-icon.svg" alt="Celular">
-			Celular
-		</button>
-	</div>
+	<app-login-types></app-login-types>
 </div>
