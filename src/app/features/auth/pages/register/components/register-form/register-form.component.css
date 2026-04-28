@@ -4,18 +4,26 @@
 	padding: 40px 20px;
 }
 
+.form-register .logo {
+	text-align: center;
+}
+
+.form-register .logo img {
+	width: 80px;
+}
+
 .form-register h1 {
 	font-size: 30px;
 	font-weight: 600;
 	color: black;
-	margin-bottom: 10px;
 	text-align: center;
+	margin: 30px 0;
 }
 
 .form-register p {
 	font-size: 14px;
 	color: #6b7280;
-	margin-bottom: 30px;
+	margin: 20px 0 40px;
 	text-align: center;
 }
 
@@ -29,6 +37,8 @@
 .form-group {
 	position: relative;
 	width: 100%;
+	margin-bottom: 20px;
+	/* espacio para el error */
 }
 
 /* Estilos para los inputs */
@@ -80,6 +90,61 @@
 	border-color: #3FA2DB;
 }
 
+/* ========== ESTILOS DE ERROR ========== */
+
+/* Input con error */
+.form-group input.ng-invalid.ng-touched,
+.form-group input.ng-invalid.ng-dirty {
+	border-color: #ef4444;
+}
+
+/* Label con error */
+.form-group input.ng-invalid.ng-touched+label,
+.form-group input.ng-invalid.ng-dirty+label {
+	color: #ef4444;
+}
+
+/* Mensaje de error */
+.form-group span {
+	display: block;
+	color: #ef4444;
+	font-size: 12px;
+	margin-top: 6px;
+	margin-left: 16px;
+	font-weight: 400;
+	position: absolute;
+	/* ajusta según diseño */
+	max-width: 90%;
+
+}
+
+.form-group input[type="date"].ng-invalid.ng-touched+label {
+	color: #ef4444 !important;
+}
+
+
+/* Mensaje de error para checkbox */
+.terms-group span {
+	display: block;
+	color: #ef4444;
+	font-size: 12px;
+	margin-left: 26px;
+	font-weight: 400;
+	width: 100%;
+}
+
+/* Mensaje de error global del formulario (passwords no coinciden) */
+.form-group-password span {
+	display: block;
+	color: #ef4444;
+	font-size: 12px;
+	margin-top: 6px;
+	margin-left: 16px;
+	font-weight: 400;
+}
+
+/* ========== FIN ESTILOS DE ERROR ========== */
+
 /* Estilos específicos para el input de fecha */
 .form-group input[type="date"] {
 	color: #333;
@@ -101,14 +166,20 @@
 }
 
 /* Cuando NO hay fecha seleccionada */
-.form-group input[type="date"]:not(:valid) + label {
-	color: #6b7280; /* gris */
+.form-group input[type="date"]:not(:valid)+label {
+	color: #6b7280;
 }
 
 /* Cuando SÍ hay fecha */
-.form-group input[type="date"]:valid + label {
+.form-group input[type="date"]:valid+label {
 	font-size: 12px;
 	color: #3FA2DB;
+}
+
+/* Icono del calendario en rojo cuando hay error */
+.form-group input[type="date"].ng-invalid.ng-touched::-webkit-calendar-picker-indicator {
+	filter: invert(33%) sepia(93%) saturate(4466%) hue-rotate(348deg) brightness(95%) contrast(92%);
+	opacity: 1;
 }
 
 /* Contenedor de iconos para contraseña */
@@ -121,8 +192,7 @@
 .form-group-password .fa-eye-slash {
 	position: absolute;
 	right: 16px;
-	top: 50%;
-	transform: translateY(-50%);
+	top: 12px;
 	cursor: pointer;
 	transition: opacity 0.3s, color 0.3s;
 	color: #6b7280;
@@ -146,6 +216,13 @@
 	opacity: 1;
 }
 
+/* Iconos de ojo en rojo cuando hay error */
+.form-group-password input.ng-invalid.ng-touched~.fa-eye,
+.form-group-password input.ng-invalid.ng-touched~.fa-eye-slash {
+	color: #ef4444;
+	opacity: 1;
+}
+
 /* Hover en los iconos */
 .form-group-password .fa-eye:hover,
 .form-group-password .fa-eye-slash:hover {
@@ -164,7 +241,8 @@
 /* Checkbox de términos y condiciones */
 .terms-group {
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
+	flex-wrap: wrap;
 	gap: 8px;
 	margin: 10px 0;
 }
@@ -174,6 +252,7 @@
 	height: 18px;
 	cursor: pointer;
 	accent-color: #3FA2DB;
+	margin-top: 2px;
 }
 
 .terms-group label {
@@ -181,6 +260,7 @@
 	color: #6b7280;
 	cursor: pointer;
 	user-select: none;
+	flex: 1;
 }
 
 /* Botón de registro */
@@ -195,8 +275,19 @@ button[type="submit"] {
 	font-weight: 500;
 	cursor: pointer;
 	margin-top: 10px;
+	transition: all 0.3s ease;
 }
 
+button[type="submit"]:hover:not(:disabled) {
+	background: #3592c7;
+	box-shadow: 0 4px 6px rgba(63, 162, 219, 0.3);
+}
+
+button[type="submit"]:disabled {
+	background: #9ca3af;
+	cursor: not-allowed;
+	opacity: 0.6;
+}
 
 /* Texto de login */
 .login-text {

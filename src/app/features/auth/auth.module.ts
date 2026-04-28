@@ -7,6 +7,7 @@ import { AuthBannerComponent } from './components/auth-banner/auth-banner.compon
 import { LoginFormComponent } from './pages/login/components/login-form/login-form.component';
 import { RegisterFormComponent } from './pages/register/components/register-form/register-form.component';
 import { LoginTypesComponent } from './components/login-types/login-types.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 /**
  * Módulo de Autenticación (AuthModule)
@@ -80,7 +81,8 @@ import { LoginTypesComponent } from './components/login-types/login-types.compon
      * - /auth/login
      * - /auth/register
      */
-    AuthRoutingModule
+    AuthRoutingModule,
+    ReactiveFormsModule
   ]
 })
 export class AuthModule { }

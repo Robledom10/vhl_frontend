@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './core/guards/auth.guard';
 
 /**
  * Definición de rutas principales de la aplicación
@@ -26,6 +27,11 @@ const routes: Routes = [
     redirectTo: 'auth/register', // puedes cambiar a 'auth/login'
     pathMatch: 'full'
   },
+  // {
+  //   path: 'dashboard',
+  //   // component: DashboardComponent,
+  //   canActivate: [AuthGuard]
+  // },
 
   /**
    * Ruta para el módulo de autenticación
