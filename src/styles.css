@@ -1,4 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
-body{
-	font-family: "Open Sans", sans-serif;
+@font-face {
+	font-family: 'Outfit';
+	src: url('assets/fonts/Outfit/Outfit-VariableFont_wght.ttf') format('truetype');
+	font-weight: 100 900;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Indie Flower'; /* Si se quiere utilizar este tipo de letra es: "Indie Flower", cursive*/
+	src: url('assets/fonts/Indie_Flower/IndieFlower-Regular.ttf') format('truetype');
+	font-weight: 100 900;
+	font-style: normal;
+}
+
+body {
+	font-family: "Outfit", sans-serif;
 }

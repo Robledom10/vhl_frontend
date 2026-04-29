@@ -33,6 +33,26 @@
 	gap: 20px;
 }
 
+/* ========== FILA DE FORMULARIO (Select + Input) ========== */
+
+.form-row {
+	display: flex;
+	gap: 12px;
+	width: 100%;
+}
+
+.form-group-small {
+	flex: 0 0 35%;
+	/* El select ocupa 35% */
+}
+
+.form-group-large {
+	flex: 1;
+	/* El input de número ocupa el resto */
+}
+
+/* ========== FIN FILA DE FORMULARIO ========== */
+
 /* Grupo de formulario */
 .form-group {
 	position: relative;
@@ -51,7 +71,7 @@
 	outline: none;
 	transition: all 0.3s ease;
 	box-sizing: border-box;
-	font-family: "Open Sans", sans-serif;
+	font-family: "Outfit", sans-serif;
 }
 
 .form-group input:focus {
@@ -200,10 +220,6 @@
 	font-weight: 400;
 	position: absolute;
 	max-width: 90%;
-}
-
-.form-group input[type="date"].ng-invalid.ng-touched+label {
-	color: #ef4444 !important;
 }
 
 /* Mensaje de error para checkbox */
