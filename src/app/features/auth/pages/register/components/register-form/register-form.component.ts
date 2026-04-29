@@ -27,11 +27,15 @@ export class RegisterFormComponent {
     password: ['', [Validators.required, Validators.minLength(8), strongPasswordValidator]],
     confirmPassword: ['', [Validators.required]],
     documentType: ['', [Validators.required]],
-    documentNumber: ['', [Validators.required]],
+    documentNumber: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(11)]],
     terms: [false, [Validators.requiredTrue]]
   }, this.formOptions);
 
+  submitted = false;
+
   onSubmit() {
+
+    this.submitted = true;
 
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched()

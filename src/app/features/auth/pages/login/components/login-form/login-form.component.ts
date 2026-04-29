@@ -13,6 +13,7 @@ export class LoginFormComponent {
 
   loginError: boolean = false;
   isLoading: boolean = false;
+  submitted: boolean = false;
 
   constructor(
     private fb: FormBuilder,

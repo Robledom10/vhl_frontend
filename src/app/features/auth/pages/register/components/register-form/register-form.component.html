@@ -16,7 +16,11 @@
 				[class.ng-touched]="f.firstName.touched" />
 			<label for="firstName">Primer Nombre</label>
 
-			<span *ngIf="f.firstName.touched && f.firstName.invalid">
+			<span *ngIf="(f.firstName.touched || submitted) && f.firstName.errors?.['required']">
+				El nombre es obligatorio
+			</span>
+
+			<span *ngIf="f.firstName.touched && f.firstName.errors?.['minlength']">
 				El nombre debe tener al menos 3 caracteres
 			</span>
 		</div>
@@ -34,10 +38,10 @@
 
 		<div class="form-group">
 			<input type="text" id="last-name" name="last-name" formControlName="lastName" placeholder="Apellido"
-				[class.ng-invalid]="f.lastName.invalid && f.lastName.touched" [class.ng-touched]="f.lastName.touched" />
+				[class.ng-invalid]="submitted && f.lastName.errors?.['required']" [class.ng-touched]="f.lastName.touched" />
 			<label for="last-name">Apellido</label>
 
-			<span *ngIf="f.lastName.touched && f.lastName.invalid">
+			<span *ngIf="submitted && f.lastName.errors?.['required']">
 				El apellido es obligatorio
 			</span>
 		</div>
@@ -47,8 +51,12 @@
 				[class.ng-invalid]="f.email.invalid && f.email.touched" [class.ng-touched]="f.email.touched" />
 			<label for="email">Correo electrónico</label>
 
-			<span *ngIf="f.email.touched && f.email.invalid">
-				Email inválido
+			<span *ngIf="(f.email.touched || submitted) && f.email.errors?.['required']">
+				El correo es obligatorio
+			</span>
+
+			<span *ngIf="f.email.touched && f.email.errors?.['email']">
+				Correo inválido
 			</span>
 		</div>
 
@@ -82,8 +90,17 @@
 
 		<div class="form-group">
 			<!-- Número documento -->
-			<input type="number" formControlName="documentNumber" placeholder="Número de documento">
+			<input type="number" formControlName="documentNumber" placeholder="Número de documento" [class.ng-invalid]="submitted && f.documentNumber.errors?.['required']" [class.ng-touched]="f.documentNumber.touched">
 			<label for="documentNumber">Número de documento</label>
+
+			<span *ngIf="submitted && f.documentNumber.errors?.['required']">
+				Número de documento Obligatorio
+			</span>
+
+			<span
+				*ngIf="f.documentNumber.touched && f.documentNumber.errors?.['minlength'] || f.documentNumber.errors?.['maxlength']">
+				Número de documento inválido
+			</span>
 		</div>
 
 		<div class="form-group form-group-password">
@@ -94,7 +111,11 @@
 			<i class="fa-regular fa-eye" (click)="togglePasswordVisibility('password')"></i>
 			<i class="fa-regular fa-eye-slash" (click)="togglePasswordVisibility('password')"></i>
 
-			<span *ngIf="f.password.touched && f.password.invalid">
+			<span *ngIf="submitted && f.password.errors?.['required']">
+				La contraseña es obligatoria
+			</span>
+
+			<span *ngIf="f.password.touched && !f.password.errors?.['required'] && f.password.invalid">
 				Debe tener 8 caracteres, mayúscula, número y símbolo (ej.! &#64;#$%^&*)
 			</span>
 		</div>
@@ -102,7 +123,7 @@
 		<div class="form-group form-group-password">
 			<input type="password" id="confirm-password" name="confirm-password" formControlName="confirmPassword"
 				placeholder="Confirmar contraseña"
-				[class.ng-invalid]="(f.confirmPassword.invalid || registerForm.errors?.['mismatch']) && f.confirmPassword.touched"
+				[class.ng-invalid]="(f.confirmPassword.errors?.['required'] || registerForm.errors?.['mismatch']) && f.confirmPassword.touched"
 				[class.ng-touched]="f.confirmPassword.touched" />
 			<label for="confirm-password">Confirmar contraseña</label>
 
@@ -113,7 +134,7 @@
 				Las contraseñas no coinciden
 			</span>
 
-			<span *ngIf="f.confirmPassword.touched && f.confirmPassword.errors?.['required']">
+			<span *ngIf="submitted && f.confirmPassword.errors?.['required']">
 				Debes confirmar la contraseña
 			</span>
 		</div>

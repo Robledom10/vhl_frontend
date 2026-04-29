@@ -13,8 +13,12 @@
 				[class.ng-invalid]="f.email.invalid && f.email.touched" [class.ng-touched]="f.email.touched" />
 			<label for="email">Correo electrónico</label>
 
-			<span *ngIf="f.email.touched && f.email.invalid">
-				Email inválido
+			<span *ngIf="(f.email.touched || submitted) && f.email.errors?.['required']">
+				El correo es obligatorio
+			</span>
+
+			<span *ngIf="f.email.touched && f.email.errors?.['email']">
+				Correo inválido
 			</span>
 		</div>
 
@@ -26,11 +30,11 @@
 			<i class="fa-regular fa-eye" (click)="togglePasswordVisibility('password')"></i>
 			<i class="fa-regular fa-eye-slash" (click)="togglePasswordVisibility('password')"></i>
 
-			<span *ngIf="f.password.touched && f.password.invalid">
+			<span *ngIf="(f.password.touched || submitted) && f.password.invalid">
 				La contraseña es obligatoria
 			</span>
 
-			<span *ngIf="loginError">
+			<span *ngIf="loginError && !f.password.errors">
 				Contraseña incorrecta
 			</span>
 		</div>
