@@ -10,10 +10,10 @@ export interface LoginResponse {
 
 export interface RegisterRequest {
 	firstName: string;
-	middleName?: string;
+	// middleName?: string;
 	lastName: string;
 	email: string;
-	birthdate: string,
+	// birthdate: string,
 	password: string;
 	documentType: string;
 	documentNumber: string;

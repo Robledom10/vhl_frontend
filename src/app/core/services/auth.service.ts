@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, throwError } from 'rxjs';
+import { catchError, tap, throwError } from 'rxjs';
 import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../../features/auth/models/auth.model';
 import { environment } from '../../../environments/environment';
 
@@ -22,6 +22,11 @@ export class AuthService {
       `${this.apiUrl}/login`,
       request
     ).pipe(
+      tap((response) => {
+        // Guardar token automáticamente
+        localStorage.setItem('token', response.accessToken);
+        localStorage.setItem('user', JSON.stringify(response.user));
+      }),
       catchError(this.handleError)
     );
   }
@@ -43,6 +48,7 @@ export class AuthService {
   // =========================
   logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
 
   // =========================
@@ -54,6 +60,12 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return !!this.getToken();
+  }
+
+  // Obtener usuario del localStorage
+  getUser() {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
   }
 
   // =========================

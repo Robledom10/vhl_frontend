@@ -14,23 +14,23 @@
 			<input type="text" id="firstName" name="firstName" formControlName="firstName" placeholder="Primer Nombre"
 				[class.ng-invalid]="f.firstName.invalid && f.firstName.touched"
 				[class.ng-touched]="f.firstName.touched" />
-			<label for="firstName">Nombre</label>
+			<label for="firstName">Primer Nombre</label>
 
 			<span *ngIf="f.firstName.touched && f.firstName.invalid">
 				El nombre debe tener al menos 3 caracteres
 			</span>
 		</div>
 
-		<div class="form-group">
+		<!-- <div class="form-group">
 			<input type="text" id="middleName" name="middleName" formControlName="middleName"
 				placeholder="Primer Nombre" [class.ng-invalid]="f.middleName.invalid && f.middleName.touched"
 				[class.ng-touched]="f.middleName.touched" />
-			<label for="middleName">Nombre</label>
+			<label for="middleName">Segundo Nombre</label>
 
 			<span *ngIf="f.middleName.touched && f.middleName.invalid">
 				El nombre debe tener al menos 3 caracteres
 			</span>
-		</div>
+		</div> -->
 
 		<div class="form-group">
 			<input type="text" id="last-name" name="last-name" formControlName="lastName" placeholder="Apellido"
@@ -52,7 +52,7 @@
 			</span>
 		</div>
 
-		<div class="form-group">
+		<!-- <div class="form-group">
 			<input type="date" id="birthdate" name="birthdate" formControlName="birthdate"
 				placeholder="Fecha de nacimiento" (click)="openDatePicker($event)"
 				[class.ng-invalid]="f.birthdate.invalid && f.birthdate.touched"
@@ -66,22 +66,23 @@
 			<span *ngIf="f.birthdate.touched && f.birthdate.errors?.['minAge']">
 				Debes ser mayor de 18 años
 			</span>
-		</div>
+		</div> -->
 
 		<div class="form-group">
 			<!-- Tipo documento -->
 			<select formControlName="documentType">
-				<option value="">Seleccione tipo</option>
-				<option value="CC">Cédula</option>
-				<option value="TI">Tarjeta de identidad</option>
-				<option value="CE">Cédula extranjera</option>
+				<option value="" disabled selected>Seleccione tipo</option>
+				<option value="Cedula Ciudadania">Cédula de Ciudadanía</option>
+				<option value="Tarjeta Identidad">Tarjeta de identidad</option>
+				<option value="Cedula Extranjeria">Cédula extranjería</option>
+				<option value="Pasaporte">Pasaporte</option>
+				<option value="Visa">Visa</option>
 			</select>
-			<label for="documentType">Tipo de documento</label>
 		</div>
 
 		<div class="form-group">
 			<!-- Número documento -->
-			<input type="text" formControlName="documentNumber" placeholder="Número de documento">
+			<input type="number" formControlName="documentNumber" placeholder="Número de documento">
 			<label for="documentNumber">Número de documento</label>
 		</div>
 
