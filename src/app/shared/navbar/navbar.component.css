@@ -38,7 +38,8 @@
   border-radius: 8px;
   color: #3fa2db;
   text-decoration: none;
-    width: 120px
+  width: 120px;
+  cursor: pointer;
 }
 
 .btn-registrarse {
@@ -47,5 +48,6 @@
   color: white;
   border-radius: 8px;
   text-decoration: none;
-    width: 120px
+  width: 120px;
+  cursor: pointer;
 }

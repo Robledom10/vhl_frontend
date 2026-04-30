@@ -14,7 +14,7 @@
 			<input type="text" id="firstName" name="firstName" formControlName="firstName" placeholder="Primer Nombre"
 				[class.ng-invalid]="submitted && f.firstName.errors?.['required']"
 				[class.ng-touched]="f.firstName.touched" required/>
-			<label for="firstName">Primer Nombre</label>
+			<label for="firstName">Nombre</label>
 
 			<span *ngIf="submitted && f.firstName.errors?.['required']">
 				El nombre es obligatorio
@@ -82,10 +82,9 @@
 				<select id="documentType" formControlName="documentType"
 					[class.ng-invalid]="submitted && f.documentType.invalid" [class.ng-touched]="f.documentType.touched"
 					required>
-					<option value="" disabled selected>Tipo</option>
-					<option value="Cedula Ciudadania">CC</option>
-					<option value="Tarjeta Identidad">TI</option>
-					<option value="Cedula Extranjeria">CE</option>
+					<option value="Cedula Ciudadania">Cedula Ciudadania</option>
+					<option value="Tarjeta Identidad">Tarjeta Identidad</option>
+					<option value="Cedula Extranjeria">Cedula Extranjeria</option>
 					<option value="Pasaporte">Pasaporte</option>
 					<option value="Visa">Visa</option>
 				</select>
@@ -97,7 +96,7 @@
 			</div>
 
 			<div class="form-group form-group-large">
-				<input type="number" id="documentNumber" formControlName="documentNumber"
+				<input type="text" id="documentNumber" formControlName="documentNumber"
 					placeholder="Número de documento"
 					[class.ng-invalid]="submitted && f.documentNumber.errors?.['required']"
 					[class.ng-touched]="f.documentNumber.touched" required/>

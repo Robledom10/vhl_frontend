@@ -1,0 +1,95 @@
+/* Contenedor principal con fondo suave y bordes redondeados */
+.container {
+    background-color: #f8fdff; /* Un azul muy claro como el de la imagen */
+    border-radius: 30px;
+    padding: 60px 40px;
+    max-width: 500px;
+    margin: 40px auto;
+    text-align: center;
+    font-family: 'Arial', sans-serif; /* Puedes cambiarla por Montserrat o Poppins */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* Contenedor de las imágenes para permitir la superposición */
+.img-1, .img-2 {
+    display: inline-block;
+    position: relative;
+}
+
+/* Imagen superior (la más grande) */
+.img-1 img {
+    width: 280px;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 25px;
+    position: relative;
+    z-index: 1;
+    display: block;
+    margin-left: -50px; /* La desplaza a la izquierda */
+}
+
+/* Imagen inferior (la que se superpone a la derecha) */
+.img-2 img {
+    width: 220px;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 25px;
+    position: absolute;
+    bottom: -40px;
+    right: -130px;
+    z-index: 2;
+    border: 5px solid #f8fdff; /* Crea ese efecto de separación */
+}
+
+/* Espaciado para los textos después de las imágenes */
+.texts {
+    margin-top: 80px;
+}
+
+.texts h2 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #000;
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+
+.description {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    max-width: 350px;
+    margin: 0 auto 30px;
+}
+
+/* Indicadores (sliders) de la parte inferior */
+.sliders {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.sliders::before, .sliders::after, .sliders {
+    content: ''; /* Esto es para simular las 3 rayitas si no quieres usar más HTML */
+}
+
+/* Estilo para simular los indicadores azules */
+.sliders {
+    height: 4px;
+    width: 100%;
+}
+
+.sliders::before {
+    content: '';
+    width: 60px;
+    height: 5px;
+    background-color: #5bb4e5; /* Azul fuerte para el activo */
+    border-radius: 10px;
+}
+
+.sliders::after {
+    content: '';
+    width: 120px; /* Dos rayitas más claras juntas */
+    height: 5px;
+    background: linear-gradient(to right, #ccefff 45%, transparent 45%, transparent 55%, #ccefff 55%);
+}

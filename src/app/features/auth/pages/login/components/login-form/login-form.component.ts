@@ -30,6 +30,8 @@ export class LoginFormComponent {
     // Limpiar error previo
     this.loginError = false;
 
+      this.submitted = true;
+
     // Validar formulario
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();

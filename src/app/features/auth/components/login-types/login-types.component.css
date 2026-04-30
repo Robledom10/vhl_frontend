@@ -1,7 +1,7 @@
 /* Separador */
 .divider {
 	text-align: center;
-	margin: 20px 0;
+	margin: 20px 0 26px;
 	position: relative;
 	color: #9ca3af;
 	font-size: 14px;
@@ -25,18 +25,11 @@
 	right: 0;
 }
 
-/* Botones de redes sociales */
-.social-buttons {
-	display: flex;
-	justify-content: center;
-	gap: 12px;
-	margin-top: 20px;
-}
-
+/* Botón de redes sociales */
 .social-button {
-	width: 52px;
-	height: 52px;
-	border-radius: 50%;
+	width: 250px;
+	height: 40px;
+	border-radius: 500px;
 	border: 1px solid #e5e7eb;
 	background: white;
 	cursor: pointer;
@@ -46,21 +39,17 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	gap: 14px;
+	font-family: "Outfit", sans-serif;
+	font-size: 16px;
+	margin: auto;
 }
 
 .social-button:hover {
-	background: #f9fafb;
-	border-color: #d1d5db;
+	border-color: var(--color-iconos);
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.social-button img,
 .social-button svg {
-	width: 26px;
-	height: 26px;
-}
-
-.social-button i {
-	font-size: 20px;
-	color: #3FA2DB;
+	width: 21px;
 }

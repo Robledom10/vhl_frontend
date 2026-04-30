@@ -1,7 +1,10 @@
 /* Estilos generales del formulario */
+/* Contenedor Principal (Igual al banner de aventura) */
 .form-login {
-	width: auto;
-	padding: 40px 20px;
+    padding: 50px 40px;
+    max-width: 500px; /* Consistencia total */
+    margin: 40px auto;
+    text-align: center;
 }
 
 .form-login .logo {
@@ -30,7 +33,7 @@
 .form-login form {
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	gap: 16px;
 }
 
 /* Grupo de formulario */
@@ -52,6 +55,7 @@
 	transition: all 0.3s ease;
 	box-sizing: border-box;
 	font-family: "Outfit", sans-serif;
+	background-color: var(--color-fondo);
 }
 
 .form-group input:focus {
@@ -82,11 +86,6 @@
 	font-size: 12px;
 	color: #3FA2DB;
 	left: 12px;
-}
-
-/* Inputs con contenido */
-.form-group input:valid {
-	border-color: #3FA2DB;
 }
 
 /* ========== ESTILOS DE ERROR ========== */
@@ -212,8 +211,9 @@ button[type="submit"] {
 	font-size: 16px;
 	font-weight: 500;
 	cursor: pointer;
-	margin-top: 10px;
+	margin-bottom: 10px;
 	transition: all 0.3s ease;
+	font-family: "Outfit", sans-serif;
 }
 
 button[type="submit"]:hover:not(:disabled) {
@@ -244,4 +244,13 @@ button[type="submit"]:disabled {
 
 .login-text a:hover {
 	text-decoration: underline;
+}
+
+/* Quitar fondo azul de autocompletado en Chrome */
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:hover {
+	-webkit-box-shadow: 0 0 0px 1000px white inset !important;
+	-webkit-text-fill-color: #333 !important;
+	transition: background-color 5000s ease-in-out 0s;
 }

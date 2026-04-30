@@ -32,4 +32,7 @@ body {
 	/* Texto */
 	--color-texto-principal: #000000;
 	--color-texto-secundario: #6b7280;
+	
+	/* Iconos */
+	--color-iconos:#d1d5db;
 }
