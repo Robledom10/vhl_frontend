@@ -23,11 +23,11 @@ export class RegisterFormComponent {
     // middleName: ['', [Validators.minLength(3)]],
     lastName: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
+    documentType: ['', [Validators.required]],
+    documentNumber: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(11)]],
     // birthdate: ['', [Validators.required, minimumAgeValidator(18)]],
     password: ['', [Validators.required, Validators.minLength(8), strongPasswordValidator]],
     confirmPassword: ['', [Validators.required]],
-    documentType: ['', [Validators.required]],
-    documentNumber: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(11)]],
     terms: [false, [Validators.requiredTrue]]
   }, this.formOptions);
 

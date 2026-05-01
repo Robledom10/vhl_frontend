@@ -61,7 +61,7 @@ export class LoginFormComponent {
         this.isLoading = false;
 
         // Redirigir al dashboard o home
-        // this.router.navigate(['/dashboard']); // Ajusta la ruta según tu aplicación
+        // this.router.navigate(['/home']); // Ajusta la ruta según tu aplicación
       },
       error: (err) => {
         console.error('Error en el login:', err);

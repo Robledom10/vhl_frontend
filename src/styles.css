@@ -28,6 +28,7 @@ body {
 	--color-primario-claro: #b5e5ff;
 	--color-primario-oscuro: #123862;
 	--color-navegador: #f8f8f8;
+	--color-error: #ef4444;
 
 	/* Texto */
 	--color-texto-principal: #000000;

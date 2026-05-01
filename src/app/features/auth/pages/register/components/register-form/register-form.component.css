@@ -1,10 +1,10 @@
 /* Contenedor Principal (Igual al banner de aventura) */
 .form-register {
-    padding: 50px 40px;
-    max-width: 500px; /* Consistencia total */
-    margin: 40px auto;
+	padding: 50px 40px;
+	max-width: 500px;
+	/* Consistencia total */
+	margin: 40px auto;
 }
-
 
 .form-register .logo {
 	text-align: center;
@@ -17,14 +17,14 @@
 .form-register h1 {
 	font-size: 30px;
 	font-weight: 600;
-	color: black;
+	color: var(--color-texto-principal);
 	text-align: center;
 	margin: 30px 0;
 }
 
 .form-register p {
 	font-size: 14px;
-	color: #6b7280;
+	color: var(--color-texto-secundario);
 	margin: 20px 0 40px;
 	text-align: center;
 }
@@ -45,7 +45,7 @@
 
 .form-group-small {
 	flex: 0 0 45%;
-	/* El select ocupa 35% */
+	/* El select ocupa 45% */
 }
 
 .form-group-large {
@@ -66,18 +66,19 @@
 .form-group input {
 	width: 100%;
 	padding: 10px 16px;
-	border: 1px solid #d1d5db;
+	border: 1px solid var(--color-iconos);
 	border-radius: 25px;
 	font-size: 14px;
-	color: #333;
+	color: var(--color-texto-secundario);
 	outline: none;
 	transition: all 0.3s ease;
 	box-sizing: border-box;
 	font-family: "Outfit", sans-serif;
+	background-color: var(--color-fondo);
 }
 
 .form-group input:focus {
-	border-color: #3FA2DB;
+	border-color: var(--color-primario);
 }
 
 .form-group input::placeholder {
@@ -87,86 +88,167 @@
 /* ========== ESTILOS PARA SELECT ========== */
 
 /* Estilos para el select */
+
 .form-group select {
 	width: 100%;
 	padding: 10px 16px;
-	border: 1px solid #d1d5db;
+	padding-right: 40px;
+	border: 1px solid var(--color-iconos);
 	border-radius: 25px;
 	font-size: 14px;
-	color: #333;
-	outline: none;
-	transition: all 0.3s ease;
-	box-sizing: border-box;
-	font-family: "Open Sans", sans-serif;
+	font-family: "Outfit", sans-serif;
+	color: var(--color-texto-secundario);
 	background-color: white;
 	cursor: pointer;
+	outline: none;
+	transition: all 0.3s ease;
+
 	appearance: none;
 	-webkit-appearance: none;
 	-moz-appearance: none;
-	background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='%236b7280'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
 	background-repeat: no-repeat;
 	background-position: right 16px center;
 	background-size: 16px;
-	padding-right: 40px;
 }
 
+
+/* ================= ESTADOS (TU LÓGICA ORIGINAL) ================= */
+
 .form-group select:focus {
-	border-color: #3FA2DB;
+	border-color: var(--color-primario);
 }
 
 /* Select con valor válido */
 .form-group select:valid {
-	border-color: #3FA2DB;
+	border-color: var(--color-primario);
 }
 
 /* Cuando no hay opción seleccionada */
 .form-group select:invalid {
-	color: #6b7280;
+	color: var(--color-texto-secundario);
 }
 
-/* Label para select */
+/* Label */
 .form-group select+label {
 	position: absolute;
 	left: 16px;
-	top: 50%;
+	top: 45%;
 	transform: translateY(-50%);
-	color: #6b7280;
+	color: var(--color-texto-secundario);
 	font-size: 14px;
 	pointer-events: none;
 	transition: all 0.3s ease;
-	background: white;
+	background: var(--color-fondo);
 	padding: 0 4px;
 }
 
-/* Label cuando el select tiene focus o valor */
+/* Label activo */
 .form-group select:focus+label,
 .form-group select:valid+label {
 	top: -2px;
 	font-size: 12px;
-	color: #3FA2DB;
+	color: var(--color-primario);
 	left: 12px;
 }
 
-/* Select con error */
+/* Error */
 .form-group select.ng-invalid.ng-touched,
 .form-group select.ng-invalid.ng-dirty {
-	border-color: #ef4444;
+	border-color: var(--color-error);
 }
 
-/* Label del select con error */
 .form-group select.ng-invalid.ng-touched+label,
 .form-group select.ng-invalid.ng-dirty+label {
-	color: #ef4444;
+	color: var(--color-error);
 }
 
-/* Flecha del select cuando tiene valor válido */
-.form-group select:valid {
-	background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233FA2DB' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-}
+/* ================= MODO MODERNO (SIN ROMPER LO ANTERIOR) ================= */
 
-/* Flecha del select cuando hay error */
-.form-group select.ng-invalid.ng-touched {
-	background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ef4444' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+@supports (appearance: base-select) {
+
+	.form-group select,
+	.form-group select::picker(select) {
+		appearance: base-select;
+	}
+
+	.form-group select {
+		background-image: none;
+		/* elimina flecha vieja */
+		padding-right: 16px;
+	}
+
+	/* Flecha moderna dinámica */
+	.form-group select::picker-icon {
+		content: "";
+		width: 16px;
+		height: 16px;
+		background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+		transition: transform 0.3s ease, filter 0.3s ease;
+	}
+
+	/* Rotación */
+	.form-group select:open::picker-icon {
+		transform: rotate(180deg);
+	}
+
+	/* Estados de color en flecha */
+	.form-group select:focus::picker-icon,
+	.form-group select:valid::picker-icon {
+		filter: brightness(0) saturate(100%) invert(55%) sepia(75%) saturate(500%) hue-rotate(170deg);
+	}
+
+	.form-group select.ng-invalid.ng-touched::picker-icon {
+		filter: brightness(0) saturate(100%) invert(34%) sepia(93%) saturate(749%) hue-rotate(329deg);
+	}
+
+	/* Dropdown */
+	.form-group select::picker(select) {
+		margin-top: 8px;
+		border-radius: 16px;
+		border: 1px solid var(--color-iconos);
+		background: var(--color-fondo);
+		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+
+		opacity: 0;
+		height: 0;
+		overflow: hidden;
+
+		transition: all 0.3s ease;
+	}
+
+	.form-group select:open::picker(select) {
+		opacity: 1;
+		height: auto;
+		overflow: auto;
+	}
+
+	/* OPTIONS */
+	.form-group select option {
+		padding: 8px 12px;
+		font-size: 14px;
+		font-family: "Outfit", sans-serif;
+		color: var(--color-texto-secundario);
+		background: var(--color-fondo);
+		border-bottom: 1px solid #f1f1f1;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.form-group select option:hover {
+		background: rgba(63, 162, 219, 0.1);
+		color: var(--color-primario);
+	}
+
+	.form-group select option:checked {
+		background: var(--color-primario);
+		color: white;
+	}
+
+	.form-group select option::checkmark {
+		display: none;
+	}
 }
 
 /* ========== FIN ESTILOS PARA SELECT ========== */
@@ -177,11 +259,11 @@
 	left: 16px;
 	top: 50%;
 	transform: translateY(-50%);
-	color: #6b7280;
+	color: var(--color-texto-secundario);
 	font-size: 14px;
 	pointer-events: none;
 	transition: all 0.3s ease;
-	background: white;
+	background: var(--color-fondo);
 	padding: 0 4px;
 }
 
@@ -189,13 +271,13 @@
 .form-group input:not(:placeholder-shown)+label {
 	top: -2px;
 	font-size: 12px;
-	color: #3FA2DB;
+	color: var(--color-primario);
 	left: 12px;
 }
 
 /* Inputs con contenido (para mostrar el label arriba) */
 .form-group input:valid {
-	border-color: #3FA2DB;
+	border-color: var(--color-primario);
 }
 
 /* ========== ESTILOS DE ERROR ========== */
@@ -203,19 +285,19 @@
 /* Input con error */
 .form-group input.ng-invalid.ng-touched,
 .form-group input.ng-invalid.ng-dirty {
-	border-color: #ef4444;
+	border-color: var(--color-error);
 }
 
 /* Label con error */
 .form-group input.ng-invalid.ng-touched+label,
 .form-group input.ng-invalid.ng-dirty+label {
-	color: #ef4444;
+	color: var(--color-error);
 }
 
 /* Mensaje de error */
 .form-group span {
 	display: block;
-	color: #ef4444;
+	color: var(--color-error);
 	font-size: 12px;
 	margin-top: 6px;
 	margin-left: 16px;
@@ -227,7 +309,7 @@
 /* Mensaje de error para checkbox */
 .terms-group span {
 	display: block;
-	color: #ef4444;
+	color: var(--color-error);
 	font-size: 12px;
 	margin-left: 26px;
 	font-weight: 400;
@@ -237,7 +319,7 @@
 /* Mensaje de error global del formulario (passwords no coinciden) */
 .form-group-password span {
 	display: block;
-	color: #ef4444;
+	color: var(--color-error);
 	font-size: 12px;
 	margin-top: 6px;
 	margin-left: 16px;
@@ -259,7 +341,7 @@
 	top: 12px;
 	cursor: pointer;
 	transition: opacity 0.3s, color 0.3s;
-	color: #6b7280;
+	color: var(--color-texto-secundario);
 }
 
 /* Mostrar ojo cerrado cuando el input es de tipo password */
@@ -276,14 +358,21 @@
 /* Cuando el input tiene valor, cambiar color del icono */
 .form-group-password input:valid~.fa-eye,
 .form-group-password input:valid~.fa-eye-slash {
-	color: #3FA2DB;
+	color: var(--color-primario);
+	opacity: 1;
+}
+
+/* Cuando el input esta seleccionado, cambiar color del icono */
+.form-group-password input:focus~.fa-eye,
+.form-group-password input:focus~.fa-eye-slash {
+	color: var(--color-primario);
 	opacity: 1;
 }
 
 /* Iconos de ojo en rojo cuando hay error */
 .form-group-password input.ng-invalid.ng-touched~.fa-eye,
 .form-group-password input.ng-invalid.ng-touched~.fa-eye-slash {
-	color: #ef4444;
+	color: var(--color-error);
 	opacity: 1;
 }
 
@@ -322,13 +411,13 @@
 }
 
 .terms-group input[type="checkbox"]:checked {
-	background-color: #3FA2DB;
-	border: 2px solid #3FA2DB;
+	background-color: var(--color-primario);
+	border: 2px solid var(--color-primario);
 }
 
 .terms-group input[type="checkbox"]:checked::after {
 	content: "✔";
-	color: white;
+	color: var(--color-fondo);
 	font-size: 12px;
 	position: absolute;
 	top: -1px;
@@ -337,7 +426,7 @@
 
 .terms-group label {
 	font-size: 14px;
-	color: #6b7280;
+	color: var(--color-texto-secundario);
 	cursor: pointer;
 	user-select: none;
 	flex: 1;
@@ -347,8 +436,8 @@
 button[type="submit"] {
 	width: 100%;
 	padding: 10px 16px;
-	background: #3FA2DB;
-	color: white;
+	background: var(--color-primario);
+	color: var(--color-fondo);
 	border: none;
 	border-radius: 25px;
 	font-size: 16px;
@@ -360,7 +449,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover:not(:disabled) {
-	background: #3592c7;
+	background: var(--color-primario);
 	box-shadow: 0 4px 6px rgba(63, 162, 219, 0.3);
 }
 
@@ -376,11 +465,11 @@ button[type="submit"]:disabled {
 	margin-top: 20px;
 	margin-bottom: 12px;
 	font-size: 14px;
-	color: #6b7280;
+	color: var(--color-texto-secundario);
 }
 
 .login-text a {
-	color: #3FA2DB;
+	color: var(--color-primario);
 	text-decoration: none;
 	font-weight: 500;
 	transition: color 0.3s;
@@ -395,6 +484,6 @@ input:-webkit-autofill,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:hover {
 	-webkit-box-shadow: 0 0 0px 1000px white inset !important;
-	-webkit-text-fill-color: #333 !important;
+	-webkit-text-fill-color: var(--color-texto-secundario) !important;
 	transition: background-color 5000s ease-in-out 0s;
 }
