@@ -12,6 +12,10 @@ import { FormBuilder, Validators, AbstractControlOptions } from '@angular/forms'
 })
 export class RegisterFormComponent {
 
+  submitted = false;
+  errorMessage: string | null = null;
+  isLoading: boolean = false;
+
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) { }
 
   formOptions: AbstractControlOptions = {
@@ -31,16 +35,17 @@ export class RegisterFormComponent {
     terms: [false, [Validators.requiredTrue]]
   }, this.formOptions);
 
-  submitted = false;
-
   onSubmit() {
 
     this.submitted = true;
+    this.errorMessage = null;
 
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched()
       return;
     }
+
+    this.isLoading = true;
 
     const formValue = this.registerForm.value
 
@@ -49,21 +54,30 @@ export class RegisterFormComponent {
       // middleName: formValue.middleName!,
       lastName: formValue.lastName!,
       email: formValue.email!,
-      // birthdate: formValue.birthdate!,
-      password: formValue.password!,
       documentType: formValue.documentType!,
-      documentNumber: formValue.documentNumber!
+      documentNumber: formValue.documentNumber!,
+      // birthdate: formValue.birthdate!,
+      password: formValue.password!
     };
 
     this.authService.register(request).subscribe({
       next: (res) => {
         console.log('Usuario creado:', res.user);
-        this.router.navigate(['/auth/login']);
+        this.router.navigate(['/home']);
       },
+
       error: (err) => {
-        console.error('Error en el registro:', err);
+
+        console.log('ERROR BACKEND:', err);
+
+        //Detectar conflicto de email
+        if (err.status === 409) {
+          this.registerForm.get('email')?.setErrors({ emailExists: true });
+        }
+
+        this.errorMessage = err.message;
       }
-    })
+    });
   }
 
   // Funciones para mostrar/ocultar contraseña

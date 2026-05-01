@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, tap, throwError } from 'rxjs';
 import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../../features/auth/models/auth.model';
 import { environment } from '../../../environments/environment';
+import { Router } from '@angular/router';
 
 
 @Injectable({
@@ -12,7 +13,7 @@ export class AuthService {
 
   private apiUrl = `${environment.apiUrl}/auth`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   // =========================
   // LOGIN
@@ -20,14 +21,26 @@ export class AuthService {
   login(request: LoginRequest) {
     return this.http.post<LoginResponse>(
       `${this.apiUrl}/login`,
-      request
+      request,
+      {
+        withCredentials: true // 🔴 IMPORTANTE
+      }
     ).pipe(
       tap((response) => {
-        // Guardar token automáticamente
         localStorage.setItem('token', response.accessToken);
         localStorage.setItem('user', JSON.stringify(response.user));
       }),
       catchError(this.handleError)
+    );
+  }
+
+  refreshToken() {
+    return this.http.post<{ accessToken: string }>(
+      `${this.apiUrl}/refresh`,
+      {},
+      {
+        withCredentials: true // 🔴 ENVÍA COOKIE
+      }
     );
   }
 
@@ -37,7 +50,10 @@ export class AuthService {
   register(request: RegisterRequest) {
     return this.http.post<RegisterResponse>(
       `${this.apiUrl}/register`,
-      request
+      request,
+      {
+        withCredentials: true
+      }
     ).pipe(
       catchError(this.handleError)
     );
@@ -49,6 +65,10 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+
+    this.router.navigate(['/auth/login'], {
+      queryParams: { sessionExpired: true }
+    });
   }
 
   // =========================
@@ -78,6 +98,8 @@ export class AuthService {
 
     if (error.error?.message) {
       errorMessage = error.error.message;
+    } else if (error.error?.error) {
+      errorMessage = error.error.error;
     } else if (error.message) {
       errorMessage = error.message;
     }

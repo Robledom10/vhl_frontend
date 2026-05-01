@@ -217,7 +217,7 @@ button[type="submit"]:hover:not(:disabled) {
 }
 
 button[type="submit"]:disabled {
-	background: #9ca3af;
+	background: var(--color-texto-secundario);
 	cursor: not-allowed;
 	opacity: 0.6;
 }

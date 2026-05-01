@@ -29,8 +29,7 @@ export class LoginFormComponent {
   onSubmit() {
     // Limpiar error previo
     this.loginError = false;
-
-      this.submitted = true;
+    this.submitted = true;
 
     // Validar formulario
     if (this.loginForm.invalid) {
@@ -52,16 +51,10 @@ export class LoginFormComponent {
       next: (res) => {
         console.log('Login exitoso:', res);
 
-        // Guardar token en localStorage
-        localStorage.setItem('token', res.accessToken);
-
-        // Opcional: guardar datos del usuario
-        localStorage.setItem('user', JSON.stringify(res.user));
-
         this.isLoading = false;
 
         // Redirigir al dashboard o home
-        // this.router.navigate(['/home']); // Ajusta la ruta según tu aplicación
+        this.router.navigate(['/home']); // Ajusta la ruta según tu aplicación
       },
       error: (err) => {
         console.error('Error en el login:', err);
