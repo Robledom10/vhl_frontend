@@ -36,4 +36,7 @@ body {
 	
 	/* Iconos */
 	--color-iconos:#d1d5db;
+
+	/* Banner */
+	--color-fondo-banner: #f6fcff;
 }

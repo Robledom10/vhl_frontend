@@ -1,24 +1,31 @@
-<div class="container">
-	<!-- Contenedor de imágenes con superposición -->
-	<div class="image-section">
-		<div class="img-1">
-			<img [src]="images[currentIndex].imgFondo" [alt]="images[currentIndex].titulo">
-		</div>
-		<div class="img-2">
-			<img [src]="images[currentIndex].imgFrente" alt="detalle">
-		</div>
-	</div>
+<div class="banner-container">
 
-	<!-- Textos dinámicos -->
-	<div class="texts">
-		<h2>{{ images[currentIndex].titulo }}</h2>
-		<!-- Cambia .description por .descripcion -->
-		<p class="description">{{ images[currentIndex].descripcion }}</p>
-	</div>
+  <div class="image-section">
+    <div class="img-back" [class.slide-enter]="isAnimating">
+      <img [src]="images[currentIndex].imgFondo" alt="Fondo aventura" loading="eager" decoding="async">
+    </div>
 
-	<!-- Indicadores de barra (Sliders) -->
-	<div class="sliders">
-		<span *ngFor="let slide of images; let i = index" [class.active]="i === currentIndex" (click)="goToSlide(i)">
-		</span>
-	</div>
+    <div class="img-front" [class.slide-enter]="isAnimating">
+      <img [src]="images[currentIndex].imgFrente" alt="Aventura frente" loading="eager" decoding="async">
+    </div>
+
+    <!-- Decorative blob de fondo -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <div class="texts" [class.text-enter]="isAnimating">
+    <h2>{{ images[currentIndex].titulo }}</h2>
+    <p class="description">{{ images[currentIndex].descripcion }}</p>
+  </div>
+
+  <div class="sliders">
+    <span
+      *ngFor="let slide of images; let i = index"
+      [class.active]="i === currentIndex"
+      (click)="goToSlide(i)"
+      [attr.aria-label]="'Ir a slide ' + (i + 1)"
+    ></span>
+  </div>
+
 </div>
