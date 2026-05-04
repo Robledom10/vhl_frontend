@@ -1,94 +1,73 @@
-/* Contenedor principal con fondo suave y bordes redondeados */
 .container {
-    background-color: #f8fdff; /* Un azul muy claro como el de la imagen */
+    background-color: #f8fdff;
     border-radius: 30px;
-    padding: 60px 40px;
-    max-width: 500px;
-    margin: 40px auto;
+    padding: 40px;
+    max-width: 550px;
+    margin: 20px auto;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.03);
 }
 
-/* Contenedor de las imágenes para permitir la superposición */
-.img-1, .img-2 {
-    display: inline-block;
+.image-section {
     position: relative;
+    height: 450px; /* Espacio para las fotos superpuestas */
+    margin-bottom: 20px;
 }
 
-/* Imagen superior (la más grande) */
 .img-1 img {
-    width: 280px;
-    height: 350px;
+    width: 260px;
+    height: 340px;
     object-fit: cover;
-    border-radius: 25px;
-    position: relative;
-    z-index: 1;
-    display: block;
-    margin-left: -50px; /* La desplaza a la izquierda */
-}
-
-/* Imagen inferior (la que se superpone a la derecha) */
-.img-2 img {
-    width: 220px;
-    height: 280px;
-    object-fit: cover;
-    border-radius: 25px;
+    border-radius: 20px;
     position: absolute;
-    bottom: -40px;
-    right: -130px;
-    z-index: 2;
-    border: 5px solid #f8fdff; /* Crea ese efecto de separación */
+    top: 0;
+    left: 50%;
+    transform: translateX(-110%); /* La mueve a la izquierda */
+    z-index: 1;
 }
 
-/* Espaciado para los textos después de las imágenes */
-.texts {
-    margin-top: 80px;
+.img-2 img {
+    width: 240px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 20px;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-10%); /* La mueve a la derecha y solapa */
+    z-index: 2;
+    border: 6px solid #f8fdff; /* Efecto de recorte */
 }
 
 .texts h2 {
-    font-size: 28px;
-	font-weight: 600;
-    color: var(--color-texto-principal);
-    margin-bottom: 15px;
-    line-height: 1.2;
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #000;
 }
 
 .description {
     font-size: 14px;
-    color: #666;
-    line-height: 1.6;
-    max-width: 350px;
-    margin: 0 auto 30px;
+    color: #777;
+    line-height: 1.5;
+    margin-bottom: 30px;
 }
 
-/* Indicadores (sliders) de la parte inferior */
 .sliders {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
 }
 
-.sliders::before, .sliders::after, .sliders {
-    content: ''; /* Esto es para simular las 3 rayitas si no quieres usar más HTML */
-}
-
-/* Estilo para simular los indicadores azules */
-.sliders {
-    height: 4px;
-    width: 100%;
-}
-
-.sliders::before {
-    content: '';
+.sliders span {
     width: 60px;
     height: 5px;
-    background-color: #5bb4e5; /* Azul fuerte para el activo */
+    background-color: #dcf2ff;
     border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.sliders::after {
-    content: '';
-    width: 120px; /* Dos rayitas más claras juntas */
-    height: 5px;
-    background: linear-gradient(to right, #ccefff 45%, transparent 45%, transparent 55%, #ccefff 55%);
+.sliders span.active {
+    background-color: #5bb4e5; /* El azul fuerte de tu imagen */
 }

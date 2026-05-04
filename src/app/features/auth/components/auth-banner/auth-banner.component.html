@@ -1,13 +1,24 @@
 <div class="container">
-	<div class="img-1">
-		<img src="https://lh3.googleusercontent.com/d/1jefTeXq-6r9LKktTu5WhExk-ZeylLRf8" alt="imagen"/>
+	<!-- Contenedor de imágenes con superposición -->
+	<div class="image-section">
+		<div class="img-1">
+			<img [src]="images[currentIndex].imgFondo" [alt]="images[currentIndex].titulo">
+		</div>
+		<div class="img-2">
+			<img [src]="images[currentIndex].imgFrente" alt="detalle">
+		</div>
 	</div>
-	<div class="img-2">
-		<img src="https://lh3.googleusercontent.com/d/1lh62xQfO8J34lKHwnqRp8wmjS9Rk5Bv7" alt="imagen" alt="imagen de viajeros"/>
-	</div>
+
+	<!-- Textos dinámicos -->
 	<div class="texts">
-		<h2>Vive Tu Próxima Gran Aventura</h2>
-		<p class="description">Explora lugares extraordinarios, conecta con la naturaleza y crea recuerdos que durarán toda la vida. Tu viaje comienza aquí.</p>
+		<h2>{{ images[currentIndex].titulo }}</h2>
+		<!-- Cambia .description por .descripcion -->
+		<p class="description">{{ images[currentIndex].descripcion }}</p>
 	</div>
-	<div class="sliders"></div>
+
+	<!-- Indicadores de barra (Sliders) -->
+	<div class="sliders">
+		<span *ngFor="let slide of images; let i = index" [class.active]="i === currentIndex" (click)="goToSlide(i)">
+		</span>
+	</div>
 </div>
