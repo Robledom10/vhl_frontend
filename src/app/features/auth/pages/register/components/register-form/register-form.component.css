@@ -1,9 +1,6 @@
-/* Contenedor Principal (Igual al banner de aventura) */
 .form-register {
-	padding: 50px 40px;
-	max-width: 500px;
-	/* Consistencia total */
-	margin: 40px auto;
+	padding: 30px 24px;
+	margin: 20px auto;
 }
 
 .form-register .logo {
@@ -11,21 +8,21 @@
 }
 
 .form-register .logo img {
-	width: 80px;
+	width: 65px;
 }
 
 .form-register h1 {
-	font-size: 30px;
+	font-size: 22px;
 	font-weight: 600;
 	color: var(--color-texto-principal);
 	text-align: center;
-	margin: 30px 0;
+	margin: 20px 0;
 }
 
 .form-register p {
-	font-size: 14px;
+	font-size: 13px;
 	color: var(--color-texto-secundario);
-	margin: 20px 0 40px;
+	margin: 15px 0 30px;
 	text-align: center;
 }
 
@@ -35,8 +32,6 @@
 	gap: 10px;
 }
 
-/* ========== FILA DE FORMULARIO (Select + Input) ========== */
-
 .form-row {
 	display: flex;
 	gap: 12px;
@@ -45,30 +40,24 @@
 
 .form-group-small {
 	flex: 0 0 45%;
-	/* El select ocupa 45% */
 }
 
 .form-group-large {
 	flex: 1;
-	/* El input de número ocupa el resto */
 }
 
-/* ========== FIN FILA DE FORMULARIO ========== */
-
-/* Grupo de formulario */
 .form-group {
 	position: relative;
 	width: 100%;
-	margin-bottom: 20px;
+	margin-bottom: 35px;
 }
 
-/* Estilos para los inputs */
 .form-group input {
 	width: 100%;
 	padding: 10px 16px;
 	border: 1px solid var(--color-iconos);
 	border-radius: 25px;
-	font-size: 14px;
+	font-size: 13px;
 	color: var(--color-texto-secundario);
 	outline: none;
 	transition: all 0.3s ease;
@@ -85,75 +74,61 @@
 	color: transparent;
 }
 
-/* ========== ESTILOS PARA SELECT ========== */
-
-/* Estilos para el select */
-
 .form-group select {
 	width: 100%;
 	padding: 10px 16px;
 	padding-right: 40px;
 	border: 1px solid var(--color-iconos);
 	border-radius: 25px;
-	font-size: 14px;
+	font-size: 13px;
 	font-family: "Outfit", sans-serif;
 	color: var(--color-texto-secundario);
 	background-color: white;
 	cursor: pointer;
 	outline: none;
 	transition: all 0.3s ease;
-
 	appearance: none;
 	-webkit-appearance: none;
 	-moz-appearance: none;
-
 	background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='%236b7280'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
 	background-repeat: no-repeat;
 	background-position: right 16px center;
 	background-size: 16px;
 }
 
-
-/* ================= ESTADOS (TU LÓGICA ORIGINAL) ================= */
-
 .form-group select:focus {
 	border-color: var(--color-primario);
 }
 
-/* Select con valor válido */
 .form-group select:valid {
 	border-color: var(--color-primario);
 }
 
-/* Cuando no hay opción seleccionada */
 .form-group select:invalid {
 	color: var(--color-texto-secundario);
 }
 
-/* Label */
 .form-group select+label {
 	position: absolute;
 	left: 16px;
 	top: 45%;
 	transform: translateY(-50%);
 	color: var(--color-texto-secundario);
-	font-size: 14px;
+	font-size: 13px;
 	pointer-events: none;
 	transition: all 0.3s ease;
 	background: var(--color-fondo);
 	padding: 0 4px;
 }
 
-/* Label activo */
 .form-group select:focus+label,
 .form-group select:valid+label {
 	top: -2px;
-	font-size: 12px;
+	font-size: 11px;
 	color: var(--color-primario);
 	left: 12px;
 }
 
-/* Error */
 .form-group select.ng-invalid.ng-touched,
 .form-group select.ng-invalid.ng-dirty {
 	border-color: var(--color-error);
@@ -164,8 +139,6 @@
 	color: var(--color-error);
 }
 
-/* ================= MODO MODERNO (SIN ROMPER LO ANTERIOR) ================= */
-
 @supports (appearance: base-select) {
 
 	.form-group select,
@@ -175,11 +148,9 @@
 
 	.form-group select {
 		background-image: none;
-		/* elimina flecha vieja */
 		padding-right: 16px;
 	}
 
-	/* Flecha moderna dinámica */
 	.form-group select::picker-icon {
 		content: "";
 		width: 16px;
@@ -188,12 +159,10 @@
 		transition: transform 0.3s ease, filter 0.3s ease;
 	}
 
-	/* Rotación */
 	.form-group select:open::picker-icon {
 		transform: rotate(180deg);
 	}
 
-	/* Estados de color en flecha */
 	.form-group select:focus::picker-icon,
 	.form-group select:valid::picker-icon {
 		filter: brightness(0) saturate(100%) invert(55%) sepia(75%) saturate(500%) hue-rotate(170deg);
@@ -203,18 +172,15 @@
 		filter: brightness(0) saturate(100%) invert(34%) sepia(93%) saturate(749%) hue-rotate(329deg);
 	}
 
-	/* Dropdown */
 	.form-group select::picker(select) {
 		margin-top: 8px;
 		border-radius: 16px;
 		border: 1px solid var(--color-iconos);
 		background: var(--color-fondo);
 		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-
 		opacity: 0;
 		height: 0;
 		overflow: hidden;
-
 		transition: all 0.3s ease;
 	}
 
@@ -224,10 +190,9 @@
 		overflow: auto;
 	}
 
-	/* OPTIONS */
 	.form-group select option {
 		padding: 8px 12px;
-		font-size: 14px;
+		font-size: 13px;
 		font-family: "Outfit", sans-serif;
 		color: var(--color-texto-secundario);
 		background: var(--color-fondo);
@@ -251,16 +216,13 @@
 	}
 }
 
-/* ========== FIN ESTILOS PARA SELECT ========== */
-
-/* Labels flotantes */
 .form-group label {
 	position: absolute;
 	left: 16px;
 	top: 50%;
 	transform: translateY(-50%);
 	color: var(--color-texto-secundario);
-	font-size: 14px;
+	font-size: 13px;
 	pointer-events: none;
 	transition: all 0.3s ease;
 	background: var(--color-fondo);
@@ -270,35 +232,29 @@
 .form-group input:focus+label,
 .form-group input:not(:placeholder-shown)+label {
 	top: -2px;
-	font-size: 12px;
+	font-size: 11px;
 	color: var(--color-primario);
 	left: 12px;
 }
 
-/* Inputs con contenido (para mostrar el label arriba) */
 .form-group input:valid {
 	border-color: var(--color-primario);
 }
 
-/* ========== ESTILOS DE ERROR ========== */
-
-/* Input con error */
 .form-group input.ng-invalid.ng-touched,
 .form-group input.ng-invalid.ng-dirty {
 	border-color: var(--color-error);
 }
 
-/* Label con error */
 .form-group input.ng-invalid.ng-touched+label,
 .form-group input.ng-invalid.ng-dirty+label {
 	color: var(--color-error);
 }
 
-/* Mensaje de error */
 .form-group span {
 	display: block;
 	color: var(--color-error);
-	font-size: 12px;
+	font-size: 11px;
 	margin-top: 6px;
 	margin-left: 16px;
 	font-weight: 400;
@@ -306,34 +262,28 @@
 	max-width: 90%;
 }
 
-/* Mensaje de error para checkbox */
 .terms-group span {
 	display: block;
 	color: var(--color-error);
-	font-size: 12px;
+	font-size: 11px;
 	margin-left: 26px;
 	font-weight: 400;
 	width: 100%;
 }
 
-/* Mensaje de error global del formulario (passwords no coinciden) */
 .form-group-password span {
 	display: block;
 	color: var(--color-error);
-	font-size: 12px;
+	font-size: 11px;
 	margin-top: 6px;
 	margin-left: 16px;
 	font-weight: 400;
 }
 
-/* ========== FIN ESTILOS DE ERROR ========== */
-
-/* Contenedor de iconos para contraseña */
 .form-group-password {
 	position: relative;
 }
 
-/* Iconos de ojo - ocultar por defecto */
 .form-group-password .fa-eye,
 .form-group-password .fa-eye-slash {
 	position: absolute;
@@ -344,7 +294,6 @@
 	color: var(--color-texto-secundario);
 }
 
-/* Mostrar ojo cerrado cuando el input es de tipo password */
 .form-group-password .fa-eye {
 	display: block;
 	opacity: 0.5;
@@ -355,34 +304,29 @@
 	opacity: 0.5;
 }
 
-/* Cuando el input tiene valor, cambiar color del icono */
 .form-group-password input:valid~.fa-eye,
 .form-group-password input:valid~.fa-eye-slash {
 	color: var(--color-primario);
 	opacity: 1;
 }
 
-/* Cuando el input esta seleccionado, cambiar color del icono */
 .form-group-password input:focus~.fa-eye,
 .form-group-password input:focus~.fa-eye-slash {
 	color: var(--color-primario);
 	opacity: 1;
 }
 
-/* Iconos de ojo en rojo cuando hay error */
 .form-group-password input.ng-invalid.ng-touched~.fa-eye,
 .form-group-password input.ng-invalid.ng-touched~.fa-eye-slash {
 	color: var(--color-error);
 	opacity: 1;
 }
 
-/* Hover en los iconos */
 .form-group-password .fa-eye:hover,
 .form-group-password .fa-eye-slash:hover {
 	opacity: 1;
 }
 
-/* Estados cuando la contraseña es visible (tipo text) */
 .form-group-password input[type="text"]~.fa-eye {
 	display: none;
 }
@@ -391,13 +335,12 @@
 	display: block;
 }
 
-/* Checkbox de términos y condiciones */
 .terms-group {
 	display: flex;
 	align-items: flex-start;
 	flex-wrap: wrap;
-	gap: 12px;
-	margin: 0 0 15px;
+	gap: 10px;
+	margin: 0 0 28px;
 }
 
 .terms-group input[type="checkbox"] {
@@ -425,22 +368,36 @@
 }
 
 .terms-group label {
-	font-size: 14px;
+	font-size: 13px;
 	color: var(--color-texto-secundario);
 	cursor: pointer;
 	user-select: none;
 	flex: 1;
 }
 
-/* Botón de registro */
-button[type="submit"] {
+.buttons-row {
+	display: flex;
+	gap: 10px;
+}
+
+.buttons-row button {
+	flex: 1;
+}
+
+.btn-back {
+	background-color: var(--color-fondo);
+	color: var(--color-texto-secundario);
+	border: 1px solid var(--color-iconos);
+}
+
+button {
 	width: 100%;
 	padding: 10px 16px;
 	background: var(--color-primario);
 	color: var(--color-fondo);
 	border: none;
 	border-radius: 25px;
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 500;
 	cursor: pointer;
 	margin-bottom: 10px;
@@ -459,12 +416,11 @@ button[type="submit"]:disabled {
 	opacity: 0.6;
 }
 
-/* Texto de login */
 .login-text {
 	text-align: center;
 	margin-top: 20px;
 	margin-bottom: 12px;
-	font-size: 14px;
+	font-size: 13px;
 	color: var(--color-texto-secundario);
 }
 
@@ -479,7 +435,6 @@ button[type="submit"]:disabled {
 	text-decoration: underline;
 }
 
-/* Quitar fondo azul de autocompletado en Chrome */
 input:-webkit-autofill,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:hover {

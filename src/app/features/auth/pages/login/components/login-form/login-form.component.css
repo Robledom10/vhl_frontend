@@ -1,10 +1,21 @@
-/* Estilos generales del formulario */
-/* Contenedor Principal (Igual al banner de aventura) */
+.body{
+	display: flex;
+	width: 80%;
+	justify-content: space-between;
+	align-items: center;
+	gap: 80px;
+	margin: auto;
+	height: 100vh;
+}
+
+.body > * {
+	flex: 1;
+	min-width: 0;
+}
+
 .form-login {
-	padding: 50px 40px;
-	max-width: 500px;
-	/* Consistencia total */
-	margin: 40px auto;
+	padding: 30px 24px;
+	margin: 20px auto;
 	text-align: center;
 }
 
@@ -13,21 +24,21 @@
 }
 
 .form-login .logo img {
-	width: 80px;
+	width: 65px;
 }
 
 .form-login h1 {
-	font-size: 30px;
+	font-size: 22px;
 	font-weight: 600;
 	color: var(--color-texto-principal);
 	text-align: center;
-	margin: 30px 0;
+	margin: 20px 0;
 }
 
 .form-login p {
-	font-size: 14px;
+	font-size: 13px;
 	color: var(--color-texto-secundario);
-	margin: 20px 0 40px;
+	margin: 15px 0 30px;
 	text-align: center;
 }
 
@@ -37,20 +48,18 @@
 	gap: 16px;
 }
 
-/* Grupo de formulario */
 .form-group {
 	position: relative;
 	width: 100%;
 	margin-bottom: 20px;
 }
 
-/* Estilos para los inputs */
 .form-group input {
 	width: 100%;
 	padding: 10px 16px;
 	border: 1px solid var(--color-iconos);
 	border-radius: 25px;
-	font-size: 14px;
+	font-size: 13px;
 	color: var(--color-texto-secundario);
 	outline: none;
 	transition: all 0.3s ease;
@@ -67,19 +76,17 @@
 	color: transparent;
 }
 
-/* Inputs con contenido (para mostrar el label arriba) */
 .form-group input:valid {
 	border-color: var(--color-primario);
 }
 
-/* Labels flotantes */
 .form-group label {
 	position: absolute;
 	left: 16px;
 	top: 50%;
 	transform: translateY(-50%);
 	color: var(--color-texto-secundario);
-	font-size: 14px;
+	font-size: 13px;
 	pointer-events: none;
 	transition: all 0.3s ease;
 	background: var(--color-fondo);
@@ -89,30 +96,25 @@
 .form-group input:focus+label,
 .form-group input:not(:placeholder-shown)+label {
 	top: -2px;
-	font-size: 12px;
+	font-size: 11px;
 	color: var(--color-primario);
 	left: 12px;
 }
 
-/* ========== ESTILOS DE ERROR ========== */
-
-/* Input con error */
 .form-group input.ng-invalid.ng-touched,
 .form-group input.ng-invalid.ng-dirty {
 	border-color: var(--color-error);
 }
 
-/* Label con error */
 .form-group input.ng-invalid.ng-touched+label,
 .form-group input.ng-invalid.ng-dirty+label {
 	color: var(--color-error);
 }
 
-/* Mensaje de error */
 .form-group span {
 	display: block;
 	color: var(--color-error);
-	font-size: 12px;
+	font-size: 11px;
 	margin-top: 6px;
 	margin-left: 16px;
 	font-weight: 400;
@@ -120,14 +122,10 @@
 	max-width: 90%;
 }
 
-/* ========== FIN ESTILOS DE ERROR ========== */
-
-/* Contenedor de iconos para contraseña */
 .form-group-password {
 	position: relative;
 }
 
-/* Iconos de ojo - ocultar por defecto */
 .form-group-password .fa-eye,
 .form-group-password .fa-eye-slash {
 	position: absolute;
@@ -138,7 +136,6 @@
 	color: var(--color-texto-secundario);
 }
 
-/* Mostrar ojo cerrado cuando el input es de tipo password */
 .form-group-password .fa-eye {
 	display: block;
 	opacity: 0.5;
@@ -149,34 +146,29 @@
 	opacity: 0.5;
 }
 
-/* Cuando el input tiene valor, cambiar color del icono */
 .form-group-password input:valid~.fa-eye,
 .form-group-password input:valid~.fa-eye-slash {
 	color: var(--color-primario);
 	opacity: 1;
 }
 
-/* Cuando el input esta seleccionado, cambiar color del icono */
 .form-group-password input:focus~.fa-eye,
 .form-group-password input:focus~.fa-eye-slash {
 	color: var(--color-primario);
 	opacity: 1;
 }
 
-/* Iconos de ojo en rojo cuando hay error */
 .form-group-password input.ng-invalid.ng-touched~.fa-eye,
 .form-group-password input.ng-invalid.ng-touched~.fa-eye-slash {
 	color: var(--color-error);
 	opacity: 1;
 }
 
-/* Hover en los iconos */
 .form-group-password .fa-eye:hover,
 .form-group-password .fa-eye-slash:hover {
 	opacity: 1;
 }
 
-/* Estados cuando la contraseña es visible (tipo text) */
 .form-group-password input[type="text"]~.fa-eye {
 	display: none;
 }
@@ -185,17 +177,15 @@
 	display: block;
 }
 
-/* Mensaje de error para contraseña */
 .form-group-password span {
 	display: block;
 	color: var(--color-error);
-	font-size: 12px;
+	font-size: 11px;
 	margin-top: 6px;
 	margin-left: 16px;
 	font-weight: 400;
 }
 
-/* Botón de login */
 button[type="submit"] {
 	width: 100%;
 	padding: 10px 16px;
@@ -203,7 +193,7 @@ button[type="submit"] {
 	color: white;
 	border: none;
 	border-radius: 25px;
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 500;
 	cursor: pointer;
 	margin-bottom: 10px;
@@ -222,11 +212,10 @@ button[type="submit"]:disabled {
 	opacity: 0.6;
 }
 
-/* Texto de registro */
 .login-text {
 	text-align: center;
 	margin-top: 20px;
-	font-size: 14px;
+	font-size: 13px;
 	color: var(--color-texto-secundario);
 }
 
@@ -241,7 +230,6 @@ button[type="submit"]:disabled {
 	text-decoration: underline;
 }
 
-/* Quitar fondo azul de autocompletado en Chrome */
 input:-webkit-autofill,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:hover {

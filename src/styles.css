@@ -6,9 +6,9 @@
 }
 
 @font-face {
-	font-family: 'Indie Flower';
-	/* Si se quiere utilizar este tipo de letra es: "Indie Flower", cursive*/
-	src: url('assets/fonts/Indie_Flower/IndieFlower-Regular.ttf') format('truetype');
+	font-family: 'Gratise';
+	/* Si se quiere utilizar este tipo de letra es: "Gratise", sans-serif*/
+	src: url('assets/fonts/gratise/Gratise.ttf') format('truetype');
 	font-weight: 100 900;
 	font-style: normal;
 }
@@ -33,10 +33,15 @@ body {
 	/* Texto */
 	--color-texto-principal: #000000;
 	--color-texto-secundario: #6b7280;
-	
+
 	/* Iconos */
-	--color-iconos:#d1d5db;
+	--color-iconos: #d1d5db;
+	--color-fondo-iconos:#b5e5ff8b;
 
 	/* Banner */
 	--color-fondo-banner: #f6fcff;
+
+	/* Navegador */
+	--color-fondo-navegador: #f8f8f8;
+
 }

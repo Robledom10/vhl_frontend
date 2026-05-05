@@ -2,52 +2,69 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../../../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { RegisterRequest } from '../../../../models/auth.model';
-import { passwordMatchValidator, minimumAgeValidator, strongPasswordValidator } from '../../../../../../core/validators/custom.validators';
+import { passwordMatchValidator, strongPasswordValidator } from '../../../../../../core/validators/custom.validators';
 import { FormBuilder, Validators, AbstractControlOptions } from '@angular/forms';
 
 @Component({
   selector: 'app-register-form',
   templateUrl: './register-form.component.html',
-  styleUrl: './register-form.component.css'
+  styleUrl: './register-form.component.css',
 })
-export class RegisterFormComponent {
 
+export class RegisterFormComponent {
   submitted = false;
   errorMessage: string | null = null;
   isLoading: boolean = false;
+  currentStep: number = 1;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) { }
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+  ) {}
 
   formOptions: AbstractControlOptions = {
-    validators: passwordMatchValidator
+    validators: passwordMatchValidator,
   };
 
-  registerForm = this.fb.group({
-    firstName: ['', [Validators.required, Validators.minLength(3)]],
-    // middleName: ['', [Validators.minLength(3)]],
-    lastName: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email]],
-    documentType: ['', [Validators.required]],
-    documentNumber: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(11)]],
-    // birthdate: ['', [Validators.required, minimumAgeValidator(18)]],
-    password: ['', [Validators.required, Validators.minLength(8), strongPasswordValidator]],
-    confirmPassword: ['', [Validators.required]],
-    terms: [false, [Validators.requiredTrue]]
-  }, this.formOptions);
+  registerForm = this.fb.group(
+    {
+      firstName: ['', [Validators.required, Validators.minLength(3)]],
+      // middleName: ['', [Validators.minLength(3)]],
+      lastName: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      documentType: ['', [Validators.required]],
+      documentNumber: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6),
+          Validators.maxLength(11),
+        ],
+      ],
+      // birthdate: ['', [Validators.required, minimumAgeValidator(18)]],
+      password: [
+        '',
+        [Validators.required, Validators.minLength(8), strongPasswordValidator],
+      ],
+      confirmPassword: ['', [Validators.required]],
+      terms: [false, [Validators.requiredTrue]],
+    },
+    this.formOptions,
+  );
 
   onSubmit() {
-
     this.submitted = true;
     this.errorMessage = null;
 
     if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched()
+      this.registerForm.markAllAsTouched();
       return;
     }
 
     this.isLoading = true;
 
-    const formValue = this.registerForm.value
+    const formValue = this.registerForm.value;
 
     const request: RegisterRequest = {
       firstName: formValue.firstName!,
@@ -57,7 +74,7 @@ export class RegisterFormComponent {
       documentType: formValue.documentType!,
       documentNumber: formValue.documentNumber!,
       // birthdate: formValue.birthdate!,
-      password: formValue.password!
+      password: formValue.password!,
     };
 
     this.authService.register(request).subscribe({
@@ -67,7 +84,6 @@ export class RegisterFormComponent {
       },
 
       error: (err) => {
-
         console.log('ERROR BACKEND:', err);
 
         //Detectar conflicto de email
@@ -76,7 +92,7 @@ export class RegisterFormComponent {
         }
 
         this.errorMessage = err.message;
-      }
+      },
     });
   }
 
@@ -100,5 +116,27 @@ export class RegisterFormComponent {
   // Getter para acceder fácilmente a los controles del formulario en la plantilla
   get f() {
     return this.registerForm.controls;
+  }
+
+  nextStep() {
+    // Validar SOLO los campos del paso 1
+    // Marcar solo campos del paso 1
+    this.f.firstName.markAsTouched();
+    this.f.lastName.markAsTouched();
+    this.f.email.markAsTouched();
+
+    if (
+      this.f.firstName.invalid ||
+      this.f.lastName.invalid ||
+      this.f.email.invalid
+    ) {
+      return;
+    }
+
+    this.currentStep = 2;
+  }
+
+  prevStep() {
+    this.currentStep = 1;
   }
 }

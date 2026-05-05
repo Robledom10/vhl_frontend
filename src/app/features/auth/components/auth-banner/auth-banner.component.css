@@ -3,8 +3,7 @@
     background-color: var(--color-fondo-banner);
     border-radius: 30px;
     padding: 55px 40px 47px;
-    max-width: 520px;
-    width: 100%;
+    width: 90%;
     margin: 0 auto;
     text-align: center;
     box-shadow: 0 4px 15px rgba(63, 162, 219, 0.25);
