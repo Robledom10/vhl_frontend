@@ -1,0 +1,92 @@
+<div class="search-filter-container">
+	<div class="filter-bar">
+
+		<!-- Destino -->
+		<div class="filter-item">
+			<div class="filter-icon">
+				<i class="fa-regular fa-map"></i>
+			</div>
+			<div class="filter-content">
+				<label>Destino</label>
+				<input type="text" placeholder="¿A dónde quieres viajar?" />
+			</div>
+		</div>
+
+		<div class="divider"></div>
+
+		<!-- Personas -->
+		<div class="filter-item">
+			<div class="filter-icon">
+				<i class="fa-regular fa-user"></i>
+			</div>
+			<div class="filter-content">
+				<label>Personas</label>
+				<input type="number" placeholder="¿Cuántas personas viajan?" min="1" />
+			</div>
+		</div>
+
+		<div class="divider"></div>
+
+		<!-- Fecha salida -->
+		<div class="filter-item date-wrapper" (click)="toggleCalendar('salida', $event)">
+			<div class="filter-icon">
+				<i class="fa-regular fa-calendar"></i>
+			</div>
+			<div class="filter-content">
+				<label>Fecha salida</label>
+				<span class="date-display">{{ fechaSalida || 'Selecciona tu fecha' }}</span>
+			</div>
+			<div class="calendar-dropdown" *ngIf="calendarOpen === 'salida'" (click)="$event.stopPropagation()">
+				<div class="cal-header">
+					<button (click)="prevMonth()"><i class="fa-solid fa-chevron-left"></i></button>
+					<span>{{ monthName }} {{ currentYear }}</span>
+					<button (click)="nextMonth()"><i class="fa-solid fa-chevron-right"></i></button>
+				</div>
+				<div class="cal-days-header">
+					<span *ngFor="let d of dayNames">{{ d }}</span>
+				</div>
+				<div class="cal-grid">
+					<span *ngFor="let day of calendarDays" [class.empty]="!day"
+						[class.selected]="isSelected(day, 'salida')" [class.today]="isToday(day)"
+						(click)="selectDate(day, 'salida')">
+						{{ day || '' }}
+					</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="divider"></div>
+
+		<!-- Fecha llegada -->
+		<div class="filter-item date-wrapper" (click)="toggleCalendar('llegada', $event)">
+			<div class="filter-icon">
+				<i class="fa-regular fa-calendar"></i>
+			</div>
+			<div class="filter-content">
+				<label>Fecha llegada</label>
+				<span class="date-display">{{ fechaLlegada || 'Selecciona tu fecha' }}</span>
+			</div>
+			<div class="calendar-dropdown" *ngIf="calendarOpen === 'llegada'" (click)="$event.stopPropagation()">
+				<div class="cal-header">
+					<button (click)="prevMonth()"><i class="fa-solid fa-chevron-left"></i></button>
+					<span>{{ monthName }} {{ currentYear }}</span>
+					<button (click)="nextMonth()"><i class="fa-solid fa-chevron-right"></i></button>
+				</div>
+				<div class="cal-days-header">
+					<span *ngFor="let d of dayNames">{{ d }}</span>
+				</div>
+				<div class="cal-grid">
+					<span *ngFor="let day of calendarDays" [class.empty]="!day"
+						[class.selected]="isSelected(day, 'llegada')" [class.today]="isToday(day)"
+						(click)="selectDate(day, 'llegada')">
+						{{ day || '' }}
+					</span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Botón Buscar -->
+		<button class="btn-search">Buscar</button>
+
+	</div>
+</div>

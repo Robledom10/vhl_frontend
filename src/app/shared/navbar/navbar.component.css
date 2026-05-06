@@ -8,8 +8,8 @@
 	align-items: center;
 	justify-content: space-between;
 	padding: 5px 150px;
-	background-color: var(--color-fondo-navegador);
-	font-family: "Open Sans", sans-serif;
+	/* background-color: var(--color-fondo-navegador); */
+	background-color: rgb(246 250 254 / var(--tw-bg-opacity, 1));
 }
 
 .navbar-icon img {

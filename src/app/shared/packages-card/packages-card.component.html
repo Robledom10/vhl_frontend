@@ -1,0 +1,63 @@
+<section class="packages-section">
+
+	<!-- Grid de paquetes -->
+	<div class="packages-grid">
+		<div class="card" *ngFor="let pkg of displayedPackages" (click)="onReserve(pkg)">
+
+			<!-- Imagen -->
+			<div class="card-img-wrap">
+				<img [src]="pkg.imageUrl" [alt]="pkg.name" (error)="onImgError($event)" />
+
+				<!-- Badge rating -->
+				<div class="badge">
+					★ {{ pkg.rating }}
+				</div>
+
+				<!-- Botón favorito -->
+				<button class="wishlist-btn" [class.liked]="isLiked(pkg.id)" (click)="toggleLike(pkg.id, $event)">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+						[attr.fill]="isLiked(pkg.id) ? '#ff6b6b' : 'none'" stroke="#ff6b6b" stroke-width="2.2">
+						<path
+							d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06 a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+					</svg>
+				</button>
+			</div>
+
+			<!-- Cuerpo -->
+			<div class="card-body">
+				<div class="card-location">
+					<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+						stroke-width="2.5">
+						<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+						<circle cx="12" cy="10" r="3" />
+					</svg>
+					{{ pkg.location }}
+				</div>
+
+				<div class="card-name">{{ pkg.name }}</div>
+
+				<div class="card-footer">
+					<div class="price-block">
+						<span class="label">Desde</span>
+						<div class="amount">
+							{{ pkg.price | currency:'COP':'symbol-narrow':'1.0-0' }}
+							<span>/ persona</span>
+						</div>
+					</div>
+					<button class="btn-reserve" (click)="onReserve(pkg); $event.stopPropagation()">
+						Reservar
+					</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<!-- Botón ver todos (solo en home) -->
+	<div class="view-all-wrap" *ngIf="!showAll">
+		<a class="btn-view-all" routerLink="/destinos">
+			Ver todos los destinos
+		</a>
+	</div>
+
+</section>

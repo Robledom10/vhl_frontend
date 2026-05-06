@@ -1,0 +1,81 @@
+<footer class="footer">
+	<div class="footer-container">
+
+		<!-- Logo -->
+		<div class="footer-logo">
+			<img src="assets/images/logo.png" alt="Hernando Lopera" class="logo-img" (error)="onImgError($event)" />
+		</div>
+
+		<!-- Enlaces Rápidos -->
+		<div class="footer-col">
+			<h4 class="footer-title">Enlaces Rápidos</h4>
+			<ul class="footer-links">
+				<li><a routerLink="/inicio">Inicio</a></li>
+				<li><a routerLink="/destinos">Destinos</a></li>
+				<li><a routerLink="/galeria">Galería</a></li>
+				<li><a routerLink="/ingresar">Ingresar</a></li>
+				<li><a routerLink="/registrarse">Registrarse</a></li>
+			</ul>
+		</div>
+
+		<!-- Atención al Cliente -->
+		<div class="footer-col">
+			<h4 class="footer-title">Atención al Cliente</h4>
+			<ul class="footer-links">
+				<li><a routerLink="/contacto">Contáctanos</a></li>
+				<li><a routerLink="/faq">Preguntas Frecuentes</a></li>
+				<li><a routerLink="/reservas">Reservas</a></li>
+				<li><a routerLink="/metodos-pago">Métodos de Pago</a></li>
+				<li><a routerLink="/cancelacion">Política de Cancelación</a></li>
+			</ul>
+		</div>
+
+		<!-- Mantente Conectado -->
+		<div class="footer-col footer-newsletter">
+			<h4 class="footer-title">Mantente Conectado</h4>
+			<p class="footer-desc">Recibe ofertas exclusivas en tu correo.</p>
+
+			<div class="newsletter-input">
+				<input type="email" placeholder="Correo Electrónico" [(ngModel)]="email" />
+				<button (click)="onSubscribe()">
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+						stroke-width="2.2">
+						<path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" />
+					</svg>
+				</button>
+			</div>
+
+			<!-- Redes sociales -->
+			<div class="social-links">
+				<a href="#" target="_blank" class="social-btn" aria-label="WhatsApp">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+						<path
+							d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+						<path
+							d="M12 0C5.373 0 0 5.373 0 12c0 2.136.564 4.14 1.544 5.876L.057 23.428a.5.5 0 0 0 .515.572l5.71-1.498A11.95 11.95 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.7-.504-5.25-1.385l-.372-.214-3.875 1.016 1.034-3.761-.234-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+					</svg>
+				</a>
+				<a href="#" target="_blank" class="social-btn" aria-label="Instagram">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+						<circle cx="12" cy="12" r="4" />
+						<circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+					</svg>
+				</a>
+				<a href="#" target="_blank" class="social-btn" aria-label="Facebook">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+						<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+					</svg>
+				</a>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Línea y copyright -->
+	<div class="footer-bottom">
+		<hr class="footer-divider" />
+		<p class="footer-copy">© 2026 Hernando Lopera. Todos los derechos reservados.</p>
+	</div>
+
+</footer>
