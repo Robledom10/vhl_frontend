@@ -1,30 +1,26 @@
 <div class="banner-container">
 
-  <div class="image-section">
-    <div class="img-back" [@slideChange]="currentIndex">
-      <img [src]="images[currentIndex].imgFondo" alt="Fondo aventura" loading="eager" decoding="async">
-    </div>
+	<div class="image-section">
+		<div class="img-back" [@slideChange]="currentIndex">
+			<img [src]="images[currentIndex].imgFondo" alt="Fondo aventura" loading="eager" decoding="async">
+		</div>
 
-    <div class="img-front" [@slideChange]="currentIndex">
-      <img [src]="images[currentIndex].imgFrente" alt="Aventura frente" loading="eager" decoding="async">
-    </div>
+		<div class="img-front" [@slideChange]="currentIndex">
+			<img [src]="images[currentIndex].imgFrente" alt="Aventura frente" loading="eager" decoding="async">
+		</div>
 
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-  </div>
+		<div class="blob blob-1"></div>
+		<div class="blob blob-2"></div>
+	</div>
 
-  <div class="texts" [@slideChange]="currentIndex">
-    <h2>{{ images[currentIndex].titulo }}</h2>
-    <p class="description">{{ images[currentIndex].descripcion }}</p>
-  </div>
+	<div class="texts" [@slideChange]="currentIndex">
+		<h2>{{ images[currentIndex].titulo }}</h2>
+		<p class="description">{{ images[currentIndex].descripcion }}</p>
+	</div>
 
-  <div class="sliders">
-    <span
-      *ngFor="let slide of images; let i = index"
-      [class.active]="i === currentIndex"
-      (click)="goToSlide(i)"
-      [attr.aria-label]="'Ir a slide ' + (i + 1)"
-    ></span>
-  </div>
+	<div class="sliders">
+		<span *ngFor="let slide of images; let i = index" [class.active]="i === currentIndex" (click)="goToSlide(i)"
+			[attr.aria-label]="'Ir a slide ' + (i + 1)"></span>
+	</div>
 
 </div>

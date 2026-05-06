@@ -37,4 +37,4 @@ export const BANNER_DATA: BannerSlide[] = [
     titulo: 'Viaja, explora y disfruta',
     descripcion: 'Conecta con la naturaleza, la cultura y nuevas emociones en cada recorrido. Haz de cada viaje una historia inolvidable.',
   },
-]; 
+];

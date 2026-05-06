@@ -1,13 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {
-  trigger,
-  transition,
-  style,
-  animate,
-  query,
-  animateChild,
-  group,
-} from '@angular/animations';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { BannerSlide, BANNER_DATA } from './auth-banner.utils';
 
 @Component({

@@ -1,54 +1,55 @@
-*{
-    margin: 0;
-    box-sizing: border-box;
+* {
+	margin: 0;
+	box-sizing: border-box;
 }
+
 .navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 5px 150px;
-  background-color: var(--color-fondo-navegador);
-  font-family: "Open Sans", sans-serif;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 5px 150px;
+	background-color: var(--color-fondo-navegador);
+	font-family: "Open Sans", sans-serif;
 }
 
 .navbar-icon img {
-  width: 60px;
+	width: 60px;
 }
 
 .navbar-links {
-  display: flex;
-  gap: 40px;
+	display: flex;
+	gap: 40px;
 }
 
 .navbar-links a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
+	text-decoration: none;
+	color: #333;
+	font-weight: 500;
 }
 
 .navbar-auth {
-  display: flex;
-  gap: 20px;
-  text-align: center;
+	display: flex;
+	gap: 20px;
+	text-align: center;
 }
 
 .btn-ingresar {
-  padding: 6px 14px;
-  border: 2px solid #3fa2db;
-  border-radius: 30px;
-  color: #3fa2db;
-  text-decoration: none;
-  width: 120px;
-  cursor: pointer;
-  
+	padding: 6px 14px;
+	border: 2px solid #3fa2db;
+	border-radius: 30px;
+	color: #3fa2db;
+	text-decoration: none;
+	width: 120px;
+	cursor: pointer;
+
 }
 
 .btn-registrarse {
-  padding: 6px 14px;
-  background-color: #3fa2db;
-  color: white;
-  border-radius: 30px;
-  text-decoration: none;
-  width: 120px;
-  cursor: pointer;
+	padding: 6px 14px;
+	background-color: #3fa2db;
+	color: white;
+	border-radius: 30px;
+	text-decoration: none;
+	width: 120px;
+	cursor: pointer;
 }
