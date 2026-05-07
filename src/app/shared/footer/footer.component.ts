@@ -15,9 +15,4 @@ export class FooterComponent {
       // Aquí conectas con tu servicio de email
     }
   }
-
-  onImgError(event: Event): void {
-    const img = event.target as HTMLImageElement;
-    img.onerror = null;
-  }
 }

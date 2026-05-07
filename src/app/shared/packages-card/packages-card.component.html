@@ -44,9 +44,7 @@
 							<span>/ persona</span>
 						</div>
 					</div>
-					<button class="btn-reserve" (click)="onReserve(pkg); $event.stopPropagation()">
-						Reservar
-					</button>
+					<button class="btn-reserve" (click)="onReserve(pkg); $event.stopPropagation()">Reservar</button>
 				</div>
 			</div>
 
@@ -55,9 +53,7 @@
 
 	<!-- Botón ver todos (solo en home) -->
 	<div class="view-all-wrap" *ngIf="!showAll">
-		<a class="btn-view-all" routerLink="/destinos">
-			Ver todos los destinos
-		</a>
+		<a class="btn-view-all" routerLink="/destinos">Ver todos los destinos</a>
 	</div>
 
 </section>

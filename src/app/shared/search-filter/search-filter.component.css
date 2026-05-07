@@ -106,6 +106,7 @@
 }
 
 .calendar-dropdown {
+	width: 100%;
 	position: absolute;
 	top: calc(100% + 16px);
 	left: 0;

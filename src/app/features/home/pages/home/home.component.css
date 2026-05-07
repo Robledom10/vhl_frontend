@@ -15,7 +15,6 @@
 .hero-content {
 	padding-top: 40px;
 	flex: 1;
-	min-width: 0;
 	display: flex;
 	flex-direction: column;
 	gap: 20px;
@@ -127,7 +126,6 @@
 
 .hero-images {
 	flex: 1;
-	min-width: 0;
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	grid-template-rows: auto;
@@ -247,13 +245,13 @@
 }
 
 .img-stack {
-	position: relative;
-	width: 320px;
-	height: 440px;
+	height: 100%;
+	display: grid;
+	grid-template-areas: "stack";
 }
 
 .stack-card {
-	position: absolute;
+	grid-area: stack; 
 	border-radius: 32px;
 	overflow: hidden;
 	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
@@ -267,27 +265,27 @@
 }
 
 .stack-back {
-	width: 410px;
-	height: 410px;
+	width: 430px;
+	height: 430px;
 	z-index: 1;
 	outline: 2px solid var(--color-primario);
 	outline-offset: 6px;
 }
 
 .stack-middle {
-	width: 220px;
-	height: 220px;
-	top: 70px;
-	left: 340px;
+	width: 240px;
+	height: 240px;
+	margin-top: 90px;
+	margin-left: 350px;
 	z-index: 3;
 	border: 3px solid var(--color-fondo);
 }
 
 .stack-front {
-	width: 340px;
-	height: 310px;
-	top: 180px;
-	left: 130px;
+	width: 360px;
+	height: 330px;
+	margin-top: 200px;
+	margin-left: 150px;
 	z-index: 2;
 	border: 3px solid var(--color-fondo);
 	outline-offset: 6px;
@@ -513,130 +511,132 @@
 	transform: translate(-50%, 50%);
 	z-index: 10;
 }
-.packages{
+
+.packages {
 	width: 87%;
-	margin:45px auto 0;
+	margin: 45px auto 0;
 }
+
 .experience-section {
-  padding: 72px 24px;
-  background: #ffffff;
+	padding: 72px 24px;
+	background: #ffffff;
 }
 
 .experience-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 60px;
+	max-width: 1100px;
+	margin: 0 auto;
+	display: flex;
+	align-items: center;
+	gap: 60px;
 }
 
 /* ===== Izquierda ===== */
 .experience-left {
-  flex: 0 0 380px;
-  max-width: 380px;
+	flex: 0 0 380px;
+	max-width: 380px;
 }
 
 .section-label {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #00b4d8;
-  margin-bottom: 16px;
+	display: block;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	color: #00b4d8;
+	margin-bottom: 16px;
 }
 
 .experience-title {
-  font-size: clamp(28px, 3.5vw, 40px);
-  font-weight: 400;
-  color: #0d1b2a;
-  line-height: 1.25;
-  margin-bottom: 32px;
-  border-left: 3px solid #7b2ff7;
-  padding-left: 16px;
+	font-size: clamp(28px, 3.5vw, 40px);
+	font-weight: 400;
+	color: #0d1b2a;
+	line-height: 1.25;
+	margin-bottom: 32px;
+	border-left: 3px solid #7b2ff7;
+	padding-left: 16px;
 }
 
 .experience-title strong {
-  font-weight: 800;
-  display: block;
+	font-weight: 800;
+	display: block;
 }
 
 /* ===== Testimonio ===== */
 .testimonial-card {
-  background: #f8faff;
-  border-radius: 16px;
-  padding: 24px;
-  position: relative;
-  box-shadow: 0 4px 20px rgba(13, 27, 42, 0.07);
+	background: #f8faff;
+	border-radius: 16px;
+	padding: 24px;
+	position: relative;
+	box-shadow: 0 4px 20px rgba(13, 27, 42, 0.07);
 }
 
 .quote-icon {
-  position: absolute;
-  top: 16px;
-  right: 20px;
-  font-size: 40px;
-  color: #c5d8ff;
-  line-height: 1;
-  font-family: Georgia, serif;
+	position: absolute;
+	top: 16px;
+	right: 20px;
+	font-size: 40px;
+	color: #c5d8ff;
+	line-height: 1;
+	font-family: Georgia, serif;
 }
 
 .testimonial-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 16px;
 }
 
 .testimonial-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #00b4d8;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 2px solid #00b4d8;
 }
 
 .testimonial-name {
-  font-size: 14px;
-  font-weight: 700;
-  color: #0d1b2a;
+	font-size: 14px;
+	font-weight: 700;
+	color: #0d1b2a;
 }
 
 .testimonial-role {
-  font-size: 11px;
-  color: #8a9bb0;
-  margin-top: 2px;
+	font-size: 11px;
+	color: #8a9bb0;
+	margin-top: 2px;
 }
 
 .testimonial-text {
-  font-size: 13px;
-  color: #4a5568;
-  line-height: 1.7;
-  margin-bottom: 16px;
+	font-size: 13px;
+	color: #4a5568;
+	line-height: 1.7;
+	margin-bottom: 16px;
 }
 
 .stars {
-  display: flex;
-  gap: 2px;
+	display: flex;
+	gap: 2px;
 }
 
 .stars span {
-  font-size: 20px;
-  color: #f4a822;
+	font-size: 20px;
+	color: #f4a822;
 }
 
 /* ===== Derecha: imagen mosaico ===== */
 .experience-right {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .mosaic-img {
-  width: 100%;
-  max-width: 580px;
-  height: auto;
-  object-fit: contain;
+	width: 100%;
+	max-width: 580px;
+	height: auto;
+	object-fit: contain;
 }
 
 /* ===== Responsive ===== */
