@@ -5,7 +5,7 @@
 	display: flex;
 	align-items: start;
 	justify-content: space-between;
-	gap: 60px;
+	gap: 10px;
 	width: 87%;
 	margin: 0 auto;
 	padding: 40px 0;
@@ -54,7 +54,6 @@
 	color: var(--color-texto-secundario);
 	line-height: 1.7;
 	margin: 0;
-	max-width: 600px;
 }
 
 .hero-search {
@@ -67,7 +66,7 @@
 	padding: 23px;
 	box-shadow: 0 2px 15px rgba(125, 125, 125, 0.181);
 	margin-top: 10px;
-	width: 110%;
+	width: 112%;
 	z-index: 1;
 }
 
@@ -127,15 +126,13 @@
 .hero-images {
 	flex: 1;
 	display: grid;
-	grid-template-columns: 1fr 1fr;
-	grid-template-rows: auto;
+	grid-template-areas: "stack";
 	gap: 14px;
 }
 
 .img-card {
-	border-radius: 28px;
-	overflow: hidden;
-	position: relative;
+	border-radius: 35px;
+	grid-area: stack;
 }
 
 .img-card img {
@@ -145,69 +142,82 @@
 	display: block;
 }
 
-.img-top-left {
-	height: 290px;
-	width: 240px;
-	margin-left: 89px;
+.img-top-left-wrapper {
+	position: relative;
+	height: 310px;
+	width: 260px;
+	margin-left: 100px;
 }
 
-.img-top-right {
-	height: 270px;
-	width: 300px;
+.img-top-left {
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	border-radius: 35px;
+}
+
+.img-top-right-wrapper {
+	position: relative;
+	height: 290px;
+	width: 310px;
+	margin-left: 375px;
 	margin-top: 70px;
 }
 
+.img-top-right {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	border-radius: 35px;
+}
+
 .img-bottom-left {
-	height: 260px;
-	width: 330px;
-	margin-top: -50px;
+	height: 270px;
+	width: 360px;
+	margin-top: 325px;
+	overflow: hidden;
 }
 
 .img-bottom-right {
-	height: 280px;
-	width: 250px;
-}
-
-.img-top-left-wrapper {
-	position: relative;
-	grid-column: 1;
-	grid-row: 1;
+	height: 300px;
+	width: 256px;
+	margin-left: 375px;
+	margin-top: 375px;
+	overflow: hidden;
 }
 
 .img-badge {
 	position: absolute;
 	width: 170px;
 	text-align: center;
-	bottom: 70px;
-	left: -10px;
+	bottom: 30px;
+	left: -115px;
 	z-index: 10;
 	background: #e8e7e7ae;
-	backdrop-filter: blur(8px);
-	border-radius: 14px;
-	padding: 10px 10px;
+	border-radius: 20px;
+	padding: 14px 10px;
 	display: flex;
 	flex-direction: column;
 	gap: 2px;
 }
 
 .img-badge strong {
-	font-size: 18px;
+	font-size: 20px;
 	color: var(--color-texto-principal);
 }
 
 .img-badge span {
-	font-size: 16px;
+	font-size: 17px;
 	color: var(--color-texto-principal);
 }
 
 .img-badge-small {
 	position: absolute;
 	width: 60px;
-	bottom: 575px;
-	right: 280px;
+	bottom: 257px;
+	right: 200px;
 	z-index: 10;
 	background: #e8e7e7ae;
-	backdrop-filter: blur(8px);
 	border-radius: 12px;
 	padding: 12px 12px;
 	display: flex;
@@ -217,13 +227,13 @@
 }
 
 .img-badge-small span:first-child {
-	font-size: 18px;
+	font-size: 20px;
 	font-weight: 700;
 	color: var(--color-texto-principal);
 }
 
 .img-badge-small span:last-child {
-	font-size: 16px;
+	font-size: 17px;
 	color: var(--color-texto-principal);
 }
 
@@ -251,7 +261,7 @@
 }
 
 .stack-card {
-	grid-area: stack; 
+	grid-area: stack;
 	border-radius: 32px;
 	overflow: hidden;
 	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
@@ -297,6 +307,7 @@
 	flex-direction: column;
 	gap: 20px;
 	padding-top: 40px;
+	overflow: hidden;
 }
 
 .destinos-badge {
@@ -331,9 +342,11 @@
 .destinos-stats {
 	display: flex;
 	align-items: center;
-	justify-content: space-evenly;
-	width: 90%;
+	justify-content: center;
+	gap: 10px;
+	width: 97%;
 	margin-top: 10px;
+	margin: 10px auto 0;
 }
 
 .stat-item {
@@ -342,7 +355,7 @@
 	align-items: center;
 	gap: 4px;
 	padding: 0 28px;
-	width: 150px;
+	width: 100%;
 	background: var(--color-fondo-navegador);
 	border: 1px solid var(--bordes);
 	border-radius: 20px;
@@ -416,7 +429,7 @@
 .services {
 	flex: 2;
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
 	align-items: center;
 	gap: 50px;
 }
@@ -587,6 +600,17 @@
 	margin-bottom: 16px;
 }
 
+.testimonial-header-img {
+	width: 40px;
+	height: 40px;
+	overflow: hidden;
+	border-radius: 50%;
+}
+
+.testimonial-header-img img {
+	width: 100%;
+}
+
 .testimonial-avatar {
 	width: 44px;
 	height: 44px;
@@ -596,19 +620,19 @@
 }
 
 .testimonial-name {
-	font-size: 14px;
+	font-size: 16px;
 	font-weight: 700;
 	color: #0d1b2a;
 }
 
 .testimonial-role {
-	font-size: 11px;
+	font-size: 14px;
 	color: #8a9bb0;
 	margin-top: 2px;
 }
 
 .testimonial-text {
-	font-size: 13px;
+	font-size: 15px;
 	color: #4a5568;
 	line-height: 1.7;
 	margin-bottom: 16px;
