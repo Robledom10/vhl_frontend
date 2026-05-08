@@ -8,8 +8,7 @@
 	align-items: center;
 	justify-content: space-between;
 	padding: 5px 150px;
-	/* background-color: var(--color-fondo-navegador); */
-	background-color: rgb(246 250 254 / var(--tw-bg-opacity, 1));
+	background-color: rgb(246 250 254);
 }
 
 .navbar-icon img {
