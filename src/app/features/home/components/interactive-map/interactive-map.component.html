@@ -1,0 +1,82 @@
+<div class="search-map-container">
+
+  <!-- LADO IZQUIERDO: Buscador + Resultados -->
+  <div class="search-panel">
+
+    <!-- Buscador -->
+    <div class="search-box">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (input)="onSearch()"
+        (keyup.enter)="onSearch()"
+        placeholder="Buscar destino..."
+        class="search-input"
+      />
+      <button class="search-btn" (click)="onSearch()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Galería de imágenes -->
+    <div class="image-gallery" *ngIf="selectedPlace">
+      <div class="gallery-track">
+        <img
+          *ngFor="let img of selectedPlace.photos"
+          [src]="img"
+          [alt]="selectedPlace.name"
+          class="gallery-img"
+        />
+      </div>
+    </div>
+
+    <!-- Resultados -->
+    <div class="results-list" *ngIf="searchResults.length > 0">
+      <div
+        class="result-item"
+        *ngFor="let place of searchResults"
+        (click)="selectPlace(place)"
+        [class.active]="selectedPlace?.name === place.name"
+      >
+        <img [src]="place.thumbnail" [alt]="place.name" class="result-thumb" />
+        <div class="result-info">
+          <h4 class="result-name">{{ place.name }}</h4>
+          <p class="result-desc">{{ place.description }}</p>
+          <span class="result-address">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            {{ place.address }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado vacío -->
+    <div class="empty-state" *ngIf="searchResults.length === 0 && !searchQuery">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c0d4e8" stroke-width="1.5">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <p>Busca un destino para explorar</p>
+    </div>
+
+    <div class="empty-state" *ngIf="searchResults.length === 0 && searchQuery">
+      <p>No se encontraron resultados para <strong>{{ searchQuery }}</strong></p>
+    </div>
+
+  </div>
+
+  <!-- LADO DERECHO: Mapa -->
+  <div class="map-panel">
+    <div class="map-card">
+      <div id="travel-map"></div>
+      <div class="map-badge">
+        <span class="pulse-dot"></span>
+        Vuelos en tiempo real
+      </div>
+    </div>
+  </div>
+
+</div>
