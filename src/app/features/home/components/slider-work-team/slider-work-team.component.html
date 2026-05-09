@@ -1,0 +1,27 @@
+<div class="slide-container">
+	<button class="slide-btn prev-btn" (click)="prevSlide()">
+		<i class="fa-solid fa-chevron-left"></i>
+	</button>
+
+	<div class="slide-content">
+		<div class="card-wrapper" [style.transform]="'translateX(' + translateX + 'px)'"
+			[class.transition]="isTransitioning" (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)"
+			(touchend)="onTouchEnd($event)">
+
+			<div class="card" *ngFor="let card of cards">
+				<div class="image-content" [style.background-color]="card.backgroundColor">
+					<span class="overlay" [style.--overlay-color]="card.backgroundColor"></span>
+					<img [src]="card.image" [alt]="card.title">
+				</div>
+				<div class="card-content">
+					<p>{{ card.title }}</p>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<button class="slide-btn next-btn" (click)="nextSlide()">
+		<i class="fa-solid fa-chevron-right"></i>
+	</button>
+</div>

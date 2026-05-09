@@ -15,7 +15,7 @@ interface Place {
 @Component({
   selector: 'app-interactive-map',
   templateUrl: './interactive-map.component.html',
-  styleUrls: ['./interactive-map.component.css']
+  styleUrls: ['./interactive-map.component.css'],
 })
 export class InteractiveMapComponent implements OnInit, OnDestroy {
   private map: any;
@@ -25,106 +25,169 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
   searchResults: Place[] = [];
   selectedPlace: Place | null = null;
 
-  defaultLocation = { lat: 4.4490, lng: -75.6443 };
+  defaultLocation = { lat: 4.449, lng: -75.6443 };
   defaultAddress = 'Cra. 25 # 41-61, Calarcá, Quindío';
 
   allPlaces: Place[] = [
     {
       name: 'Piscilago',
-      description: 'Parque acuático y natural ideal para disfrutar en familia, con piscinas, atracciones y zonas verdes.',
+      description:
+        'Parque acuático y natural ideal para disfrutar en familia, con piscinas, atracciones y zonas verdes.',
       address: 'Km 105 Vía Bogotá – Girardot, Melgar, Tolima, Colombia',
-      thumbnail: 'https://images.unsplash.com/photo-1582655008695-f3d1371d1b8a?w=80&h=80&fit=crop',
+      thumbnail:
+        'https://images.unsplash.com/photo-1582655008695-f3d1371d1b8a?w=80&h=80&fit=crop',
       photos: [
         'https://images.unsplash.com/photo-1582655008695-f3d1371d1b8a?w=200&h=140&fit=crop',
         'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=200&h=140&fit=crop',
         'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=200&h=140&fit=crop',
       ],
-      lat: 4.2081, lng: -74.6367
+      lat: 4.2081,
+      lng: -74.6367,
     },
     {
       name: 'Cartagena',
-      description: 'Ciudad histórica amurallada con playas paradisíacas y arquitectura colonial en el Caribe colombiano.',
+      description:
+        'Ciudad histórica amurallada con playas paradisíacas y arquitectura colonial en el Caribe colombiano.',
       address: 'Cartagena de Indias, Bolívar, Colombia',
-      thumbnail: 'https://images.unsplash.com/photo-1549880338-65ddcdfd017b?w=80&h=80&fit=crop',
+      thumbnail:
+        'https://images.unsplash.com/photo-1549880338-65ddcdfd017b?w=80&h=80&fit=crop',
       photos: [
         'https://images.unsplash.com/photo-1549880338-65ddcdfd017b?w=200&h=140&fit=crop',
         'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=140&fit=crop',
         'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=200&h=140&fit=crop',
       ],
-      lat: 10.3910, lng: -75.4794
+      lat: 10.391,
+      lng: -75.4794,
     },
     {
       name: 'Medellín',
-      description: 'Ciudad de la eterna primavera con innovación urbana, cultura vibrante y naturaleza exuberante.',
+      description:
+        'Ciudad de la eterna primavera con innovación urbana, cultura vibrante y naturaleza exuberante.',
       address: 'Medellín, Antioquia, Colombia',
-      thumbnail: 'https://images.unsplash.com/photo-1598135753163-6167c1a1ad65?w=80&h=80&fit=crop',
+      thumbnail:
+        'https://images.unsplash.com/photo-1598135753163-6167c1a1ad65?w=80&h=80&fit=crop',
       photos: [
         'https://images.unsplash.com/photo-1598135753163-6167c1a1ad65?w=200&h=140&fit=crop',
         'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=200&h=140&fit=crop',
         'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=200&h=140&fit=crop',
       ],
-      lat: 6.2442, lng: -75.5812
+      lat: 6.2442,
+      lng: -75.5812,
     },
     {
       name: 'San Andrés',
-      description: 'Isla paradisíaca con aguas cristalinas turquesas, arrecifes de coral y ambiente caribeño único.',
+      description:
+        'Isla paradisíaca con aguas cristalinas turquesas, arrecifes de coral y ambiente caribeño único.',
       address: 'San Andrés, Archipiélago de San Andrés, Colombia',
-      thumbnail: 'https://images.unsplash.com/photo-1559494007-9f5847c49d94?w=80&h=80&fit=crop',
+      thumbnail:
+        'https://images.unsplash.com/photo-1559494007-9f5847c49d94?w=80&h=80&fit=crop',
       photos: [
         'https://images.unsplash.com/photo-1559494007-9f5847c49d94?w=200&h=140&fit=crop',
         'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=200&h=140&fit=crop',
         'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=200&h=140&fit=crop',
       ],
-      lat: 12.5847, lng: -81.7006
+      lat: 12.5847,
+      lng: -81.7006,
     },
     {
       name: 'Bogotá',
-      description: 'Capital de Colombia, ciudad cosmopolita con museos de clase mundial, gastronomía y vida nocturna.',
+      description:
+        'Capital de Colombia, ciudad cosmopolita con museos de clase mundial, gastronomía y vida nocturna.',
       address: 'Bogotá D.C., Colombia',
-      thumbnail: 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=80&h=80&fit=crop',
+      thumbnail:
+        'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=80&h=80&fit=crop',
       photos: [
         'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=200&h=140&fit=crop',
         'https://images.unsplash.com/photo-1531219432768-9f540ce91ef3?w=200&h=140&fit=crop',
         'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=200&h=140&fit=crop',
       ],
-      lat: 4.7110, lng: -74.0721
+      lat: 4.711,
+      lng: -74.0721,
     },
   ];
-getMapStyles(): any[] {
-  return [
-    // Base tierra
-    { elementType: 'geometry', stylers: [{ color: '#eef6fb' }] },
+  getMapStyles(): any[] {
+    return [
+      // Base tierra
+      { elementType: 'geometry', stylers: [{ color: '#eef6fb' }] },
 
-    // Agua azul medio, protagonista pero no agresivo
-    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#3fa2db' }, { lightness: 40 }] },
-    { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#123862' }] },
+      // Agua azul medio, protagonista pero no agresivo
+      {
+        featureType: 'water',
+        elementType: 'geometry',
+        stylers: [{ color: '#3fa2db' }, { lightness: 40 }],
+      },
+      {
+        featureType: 'water',
+        elementType: 'labels.text.fill',
+        stylers: [{ color: '#123862' }],
+      },
 
-    // Tierra con tono crema azulado
-    { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#f0f8ff' }] },
-    { featureType: 'landscape.natural', elementType: 'geometry', stylers: [{ color: '#e8f4f9' }] },
-    { featureType: 'landscape.man_made', elementType: 'geometry', stylers: [{ color: '#f4fafd' }] },
+      // Tierra con tono crema azulado
+      {
+        featureType: 'landscape',
+        elementType: 'geometry',
+        stylers: [{ color: '#f0f8ff' }],
+      },
+      {
+        featureType: 'landscape.natural',
+        elementType: 'geometry',
+        stylers: [{ color: '#e8f4f9' }],
+      },
+      {
+        featureType: 'landscape.man_made',
+        elementType: 'geometry',
+        stylers: [{ color: '#f4fafd' }],
+      },
 
-    // Sin rutas ni POI
-    { featureType: 'road', stylers: [{ visibility: 'off' }] },
-    { featureType: 'poi', stylers: [{ visibility: 'off' }] },
-    { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+      // Sin rutas ni POI
+      { featureType: 'road', stylers: [{ visibility: 'off' }] },
+      { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+      { featureType: 'transit', stylers: [{ visibility: 'off' }] },
 
-    // Bordes de países elegantes
-    { featureType: 'administrative.country', elementType: 'geometry.stroke', stylers: [{ color: '#3fa2db' }, { weight: 1.2 }, { lightness: 30 }] },
+      // Bordes de países elegantes
+      {
+        featureType: 'administrative.country',
+        elementType: 'geometry.stroke',
+        stylers: [{ color: '#3fa2db' }, { weight: 1.2 }, { lightness: 30 }],
+      },
 
-    // Bordes de provincias/departamentos suaves
-    { featureType: 'administrative.province', elementType: 'geometry.stroke', stylers: [{ color: '#b5e5ff' }, { weight: 0.8 }] },
+      // Bordes de provincias/departamentos suaves
+      {
+        featureType: 'administrative.province',
+        elementType: 'geometry.stroke',
+        stylers: [{ color: '#b5e5ff' }, { weight: 0.8 }],
+      },
 
-    // Etiquetas países
-    { featureType: 'administrative.country', elementType: 'labels.text.fill', stylers: [{ color: '#123862' }] },
-    { featureType: 'administrative.country', elementType: 'labels.text.stroke', stylers: [{ color: '#ffffff' }, { weight: 3 }] },
+      // Etiquetas países
+      {
+        featureType: 'administrative.country',
+        elementType: 'labels.text.fill',
+        stylers: [{ color: '#123862' }],
+      },
+      {
+        featureType: 'administrative.country',
+        elementType: 'labels.text.stroke',
+        stylers: [{ color: '#ffffff' }, { weight: 3 }],
+      },
 
-    // Etiquetas ciudades
-    { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#3fa2db' }] },
-    { featureType: 'administrative.locality', elementType: 'labels.text.stroke', stylers: [{ color: '#ffffff' }, { weight: 2 }] },
-    { featureType: 'administrative.locality', elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-  ];
-}
+      // Etiquetas ciudades
+      {
+        featureType: 'administrative.locality',
+        elementType: 'labels.text.fill',
+        stylers: [{ color: '#3fa2db' }],
+      },
+      {
+        featureType: 'administrative.locality',
+        elementType: 'labels.text.stroke',
+        stylers: [{ color: '#ffffff' }, { weight: 2 }],
+      },
+      {
+        featureType: 'administrative.locality',
+        elementType: 'labels.icon',
+        stylers: [{ visibility: 'off' }],
+      },
+    ];
+  }
   ngOnInit(): void {
     this.loadGoogleMaps();
   }
@@ -159,10 +222,10 @@ getMapStyles(): any[] {
           north: 13.5,
           south: -4.5,
           west: -79.5,
-          east: -66.5
+          east: -66.5,
         },
         strictBounds: true,
-      }
+      },
     });
 
     this.addDefaultPin();
@@ -183,7 +246,7 @@ getMapStyles(): any[] {
       position: this.defaultLocation,
       map: this.map,
       title: this.defaultAddress,
-      content: pinEl
+      content: pinEl,
     });
 
     const infoWindow = new google.maps.InfoWindow({
@@ -191,7 +254,7 @@ getMapStyles(): any[] {
         <div style="font-family:sans-serif; padding:4px 2px;">
           <strong style="color:#1a5fa8; font-size:0.85rem;">📍 ${this.defaultAddress}</strong>
         </div>
-      `
+      `,
     });
 
     infoWindow.open(this.map, marker);
@@ -205,10 +268,11 @@ getMapStyles(): any[] {
       this.selectedPlace = null;
       return;
     }
-    this.searchResults = this.allPlaces.filter(p =>
-      p.name.toLowerCase().includes(q) ||
-      p.description.toLowerCase().includes(q) ||
-      p.address.toLowerCase().includes(q)
+    this.searchResults = this.allPlaces.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q) ||
+        p.address.toLowerCase().includes(q),
     );
   }
 
@@ -238,7 +302,7 @@ getMapStyles(): any[] {
       position: { lat: place.lat, lng: place.lng },
       map: this.map,
       title: place.name,
-      content: pinEl
+      content: pinEl,
     });
   }
 
