@@ -12,28 +12,27 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () =>
-      import('./features/home/home.module').then(
-        (m) => m.HomeModule
-      ),
+      import('./features/home/home.module').then((m) => m.HomeModule),
   },
 
   {
     path: 'auth',
     loadChildren: () =>
-      import('./features/auth/auth.module').then(
-        (m) => m.AuthModule
-      ),
+      import('./features/auth/auth.module').then((m) => m.AuthModule),
+  },
+  {
+    path: 'destinations',
+    loadChildren: () =>
+      import('./features/destinations/destinations.module').then((m) => m.DestinationsModule),
   },
 
   {
     path: '**',
     redirectTo: 'home',
   },
-
 ];
 
 @NgModule({
-
   imports: [RouterModule.forRoot(routes)],
 
   exports: [RouterModule],

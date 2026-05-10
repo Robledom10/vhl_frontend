@@ -15,8 +15,9 @@ interface Place {
 @Component({
   selector: 'app-interactive-map',
   templateUrl: './interactive-map.component.html',
-  styleUrls: ['./interactive-map.component.css'],
+  styleUrl: './interactive-map.component.css',
 })
+
 export class InteractiveMapComponent implements OnInit, OnDestroy {
   private map: any;
   private currentMarker: any = null;
@@ -25,7 +26,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
   searchResults: Place[] = [];
   selectedPlace: Place | null = null;
 
-  defaultLocation = { lat: 4.449, lng: -75.6443 };
+  defaultLocation = { lat: 4.528823583221963, lng: -75.64157122965305 };
   defaultAddress = 'Cra. 25 # 41-61, Calarcá, Quindío';
 
   allPlaces: Place[] = [

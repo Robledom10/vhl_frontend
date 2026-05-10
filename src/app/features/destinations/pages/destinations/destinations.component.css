@@ -1,0 +1,41 @@
+/* ===== EXPLORE SECTION ===== */
+.explore-section {
+	position: relative;
+	background-color: var(--color-fondo-navegador);
+	border-radius: 50px;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 87%;
+	height: 500px;
+	margin: 50px auto;
+	border: 1px solid var(--bordes);
+}
+
+.explore-container {
+	width: 100%;
+	height: 500px;
+	border-radius: 50px;
+	overflow: hidden;
+}
+
+.explore-container img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.explore-filter {
+	width: 95%;
+	position: absolute;
+	bottom: 0;
+	left: 49%;
+	transform: translate(-50%, 50%);
+	z-index: 10;
+}
+
+.packages {
+	width: 87%;
+	margin: 45px auto 0;
+}
