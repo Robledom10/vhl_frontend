@@ -23,7 +23,14 @@ const routes: Routes = [
   {
     path: 'destinations',
     loadChildren: () =>
-      import('./features/destinations/destinations.module').then((m) => m.DestinationsModule),
+      import('./features/destinations/destinations.module').then(
+        (m) => m.DestinationsModule,
+      ),
+  },
+  {
+    path: 'gallery',
+    loadChildren: () =>
+      import('./features/gallery/gallery.module').then((m) => m.GalleryModule),
   },
 
   {
