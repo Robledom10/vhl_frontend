@@ -27,7 +27,7 @@
 	border-radius: 25px;
 	box-shadow: 0 4px 20px rgba(13, 27, 42, 0.08);
 	transition: transform 0.3s ease, box-shadow 0.3s ease;
-	background: white;
+	border: 1px solid var(--borderCard-color);
 }
 
 .card:hover {
@@ -38,56 +38,29 @@
 .image-content {
 	border-radius: 25px 25px 0 25px;
 	/* El background-color ahora se aplica dinámicamente desde el HTML */
-	padding: 10px 14px;
+	padding: 23px 14px;
 	height: 200px;
 	transition: background-color 0.3s ease;
-	position: relative;
 }
 
 .image-content img {
 	height: 100%;
 	width: 100%;
 	object-fit: contain;
-	display: block;
-	position: relative;
-}
-
-.overlay {
-	position: absolute;
-	left: 0;
-	top: 0;
-	height: 100%;
-	width: 100%;
-	border-radius: 25px 25px 0 25px;
-}
-
-.overlay::before,
-.overlay::after {
-	position: absolute;
-	height: 35px;
-	width: 35px;
-	content: "";
-	right: 0;
-	bottom: -35px;
-	background-color: var(--overlay-color);
-}
-
-.overlay::after {
-	border-radius: 0 25px 0 0;
-	background-color: var(--color-fondo);
 }
 
 .card-content {
 	text-align: center;
-	padding: 30px 24px;
-	color: var(--color-primario);
+	padding: 0 24px 20px;
 	font-family: "Gratise", sans-serif;
-	font-size: 22px;
+	font-size: 20px;
 	font-weight: 500;
 }
 
 .card-content p {
 	margin: 0;
+	color: var(--textCard-color);
+	-webkit-text-stroke: 1px var(--borderCard-color);
 }
 
 /* Botones de navegación */

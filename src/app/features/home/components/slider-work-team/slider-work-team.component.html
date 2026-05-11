@@ -8,13 +8,12 @@
 			[class.transition]="isTransitioning" (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)"
 			(touchend)="onTouchEnd($event)">
 
-			<div class="card" *ngFor="let card of cards">
-				<div class="image-content" [style.background-color]="card.backgroundColor">
-					<span class="overlay" [style.--overlay-color]="card.backgroundColor"></span>
+			<div class="card" *ngFor="let card of cards" [style.background-color]="card.backgroundColor" [style.--borderCard-color]="card.colorText">
+				<div class="image-content">
 					<img [src]="card.image" [alt]="card.title">
 				</div>
 				<div class="card-content">
-					<p>{{ card.title }}</p>
+					<p [style.--textCard-color]="card.colorText"  [style.--background-color]="card.backgroundColor">{{ card.title }}</p>
 				</div>
 			</div>
 
