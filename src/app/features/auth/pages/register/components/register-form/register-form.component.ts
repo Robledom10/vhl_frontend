@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { AuthService } from '../../../../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { RegisterRequest } from '../../../../models/auth.model';
@@ -16,6 +16,18 @@ export class RegisterFormComponent {
   errorMessage: string | null = null;
   isLoading: boolean = false;
   currentStep: number = 1;
+
+  documentDropdownOpen = false;
+
+  selectedDocumentType = '';
+
+  documentTypes = [
+    'Cedula Ciudadania',
+    'Tarjeta Identidad',
+    'Cedula Extranjeria',
+    'Pasaporte',
+    'Visa',
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -138,5 +150,25 @@ export class RegisterFormComponent {
 
   prevStep() {
     this.currentStep = 1;
+  }
+
+  //   Select del tipo de documento
+  toggleDocumentDropdown(event: Event): void {
+    event.stopPropagation();
+    this.documentDropdownOpen = !this.documentDropdownOpen;
+  }
+
+  selectDocumentType(option: string): void {
+    this.selectedDocumentType = option;
+
+    this.f.documentType.setValue(option);
+    this.f.documentType.markAsTouched();
+
+    this.documentDropdownOpen = false;
+  }
+
+  @HostListener('document:click')
+  closeDropdowns(): void {
+    this.documentDropdownOpen = false;
   }
 }

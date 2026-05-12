@@ -1,86 +1,97 @@
 <div class="search-filter-container">
-  <div class="filter-bar">
+	<div class="filter-bar">
 
-    <!-- Año -->
-    <div class="filter-item" (click)="toggleCalendar($event)">
-      <div class="filter-icon">
-        <i class="ti ti-calendar"></i>
-      </div>
-      <div class="filter-content">
-        <label>Año</label>
-        <div class="filter-selector">
-          <span>{{ selectedYear || 'Todos' }}</span>
-          <span class="chevron">&#8964;</span>
-        </div>
-      </div>
-      <div class="calendar-dropdown" [class.open]="calendarOpen" (click)="$event.stopPropagation()">
-        <div class="cal-header">
-          <button (click)="changeYear(-1)">&#8249;</button>
-          <span>{{ calYear }}</span>
-          <button (click)="changeYear(1)">&#8250;</button>
-        </div>
-        <div class="cal-days-header">
-          <span *ngFor="let d of dayLabels">{{ d }}</span>
-        </div>
-        <div class="cal-grid">
-          <span
-            *ngFor="let m of months; let i = index"
-            [class.selected]="selectedYear === calYear && selectedMonth === i"
-            [class.today]="isCurrentMonth(i)"
-            (click)="selectMonth(i)"
-          >{{ m }}</span>
-        </div>
-      </div>
-    </div>
+		<!-- FECHA -->
+		<div class="filter-item" (click)="toggleCalendar($event)">
+			<div class="filter-icon">
+				<i class="fa-regular fa-calendar"></i>
+			</div>
 
-    <div class="divider"></div>
+			<div class="filter-content">
+				<label>Fecha</label>
 
-    <!-- Sitio Turístico -->
-    <div class="filter-item" (click)="toggleDropdown('site', $event)">
-      <div class="filter-icon">
-        <i class="ti ti-map-pin"></i>
-      </div>
-      <div class="filter-content">
-        <label>Sitio turístico</label>
-        <div class="filter-selector">
-          <span>{{ selectedSite || 'Todos' }}</span>
-          <span class="chevron">&#8964;</span>
-        </div>
-      </div>
-      <div class="dropdown" [class.open]="siteOpen" (click)="$event.stopPropagation()">
-        <div
-          class="dropdown-option"
-          *ngFor="let site of siteOptions"
-          [class.selected]="selectedSite === site"
-          (click)="selectOption('site', site)"
-        >{{ site }}</div>
-      </div>
-    </div>
+				<div class="filter-selector">
+					<span>{{selectedMonth !== null? months[selectedMonth] + ' ' + selectedYear: 'Todos'}}</span>
 
-    <div class="divider"></div>
+					<span class="chevron">&#8964;</span>
+				</div>
+			</div>
 
-    <!-- Actividad -->
-    <div class="filter-item" (click)="toggleDropdown('act', $event)">
-      <div class="filter-icon">
-        <i class="ti ti-trees"></i>
-      </div>
-      <div class="filter-content">
-        <label>Actividad</label>
-        <div class="filter-selector">
-          <span>{{ selectedActivity || 'Todos' }}</span>
-          <span class="chevron">&#8964;</span>
-        </div>
-      </div>
-      <div class="dropdown" [class.open]="actOpen" (click)="$event.stopPropagation()">
-        <div
-          class="dropdown-option"
-          *ngFor="let act of activityOptions"
-          [class.selected]="selectedActivity === act"
-          (click)="selectOption('act', act)"
-        >{{ act }}</div>
-      </div>
-    </div>
+			<div class="calendar-dropdown" [class.open]="calendarOpen" (click)="$event.stopPropagation()">
+				<div class="cal-header">
+					<button (click)="changeYear(-1)">&#8249;</button>
 
-    <button class="btn-search" (click)="onSearch()">Buscar</button>
-  </div>
+					<span>{{ calYear }}</span>
+
+					<button (click)="changeYear(1)">&#8250;</button>
+				</div>
+
+				<div class="cal-grid">
+					<span *ngFor="let m of months; let i = index"
+						[class.selected]="selectedYear === calYear && selectedMonth === i"
+						[class.today]="isCurrentMonth(i)" (click)="selectMonth(i)">
+						{{ m }}
+					</span>
+				</div>
+
+				<div class="clear-date" (click)="clearDate()">
+					Limpiar filtro
+				</div>
+			</div>
+		</div>
+
+		<div class="divider"></div>
+
+		<!-- SITIO -->
+		<div class="filter-item" (click)="toggleDropdown('site', $event)">
+			<div class="filter-icon">
+				<i class="fa-regular fa-map"></i>
+			</div>
+
+			<div class="filter-content">
+				<label>Sitio turístico</label>
+
+				<div class="filter-selector">
+					<span>{{ selectedSite || 'Todos' }}</span>
+					<span class="chevron">&#8964;</span>
+				</div>
+			</div>
+
+			<div class="dropdown" [class.open]="siteOpen" (click)="$event.stopPropagation()">
+				<div class="dropdown-option" *ngFor="let site of siteOptions" [class.selected]="selectedSite === site"
+					(click)="selectOption('site', site)">
+					{{ site }}
+				</div>
+			</div>
+		</div>
+
+		<div class="divider"></div>
+
+		<!-- ACTIVIDAD -->
+		<div class="filter-item" (click)="toggleDropdown('act', $event)">
+			<div class="filter-icon">
+				<i class="ti ti-trees"></i>
+			</div>
+
+			<div class="filter-content">
+				<label>Actividad</label>
+
+				<div class="filter-selector">
+					<span>{{ selectedActivity || 'Todos' }}</span>
+					<span class="chevron">&#8964;</span>
+				</div>
+			</div>
+
+			<div class="dropdown" [class.open]="actOpen" (click)="$event.stopPropagation()">
+				<div class="dropdown-option" *ngFor="let act of activityOptions"
+					[class.selected]="selectedActivity === act" (click)="selectOption('act', act)">
+					{{ act }}
+				</div>
+			</div>
+		</div>
+
+		<button class="btn-search" (click)="onSearch()">
+			Buscar
+		</button>
+	</div>
 </div>

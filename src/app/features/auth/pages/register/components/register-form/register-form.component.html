@@ -63,19 +63,29 @@
 		<!-- PASO 2 -->
 		<div *ngIf="currentStep === 2">
 			<div class="form-row">
-				<div class="form-group form-group-small">
-					<select id="documentType" formControlName="documentType"
-						[class.ng-invalid]="submitted && f.documentType.invalid"
-						[class.ng-touched]="f.documentType.touched" required>
-						<option value="Cedula Ciudadania">Cedula Ciudadania</option>
-						<option value="Tarjeta Identidad">Tarjeta Identidad</option>
-						<option value="Cedula Extranjeria">Cedula Extranjeria</option>
-						<option value="Pasaporte">Pasaporte</option>
-						<option value="Visa">Visa</option>
-					</select>
-					<label for="documentType">Tipo de documento</label>
+				<div class="form-group form-group-small custom-select-group">
 
-					<span *ngIf="submitted && f.documentType.invalid"> Requerido </span>
+					<div class="custom-select" [class.open]="documentDropdownOpen"
+						[class.selected]="selectedDocumentType" [class.invalid]="submitted && f.documentType.invalid"
+						(click)="toggleDocumentDropdown($event)">
+
+						<div class="custom-select-value"> {{ selectedDocumentType || 'Tipo de documento' }}</div>
+
+						<i class="fa-solid fa-angle-down select-icon"></i>
+						<div class="custom-select-dropdown" *ngIf="documentDropdownOpen"
+							(click)="$event.stopPropagation()">
+
+							<div class="custom-option" *ngFor="let option of documentTypes"
+								[class.active]="selectedDocumentType === option"
+								(click)="selectDocumentType(option); $event.stopPropagation()">
+								{{ option }}
+							</div>
+						</div>
+					</div>
+
+					<label [class.active]="selectedDocumentType">Tipo de documento</label>
+
+					<span *ngIf="submitted && f.documentType.invalid">Requerido</span>
 				</div>
 
 				<div class="form-group form-group-large">
