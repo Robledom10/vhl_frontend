@@ -1,0 +1,44 @@
+<div class="sidebar">
+
+  <div class="logo">
+    <h2>VHL</h2>
+    <span>Viajes Hernando Lopera</span>
+  </div>
+
+  <!-- ADMIN -->
+  <ng-container *ngIf="role === 'admin'">
+    <a
+      *ngFor="let item of adminMenu"
+      [routerLink]="item.route"
+      class="menu-item"
+    >
+      <span class="material-icons">{{ item.icon }}</span>
+      <span>{{ item.label }}</span>
+    </a>
+  </ng-container>
+
+  <!-- CLIENTE -->
+  <ng-container *ngIf="role === 'cliente'">
+    <a
+      *ngFor="let item of clienteMenu"
+      [routerLink]="item.route"
+      class="menu-item"
+    >
+      <span class="material-icons">{{ item.icon }}</span>
+      <span>{{ item.label }}</span>
+    </a>
+  </ng-container>
+
+  <!-- GUIA -->
+  <ng-container *ngIf="role === 'guia'">
+    <a
+      *ngFor="let item of guiaMenu"
+      [routerLink]="item.route"
+      class="menu-item"
+    >
+      <span class="material-icons">{{ item.icon }}</span>
+      <span>{{ item.label }}</span>
+    </a>
+  </ng-container>
+
+</div>

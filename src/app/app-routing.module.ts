@@ -32,6 +32,11 @@ const routes: Routes = [
     loadChildren: () =>
       import('./features/gallery/gallery.module').then((m) => m.GalleryModule),
   },
+  {
+    path: 'administrative-panel',
+    loadChildren: () =>
+      import('./features/panel-admin/panel-admin-module').then((m) => m.PanelAdminModule),
+  },
   { path: 'panel-admin', loadChildren: () => import('./features/panel-admin/panel-admin-module').then(m => m.PanelAdminModule) },
 
   {
