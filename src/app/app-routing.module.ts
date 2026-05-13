@@ -33,11 +33,13 @@ const routes: Routes = [
       import('./features/gallery/gallery.module').then((m) => m.GalleryModule),
   },
   {
-    path: 'administrative-panel',
+    path: 'panel-admin',
     loadChildren: () =>
-      import('./features/panel-admin/panel-admin-module').then((m) => m.PanelAdminModule),
+      import('./features/panel-admin/panel-admin.module').then(
+        (m) => m.PanelAdminModule,
+      ),
+    // canActivate: [AuthGuard],
   },
-  { path: 'panel-admin', loadChildren: () => import('./features/panel-admin/panel-admin-module').then(m => m.PanelAdminModule) },
 
   {
     path: '**',

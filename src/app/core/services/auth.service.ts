@@ -1,37 +1,44 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap, throwError } from 'rxjs';
-import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../../features/auth/models/auth.model';
+import {
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  RegisterResponse,
+} from '../../features/auth/models/auth.model';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   private apiUrl = `${environment.apiUrl}/auth`;
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {}
 
   // =========================
   // LOGIN
   // =========================
   login(request: LoginRequest) {
-    return this.http.post<LoginResponse>(
-      `${this.apiUrl}/login`,
-      request,
-      {
-        withCredentials: true // 🔴 IMPORTANTE
-      }
-    ).pipe(
-      tap((response) => {
-        localStorage.setItem('token', response.accessToken);
-        localStorage.setItem('user', JSON.stringify(response.user));
-      }),
-      catchError(this.handleError)
-    );
+    return this.http
+      .post<LoginResponse>(`${this.apiUrl}/login`, request, {
+        withCredentials: true, // 🔴 IMPORTANTE
+      })
+      .pipe(
+        tap((response) => {
+          localStorage.setItem('token', response.accessToken);
+
+          if (response.user) {
+            localStorage.setItem('user', JSON.stringify(response.user));
+          }
+        }),
+        catchError(this.handleError),
+      );
   }
 
   refreshToken() {
@@ -39,8 +46,8 @@ export class AuthService {
       `${this.apiUrl}/refresh`,
       {},
       {
-        withCredentials: true // 🔴 ENVÍA COOKIE
-      }
+        withCredentials: true, // 🔴 ENVÍA COOKIE
+      },
     );
   }
 
@@ -48,27 +55,34 @@ export class AuthService {
   // REGISTER
   // =========================
   register(request: RegisterRequest) {
-    return this.http.post<RegisterResponse>(
-      `${this.apiUrl}/register`,
-      request,
-      {
-        withCredentials: true
-      }
-    ).pipe(
-      catchError(this.handleError)
-    );
+    return this.http
+      .post<RegisterResponse>(`${this.apiUrl}/register`, request, {
+        withCredentials: true,
+      })
+      .pipe(catchError(this.handleError));
   }
 
   // =========================
   // LOGOUT (local only)
   // =========================
-  logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  logout() {
+    return this.http
+      .post(
+        `${this.apiUrl}/tokens/logout`,
+        {},
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${this.getToken()}`,
+          },
+        },
+      )
+      .subscribe(() => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
 
-    this.router.navigate(['/auth/login'], {
-      queryParams: { sessionExpired: true }
-    });
+        this.router.navigate(['/']);
+      });
   }
 
   // =========================
@@ -79,13 +93,29 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return !!this.getToken();
+    const token = this.getToken();
+    const user = this.getUser();
+
+    return !!token && !!user;
   }
 
   // Obtener usuario del localStorage
   getUser() {
     const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+
+    if (!user || user === 'undefined') {
+      return null;
+    }
+
+    try {
+      return JSON.parse(user);
+    } catch (error) {
+      console.error('Error parseando usuario:', error);
+
+      localStorage.removeItem('user');
+
+      return null;
+    }
   }
 
   // =========================
@@ -106,7 +136,7 @@ export class AuthService {
 
     return throwError(() => ({
       message: errorMessage,
-      status: error.status
+      status: error.status,
     }));
   }
 }

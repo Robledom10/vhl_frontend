@@ -1,44 +1,28 @@
 <div class="sidebar">
 
-  <div class="logo">
-    <h2>VHL</h2>
-    <span>Viajes Hernando Lopera</span>
-  </div>
+	<!-- PERFIL -->
+	<div class="sidebar-profile">
+		<img src="https://i.pravatar.cc/120" alt="profile" class="profile-image" />
 
-  <!-- ADMIN -->
-  <ng-container *ngIf="role === 'admin'">
-    <a
-      *ngFor="let item of adminMenu"
-      [routerLink]="item.route"
-      class="menu-item"
-    >
-      <span class="material-icons">{{ item.icon }}</span>
-      <span>{{ item.label }}</span>
-    </a>
-  </ng-container>
+		<h3>Alan</h3>
+		<span>Administrador</span>
+	</div>
 
-  <!-- CLIENTE -->
-  <ng-container *ngIf="role === 'cliente'">
-    <a
-      *ngFor="let item of clienteMenu"
-      [routerLink]="item.route"
-      class="menu-item"
-    >
-      <span class="material-icons">{{ item.icon }}</span>
-      <span>{{ item.label }}</span>
-    </a>
-  </ng-container>
+	<!-- MENU ADMIN -->
+	<ng-container *ngIf="role === 'admin'">
+		<a *ngFor="let item of adminMenu" [routerLink]="item.route" routerLinkActive="active" class="menu-item">
+			<div class="menu-left">
+				<i [class]="item.icon"></i>
 
-  <!-- GUIA -->
-  <ng-container *ngIf="role === 'guia'">
-    <a
-      *ngFor="let item of guiaMenu"
-      [routerLink]="item.route"
-      class="menu-item"
-    >
-      <span class="material-icons">{{ item.icon }}</span>
-      <span>{{ item.label }}</span>
-    </a>
-  </ng-container>
+				<span class="menu-label">
+					{{ item.label }}
+				</span>
+			</div>
 
+			<!-- BADGE -->
+			<span class="badge" *ngIf="item.badge">
+				{{ item.badge }}
+			</span>
+		</a>
+	</ng-container>
 </div>

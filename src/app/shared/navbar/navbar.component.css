@@ -40,8 +40,7 @@
 	position: relative;
 	text-decoration: none;
 	color: var(--color-texto-secundario);
-	font-size: 16px;
-	font-weight: 500;
+	font-size: 18px;
 	font-family: "Outfit", sans-serif;
 	transition: all 0.3s ease;
 }
@@ -80,8 +79,7 @@
 	width: 135px;
 	height: 42px;
 	border-radius: 999px;
-	font-size: 15px;
-	font-weight: 500;
+	font-size: 18px;
 	font-family: "Outfit", sans-serif;
 	text-decoration: none;
 	transition: all 0.3s ease;
@@ -109,6 +107,118 @@
 .btn-registrarse:hover {
 	transform: translateY(-2px);
 	box-shadow: 0 12px 24px rgba(63, 162, 219, 0.35);
+}
+
+/* =========================
+   USER AUTH
+========================= */
+
+.navbar-user {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.user-info {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	cursor: pointer;
+	padding: 8px 12px;
+	border-radius: 16px;
+	transition: background 0.3s ease;
+}
+
+.user-info:hover {
+	background: rgba(63, 162, 219, 0.08);
+}
+
+.user-avatar {
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 2px solid rgba(63, 162, 219, 0.2);
+}
+
+.user-text h4 {
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--color-texto-principal);
+	margin: 0;
+	line-height: 1.1;
+}
+
+.user-text span {
+	font-size: 13px;
+	color: var(--color-texto-secundario);
+}
+
+.user-info i {
+	font-size: 14px;
+	color: var(--color-texto-secundario);
+	transition: transform 0.3s ease;
+}
+
+.user-info i.rotate {
+	transform: rotate(180deg);
+}
+
+/* =========================
+   DROPDOWN
+========================= */
+
+.user-dropdown {
+	position: absolute;
+	top: 72px;
+	right: 0;
+	width: 220px;
+	background: white;
+	border-radius: 20px;
+	padding: 12px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+	border: 1px solid rgba(0, 0, 0, 0.05);
+
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+
+	animation: dropdownFade 0.25s ease;
+	z-index: 999;
+}
+
+.user-dropdown a,
+.user-dropdown button {
+	width: 100%;
+	text-align: left;
+	padding: 12px 14px;
+	border-radius: 12px;
+	background: transparent;
+	border: none;
+	font-size: 15px;
+	font-family: "Outfit", sans-serif;
+	color: var(--color-texto-secundario);
+	text-decoration: none;
+	cursor: pointer;
+	transition: all 0.25s ease;
+}
+
+.user-dropdown a:hover,
+.user-dropdown button:hover {
+	background: rgba(63, 162, 219, 0.08);
+	color: var(--color-primario);
+}
+
+@keyframes dropdownFade {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 /* RESPONSIVE */

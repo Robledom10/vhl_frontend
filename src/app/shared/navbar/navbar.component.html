@@ -7,11 +7,32 @@
 		<a routerLink="/">Inicio</a>
 		<a routerLink="/destinations">Destinos</a>
 		<a routerLink="/gallery">Galeria</a>
-		<a routerLink="/administrative-panel">panel administrativo</a>
+		<a routerLink="/panel-admin">panel administrativo</a>
 	</div>
 
-	<div class="navbar-auth">
+	<!-- SI NO ESTÁ LOGUEADO -->
+	<div class="navbar-auth" *ngIf="!authService.isAuthenticated()">
 		<a routerLink="/auth/login" class="btn-ingresar">Ingresar</a>
 		<a routerLink="/auth/register" class="btn-registrarse">Registrarse</a>
+	</div>
+
+	<!-- SI ESTÁ LOGUEADO -->
+	<div class="navbar-user" *ngIf="authService.isAuthenticated()">
+		<div class="user-info" (click)="toggleDropdown($event)">
+			<img src="https://i.pravatar.cc/100" alt="user" class="user-avatar" />
+			<div class="user-text">
+				<h4>{{ user?.firstName }} {{ user?.lastName }}</h4>
+				<span *ngIf="displayRole">
+					{{ displayRole }}
+				</span>
+			</div>
+			<i class="fa-solid fa-chevron-down" [class.rotate]="dropdownOpen"></i>
+		</div>
+
+		<div class="user-dropdown" *ngIf="dropdownOpen">
+			<a routerLink="/profile">Mi perfil</a>
+			<a routerLink="/settings">Configuración</a>
+			<button (click)="logout()">Salir</button>
+		</div>
 	</div>
 </nav>
