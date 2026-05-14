@@ -14,6 +14,7 @@ import { MessagesComponent } from './pages/messages/messages.component';
 import { OffersComponent } from './pages/offers/offers.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,12 @@ import { RouterModule } from '@angular/router';
     OffersComponent,
     ProfileComponent,
   ],
-  imports: [CommonModule, PanelAdminRoutingModule, SharedModule, RouterModule],
+  imports: [
+    CommonModule,
+    PanelAdminRoutingModule,
+    SharedModule,
+    RouterModule,
+    ReactiveFormsModule,
+  ],
 })
 export class PanelAdminModule {}

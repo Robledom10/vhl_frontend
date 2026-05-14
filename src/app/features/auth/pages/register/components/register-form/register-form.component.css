@@ -75,7 +75,7 @@
 }
 
 /* =========================
-   CUSTOM SELECT
+	CUSTOM SELECT
 ========================= */
 
 .custom-select-group {
@@ -150,7 +150,7 @@
 }
 
 /* =========================
-   LABEL
+	LABEL
 ========================= */
 
 .custom-select-group label {
@@ -178,7 +178,7 @@
 }
 
 /* =========================
-   DROPDOWN
+	DROPDOWN
 ========================= */
 
 .custom-select-dropdown {
@@ -222,7 +222,7 @@
 }
 
 /* =========================
-   ANIMATION
+	ANIMATION
 ========================= */
 
 @keyframes fadeIn {

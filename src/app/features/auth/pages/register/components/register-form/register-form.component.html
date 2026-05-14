@@ -18,9 +18,7 @@
 					[class.ng-touched]="f.firstName.touched" required autofocus />
 				<label for="firstName">Nombre</label>
 
-				<span *ngIf="submitted && f.firstName.errors?.['required']">
-					El nombre es obligatorio
-				</span>
+				<span *ngIf="submitted && f.firstName.errors?.['required']">El nombre es obligatorio</span>
 
 				<span *ngIf="f.firstName.touched && f.firstName.errors?.['minlength']">
 					El nombre debe tener al menos 3 caracteres
@@ -33,9 +31,7 @@
 					[class.ng-touched]="f.lastName.touched" required />
 				<label for="last-name">Apellido</label>
 
-				<span *ngIf="submitted && f.lastName.errors?.['required']">
-					El apellido es obligatorio
-				</span>
+				<span *ngIf="submitted && f.lastName.errors?.['required']">El apellido es obligatorio</span>
 			</div>
 
 			<div class="form-group">
@@ -44,17 +40,11 @@
 					required />
 				<label for="email">Correo electrónico</label>
 
-				<span *ngIf="submitted && f.email.errors?.['required']">
-					El correo es obligatorio
-				</span>
+				<span *ngIf="submitted && f.email.errors?.['required']">El correo es obligatorio</span>
 
-				<span *ngIf="submitted && f.email.errors?.['email']">
-					Correo inválido
-				</span>
+				<span *ngIf="submitted && f.email.errors?.['email']">Correo inválido</span>
 
-				<span class="error-global" *ngIf="errorMessage">
-					{{ errorMessage }}
-				</span>
+				<span class="error-global" *ngIf="errorMessage">{{ errorMessage }}</span>
 			</div>
 
 			<button type="button" (click)="nextStep()">Continuar</button>
