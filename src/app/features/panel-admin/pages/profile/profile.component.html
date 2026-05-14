@@ -1,0 +1,12 @@
+<div class="content">
+	<div class="image-profile">
+		<img src="https://i.pravatar.cc/300" alt="profile" class="profile-image" />
+	</div>
+
+	<div class="profile-info">
+		<h2>{{ user?.firstName }} {{ user?.lastName }}</h2>
+		<p class="role" *ngIf="displayRole">{{ displayRole }}</p>
+
+		<button class="btn-edit">Editar perfil</button>
+	</div>
+</div>

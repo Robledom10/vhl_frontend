@@ -1,0 +1,54 @@
+.content{
+	border-radius: 20px;
+	display: flex;
+	align-items: center;
+	gap: 40px;
+	padding: 30px;
+	border: 1px solid var(--bordes);
+}
+
+.image-profile {
+	width: 170px;
+	height: 170px;
+	border-radius: 50%;
+	object-fit: cover;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.image-profile img{
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.profile-info {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	align-items: flex-start;
+}
+
+.profile-info h2 {
+	font-size: 30px;
+	font-weight: 500;
+	color: var(--color-texto-principal);
+	font-family: "Outfit", sans-serif;
+}
+
+.profile-info p {
+	font-size: 16px;
+	color: var(--color-texto-secundario);
+	font-family: "Outfit", sans-serif;
+}
+
+.profile-info button {
+	padding: 10px 20px;
+	border: none;
+	border-radius: 8px;
+	background: var(--color-primario);
+	color: white;
+	font-size: 14px;
+	cursor: pointer;
+	transition: all 0.25s ease;
+}

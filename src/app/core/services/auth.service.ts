@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap, throwError } from 'rxjs';
-import {
-  LoginRequest,
-  LoginResponse,
-  RegisterRequest,
-  RegisterResponse,
-} from '../../features/auth/models/auth.model';
+import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../../features/auth/models/auth.model';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 
@@ -43,7 +38,7 @@ export class AuthService {
 
   refreshToken() {
     return this.http.post<{ accessToken: string }>(
-      `${this.apiUrl}/refresh`,
+      `${this.apiUrl}/tokens/refresh`,
       {},
       {
         withCredentials: true, // 🔴 ENVÍA COOKIE
@@ -63,7 +58,7 @@ export class AuthService {
   }
 
   // =========================
-  // LOGOUT (local only)
+  // LOGOUT
   // =========================
   logout() {
     return this.http
@@ -72,17 +67,34 @@ export class AuthService {
         {},
         {
           withCredentials: true,
+          responseType: 'text',
           headers: {
             Authorization: `Bearer ${this.getToken()}`,
           },
         },
       )
-      .subscribe(() => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+      .pipe(
+        tap(() => {
+          this.clearSession();
+        }),
+        catchError((error) => {
+          // aunque falle el backend
+          // limpiamos sesión local
+          this.clearSession();
 
-        this.router.navigate(['/']);
-      });
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  // =========================
+  // LIMPIAR SESIÓN
+  // =========================
+  clearSession(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+
+    this.router.navigate(['/']);
   }
 
   // =========================

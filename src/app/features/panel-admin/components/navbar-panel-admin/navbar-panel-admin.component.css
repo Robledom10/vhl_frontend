@@ -92,20 +92,19 @@
 
 .menu-item:hover i,
 .menu-item:hover .menu-label {
-	color: #3fa2db;
+	color: var(--color-primario);
 }
 
 /* ACTIVE */
 
 .menu-item.active {
-	background: white;
+	background: rgba(63, 162, 219, 0.08);
 	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
 }
 
-.menu-item.active .menu-item.active i,
+.menu-item.active i,
 .menu-item.active .menu-label {
-	color: #3fa2db;
-	font-weight: 500;
+	color: var(--color-primario);
 }
 
 /* BADGE */

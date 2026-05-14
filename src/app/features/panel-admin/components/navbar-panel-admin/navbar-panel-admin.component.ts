@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-navbar-panel-admin',
@@ -6,50 +7,73 @@ import { Component } from '@angular/core';
   styleUrl: './navbar-panel-admin.component.css',
 })
 export class NavbarPanelAdminComponent {
-  role: string = 'admin';
-  // admin | cliente | guia
+  constructor(public authService: AuthService) {}
+
+  hiddenRoles = ['ROLE_CLIENT'];
+
+  get user() {
+    return this.authService.getUser();
+  }
+
+  get displayRole(): string | null {
+    const role = this.user?.role;
+
+    if (!role || this.hiddenRoles.includes(role)) {
+      return null;
+    }
+
+    const roleMap: { [key: string]: string } = {
+      ADMIN: 'Administrador',
+    };
+    return roleMap[role] || role;
+  }
 
   adminMenu = [
     {
+      icon: 'fa-regular fa-user',
+      label: 'Perfil',
+      route: '/panel-admin/profile',
+    },
+    {
       icon: 'fa-solid fa-table-columns',
       label: 'Panel de control',
-      route: '/admin/dashboard',
+      route: '/panel-admin/control-panel',
     },
     {
       icon: 'fa-solid fa-briefcase',
       label: 'Paquetes',
-      route: '/admin/paquetes',
+      route: '/panel-admin/packages',
     },
     {
       icon: 'fa-solid fa-check',
       label: 'Reservas',
-      route: '/admin/reservas',
+      route: '/panel-admin/reservations',
     },
     {
-      icon: 'fa-regular fa-user',
+      icon: 'fa-solid fa-users',
       label: 'Usuario y Roles',
-      route: '/admin/usuarios',
+      route: '/panel-admin/users-roles',
     },
     {
       icon: 'fa-regular fa-thumbs-up',
       label: 'Comentarios',
-      route: '/admin/comentarios',
+      route: '/panel-admin/comments',
     },
     {
       icon: 'fa-regular fa-image',
       label: 'Galería',
-      route: '/admin/galeria',
+      route: '/panel-admin/admin-gallery',
     },
     {
       icon: 'fa-regular fa-message',
       label: 'Mensajes',
-      route: '/admin/mensajes',
+      route: '/panel-admin/messages',
       badge: 7,
     },
     {
       icon: 'fa-solid fa-tags',
       label: 'Ofertas',
-      route: '/admin/ofertas',
+      route: '/panel-admin/offers',
     },
   ];
 }

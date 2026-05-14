@@ -4,25 +4,24 @@
 	<div class="sidebar-profile">
 		<img src="https://i.pravatar.cc/120" alt="profile" class="profile-image" />
 
-		<h3>Alan</h3>
-		<span>Administrador</span>
+		<h3>{{ user?.firstName }} {{ user?.lastName }}</h3>
+
+		<span *ngIf="displayRole">{{ displayRole }}</span>
 	</div>
 
 	<!-- MENU ADMIN -->
-	<ng-container *ngIf="role === 'admin'">
-		<a *ngFor="let item of adminMenu" [routerLink]="item.route" routerLinkActive="active" class="menu-item">
-			<div class="menu-left">
-				<i [class]="item.icon"></i>
+	<a *ngFor="let item of adminMenu" [routerLink]="item.route" routerLinkActive="active" class="menu-item">
+		<div class="menu-left">
+			<i [class]="item.icon"></i>
 
-				<span class="menu-label">
-					{{ item.label }}
-				</span>
-			</div>
-
-			<!-- BADGE -->
-			<span class="badge" *ngIf="item.badge">
-				{{ item.badge }}
+			<span class="menu-label">
+				{{ item.label }}
 			</span>
-		</a>
-	</ng-container>
+		</div>
+
+		<!-- BADGE -->
+		<span class="badge" *ngIf="item.badge">
+			{{ item.badge }}
+		</span>
+	</a>
 </div>

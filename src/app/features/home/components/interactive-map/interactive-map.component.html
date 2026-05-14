@@ -1,72 +1,125 @@
-<div class="search-map-container">
+<div class="map-wrapper">
 
-	<!-- LADO IZQUIERDO: Buscador + Resultados -->
-	<div class="search-panel">
+  <!-- ─── Header / Selector de destinos ─────────────────────────────── -->
+  <div class="route-header">
+    <div class="route-meta">
+      <span class="route-tag">Excursión Colombia</span>
+      <span class="route-stops">{{ totalDestinations }} destinos · Eje Cafetero → Costa → Medellín</span>
+    </div>
 
-		<!-- Buscador -->
-		<div class="search-box">
-			<input type="text" [(ngModel)]="searchQuery" (input)="onSearch()" (keyup.enter)="onSearch()"
-				placeholder="Buscar destino..." class="search-input" />
-			<button class="search-btn" (click)="onSearch()">
-				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-					<circle cx="11" cy="11" r="8" />
-					<path d="m21 21-4.35-4.35" />
-				</svg>
-			</button>
-		</div>
+    <!-- Dropdown trigger -->
+    <div class="dropdown-container" (clickOutside)="closeDropdown()">
+      <button class="destination-trigger" (click)="toggleDropdown()" [class.open]="isDropdownOpen">
+        <span class="trigger-inner">
+          <span class="trigger-emoji" *ngIf="selectedDestination">{{ selectedDestination.emoji }}</span>
+          <span class="trigger-emoji default-icon" *ngIf="!selectedDestination">🗺️</span>
+          <span class="trigger-text">
+            {{ selectedDestination ? selectedDestination.name : 'Selecciona un destino' }}
+          </span>
+          <span class="trigger-sub" *ngIf="selectedDestination">{{ selectedDestination.label }}</span>
+        </span>
+        <svg class="chevron" [class.rotated]="isDropdownOpen" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
 
-		<!-- Galería de imágenes -->
-		<div class="image-gallery" *ngIf="selectedPlace">
-			<div class="gallery-track">
-				<img *ngFor="let img of selectedPlace.photos" [src]="img" [alt]="selectedPlace.name"
-					class="gallery-img" />
-			</div>
-		</div>
+      <!-- Dropdown panel -->
+      <div class="dropdown-panel" *ngIf="isDropdownOpen">
+        <div class="panel-label">Paradas del recorrido</div>
+        <button
+          class="dest-item"
+          *ngFor="let dest of destinations; let i = index"
+          (click)="selectDestination(dest)"
+          [class.active]="selectedDestination?.id === dest.id"
+        >
+          <div class="dest-index">{{ i + 1 }}</div>
+          <div class="dest-thumb-wrap">
+            <img
+              *ngIf="dest.thumbnail"
+              [src]="dest.thumbnail"
+              [alt]="dest.name"
+              class="dest-thumb"
+            />
+            <div class="dest-thumb-placeholder" *ngIf="!dest.thumbnail">
+              <span>{{ dest.emoji }}</span>
+            </div>
+          </div>
+          <div class="dest-info">
+            <span class="dest-name">{{ dest.name }}</span>
+            <span class="dest-label">{{ dest.label }}</span>
+          </div>
+          <svg *ngIf="selectedDestination?.id === dest.id" class="check-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8l3.5 3.5L13 5" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
 
-		<!-- Resultados -->
-		<div class="results-list" *ngIf="searchResults.length > 0">
-			<div class="result-item" *ngFor="let place of searchResults" (click)="selectPlace(place)"
-				[class.active]="selectedPlace?.name === place.name">
-				<img [src]="place.thumbnail" [alt]="place.name" class="result-thumb" />
-				<div class="result-info">
-					<h4 class="result-name">{{ place.name }}</h4>
-					<p class="result-desc">{{ place.description }}</p>
-					<span class="result-address">
-						<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-							stroke-width="2">
-							<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-							<circle cx="12" cy="10" r="3" />
-						</svg>
-						{{ place.address }}
-					</span>
-				</div>
-			</div>
-		</div>
+        <button class="view-all-btn" (click)="showAll()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/>
+            <path d="M4 7h6M7 4v6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+          Ver ruta completa
+        </button>
+      </div>
+    </div>
+  </div>
 
-		<!-- Estado vacío -->
-		<div class="empty-state" *ngIf="searchResults.length === 0 && !searchQuery">
-			<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c0d4e8" stroke-width="1.5">
-				<circle cx="11" cy="11" r="8" />
-				<path d="m21 21-4.35-4.35" />
-			</svg>
-			<p>Busca un destino para explorar</p>
-		</div>
+  <!-- ─── Mapa ───────────────────────────────────────────────────────── -->
+  <div class="map-and-panel">
+    <div id="travel-map" class="travel-map"></div>
 
-		<div class="empty-state" *ngIf="searchResults.length === 0 && searchQuery">
-			<p>No se encontraron resultados para <strong>{{ searchQuery }}</strong></p>
-		</div>
+    <!-- Panel de detalle flotante -->
+    <div class="detail-panel" *ngIf="selectedDestination" [class.loading]="isLoadingPhotos">
 
-	</div>
+      <!-- Galería de fotos -->
+      <div class="photo-gallery" *ngIf="!isLoadingPhotos">
+        <div class="photo-track" *ngIf="selectedDestination.photos.length > 0">
+          <img
+            [src]="selectedDestination.photos[activePhotoIndex]"
+            [alt]="selectedDestination.name"
+            class="gallery-img"
+          />
+          <button class="photo-nav prev" (click)="prevPhoto()" *ngIf="activePhotoIndex > 0">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 4L6 8l4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="photo-nav next" (click)="nextPhoto()" *ngIf="activePhotoIndex < selectedDestination.photos.length - 1">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="photo-dots">
+            <span
+              *ngFor="let p of selectedDestination.photos; let pi = index"
+              class="dot"
+              [class.active]="pi === activePhotoIndex"
+              (click)="activePhotoIndex = pi"
+            ></span>
+          </div>
+        </div>
+        <div class="no-photo-placeholder" *ngIf="selectedDestination.photos.length === 0">
+          <span class="placeholder-emoji">{{ selectedDestination.emoji }}</span>
+        </div>
+      </div>
 
-	<!-- LADO DERECHO: Mapa -->
-	<div class="map-panel">
-		<div class="map-card">
-			<div id="travel-map"></div>
-			<div class="map-badge">
-				<span class="pulse-dot"></span>
-				Vuelos en tiempo real
-			</div>
-		</div>
-	</div>
+      <!-- Skeleton loader -->
+      <div class="photo-skeleton" *ngIf="isLoadingPhotos">
+        <div class="skeleton-shimmer"></div>
+      </div>
 
+      <!-- Info -->
+      <div class="detail-body">
+        <div class="detail-top">
+          <span class="detail-emoji">{{ selectedDestination.emoji }}</span>
+          <div>
+            <h3 class="detail-name">{{ selectedDestination.name }}</h3>
+            <span class="detail-city">{{ selectedDestination.label }}</span>
+          </div>
+        </div>
+        <p class="detail-desc">{{ selectedDestination.description }}</p>
+      </div>
+    </div>
+
+  </div>
 </div>

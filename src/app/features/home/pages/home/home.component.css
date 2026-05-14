@@ -76,7 +76,7 @@
 	gap: 30px;
 }
 
-.search-item i {
+.search-item .item-icon {
 	font-size: 22px;
 	color: #3fa2db;
 	border-radius: 100%;
@@ -441,12 +441,16 @@
 	padding: 14px;
 }
 
-.container-services i {
+.container-services .item-icon {
 	font-size: 35px;
 	color: #3fa2db;
 	border-radius: 20%;
 	background-color: var(--color-fondo-iconos);
 	padding: 20px 15px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: min-content;
 }
 
 .container-services .title {

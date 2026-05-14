@@ -17,14 +17,21 @@ export class NavbarComponent {
   }
 
   logout() {
-    this.authService.logout();
+    this.authService.logout().subscribe({
+      next: () => {
+        console.log('Sesión cerrada');
+      },
+      error: (err) => {
+        console.error('Error logout', err);
+      },
+    });
   }
 
   get user() {
     return this.authService.getUser();
   }
 
-  hiddenRoles = ['CLIENT'];
+  hiddenRoles = ['ROLE_CLIENT'];
 
   get displayRole(): string | null {
     const role = this.user?.role;

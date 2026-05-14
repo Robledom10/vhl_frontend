@@ -4,88 +4,87 @@ import { BehaviorSubject, catchError, filter, Observable, switchMap, take, throw
 import { AuthService } from '../services/auth.service';
 
 @Injectable()
+
 export class AuthInterceptor implements HttpInterceptor {
+  private isRefreshing = false;
+  private refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
-	private isRefreshing = false;
-	private refreshTokenSubject = new BehaviorSubject<string | null>(null);
+  constructor(private authService: AuthService) {}
 
-	constructor(private authService: AuthService) { }
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<any>> {
+    const isAuthRequest =
+      req.url.includes('/auth/login') ||
+      req.url.includes('/auth/register') ||
+      req.url.includes('/auth/tokens/refresh') ||
+      req.url.includes('/auth/tokens/logout');
 
-	intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    let authReq = req;
 
-		const isAuthRequest =
-			req.url.includes('/auth/login') ||
-			req.url.includes('/auth/register') ||
-			req.url.includes('/auth/refresh');
+    const token = this.authService.getToken();
 
-		let authReq = req;
+    //NO enviar token en rutas públicas
+    if (!isAuthRequest && token) {
+      authReq = this.addToken(req, token);
+    }
 
-		const token = this.authService.getToken();
+    return next.handle(authReq).pipe(
+      catchError((error: HttpErrorResponse) => {
+        //SOLO manejar 401 en endpoints protegidos
+        if (error.status === 401 && !isAuthRequest) {
+          return this.handle401Error(authReq, next);
+        }
 
-		//NO enviar token en rutas públicas
-		if (!isAuthRequest && token) {
-			authReq = this.addToken(req, token);
-		}
+        return throwError(() => error);
+      }),
+    );
+  }
 
-		return next.handle(authReq).pipe(
-			catchError((error: HttpErrorResponse) => {
+  private handle401Error(req: HttpRequest<any>, next: HttpHandler) {
+    if (!this.isRefreshing) {
+      this.isRefreshing = true;
+      this.refreshTokenSubject.next(null);
 
-				//SOLO manejar 401 en endpoints protegidos
-				if (error.status === 401 && !isAuthRequest) {
-					return this.handle401Error(authReq, next);
-				}
+      return this.authService.refreshToken().pipe(
+        switchMap((response: any) => {
+          this.isRefreshing = false;
 
-				return throwError(() => error);
-			})
-		);
-	}
+          const newToken = response.accessToken;
 
-	private handle401Error(req: HttpRequest<any>, next: HttpHandler) {
+          //Guardar nuevo token
+          localStorage.setItem('token', newToken);
 
-		if (!this.isRefreshing) {
-			this.isRefreshing = true;
-			this.refreshTokenSubject.next(null);
+          this.refreshTokenSubject.next(newToken);
 
-			return this.authService.refreshToken().pipe(
-				switchMap((response: any) => {
+          //Reintentar request original
+          return next.handle(this.addToken(req, newToken));
+        }),
+        catchError((err) => {
+          this.isRefreshing = false;
 
-					this.isRefreshing = false;
+          // sesión expirada
+          this.authService.clearSession();
 
-					const newToken = response.accessToken;
+          return throwError(() => err);
+        }),
+      );
+    } else {
+      //Esperar mientras otro refresh termina
+      return this.refreshTokenSubject.pipe(
+        filter((token) => token != null),
+        take(1),
+        switchMap((token) => next.handle(this.addToken(req, token!))),
+      );
+    }
+  }
 
-					//Guardar nuevo token
-					localStorage.setItem('token', newToken);
-
-					this.refreshTokenSubject.next(newToken);
-
-					//Reintentar request original
-					return next.handle(this.addToken(req, newToken));
-				}),
-				catchError((err) => {
-
-					this.isRefreshing = false;
-
-					//Logout si falla refresh
-					this.authService.logout();
-
-					return throwError(() => err);
-				})
-			);
-		} else {
-			//Esperar mientras otro refresh termina
-			return this.refreshTokenSubject.pipe(
-				filter(token => token != null),
-				take(1),
-				switchMap(token => next.handle(this.addToken(req, token!)))
-			);
-		}
-	}
-
-	private addToken(request: HttpRequest<any>, token: string) {
-		return request.clone({
-			setHeaders: {
-				Authorization: `Bearer ${token}`
-			}
-		});
-	}
+  private addToken(request: HttpRequest<any>, token: string) {
+    return request.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
 }

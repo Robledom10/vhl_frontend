@@ -2,15 +2,18 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 
 declare var google: any;
 
-interface Place {
+interface Destination {
+  id: string;
   name: string;
+  label: string;
+  emoji: string;
   description: string;
-  address: string;
-  thumbnail: string;
-  photos: string[];
   lat: number;
   lng: number;
-  placeId?: string;
+  placeId: string;
+  photos: string[];
+  thumbnail: string;
+  photosLoaded: boolean;
 }
 
 @Component({
@@ -19,28 +22,84 @@ interface Place {
   styleUrl: './interactive-map.component.css',
 })
 export class InteractiveMapComponent implements OnInit, OnDestroy {
-  private map: any;
-  private currentMarker: any = null;
-  private previewMarker: any = null;
+  private map: any = null;
   private mapsReady = false;
-  private pendingSearch = '';
+  private markers: any[] = [];
+  private routePolyline: any = null;
+  private infoWindows: any[] = [];
 
-  searchQuery: string = '';
-  searchResults: Place[] = [];
-  selectedPlace: Place | null = null;
-  isLoading: boolean = false;
+  isDropdownOpen = false;
+  selectedDestination: Destination | null = null;
+  isLoadingPhotos = false;
+  activePhotoIndex = 0;
 
-  defaultLocation = { lat: 4.528823583221963, lng: -75.64157122965305 };
-  defaultAddress = 'Cra. 25 # 41-61, Calarcá, Quindío';
-  defaultPinImageUrl =
-    'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=80&h=80&fit=crop';
-
-  private colombiaBounds = {
-    north: 13.5,
-    south: -4.5,
-    west: -79.5,
-    east: -66.5,
-  };
+  destinations: Destination[] = [
+    {
+      id: 'quindio',
+      name: 'Eje Cafetero',
+      label: 'Quindío, Colombia',
+      emoji: '☕',
+      description: 'Punto de partida. La tierra del café, con paisajes de montaña, fincas cafeteras y el Valle del Cocora.',
+      lat: 4.5339,
+      lng: -75.6811,
+      placeId: 'ChIJl7qvH_LKoo8RoGaMNhh8g1I',
+      photos: [],
+      thumbnail: '',
+      photosLoaded: false,
+    },
+    {
+      id: 'santamarta',
+      name: 'Santa Marta',
+      label: 'Magdalena, Colombia',
+      emoji: '🏖️',
+      description: 'La ciudad más antigua de Colombia. Playas paradisíacas, la Sierra Nevada y el Parque Tayrona.',
+      lat: 11.2408,
+      lng: -74.2110,
+      placeId: 'ChIJRcbVhzJa-o4Rz5GJkFDZ1uE',
+      photos: [],
+      thumbnail: '',
+      photosLoaded: false,
+    },
+    {
+      id: 'cartagena',
+      name: 'Cartagena',
+      label: 'Bolívar, Colombia',
+      emoji: '🏰',
+      description: 'Ciudad amurallada Patrimonio de la Humanidad. Historia colonial, islas del Rosario y playas del Caribe.',
+      lat: 10.3910,
+      lng: -75.4794,
+      placeId: 'ChIJp9r1aNIm-Y4RVWBS3g8Xv6A',
+      photos: [],
+      thumbnail: '',
+      photosLoaded: false,
+    },
+    {
+      id: 'barranquilla',
+      name: 'Barranquilla',
+      label: 'Atlántico, Colombia',
+      emoji: '🎉',
+      description: 'La capital de la alegría. Sede del famoso Carnaval declarado Patrimonio Inmaterial de la Humanidad.',
+      lat: 10.9685,
+      lng: -74.7813,
+      placeId: 'ChIJR1fBKzR6-Y4RAoGRzMsU2bE',
+      photos: [],
+      thumbnail: '',
+      photosLoaded: false,
+    },
+    {
+      id: 'medellin',
+      name: 'Medellín',
+      label: 'Antioquia, Colombia',
+      emoji: '🌸',
+      description: 'La ciudad de la eterna primavera. Innovación, cultura, flores y la calidez de su gente paisa.',
+      lat: 6.2442,
+      lng: -75.5812,
+      placeId: 'ChIJaUjKMaKRRI8R9VsEUJM2fLI',
+      photos: [],
+      thumbnail: '',
+      photosLoaded: false,
+    },
+  ];
 
   constructor(private ngZone: NgZone) {}
 
@@ -48,7 +107,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
     this.loadGoogleMaps();
   }
 
-  // ─── Carga del SDK ────────────────────────────────────────────────────────
+  // ─── Carga del SDK ─────────────────────────────────────────────────────────
 
   loadGoogleMaps(): void {
     if (typeof google !== 'undefined' && google.maps?.Map) {
@@ -57,7 +116,6 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
     }
     (window as any)['initMapCallback'] = () => this.ngZone.run(() => this.initMap());
     const script = document.createElement('script');
-    // ✅ loading=async requerido por la nueva API
     script.src =
       'https://maps.googleapis.com/maps/api/js?key=AIzaSyCChhbt5C8uOtQrdF6lFwEYaHxbtuFcNmE&libraries=marker,places&loading=async&callback=initMapCallback';
     script.async = true;
@@ -67,7 +125,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
 
   initMap(): void {
     this.map = new google.maps.Map(document.getElementById('travel-map'), {
-      center: { lat: 4.5709, lng: -74.2973 },
+      center: { lat: 7.5, lng: -75.2 },
       zoom: 6,
       minZoom: 5,
       maxZoom: 18,
@@ -76,250 +134,189 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       streetViewControl: false,
       mapTypeControl: false,
       fullscreenControl: false,
-      restriction: {
-        latLngBounds: this.colombiaBounds,
-        strictBounds: true,
-      },
     });
 
     this.mapsReady = true;
-    this.addDefaultPin();
-
-    if (this.pendingSearch) {
-      const q = this.pendingSearch;
-      this.pendingSearch = '';
-      this.searchQuery = q;
-      this.runSearch(q);
-    }
+    this.addRouteToMap();
+    this.loadAllThumbnails();
   }
 
-  // ─── Pin por defecto ──────────────────────────────────────────────────────
+  // ─── Ruta y marcadores en el mapa ─────────────────────────────────────────
 
-  addDefaultPin(): void {
-    const pinEl = document.createElement('div');
-    pinEl.style.cssText = `
-      width: 60px; height: 60px; border-radius: 50%; overflow: hidden;
-      border: 3px solid #1a8fff; box-shadow: 0 2px 12px rgba(26,143,255,0.55); cursor: pointer;
-    `;
-    const img = document.createElement('img');
-    img.src = this.defaultPinImageUrl;
-    img.alt = this.defaultAddress;
-    img.style.cssText = `width:100%;height:100%;object-fit:cover;display:block;`;
-    pinEl.appendChild(img);
+  addRouteToMap(): void {
+    const routeCoords = this.destinations.map(d => ({ lat: d.lat, lng: d.lng }));
 
-    const marker = new google.maps.marker.AdvancedMarkerElement({
-      position: this.defaultLocation,
-      map: this.map,
-      title: this.defaultAddress,
-      content: pinEl,
+    this.routePolyline = new google.maps.Polyline({
+      path: routeCoords,
+      geodesic: true,
+      strokeColor: '#FF6B35',
+      strokeOpacity: 0.85,
+      strokeWeight: 3,
+      icons: [{
+        icon: { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW, scale: 4, fillColor: '#FF6B35', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 1 },
+        offset: '100%',
+        repeat: '120px',
+      }],
     });
+    this.routePolyline.setMap(this.map);
 
-    const infoWindow = new google.maps.InfoWindow({
-      content: `<div style="font-family:sans-serif;padding:4px 2px;">
-        <strong style="color:#1a5fa8;font-size:0.85rem;">📍 ${this.defaultAddress}</strong>
-      </div>`,
+    this.destinations.forEach((dest, index) => {
+      const pinEl = document.createElement('div');
+      pinEl.style.cssText = `
+        display: flex; flex-direction: column; align-items: center; cursor: pointer;
+      `;
+      const bubble = document.createElement('div');
+      bubble.style.cssText = `
+        width: 38px; height: 38px; border-radius: 50%; background: #fff;
+        border: 3px solid ${index === 0 ? '#10B981' : '#FF6B35'};
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px; box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+        transition: transform 0.2s;
+      `;
+      bubble.textContent = dest.emoji;
+      const label = document.createElement('div');
+      label.style.cssText = `
+        background: #1a1a2e; color: #fff; font-size: 10px; font-family: sans-serif;
+        padding: 2px 7px; border-radius: 10px; margin-top: 4px; white-space: nowrap;
+        font-weight: 600; letter-spacing: 0.3px;
+      `;
+      label.textContent = dest.name;
+      pinEl.appendChild(bubble);
+      pinEl.appendChild(label);
+
+      const marker = new google.maps.marker.AdvancedMarkerElement({
+        position: { lat: dest.lat, lng: dest.lng },
+        map: this.map,
+        title: dest.name,
+        content: pinEl,
+      });
+
+      marker.addEventListener('gmp-click', () => {
+        this.ngZone.run(() => this.selectDestination(dest));
+      });
+
+      this.markers.push(marker);
     });
-    infoWindow.open(this.map, marker);
-    // ✅ nueva API usa gmp-click
-    marker.addEventListener('gmp-click', () => infoWindow.open(this.map, marker));
   }
 
-  // ─── Búsqueda pública ─────────────────────────────────────────────────────
+  // ─── Cargar miniaturas de la API para todos los destinos ──────────────────
 
-  onSearch(): void {
-    const q = this.searchQuery.trim();
-    if (!q) {
-      this.searchResults = [];
-      this.selectedPlace = null;
-      return;
+  async loadAllThumbnails(): Promise<void> {
+    for (const dest of this.destinations) {
+      try {
+        const place = new google.maps.places.Place({ id: dest.placeId });
+        await place.fetchFields({ fields: ['photos', 'displayName'] });
+        if (place.photos?.length > 0) {
+          dest.thumbnail = place.photos[0].getURI({ maxWidth: 120, maxHeight: 120 });
+        }
+      } catch {
+        dest.thumbnail = '';
+      }
     }
-    if (!this.mapsReady) {
-      this.pendingSearch = q;
-      return;
-    }
-    this.runSearch(q);
   }
 
-  // ─── Nueva API: AutocompleteSuggestion + Place ────────────────────────────
+  // ─── Selección de destino ─────────────────────────────────────────────────
 
-  private async runSearch(q: string): Promise<void> {
-    this.isLoading = true;
-    this.searchResults = [];
+  async selectDestination(dest: Destination): Promise<void> {
+    this.selectedDestination = dest;
+    this.isDropdownOpen = false;
+    this.activePhotoIndex = 0;
 
+    if (this.map) {
+      this.map.panTo({ lat: dest.lat, lng: dest.lng });
+      this.map.setZoom(12);
+    }
+
+    this.highlightMarker(dest);
+
+    if (!dest.photosLoaded) {
+      this.isLoadingPhotos = true;
+      await this.loadDestinationPhotos(dest);
+      this.isLoadingPhotos = false;
+    }
+  }
+
+  private async loadDestinationPhotos(dest: Destination): Promise<void> {
     try {
-      // ✅ Nueva API: AutocompleteSuggestion (reemplaza AutocompleteService)
-      const { suggestions } =
-        await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions({
-          input: q,
-          includedRegionCodes: ['co'], // ✅ Solo Colombia
-        });
+      const place = new google.maps.places.Place({ id: dest.placeId });
+      await place.fetchFields({
+        fields: ['photos', 'displayName', 'editorialSummary', 'formattedAddress'],
+      });
 
-      if (!suggestions?.length) {
-        this.ngZone.run(() => {
-          this.isLoading = false;
-          this.searchResults = [];
+      const photos: string[] = [];
+      if (place.photos?.length > 0) {
+        place.photos.slice(0, 6).forEach((p: any) => {
+          photos.push(p.getURI({ maxWidth: 800, maxHeight: 500 }));
         });
-        return;
       }
 
-      const top5 = suggestions.slice(0, 5);
-
-      const results = await Promise.all(
-        top5.map(async (suggestion: any) => {
-          try {
-            // ✅ Nueva API: Place (reemplaza PlacesService.getDetails)
-            const place = suggestion.placePrediction.toPlace();
-            await place.fetchFields({
-              fields: [
-                'displayName',
-                'formattedAddress',
-                'location',
-                'photos',
-                'editorialSummary',
-                'id',
-              ],
-            });
-
-            const lat = place.location.lat();
-            const lng = place.location.lng();
-
-            // Verificar dentro de Colombia
-            if (
-              lat < this.colombiaBounds.south ||
-              lat > this.colombiaBounds.north ||
-              lng < this.colombiaBounds.west ||
-              lng > this.colombiaBounds.east
-            ) return null;
-
-            // ✅ Fotos con la nueva API
-            const photos: string[] = [];
-            if (place.photos?.length > 0) {
-              place.photos.slice(0, 3).forEach((p: any) => {
-                photos.push(
-                  p.getURI({ maxWidth: 400, maxHeight: 280 })
-                );
-              });
-            }
-
-            const thumbnail =
-              photos.length > 0
-                ? place.photos[0].getURI({ maxWidth: 120, maxHeight: 120 })
-                : 'https://images.unsplash.com/photo-1549880338-65ddcdfd017b?w=120&h=120&fit=crop';
-
-            return {
-              name: place.displayName || '',
-              description: place.editorialSummary || place.formattedAddress || '',
-              address: place.formattedAddress || '',
-              thumbnail,
-              photos,
-              lat,
-              lng,
-              placeId: place.id,
-            } as Place;
-          } catch {
-            return null;
-          }
-        })
-      );
-
       this.ngZone.run(() => {
-        this.isLoading = false;
-        this.searchResults = results.filter((r): r is Place => r !== null);
+        dest.photos = photos;
+        dest.photosLoaded = true;
+        if (photos.length > 0) dest.thumbnail = place.photos[0].getURI({ maxWidth: 120, maxHeight: 120 });
+        if (place.editorialSummary) dest.description = place.editorialSummary;
       });
     } catch (err) {
-      console.error('Places error:', err);
-      this.ngZone.run(() => {
-        this.isLoading = false;
-        this.searchResults = [];
+      console.error('Error cargando fotos:', err);
+      this.ngZone.run(() => { dest.photosLoaded = true; });
+    }
+  }
+
+  // ─── Resaltar marcador activo ─────────────────────────────────────────────
+
+  highlightMarker(dest: Destination): void {
+    this.markers.forEach((marker, i) => {
+      const bubble = marker.content?.querySelector('div');
+      if (bubble) {
+        bubble.style.transform = this.destinations[i].id === dest.id ? 'scale(1.35)' : 'scale(1)';
+        bubble.style.borderColor = this.destinations[i].id === dest.id ? '#7C3AED' : (i === 0 ? '#10B981' : '#FF6B35');
+      }
+    });
+  }
+
+  // ─── Controles del dropdown ───────────────────────────────────────────────
+
+  toggleDropdown(): void {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  closeDropdown(): void {
+    this.isDropdownOpen = false;
+  }
+
+  prevPhoto(): void {
+    if (this.selectedDestination && this.activePhotoIndex > 0) {
+      this.activePhotoIndex--;
+    }
+  }
+
+  nextPhoto(): void {
+    if (this.selectedDestination && this.activePhotoIndex < this.selectedDestination.photos.length - 1) {
+      this.activePhotoIndex++;
+    }
+  }
+
+  showAll(): void {
+    if (this.map) {
+      this.selectedDestination = null;
+      this.map.panTo({ lat: 7.5, lng: -75.2 });
+      this.map.setZoom(6);
+      this.markers.forEach((marker, i) => {
+        const bubble = marker.content?.querySelector('div');
+        if (bubble) {
+          bubble.style.transform = 'scale(1)';
+          bubble.style.borderColor = i === 0 ? '#10B981' : '#FF6B35';
+        }
       });
     }
   }
 
-  // ─── Seleccionar lugar ────────────────────────────────────────────────────
-
-  selectPlace(place: Place): void {
-    this.selectedPlace = place;
-    if (this.map) {
-      this.map.panTo({ lat: place.lat, lng: place.lng });
-      this.map.setZoom(13);
-      this.addSelectedMarker(place);
-    }
-  }
-
-  // ─── Marker: tarjeta rectangular (imagen arriba + dirección abajo) ─────────
-
-  addSelectedMarker(place: Place): void {
-    if (this.currentMarker) this.currentMarker.map = null;
-    if (this.previewMarker) this.previewMarker.map = null;
-
-    // Punto azul en la coordenada exacta
-    const pinEl = document.createElement('div');
-    pinEl.style.cssText = `
-      width: 14px; height: 14px;
-      background: #1a8fff; border: 3px solid #fff; border-radius: 50%;
-      box-shadow: 0 2px 10px rgba(26,143,255,0.8);
-    `;
-    this.currentMarker = new google.maps.marker.AdvancedMarkerElement({
-      position: { lat: place.lat, lng: place.lng },
-      map: this.map,
-      content: pinEl,
-    });
-
-    // Tarjeta flotante
-    const photoUrl =
-      place.photos.length > 0
-        ? place.photos[0]
-        : 'https://images.unsplash.com/photo-1549880338-65ddcdfd017b?w=220&h=130&fit=crop';
-
-    const previewEl = document.createElement('div');
-    previewEl.style.cssText = `
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transform: translateY(calc(-100% - 20px));
-      pointer-events: none;
-    `;
-
-    previewEl.innerHTML = `
-      <div style="
-        background:#fff; border-radius:12px; overflow:hidden; width:210px;
-        box-shadow:0 8px 28px rgba(0,0,0,0.22); border:1.5px solid #ddeeff;
-      ">
-        <img
-          src="${photoUrl}"
-          alt="${place.name}"
-          style="width:210px;height:120px;object-fit:cover;display:block;"
-          onerror="this.src='https://images.unsplash.com/photo-1549880338-65ddcdfd017b?w=210&h=120&fit=crop'"
-        />
-        <div style="padding:8px 10px 10px;font-family:'Segoe UI',Arial,sans-serif;">
-          <div style="font-size:12.5px;font-weight:700;color:#1a3a5c;margin-bottom:3px;
-            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-            ${place.name}
-          </div>
-          <div style="font-size:10.5px;color:#7a8fa8;
-            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-            <span style="color:#1a8fff;">📍</span> ${place.address}
-          </div>
-        </div>
-      </div>
-      <div style="
-        width:0; height:0;
-        border-left:9px solid transparent; border-right:9px solid transparent;
-        border-top:11px solid #fff;
-        filter:drop-shadow(0 2px 2px rgba(0,0,0,0.12));
-        margin-top:-1px;
-      "></div>
-    `;
-
-    this.previewMarker = new google.maps.marker.AdvancedMarkerElement({
-      position: { lat: place.lat, lng: place.lng },
-      map: this.map,
-      content: previewEl,
-    });
+  get totalDestinations(): number {
+    return this.destinations.length;
   }
 
   ngOnDestroy(): void {
-    if (this.currentMarker) this.currentMarker.map = null;
-    if (this.previewMarker) this.previewMarker.map = null;
+    this.markers.forEach(m => m.map = null);
+    if (this.routePolyline) this.routePolyline.setMap(null);
   }
 }
