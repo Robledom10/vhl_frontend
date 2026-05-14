@@ -9,6 +9,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { PackagesCardComponent } from './packages-card/packages-card.component';
 import { FooterComponent } from './footer/footer.component';
+import { PackageDetailSheetComponent } from './package-detail-sheet/package-detail-sheet.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { FooterComponent } from './footer/footer.component';
     SearchFilterComponent,
     PackagesCardComponent,
     FooterComponent,
+	PackageDetailSheetComponent
   ],
   imports: [
     CommonModule,

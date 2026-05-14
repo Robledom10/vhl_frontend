@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { PackageDetail } from '../package-detail-sheet/package-detail-sheet.component';
 
 export interface TravelPackage {
   id: number;
@@ -14,11 +15,15 @@ export interface TravelPackage {
 @Component({
   selector: 'app-packages-card',
   templateUrl: './packages-card.component.html',
-  styleUrls: ['./packages-card.component.css']
+  styleUrls: ['./packages-card.component.css'], // ← agrega esto
 })
 export class PackagesCardComponent implements OnInit {
 
   @Input() showAll: boolean = false;
+
+  // ── Bottom sheet ──────────────────────────────
+  sheetOpen = false;
+  selectedPackageDetail: PackageDetail | null = null;
 
   allPackages: TravelPackage[] = [
     { id: 1, name: 'Piscilago', location: 'Vía Bogotá – Girardot', price: 400000, imageUrl: 'assets/images/piscilago.jpg', rating: 4.2, nights: 2, category: 'aventura' },
@@ -33,10 +38,47 @@ export class PackagesCardComponent implements OnInit {
   likedPackages: Set<number> = new Set();
 
   ngOnInit(): void {
-    // showAll viene del padre, ngOnInit ya lo tiene disponible
     this.displayedPackages = this.showAll
       ? this.allPackages
       : this.allPackages.slice(0, 6);
+  }
+
+  // ── Abre el sheet con el paquete clickeado ────
+  openDetail(pkg: TravelPackage): void {
+    this.selectedPackageDetail = this.mapToDetail(pkg);
+    this.sheetOpen = true;
+  }
+
+  closeDetail(): void {
+    this.sheetOpen = false;
+  }
+
+  // ── Mapea TravelPackage → PackageDetail ───────
+  private mapToDetail(pkg: TravelPackage): PackageDetail {
+    return {
+      title: pkg.name,
+      subtitle: `Disfruta ${pkg.nights} noches increíbles en ${pkg.location}.`,
+      spotsAvailable: 30,
+      price: pkg.price,
+      destinations: pkg.location,
+      duration: `${pkg.nights + 1} Días / ${pkg.nights} Noches`,
+      departurePlace: 'Calarcá, Quindío – Barrio el Cacique',
+      date: '17/03/2025 – 6:00 AM',
+      accommodation: 'Hotel 3 estrellas o similar. Habitación múltiple (compartida)',
+      transport: 'Bus de turismo',
+      itinerary: [
+        { day: 'Día 1:', desc: 'Salida y llegada al primer destino' },
+        { day: 'Día 2:', desc: `Tour por ${pkg.name} y actividades` },
+        { day: 'Día 3:', desc: 'Día libre para explorar' },
+      ],
+      includes: ['Transporte', 'Hotel', 'Alimentación', 'Tours Guiados', 'Integraciones'],
+      notIncludes: ['Gastos personales', 'Bebidas alcohólicas', 'Servicios adicionales'],
+      cancellation: [
+        'Cancelación gratuita hasta 5 días antes',
+        '50% de reembolso hasta 48 horas antes',
+        'No hay reembolso el mismo día',
+      ]
+    };
   }
 
   toggleLike(id: number, event: Event): void {
@@ -48,10 +90,6 @@ export class PackagesCardComponent implements OnInit {
 
   isLiked(id: number): boolean {
     return this.likedPackages.has(id);
-  }
-
-  onReserve(pkg: TravelPackage): void {
-    console.log('Reservar paquete:', pkg);
   }
 
   onImgError(event: Event): void {

@@ -2,7 +2,7 @@
 
 	<!-- Grid de paquetes -->
 	<div class="packages-grid">
-		<div class="card" *ngFor="let pkg of displayedPackages" (click)="onReserve(pkg)">
+		<div class="card" *ngFor="let pkg of displayedPackages" (click)="openDetail(pkg)">
 
 			<!-- Imagen -->
 			<div class="card-img-wrap">
@@ -44,7 +44,7 @@
 							<span>/ persona</span>
 						</div>
 					</div>
-					<button class="btn-reserve" (click)="onReserve(pkg); $event.stopPropagation()">Reservar</button>
+					<button class="btn-reserve" (click)="openDetail(pkg); $event.stopPropagation()">Reservar</button>
 				</div>
 			</div>
 
@@ -55,5 +55,12 @@
 	<div class="view-all-wrap" *ngIf="!showAll">
 		<a class="btn-view-all" routerLink="/destinations">Ver todos los destinos</a>
 	</div>
+
+	<!-- Bottom Sheet -->
+	<app-package-detail-sheet
+		[isOpen]="sheetOpen"
+		[package]="selectedPackageDetail"
+		(closed)="closeDetail()">
+	</app-package-detail-sheet>
 
 </section>

@@ -121,8 +121,20 @@
 	background-color: var(--color-fondo);
 }
 
-.form-group input:focus {
+.form-group input:hover,
+.form-group input:focus,
+.form-group input:not(:placeholder-shown) {
 	border-color: var(--color-primario);
+}
+
+.form-group input.ng-invalid.ng-touched,
+.form-group input.ng-invalid.ng-dirty {
+	border-color: var(--color-error);
+}
+
+.form-group input.ng-invalid.ng-touched+label,
+.form-group input.ng-invalid.ng-dirty+label {
+	color: var(--color-error);
 }
 
 .form-group input::placeholder {
@@ -148,10 +160,6 @@
 	left: 12px;
 	font-size: 11px;
 	color: var(--color-primario);
-}
-
-.form-group input:valid {
-	border-color: var(--color-primario);
 }
 
 .form-group span {
@@ -185,13 +193,18 @@
 	box-sizing: border-box;
 }
 
-.custom-select:hover {
-	border-color: var(--color-primario);
-}
-
+.custom-select:hover,
 .custom-select.open,
 .custom-select.selected {
 	border-color: var(--color-primario);
+}
+
+.custom-select.invalid {
+	border-color: var(--color-error);
+}
+
+.custom-select.invalid~label {
+	color: var(--color-error);
 }
 
 .custom-select-value {
@@ -220,6 +233,11 @@
 .custom-select.open .select-icon {
 	transform: rotate(180deg);
 	color: var(--color-primario);
+	opacity: 1;
+}
+
+.custom-select.invalid .select-icon {
+	color: var(--color-error);
 	opacity: 1;
 }
 

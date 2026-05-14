@@ -1,7 +1,6 @@
 .sidebar {
 	width: 260px;
 	height: 100vh;
-	background: var(--color-fondo-navegador);
 	padding: 28px 22px;
 	display: flex;
 	flex-direction: column;

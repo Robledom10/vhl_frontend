@@ -20,9 +20,8 @@
 		<div class="form-row">
 			<div class="form-group">
 				<input type="text" formControlName="firstName" placeholder="Nombre" [class.ng-invalid]="submitted"
-					[class.ng-touched]=" f.firstName.touched" autofocus required />
-				<label>Nombre</label>
-				<span *ngIf="submitted && f.firstName.errors?.['required']">El nombre es obligatorio</span>
+					[class.ng-touched]=" f.firstName.touched" autofocus />
+				<label for="firstName">Nombre</label>
 
 				<span *ngIf="f.firstName.touched && f.firstName.errors?.['minlength']">
 					El nombre debe tener al menos 3 caracteres
@@ -31,8 +30,8 @@
 
 			<div class="form-group">
 				<input type="text" formControlName="lastName" placeholder="Apellido" [class.ng-invalid]="submitted"
-					[class.ng-touched]="f.lastName.touched" required />
-				<label>Apellido</label>
+					[class.ng-touched]="f.lastName.touched" />
+				<label for="lastName">Apellido</label>
 				<span *ngIf="submitted && f.lastName.errors?.['required']">El apellido es obligatorio</span>
 			</div>
 		</div>
@@ -40,8 +39,8 @@
 		<!-- EMAIL -->
 		<div class="form-group">
 			<input type="email" formControlName="email" placeholder="Correo electrónico" [class.ng-invalid]="submitted"
-				[class.ng-touched]="f.email.touched" required />
-			<label>Correo electrónico</label>
+				[class.ng-touched]="f.email.touched" />
+			<label for="email">Correo electrónico</label>
 		</div>
 
 		<!-- DOCUMENTO -->
@@ -72,7 +71,7 @@
 				<input type="text" formControlName="documentNumber" placeholder="Número documento"
 					oninput="this.value = this.value.replace(/[^0-9]/g, '')"
 					[class.ng-invalid]="submitted && f.documentNumber.errors?.['required']"
-					[class.ng-touched]="f.documentNumber.touched" required />
+					[class.ng-touched]="f.documentNumber.touched" />
 
 				<label for="documentNumber">Número documento</label>
 
@@ -85,45 +84,52 @@
 
 		<!-- TELÉFONO -->
 		<div class="form-group">
-			<input type="text" id="phone" formControlName="phone" placeholder="Teléfono"
+			<input type="text" id="phone" formControlName="phone" placeholder="Teléfono" id="phone"
 				oninput="this.value = this.value.replace(/[^0-9]/g, '')" [class.ng-invalid]="submitted"
-				[class.ng-touched]="f.email.touched" required />
+				[class.ng-touched]="f.email.touched" />
 			<label for="phone">Teléfono</label>
 
-			<span *ngIf="f.phone.touched &&(f.phone.errors?.['minlength'] ||f.phone.errors?.['maxlength'])">
-				Número de documento inválido
+			<span *ngIf="f.phone.touched && (f.phone.errors?.['minlength'] || f.phone.errors?.['maxlength'])">
+				Número de teléfono inválido
 			</span>
 		</div>
 
 		<!-- FECHA -->
 		<div class="form-group">
-			<input type="date" formControlName="birthDate" />
-			<label>Fecha nacimiento</label>
+			<input type="date" formControlName="birthDate" id="birthDate"
+				[class.ng-invalid]="submitted && f.birthDate.errors?.['required']"
+				[class.ng-touched]="f.birthDate.touched" />
+			<label for="birthDate">Fecha nacimiento</label>
 		</div>
 
 		<!-- UBICACIÓN -->
 		<div class="form-row">
 			<div class="form-group">
-				<input type="text" formControlName="state" placeholder="Departamento" />
-				<label>Departamento</label>
+				<input type="text" formControlName="state" id="state" placeholder="Departamento"
+					[class.ng-invalid]="submitted && f.state.errors?.['required']"
+					[class.ng-touched]="f.state.touched" />
+				<label for="state">Departamento</label>
 			</div>
 
 			<div class="form-group">
-				<input type="text" formControlName="city" placeholder="Ciudad" />
-				<label>Ciudad</label>
+				<input type="text" formControlName="city" id="city" placeholder="Ciudad"
+					[class.ng-invalid]="submitted && f.city.errors?.['required']" [class.ng-touched]="f.city.touched" />
+				<label for="city">Ciudad</label>
 			</div>
 		</div>
 
 		<!-- DIRECCIÓN -->
 		<div class="form-group">
-			<input type="text" formControlName="address" placeholder="Dirección" />
-			<label>Dirección</label>
+			<input type="text" formControlName="address" id="address" placeholder="Dirección"
+				[class.ng-invalid]="submitted && f.address.errors?.['required']"
+				[class.ng-touched]="f.address.touched" />
+			<label for="address">Dirección</label>
 		</div>
 
 		<!-- BOTONES -->
 		<div class="buttons">
-			<button type="button" class="btn-save" (click)="saveProfile()">Guardar</button>
 			<button type="button" class="btn-cancel" (click)="cancelEdit()">Cancelar</button>
+			<button type="button" class="btn-save" (click)="saveProfile()">Guardar</button>
 		</div>
 	</form>
 </div>

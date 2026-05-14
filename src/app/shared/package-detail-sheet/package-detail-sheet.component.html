@@ -1,0 +1,109 @@
+<div
+  *ngIf="visible"
+  class="sheet-overlay"
+  [class.open]="animating"
+  (click)="onOverlayClick($event)"
+>
+  <div class="sheet-container" [class.open]="animating" (click)="$event.stopPropagation()">
+
+    <!-- Drag handle -->
+    <div class="drag-handle-wrapper">
+      <div class="drag-handle"></div>
+    </div>
+
+    <!-- Close button -->
+    <button class="close-btn" (click)="close()">×</button>
+
+    <div class="sheet-body" *ngIf="package">
+
+      <!-- Header -->
+      <div class="header">
+        <span class="spots-badge">✦ {{ package.spotsAvailable }} CUPOS DISPONIBLES</span>
+        <h2 class="title">{{ package.title }}</h2>
+        <p class="subtitle">{{ package.subtitle }}</p>
+      </div>
+
+      <!-- Info Cards Grid -->
+      <div class="info-grid">
+        <div class="info-card">
+          <span class="info-icon">🌍</span>
+          <span class="info-label">Destinos</span>
+          <span class="info-value">{{ package.destinations }}</span>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">⏱</span>
+          <span class="info-label">Duración</span>
+          <span class="info-value">{{ package.duration }}</span>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">📍</span>
+          <span class="info-label">Lugar de salida</span>
+          <span class="info-value">{{ package.departurePlace }}</span>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">📅</span>
+          <span class="info-label">Fecha y hora</span>
+          <span class="info-value">{{ package.date }}</span>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">🏨</span>
+          <span class="info-label">Alojamiento</span>
+          <span class="info-value">{{ package.accommodation }}</span>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">🚌</span>
+          <span class="info-label">Transporte</span>
+          <span class="info-value">{{ package.transport }}</span>
+        </div>
+      </div>
+
+      <!-- Itinerary -->
+      <div class="section-card itinerary-card">
+        <h3 class="section-title">🗺️ Itinerario</h3>
+        <div class="itinerary-list">
+          <div class="itinerary-item" *ngFor="let item of package.itinerary">
+            <span class="day-badge">{{ item.day }}</span>
+            <span class="day-desc">{{ item.desc }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Includes / Not Includes -->
+      <div class="includes-grid">
+        <div class="includes-card">
+          <h4 class="includes-title green">✅ Incluye</h4>
+          <div class="includes-item green-item" *ngFor="let item of package.includes">
+            <span class="check green-check">✓</span> {{ item }}
+          </div>
+        </div>
+        <div class="includes-card">
+          <h4 class="includes-title red">❌ No Incluye</h4>
+          <div class="includes-item red-item" *ngFor="let item of package.notIncludes">
+            <span class="check red-check">✗</span> {{ item }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Cancellation Policy -->
+      <div class="cancellation-card">
+        <span class="warn-icon">⚠️</span>
+        <div>
+          <h4 class="cancel-title">Políticas de cancelación</h4>
+          <p class="cancel-item" *ngFor="let item of package.cancellation">• {{ item }}</p>
+        </div>
+      </div>
+
+      <!-- Price + CTA -->
+      <div class="cta-bar">
+        <div class="price-block">
+          <span class="price-label">Precio por persona</span>
+          <span class="price-value">
+            ${{ package.price | number:'1.0-0' }}<span class="price-cents">.00</span>
+          </span>
+        </div>
+        <button class="reserve-btn">Reservar ahora 🎉</button>
+      </div>
+
+    </div>
+  </div>
+</div>

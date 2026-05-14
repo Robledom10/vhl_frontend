@@ -41,7 +41,7 @@ export class ProfileComponent {
       '',
       [Validators.required, Validators.minLength(6), Validators.maxLength(11)]],
 
-    phone: ['', [Validators.required]],
+    phone: ['', [Validators.required,  Validators.minLength(10), Validators.maxLength(15)]],
 
     birthDate: ['', [Validators.required, minimumAgeValidator(18)]],
 
