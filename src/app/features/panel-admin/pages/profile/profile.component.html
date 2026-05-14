@@ -19,8 +19,9 @@
 		<!-- NOMBRE Y APELLIDO -->
 		<div class="form-row">
 			<div class="form-group">
-				<input type="text" formControlName="firstName" placeholder="Nombre" [class.ng-invalid]="submitted"
-					[class.ng-touched]=" f.firstName.touched" autofocus />
+				<input type="text" formControlName="firstName" id="firstName" placeholder="Nombre"
+					[class.ng-invalid]="f.firstName.invalid && f.firstName.touched"
+					[class.ng-touched]=" f.firstName.touched" />
 				<label for="firstName">Nombre</label>
 
 				<span *ngIf="f.firstName.touched && f.firstName.errors?.['minlength']">
@@ -29,25 +30,28 @@
 			</div>
 
 			<div class="form-group">
-				<input type="text" formControlName="lastName" placeholder="Apellido" [class.ng-invalid]="submitted"
+				<input type="text" formControlName="lastName" id="lastName" placeholder="Apellido"
+					[class.ng-invalid]="f.lastName.invalid && f.lastName.touched"
 					[class.ng-touched]="f.lastName.touched" />
 				<label for="lastName">Apellido</label>
-				<span *ngIf="submitted && f.lastName.errors?.['required']">El apellido es obligatorio</span>
 			</div>
 		</div>
 
 		<!-- EMAIL -->
 		<div class="form-group">
-			<input type="email" formControlName="email" placeholder="Correo electrónico" [class.ng-invalid]="submitted"
-				[class.ng-touched]="f.email.touched" />
+			<input type="email" formControlName="email" id="email" placeholder="Correo electrónico"
+				[class.ng-invalid]="f.email.invalid && f.email.touched" [class.ng-touched]="f.email.touched" />
 			<label for="email">Correo electrónico</label>
+
+			<span *ngIf="f.email.touched && f.email.errors?.['email']">Correo inválido</span>
 		</div>
 
 		<!-- DOCUMENTO -->
 		<div class="form-row">
 			<div class="form-group form-group-small custom-select-group">
 				<div class="custom-select" [class.open]="documentDropdownOpen" [class.selected]="selectedDocumentType"
-					[class.invalid]="submitted && f.documentType.invalid" (click)="toggleDocumentDropdown($event)">
+					[class.ng-invalid]="f.documentType.invalid && f.documentType.touched"
+					(click)="toggleDocumentDropdown($event)">
 
 					<div class="custom-select-value">{{ selectedDocumentType || 'Tipo documento' }}</div>
 
@@ -68,9 +72,9 @@
 			</div>
 
 			<div class="form-group form-group-large">
-				<input type="text" formControlName="documentNumber" placeholder="Número documento"
+				<input type="text" formControlName="documentNumber" placeholder="Número documento" id="documentNumber"
 					oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-					[class.ng-invalid]="submitted && f.documentNumber.errors?.['required']"
+					[class.ng-invalid]="f.documentNumber.invalid && f.documentNumber.touched"
 					[class.ng-touched]="f.documentNumber.touched" />
 
 				<label for="documentNumber">Número documento</label>
@@ -85,8 +89,8 @@
 		<!-- TELÉFONO -->
 		<div class="form-group">
 			<input type="text" id="phone" formControlName="phone" placeholder="Teléfono" id="phone"
-				oninput="this.value = this.value.replace(/[^0-9]/g, '')" [class.ng-invalid]="submitted"
-				[class.ng-touched]="f.email.touched" />
+				oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+				[class.ng-invalid]="f.phone.invalid && f.phone.touched" [class.ng-touched]="f.email.touched" />
 			<label for="phone">Teléfono</label>
 
 			<span *ngIf="f.phone.touched && (f.phone.errors?.['minlength'] || f.phone.errors?.['maxlength'])">
@@ -95,25 +99,123 @@
 		</div>
 
 		<!-- FECHA -->
-		<div class="form-group">
-			<input type="date" formControlName="birthDate" id="birthDate"
-				[class.ng-invalid]="submitted && f.birthDate.errors?.['required']"
-				[class.ng-touched]="f.birthDate.touched" />
-			<label for="birthDate">Fecha nacimiento</label>
+		<div class="form-group date-wrapper">
+
+			<div class="date-input-custom" (click)="toggleBirthCalendar($event)"
+				[class.ng-invalid]="f.birthDate.invalid && f.birthDate.touched">
+
+				<span>
+					{{ selectedBirthDate || 'Fecha nacimiento' }}
+				</span>
+
+				<i class="fa-regular fa-calendar"></i>
+			</div>
+
+			<label [class.active]="selectedBirthDate" [class.error]="f.birthDate.invalid && f.birthDate.touched">
+
+				Fecha nacimiento
+
+			</label>
+
+			<!-- CALENDARIO -->
+			<div class="calendar-dropdown" *ngIf="birthCalendarOpen" (click)="$event.stopPropagation()">
+
+				<!-- HEADER -->
+				<div class="cal-header">
+
+					<button type="button" (click)="prevMonth()">
+						<i class="fa-solid fa-chevron-left"></i>
+					</button>
+
+					<div class="calendar-title">
+
+						<!-- MES -->
+						<div class="month-selector-wrapper">
+
+							<span class="month-year-btn" (click)="toggleMonthSelector($event)">
+
+								{{ monthName }}
+
+							</span>
+
+							<div class="selector-dropdown" *ngIf="showMonthSelector">
+
+								<div class="selector-option" *ngFor="let month of monthNames; let i = index"
+									(click)="selectMonth(i)">
+
+									{{ month }}
+
+								</div>
+
+							</div>
+
+						</div>
+
+						<!-- AÑO -->
+						<div class="year-selector-wrapper">
+
+							<span class="month-year-btn" (click)="toggleYearSelector($event)">
+
+								{{ currentYear }}
+
+							</span>
+
+							<div class="selector-dropdown" *ngIf="showYearSelector">
+
+								<div class="selector-option" *ngFor="let year of yearRange" (click)="selectYear(year)">
+
+									{{ year }}
+
+								</div>
+
+							</div>
+
+						</div>
+
+					</div>
+
+					<button type="button" (click)="nextMonth()">
+						<i class="fa-solid fa-chevron-right"></i>
+					</button>
+
+				</div>
+
+				<!-- DÍAS -->
+				<div class="cal-days-header">
+					<span *ngFor="let d of dayNames">{{ d }}</span>
+				</div>
+
+				<!-- GRID -->
+				<div class="cal-grid">
+
+					<span *ngFor="let day of calendarDays" [class.empty]="!day" [class.selected]="isBirthSelected(day)"
+						[class.today]="isToday(day)" [class.disabled]="isFutureDate(day)"
+						(click)="selectBirthDate(day)">
+
+						{{ day || '' }}
+
+					</span>
+
+				</div>
+			</div>
+
+			<span *ngIf="f.birthDate.touched && f.birthDate.errors?.['minAge']">
+				Debes ser mayor de edad
+			</span>
+
 		</div>
 
 		<!-- UBICACIÓN -->
 		<div class="form-row">
 			<div class="form-group">
 				<input type="text" formControlName="state" id="state" placeholder="Departamento"
-					[class.ng-invalid]="submitted && f.state.errors?.['required']"
-					[class.ng-touched]="f.state.touched" />
+					[class.ng-invalid]="f.state.invalid && f.state.touched" [class.ng-touched]="f.state.touched" />
 				<label for="state">Departamento</label>
 			</div>
 
 			<div class="form-group">
 				<input type="text" formControlName="city" id="city" placeholder="Ciudad"
-					[class.ng-invalid]="submitted && f.city.errors?.['required']" [class.ng-touched]="f.city.touched" />
+					[class.ng-invalid]="f.city.invalid && f.city.touched" [class.ng-touched]="f.city.touched" />
 				<label for="city">Ciudad</label>
 			</div>
 		</div>
@@ -121,8 +223,7 @@
 		<!-- DIRECCIÓN -->
 		<div class="form-group">
 			<input type="text" formControlName="address" id="address" placeholder="Dirección"
-				[class.ng-invalid]="submitted && f.address.errors?.['required']"
-				[class.ng-touched]="f.address.touched" />
+				[class.ng-invalid]="f.address.invalid && f.address.touched" [class.ng-touched]="f.address.touched" />
 			<label for="address">Dirección</label>
 		</div>
 
