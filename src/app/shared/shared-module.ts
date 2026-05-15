@@ -10,6 +10,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { PackagesCardComponent } from './packages-card/packages-card.component';
 import { FooterComponent } from './footer/footer.component';
 import { PackageDetailSheetComponent } from './package-detail-sheet/package-detail-sheet.component';
+import { CustomCalendarComponent } from './custom-calendar/custom-calendar.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { PackageDetailSheetComponent } from './package-detail-sheet/package-deta
     SearchFilterComponent,
     PackagesCardComponent,
     FooterComponent,
-	PackageDetailSheetComponent
+	PackageDetailSheetComponent,
+	CustomCalendarComponent
   ],
   imports: [
     CommonModule,
@@ -35,6 +37,7 @@ import { PackageDetailSheetComponent } from './package-detail-sheet/package-deta
     MatNativeDateModule,
     PackagesCardComponent,
     FooterComponent,
+	CustomCalendarComponent
   ],
 })
 export class SharedModule {}

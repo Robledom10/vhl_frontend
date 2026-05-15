@@ -1,0 +1,79 @@
+<div class="calendar-dropdown" *ngIf="isOpen" (click)="$event.stopPropagation()">
+
+	<!-- HEADER -->
+	<div class="cal-header">
+
+		<button type="button" (click)="prevMonth()">
+			<i class="fa-solid fa-chevron-left"></i>
+		</button>
+
+		<div class="calendar-title">
+
+			<!-- MES -->
+			<div class="month-selector-wrapper">
+
+				<span class="month-year-btn" (click)="toggleMonthSelector($event)">
+
+					{{ monthName }}
+
+				</span>
+
+				<div class="selector-dropdown" *ngIf="showMonthSelector">
+
+					<div class="selector-option" *ngFor="let month of monthNames; let i = index"
+						(click)="selectMonth(i)">
+
+						{{ month }}
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- AÑO -->
+			<div class="year-selector-wrapper">
+
+				<span class="month-year-btn" (click)="toggleYearSelector($event)">
+
+					{{ currentYear }}
+
+				</span>
+
+				<div class="selector-dropdown" *ngIf="showYearSelector">
+
+					<div class="selector-option" *ngFor="let year of yearRange" (click)="selectYear(year)">
+
+						{{ year }}
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<button type="button" (click)="nextMonth()">
+			<i class="fa-solid fa-chevron-right"></i>
+		</button>
+
+	</div>
+
+	<!-- DÍAS -->
+	<div class="cal-days-header">
+		<span *ngFor="let d of dayNames">{{ d }}</span>
+	</div>
+
+	<!-- GRID -->
+	<div class="cal-grid">
+
+		<span *ngFor="let day of calendarDays" [class.empty]="!day" [class.selected]="isBirthSelected(day)"
+			[class.today]="isToday(day)" [class.disabled]="isFutureDate(day)" (click)="selectBirthDate(day)">
+
+			{{ day || '' }}
+
+		</span>
+
+	</div>
+</div>
