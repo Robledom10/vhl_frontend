@@ -68,12 +68,10 @@ export class RegisterFormComponent {
 
     const request: RegisterRequest = {
       firstName: formValue.firstName!,
-      // middleName: formValue.middleName!,
       lastName: formValue.lastName!,
       email: formValue.email!,
       documentType: formValue.documentType!,
       documentNumber: formValue.documentNumber!,
-      // birthdate: formValue.birthdate!,
       password: formValue.password!,
     };
 

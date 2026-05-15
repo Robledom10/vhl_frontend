@@ -76,11 +76,25 @@ export class ProfileComponent {
   enableEdit() {
     this.isEditing = true;
 
+    const currentUser = this.authService.getUser();
+
+    console.log(currentUser);
+
     this.profileForm.patchValue({
-      firstName: this.user?.firstName || '',
-      lastName: this.user?.lastName || '',
-      email: this.user?.email || '',
+      firstName: currentUser?.firstName || '',
+      lastName: currentUser?.lastName || '',
+      email: currentUser?.email || '',
+      documentType: currentUser?.documentType || '',
+      documentNumber: currentUser?.documentNumber || '',
+      phone: currentUser?.phone || '',
+      birthDate: currentUser?.birthDate || '',
+      state: currentUser?.state || '',
+      city: currentUser?.city || '',
+      address: currentUser?.address || '',
     });
+
+    this.selectedDocumentType = currentUser?.documentType || '';
+    this.selectedBirthDate = currentUser?.birthDate || '';
   }
 
   cancelEdit() {
@@ -91,6 +105,8 @@ export class ProfileComponent {
     this.submitted = false;
   }
 
+  //   Guardar perfil
+
   saveProfile() {
     this.submitted = true;
 
@@ -99,11 +115,27 @@ export class ProfileComponent {
       return;
     }
 
-    console.log(this.profileForm.value);
+    this.authService.updateProfile(this.profileForm.getRawValue()).subscribe({
+      next: () => {
+        const currentUser = this.authService.getUser();
 
-    // PUT AL BACKEND
+        const updatedUser = {
+          ...currentUser,
+          ...this.profileForm.getRawValue(),
+        };
 
-    this.isEditing = false;
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+
+        this.selectedDocumentType = updatedUser.documentType || '';
+        this.selectedBirthDate = updatedUser.birthDate || '';
+
+        this.isEditing = false;
+      },
+
+      error: (err) => {
+        console.error(err);
+      },
+    });
   }
 
   // =========================

@@ -706,4 +706,9 @@
 	margin: 0 auto;
 }
 
+.map{
+	width: 87%;
+	margin: 40px auto 80px;
+}
+
 /* ===== Responsive ===== */

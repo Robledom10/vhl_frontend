@@ -1,5 +1,11 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 
+export interface InfoRow {
+  label: string;
+  value: string;
+  icon: string;
+}
+
 export interface PackageDetail {
   title: string;
   subtitle: string;
@@ -11,6 +17,8 @@ export interface PackageDetail {
   date: string;
   accommodation: string;
   transport: string;
+  mainImage: string;
+  galleryImages?: string[];
   itinerary: { day: string; desc: string }[];
   includes: string[];
   notIncludes: string[];
@@ -38,6 +46,22 @@ export class PackageDetailSheetComponent implements OnChanges {
       this.animating = false;
       setTimeout(() => (this.visible = false), 420);
     }
+  }
+
+  get infoRows(): InfoRow[] {
+    if (!this.package) return [];
+    return [
+      { label: 'Destinos',     value: this.package.destinations,   icon: 'fa-regular fa-map' },
+      { label: 'Duración',     value: this.package.duration,       icon: 'fa-regular fa-clock' },
+      { label: 'Salida desde', value: this.package.departurePlace, icon: 'fa-solid fa-route ' },
+      { label: 'Fecha',        value: this.package.date,           icon: 'fa-regular fa-calendar' },
+      { label: 'Alojamiento',  value: this.package.accommodation,  icon: 'fa-solid fa-bed' },
+      { label: 'Transporte',   value: this.package.transport,      icon: 'fa-solid fa-bus-simple' },
+    ];
+  }
+
+  get galleryImages(): string[] {
+    return this.package?.galleryImages ?? [];
   }
 
   close(): void {
