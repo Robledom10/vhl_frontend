@@ -35,54 +35,6 @@
 			<label for="lastName">Apellido</label>
 		</div>
 
-		<!-- EMAIL -->
-		<div class="form-group full-width">
-			<input type="email" formControlName="email" id="email" placeholder="Correo electrónico"
-				[class.ng-invalid]="f.email.invalid && f.email.touched" [class.ng-touched]="f.email.touched" />
-			<label for="email">Correo electrónico</label>
-
-			<span class="error-message" *ngIf="f.email.touched && f.email.errors?.['email']">Correo inválido</span>
-		</div>
-
-		<!-- TIPO DE DOCUMENTO -->
-		<div class="form-group form-group-small custom-select-group">
-			<div class="custom-select" [class.open]="documentDropdownOpen" [class.selected]="selectedDocumentType"
-				[class.ng-invalid]="f.documentType.invalid && f.documentType.touched"
-				(click)="toggleDocumentDropdown($event)">
-
-				<div class="custom-select-value">{{ selectedDocumentType || 'Tipo documento' }}</div>
-
-				<i class="fa-solid fa-angle-down select-icon"></i>
-
-				<div class="custom-select-dropdown" *ngIf="documentDropdownOpen" (click)="$event.stopPropagation()">
-
-					<div class="custom-option" *ngFor="let option of documentTypes"
-						[class.active]="selectedDocumentType === option"
-						(click)="selectDocumentType(option); $event.stopPropagation()">
-						{{ option }}
-					</div>
-
-				</div>
-			</div>
-
-			<label [class.active]="selectedDocumentType">Tipo documento</label>
-		</div>
-
-		<!-- NÚMERO DE DOCUMENTO -->
-		<div class="form-group form-group-large">
-			<input type="text" formControlName="documentNumber" placeholder="Número documento" id="documentNumber"
-				oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-				[class.ng-invalid]="f.documentNumber.invalid && f.documentNumber.touched"
-				[class.ng-touched]="f.documentNumber.touched" />
-
-			<label for="documentNumber">Número documento</label>
-
-			<span class="error-message"
-				*ngIf="f.documentNumber.touched &&(f.documentNumber.errors?.['minlength'] ||f.documentNumber.errors?.['maxlength'])">
-				Número de documento inválido
-			</span>
-		</div>
-
 		<!-- TELÉFONO -->
 		<div class="form-group">
 			<input type="text" id="phone" formControlName="phone" placeholder="Teléfono"
@@ -108,7 +60,7 @@
 
 			<label [class.active]="selectedBirthDate">Fecha de nacimiento</label>
 
-			<app-custom-calendar [isOpen]="birthCalendarOpen"
+			<app-custom-calendar [isOpen]="birthCalendarOpen" [selectedDate]="selectedBirthDate"
 				(dateSelected)="onDateSelected($event)"></app-custom-calendar>
 
 			<span class="error-message" *ngIf="f.birthDate.touched && f.birthDate.errors?.['minAge']">

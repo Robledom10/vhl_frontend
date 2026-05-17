@@ -1,4 +1,4 @@
-import { Component, HostListener, EventEmitter, Output, Input } from '@angular/core';
+import { Component, HostListener, EventEmitter, Output, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-custom-calendar',
@@ -6,10 +6,12 @@ import { Component, HostListener, EventEmitter, Output, Input } from '@angular/c
   styleUrl: './custom-calendar.component.css',
 })
 
-export class CustomCalendarComponent {
+export class CustomCalendarComponent implements OnChanges {
   @Output() dateSelected = new EventEmitter<string>();
 
   @Input() isOpen = false;
+
+  @Input() selectedDate: string = '';
 
   selectedBirthDate = '';
 
@@ -168,6 +170,18 @@ export class CustomCalendarComponent {
       this.currentMonth === this.today.getMonth() &&
       this.currentYear === this.today.getFullYear()
     );
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedDate'] && this.selectedDate) {
+      const date = new Date(this.selectedDate);
+
+      this.currentMonth = date.getMonth();
+
+      this.currentYear = date.getFullYear();
+
+      this.selectedBirthDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    }
   }
 
   @HostListener('document:click')

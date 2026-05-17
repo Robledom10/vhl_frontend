@@ -93,12 +93,27 @@ export class AuthService {
   }
 
   // =========================
+  // GET PROFILE
+  // =========================
+  getProfile() {
+    return this.http.get(`${this.apiUrl}/profile`, {
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${this.getToken()}`,
+      },
+    });
+  }
+
+  // =========================
   // UPDATE PROFILE
   // =========================
   updateProfile(data: any) {
     return this.http
-      .put(`${this.apiUrl}/complete-profile`, data, {
+      .put(`${this.apiUrl}/profile/update`, data, {
         withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`,
+        },
       })
       .pipe(catchError(this.handleError));
   }
