@@ -62,17 +62,35 @@
 	display: flex;
 	align-items: center;
 	gap: 6px;
+	margin-top: 2px;
 }
 
 .filter-selector span {
-	font-size: 14px;
+	font-size: 15px;
 	color: var(--color-texto-secundario);
-	text-decoration: underline;
 	text-underline-offset: 2px;
+	line-height: 1;
 }
 
+/* =========================
+	CHEVRON
+========================= */
+
 .chevron {
-	text-decoration: none !important;
+	font-size: 11px;
+	color: var(--color-texto-secundario);
+	transition: transform 0.25s ease, color 0.25s ease;
+	transform-origin: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 1px;
+}
+
+/* ROTACIÓN */
+
+.filter-item.active .chevron {
+	transform: rotate(180deg);
 }
 
 .divider {

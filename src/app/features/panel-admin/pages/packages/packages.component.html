@@ -1,1 +1,98 @@
-<p>packages works!</p>
+<div class="packages-container">
+
+	<!-- HEADER -->
+	<div class="top-bar">
+
+		<!-- BUSCADOR -->
+		<div class="search-box">
+			<input type="text" placeholder="Buscar paquete..." />
+
+			<button>
+				<i class="fa-solid fa-magnifying-glass"></i>
+			</button>
+		</div>
+
+		<!-- FILTRO -->
+		<button class="filter-btn">
+			<i class="fa-solid fa-sliders"></i>
+			<span>Filtrar</span>
+		</button>
+
+		<!-- AGREGAR -->
+		<button class="add-btn">
+			<i class="fa-solid fa-plus"></i>
+			<span>Agregar</span>
+		</button>
+	</div>
+
+	<!-- TABLA -->
+	<div class="table-container">
+		<table>
+			<thead>
+				<tr>
+					<th></th>
+					<th>Paquete</th>
+					<th>Destino (s)</th>
+					<th>Duración</th>
+					<th>Fecha</th>
+					<th>Precio</th>
+					<th>Cupos</th>
+					<th>Estado</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr *ngFor="let item of packages" [class.row-inactive]="item.status === 'inactivo'">
+
+					<td>
+						<img [src]="item.imageUrl" alt="">
+					</td>
+
+					<td>{{ item.name }}</td>
+
+					<td>{{ item.location }}</td>
+
+					<td>{{ item.duration }}</td>
+
+					<td>{{ item.date }}</td>
+
+					<td>{{ item.price | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+
+					<td>{{ item.capacity }}</td>
+
+					<td>
+						<span class="status" [class.active]="item.status === 'activo'"
+							[class.inactive]="item.status === 'inactivo'">
+							{{ item.status === 'activo' ? 'Activo' : 'Inactivo' }}
+						</span>
+					</td>
+
+					<td>
+						<div class="actions">
+							<button class="view" (click)="openDetail(item); $event.stopPropagation()">
+								<i class="fa-regular fa-eye"></i>
+							</button>
+							<button class="edit">Editar</button>
+							<button class="delete" (click)="openDeleteModal(item)">Eliminar</button>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<app-package-detail-sheet [isOpen]="sheetOpen" [package]="selectedPackageDetail"
+	(closed)="closeDetail()"></app-package-detail-sheet>
+
+<app-confirm-modal [isOpen]="showDeleteModal" title="Eliminar paquete"
+	message="Esta acción eliminará toda la información del paquete." confirmText="Eliminar" cancelText="Cancelar"
+	icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b" iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b"
+	(confirmed)="confirmDelete()" (closed)="closeDeleteModal()">
+
+</app-confirm-modal>
+
+<app-toast-notification [show]="showToast" title="Paquete eliminado con éxito"
+	[message]="'El paquete ' + selectedPackage?.name + ' fue eliminado correctamente.'">
+</app-toast-notification>

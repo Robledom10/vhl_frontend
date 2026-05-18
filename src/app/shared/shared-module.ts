@@ -37,6 +37,7 @@ import { CustomCalendarComponent } from './custom-calendar/custom-calendar.compo
     MatNativeDateModule,
     PackagesCardComponent,
     FooterComponent,
+	PackageDetailSheetComponent,
 	CustomCalendarComponent
   ],
 })

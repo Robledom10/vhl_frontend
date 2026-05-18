@@ -1,0 +1,298 @@
+.users-container {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+/* =========================
+	TOP BAR
+========================= */
+
+.top-bar {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	flex-wrap: wrap;
+}
+
+.search-box {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	background: white;
+	border: 1px solid #e5e5e5;
+	border-radius: 18px;
+	padding: 0 0 0 18px;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.search-box input {
+	flex: 1;
+	border: none;
+	outline: none;
+	font-size: 16px;
+	font-family: "Outfit", sans-serif;
+	color: var(--color-texto-principal);
+	background: transparent;
+}
+
+.search-box button {
+	width: 45px;
+	height: 42px;
+	border: none;
+	border-radius: 18px;
+	background: transparent;
+	cursor: pointer;
+	font-size: 16px;
+	color: var(--color-texto-secundario);
+	transition: all 0.2s ease;
+}
+
+.search-box button:hover {
+	background: var(--color-fondo-iconos);
+	color: var(--color-primario);
+}
+
+/* =========================
+	FILTER
+========================= */
+
+.filter-wrapper {
+	position: relative;
+}
+
+.filter-btn,
+.add-btn {
+	height: 42px;
+	padding: 0 22px;
+	border-radius: 25px;
+	border: 1px solid var(--bordes);
+	background: white;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	cursor: pointer;
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	transition: all 0.25s ease;
+	color: var(--color-texto-secundario);
+}
+
+.filter-btn:hover,
+.add-btn:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.filter-btn i,
+.add-btn i {
+	font-size: 14px;
+}
+
+.filter-content {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.arrow {
+	font-size: 12px;
+	transition: all 0.25s ease;
+}
+
+.arrow.rotate {
+	transform: rotate(180deg);
+}
+
+/* =========================
+	DROPDOWN
+========================= */
+
+.dropdown {
+	position: absolute;
+	top: 52px;
+	left: 0;
+	width: 100%;
+	min-width: 180px;
+	background: white;
+	border: 1px solid var(--bordes);
+	border-radius: 18px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+	padding: 8px;
+	z-index: 999;
+	animation: fadeDropdown 0.2s ease;
+}
+
+.dropdown-item {
+	padding: 12px 14px;
+	border-radius: 14px;
+	font-size: 14px;
+	font-family: "Outfit", sans-serif;
+	color: var(--color-texto-secundario);
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+	background: rgba(63, 162, 219, 0.08);
+	color: var(--color-primario);
+}
+
+/* =========================
+	ADD BUTTON
+========================= */
+
+.add-btn {
+	background: var(--color-primario);
+	color: white;
+	border: none;
+}
+
+/* =========================
+	TABLA
+========================= */
+
+.table-container {
+	width: 100%;
+}
+
+table {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0 14px;
+}
+
+thead th {
+	text-align: center;
+	font-size: 15px;
+	font-weight: 500;
+	color: var(--color-primario);
+	padding: 0 14px;
+}
+
+tbody tr {
+	background: white;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	border-radius: 18px;
+	transition: all 0.25s ease;
+}
+
+tbody tr:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+tbody td {
+	padding: 16px 14px;
+	font-size: 16px;
+	color: var(--color-texto-secundario);
+	text-align: center;
+}
+
+tbody td:first-child {
+	border-radius: 18px 0 0 18px;
+}
+
+tbody td:last-child {
+	border-radius: 0 18px 18px 0;
+}
+
+tbody img {
+	width: 52px;
+	height: 52px;
+	object-fit: cover;
+	border-radius: 100%;
+}
+
+/* =========================
+	STATUS
+========================= */
+
+.status {
+	padding: 7px 14px;
+	border-radius: 999px;
+	font-size: 14px;
+	font-weight: 500;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.status.active {
+	background: rgba(45, 206, 137, 0.12);
+	color: #22a06b;
+}
+
+.status.inactive {
+	background: rgba(255, 59, 59, 0.12);
+	color: #ff3b3b;
+}
+
+.row-inactive {
+	opacity: 0.65;
+	filter: grayscale(0.2);
+}
+
+/* =========================
+	ACTIONS
+========================= */
+
+.actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+}
+
+.actions button {
+	border: none;
+	border-radius: 20px;
+	cursor: pointer;
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	transition: all 0.2s ease;
+}
+
+.actions button:hover {
+	transform: translateY(-1px);
+}
+
+.actions .view {
+	width: 36px;
+	height: 36px;
+	background: rgba(63, 162, 219, 0.12);
+	color: var(--color-primario);
+	border-radius: 12px;
+}
+
+.actions .edit {
+	padding: 10px 16px;
+	background: rgba(255, 193, 7, 0.3);
+	color: #c99700;
+	width: 35%;
+}
+
+.actions .delete {
+	padding: 10px 16px;
+	background: rgba(255, 59, 59, 0.12);
+	color: #ff3b3b;
+	width: 35%;
+}
+
+/* =========================
+	ANIMATIONS
+========================= */
+
+@keyframes fadeDropdown {
+	from {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}

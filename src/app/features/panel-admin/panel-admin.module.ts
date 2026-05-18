@@ -14,7 +14,9 @@ import { MessagesComponent } from './pages/messages/messages.component';
 import { OffersComponent } from './pages/offers/offers.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { RouterModule } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
+import { ToastNotificationComponent } from './components/toast-notification/toast-notification.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MessagesComponent,
     OffersComponent,
     ProfileComponent,
+    ConfirmModalComponent,
+    ToastNotificationComponent,
   ],
   imports: [
     CommonModule,
@@ -36,6 +40,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     SharedModule,
     RouterModule,
     ReactiveFormsModule,
+	FormsModule
   ],
 })
 export class PanelAdminModule {}

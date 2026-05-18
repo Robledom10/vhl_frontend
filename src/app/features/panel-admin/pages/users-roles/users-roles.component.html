@@ -1,1 +1,100 @@
-<p>users-roles works!</p>
+<div class="users-container">
+
+	<!-- TOP BAR -->
+	<div class="top-bar">
+
+		<!-- SEARCH -->
+		<div class="search-box">
+			<input type="text" placeholder="Buscar" [(ngModel)]="search">
+			<button>
+				<i class="fa-solid fa-magnifying-glass"></i>
+			</button>
+		</div>
+
+		<!-- FILTER -->
+		<div class="filter-wrapper">
+			<button class="filter-btn" (click)="toggleDropdown()">
+				<div class="filter-content">
+					<i class="fa-solid fa-sliders"></i>
+					<span>{{ selectedRole }}</span>
+				</div>
+
+				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="dropdownOpen"></i>
+			</button>
+
+			<div class="dropdown" *ngIf="dropdownOpen">
+				<div class="dropdown-item" *ngFor="let role of roles" (click)="selectRole(role)">
+					{{ role }}
+				</div>
+			</div>
+		</div>
+
+		<!-- ADD -->
+		<button class="add-btn">
+			<i class="fa-solid fa-plus"></i>
+			<span>Agregar</span>
+		</button>
+	</div>
+
+	<!-- TABLE -->
+	<div class="table-container">
+		<table>
+			<thead>
+				<tr>
+					<th></th>
+					<th>Nombre</th>
+					<th>Correo Electrónico</th>
+					<th>Rol</th>
+					<th>Estado</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr *ngFor="let user of filteredUsers">
+
+					<td>
+						<img [src]="user.image">
+					</td>
+
+					<td>{{ user.name }}</td>
+
+					<td>{{ user.email }}</td>
+
+					<td>{{ user.role }}</td>
+
+					<td>
+						<span class="status active">
+							{{ user.status }}
+						</span>
+					</td>
+
+					<td>
+						<div class="actions">
+							<button class="view">
+								<i class="fa-regular fa-eye"></i>
+							</button>
+							<button class="edit">Editar</button>
+							<button class="delete" (click)="openDeleteModal(user)">Eliminar</button>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<!-- MODAL ELIMINAR -->
+
+<app-confirm-modal [isOpen]="showDeleteModal" title="Eliminar usuario"
+	[message]="'¿Estás seguro de que deseas eliminar el usuario ' + selectedUser?.name + '?'"
+	description="Esta acción desactivará el usuario del sistema." confirmText="Eliminar" cancelText="Cancelar"
+	icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b" iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b"
+	(confirmed)="confirmDelete()" (closed)="closeDeleteModal()">
+</app-confirm-modal>
+
+<!-- TOAST -->
+
+<app-toast-notification [show]="showToast" type="success" title="Usuario eliminado"
+	[message]="'El usuario ' + selectedUser?.name + ' fue desactivado correctamente.'">
+</app-toast-notification>

@@ -2,7 +2,7 @@
 	<div class="filter-bar">
 
 		<!-- FECHA -->
-		<div class="filter-item" (click)="toggleCalendar($event)">
+		<div class="filter-item" [class.active]="calendarOpen" (click)="toggleCalendar($event)">
 			<div class="filter-icon">
 				<i class="fa-regular fa-calendar"></i>
 			</div>
@@ -12,8 +12,7 @@
 
 				<div class="filter-selector">
 					<span>{{selectedMonth !== null? months[selectedMonth] + ' ' + selectedYear: 'Todos'}}</span>
-
-					<span class="chevron">&#8964;</span>
+					<i class="fa-solid fa-chevron-down chevron"></i>
 				</div>
 			</div>
 
@@ -43,7 +42,7 @@
 		<div class="divider"></div>
 
 		<!-- SITIO -->
-		<div class="filter-item" (click)="toggleDropdown('site', $event)">
+		<div class="filter-item" [class.active]="siteOpen" (click)="toggleDropdown('site', $event)">
 			<div class="filter-icon">
 				<i class="fa-regular fa-map"></i>
 			</div>
@@ -53,7 +52,7 @@
 
 				<div class="filter-selector">
 					<span>{{ selectedSite || 'Todos' }}</span>
-					<span class="chevron">&#8964;</span>
+					<i class="fa-solid fa-chevron-down chevron"></i>
 				</div>
 			</div>
 
@@ -68,7 +67,7 @@
 		<div class="divider"></div>
 
 		<!-- ACTIVIDAD -->
-		<div class="filter-item" (click)="toggleDropdown('act', $event)">
+		<div class="filter-item" [class.active]="actOpen" (click)="toggleDropdown('act', $event)">
 			<div class="filter-icon">
 				<i class="fa-regular fa-compass"></i>
 			</div>
@@ -78,7 +77,7 @@
 
 				<div class="filter-selector">
 					<span>{{ selectedActivity || 'Todos' }}</span>
-					<span class="chevron">&#8964;</span>
+					<i class="fa-solid fa-chevron-down chevron"></i>
 				</div>
 			</div>
 

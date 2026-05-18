@@ -8,7 +8,6 @@ import { minimumAgeValidator } from '../../../../core/validators/custom.validato
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
-
 export class ProfileComponent implements OnInit {
   // Calendario
   birthCalendarOpen = false;
@@ -17,6 +16,9 @@ export class ProfileComponent implements OnInit {
   // Funcionamiento del form
   isEditing = false;
   submitted = false;
+
+  // Modal de confirmación
+  showConfirmModal = false;
 
   ngOnInit(): void {
     this.loadProfile();
@@ -96,7 +98,7 @@ export class ProfileComponent implements OnInit {
   cancelEdit() {
     this.isEditing = false;
 
-    this.profileForm.reset();
+    this.loadProfile();
 
     this.submitted = false;
   }
@@ -113,6 +115,10 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
+    this.showConfirmModal = true;
+  }
+
+  confirmSaveProfile() {
     this.authService.updateProfile(this.profileForm.getRawValue()).subscribe({
       next: (updatedUser: any) => {
         localStorage.setItem('user', JSON.stringify(updatedUser));
@@ -120,12 +126,20 @@ export class ProfileComponent implements OnInit {
         this.selectedBirthDate = updatedUser.birthDate || '';
 
         this.isEditing = false;
+
+        this.showConfirmModal = false;
       },
 
       error: (err) => {
         console.error(err);
+
+        this.showConfirmModal = false;
       },
     });
+  }
+
+  closeConfirmModal() {
+    this.showConfirmModal = false;
   }
 
   // =========================
