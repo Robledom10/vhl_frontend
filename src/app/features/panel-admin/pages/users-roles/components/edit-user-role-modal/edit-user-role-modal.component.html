@@ -1,0 +1,61 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="closeModal()">
+
+	<div class="edit-modal" (click)="closeDropdown(); $event.stopPropagation()">
+		<div class="modal-header">
+			<h2>Editar Rol</h2>
+
+			<button class="close-btn" (click)="closeModal()">
+				<i class="fa-solid fa-xmark"></i>
+			</button>
+		</div>
+
+		<form [formGroup]="roleForm">
+
+			<div class="form-group">
+				<input type="text" [value]="user?.name" readonly />
+				<label class="active">Nombre</label>
+			</div>
+
+			<div class="form-group">
+				<input type="text" [value]="user?.email" readonly />
+				<label class="active">Correo</label>
+			</div>
+
+			<div class="form-group custom-select-group">
+
+				<div class="custom-select" [class.open]="roleDropdownOpen" (click)="toggleRoleDropdown($event)">
+
+					<div class="custom-select-value">
+						{{ selectedRole || 'Selecciona un rol' }}
+					</div>
+
+					<i class="fa-solid fa-angle-down select-icon"></i>
+
+					<div class="custom-select-dropdown" *ngIf="roleDropdownOpen" (click)="$event.stopPropagation()">
+						<div class="custom-option" *ngFor="let role of roles" [class.active]="selectedRole === role"
+							(click)="selectRole(role, $event)">
+							{{ role }}
+						</div>
+
+					</div>
+				</div>
+
+				<label [class.active]="selectedRole">
+					Rol
+				</label>
+			</div>
+
+			<div class="modal-actions">
+
+				<button type="button" class="btn-cancel" (click)="closeModal()">
+					Cancelar
+				</button>
+
+				<button type="button" class="btn-save" (click)="updateRole()">
+					Guardar
+				</button>
+			</div>
+
+		</form>
+	</div>
+</div>

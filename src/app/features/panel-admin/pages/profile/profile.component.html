@@ -69,17 +69,59 @@
 		</div>
 
 		<!-- DEPARTAMENTO -->
-		<div class="form-group">
-			<input type="text" formControlName="state" id="state" placeholder="Departamento"
-				[class.ng-invalid]="f.state.invalid && f.state.touched" [class.ng-touched]="f.state.touched" />
-			<label for="state">Departamento</label>
+		<div class="form-group custom-select-group">
+
+			<div class="custom-select" [class.open]="departmentDropdownOpen" [class.selected]="selectedDepartment"
+				[class.invalid]="f.state.invalid && f.state.touched" (click)="toggleDepartmentDropdown($event)">
+
+				<div class="custom-select-value">
+					{{ selectedDepartment }}
+				</div>
+
+				<i class="fa-solid fa-angle-down select-icon"></i>
+
+				<div class="custom-select-dropdown" *ngIf="departmentDropdownOpen" (click)="$event.stopPropagation()">
+
+					<div class="custom-option" *ngFor="let department of departments"
+						[class.active]="selectedDepartment === department"
+						(click)="selectDepartment(department); $event.stopPropagation()">
+
+						{{ department }}
+					</div>
+				</div>
+			</div>
+
+			<label [class.active]="selectedDepartment">
+				Departamento
+			</label>
 		</div>
 
 		<!-- CIUDAD -->
-		<div class="form-group">
-			<input type="text" formControlName="city" id="city" placeholder="Ciudad"
-				[class.ng-invalid]="f.city.invalid && f.city.touched" [class.ng-touched]="f.city.touched" />
-			<label for="city">Ciudad</label>
+		<div class="form-group custom-select-group">
+
+			<div class="custom-select" [class.open]="cityDropdownOpen" [class.selected]="selectedCity"
+				[class.disabled]="!selectedDepartment" (click)="toggleCityDropdown($event)">
+
+				<div class="custom-select-value">
+					{{ selectedCity }}
+				</div>
+
+				<i class="fa-solid fa-angle-down select-icon"></i>
+
+				<div class="custom-select-dropdown" *ngIf="cityDropdownOpen && selectedDepartment"
+					(click)="$event.stopPropagation()">
+
+					<div class="custom-option" *ngFor="let city of cities" [class.active]="selectedCity === city"
+						(click)="selectCity(city); $event.stopPropagation()">
+
+						{{ city }}
+					</div>
+				</div>
+			</div>
+
+			<label [class.active]="selectedCity">
+				Ciudad
+			</label>
 		</div>
 
 		<!-- DIRECCIÓN -->

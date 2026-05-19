@@ -74,7 +74,7 @@
 							<button class="view">
 								<i class="fa-regular fa-eye"></i>
 							</button>
-							<button class="edit">Editar</button>
+							<button class="edit" (click)="openEditModal(user)">Editar</button>
 							<button class="delete" (click)="openDeleteModal(user)">Eliminar</button>
 						</div>
 					</td>
@@ -98,3 +98,9 @@
 <app-toast-notification [show]="showToast" type="success" title="Usuario eliminado"
 	[message]="'El usuario ' + selectedUser?.name + ' fue desactivado correctamente.'">
 </app-toast-notification>
+
+<!-- Modal editar role usuario -->
+
+<app-edit-user-role-modal [isOpen]="showEditModal" [user]="selectedUser" (closed)="closeEditModal()"
+	(updated)="onRoleUpdated($event)">
+</app-edit-user-role-modal>

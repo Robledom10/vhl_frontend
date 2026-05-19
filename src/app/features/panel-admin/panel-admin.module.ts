@@ -17,6 +17,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
 import { ToastNotificationComponent } from './components/toast-notification/toast-notification.component';
+import { EditUserRoleModalComponent } from './pages/users-roles/components/edit-user-role-modal/edit-user-role-modal.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { ToastNotificationComponent } from './components/toast-notification/toas
     ProfileComponent,
     ConfirmModalComponent,
     ToastNotificationComponent,
+    EditUserRoleModalComponent,
   ],
   imports: [
     CommonModule,

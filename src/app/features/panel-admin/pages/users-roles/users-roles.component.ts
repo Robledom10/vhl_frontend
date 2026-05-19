@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { UserItem } from './models/user.model';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-users-roles',
@@ -27,40 +28,62 @@ export class UsersRolesComponent {
 
   showToast = false;
 
+  showEditModal = false;
+
   selectedUser: UserItem | null = null;
 
   // =========================
   // USERS
   // =========================
 
-  users: UserItem[] = [
-    {
-      id: 1,
-      image: 'https://i.pravatar.cc/100?img=1',
-      name: 'Camila Perez',
-      email: 'camilitap@gmail.com',
-      role: 'Admin',
-      status: 'Activo',
-    },
+  users: UserItem[] = [];
 
-    {
-      id: 2,
-      image: 'https://i.pravatar.cc/100?img=2',
-      name: 'Juan Ceballo',
-      email: 'juansito@gmail.com',
-      role: 'Admin',
-      status: 'Activo',
-    },
+  constructor(private authService: AuthService) {}
 
-    {
-      id: 3,
-      image: 'https://i.pravatar.cc/100?img=3',
-      name: 'Laura Gómez',
-      email: 'laura@gmail.com',
-      role: 'Cliente',
-      status: 'Activo',
-    },
-  ];
+  ngOnInit(): void {
+    this.loadUsers();
+  }
+
+  // =========================
+  // LOAD USERS
+  // =========================
+
+  loadUsers(): void {
+    this.authService.getAllUsers().subscribe({
+      next: (response: any[]) => {
+        this.users = response.map((user) => ({
+          id: user.id,
+          image:
+            user.image || `https://ui-avatars.com/api/?name=${user.firstName}`,
+          name: `${user.firstName} ${user.lastName}`,
+          email: user.email,
+
+          // AQUI EL FIX
+          role: this.mapRole(user.role),
+
+          status: user.status ? 'Activo' : 'Inactivo',
+        }));
+      },
+
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
+
+  // =========================
+  // MAP ROLE
+  // =========================
+
+  mapRole(role: string): string {
+    const roleMap: any = {
+      ROLE_ADMIN: 'Admin',
+      ROLE_CLIENT: 'Cliente',
+      ROLE_GUIDE: 'Guía Turístico',
+    };
+
+    return roleMap[role] || role;
+  }
 
   // =========================
   // FILTERED USERS
@@ -89,6 +112,7 @@ export class UsersRolesComponent {
 
   selectRole(role: string): void {
     this.selectedRole = role;
+
     this.dropdownOpen = false;
   }
 
@@ -98,6 +122,7 @@ export class UsersRolesComponent {
 
   openDeleteModal(user: UserItem): void {
     this.selectedUser = user;
+
     this.showDeleteModal = true;
   }
 
@@ -117,5 +142,29 @@ export class UsersRolesComponent {
     setTimeout(() => {
       this.showToast = false;
     }, 3000);
+  }
+
+  // =========================
+  // EDIT MODAL
+  // =========================
+
+  openEditModal(user: UserItem): void {
+    this.selectedUser = user;
+
+    this.showEditModal = true;
+  }
+
+  closeEditModal(): void {
+    this.showEditModal = false;
+  }
+
+  onRoleUpdated(updatedUser: UserItem): void {
+    const index = this.users.findIndex((user) => user.id === updatedUser.id);
+
+    if (index !== -1) {
+      this.users[index] = updatedUser;
+    }
+
+    this.showEditModal = false;
   }
 }

@@ -119,6 +119,32 @@ export class AuthService {
   }
 
   // =========================
+  // USERS
+  // =========================
+
+  getAllUsers() {
+    return this.http.get<any[]>(`${environment.apiUrl}/admin/users`, {
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${this.getToken()}`,
+      },
+    });
+  }
+
+  // =========================
+  // ASSIGN ROLE
+  // =========================
+
+  assignRole(data: any) {
+    return this.http.post(`${environment.apiUrl}/admin/roles/assign`, data, {
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${this.getToken()}`,
+      },
+    });
+  }
+
+  // =========================
   // LIMPIAR SESIÓN
   // =========================
   clearSession(): void {

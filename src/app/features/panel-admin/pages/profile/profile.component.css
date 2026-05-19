@@ -173,7 +173,7 @@
 .form-group input:not(:placeholder-shown)+label {
 	top: -2px;
 	left: 12px;
-	font-size: 11px;
+	font-size: 12px;
 	color: var(--color-primario);
 }
 
@@ -273,4 +273,153 @@
 		opacity: 1;
 		transform: translateY(0);
 	}
+}
+
+/* =========================
+	CUSTOM SELECT
+========================= */
+
+.custom-select-group {
+	position: relative;
+}
+
+.custom-select {
+	position: relative;
+	width: 100%;
+	border: 1px solid var(--color-iconos);
+	border-radius: 25px;
+	background: var(--color-fondo);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 16px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-sizing: border-box;
+	height: 41.6px;
+}
+
+.custom-select:hover {
+	border-color: var(--color-primario);
+}
+
+.custom-select.open,
+.custom-select.selected {
+	border-color: var(--color-primario);
+}
+
+.custom-select.invalid {
+	border-color: var(--color-error);
+}
+
+.custom-select.disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.custom-select-value {
+	font-size: 13px;
+	font-family: "Outfit", sans-serif;
+	color: var(--color-texto-secundario);
+	flex: 1;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: flex;
+	align-items: center;
+	height: 100%;
+}
+
+.select-icon {
+	font-size: 12px;
+	color: var(--color-texto-secundario);
+	transition: transform 0.3s ease;
+	opacity: 0.7;
+}
+
+.custom-select.open .select-icon {
+	transform: rotate(180deg);
+	color: var(--color-primario);
+	opacity: 1;
+}
+
+.custom-select:hover .select-icon,
+.custom-select.selected .select-icon {
+	color: var(--color-primario);
+	opacity: 1;
+}
+
+.custom-select.invalid .select-icon {
+	color: var(--color-error);
+	opacity: 1;
+}
+
+/* LABEL */
+
+.custom-select-group label {
+	position: absolute;
+	left: 16px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: var(--color-texto-secundario);
+	font-size: 13px;
+	pointer-events: none;
+	transition: all 0.3s ease;
+	background: var(--color-fondo);
+	padding: 0 4px;
+}
+
+.custom-select-group label.active {
+	top: -2px;
+	left: 12px;
+	font-size: 12px;
+	color: var(--color-primario);
+}
+
+.custom-select.invalid~label {
+	color: var(--color-error);
+}
+
+/* DROPDOWN */
+
+.custom-select-dropdown {
+	position: absolute;
+	top: calc(100% + 10px);
+	left: 0;
+	width: 100%;
+	background: white;
+	border-radius: 18px;
+	border: 1px solid #e8e7e7;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+	overflow: hidden;
+	z-index: 999;
+	animation: fadeIn 0.2s ease;
+	max-height: 240px;
+	overflow-y: auto;
+}
+
+.custom-option {
+	padding: 14px 18px;
+	font-size: 13px;
+	font-family: "Outfit", sans-serif;
+	color: var(--color-texto-secundario);
+	cursor: pointer;
+	transition: all 0.2s ease;
+	border-bottom: 1px solid #f1f1f1;
+	background: white;
+}
+
+.custom-option:last-child {
+	border-bottom: none;
+}
+
+.custom-option:hover {
+	background: rgba(63, 162, 219, 0.12);
+	color: var(--color-primario);
+}
+
+.custom-option.active {
+	background: rgba(63, 162, 219, 0.18);
+	color: var(--color-primario);
+	font-weight: 500;
 }

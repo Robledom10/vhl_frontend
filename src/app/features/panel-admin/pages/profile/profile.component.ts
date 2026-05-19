@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { AuthService } from '../../../../core/services/auth.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { minimumAgeValidator } from '../../../../core/validators/custom.validators';
+import colombiaData from '../../../../../assets/data/colombia.json';
 
 @Component({
   selector: 'app-profile',
@@ -10,18 +11,35 @@ import { minimumAgeValidator } from '../../../../core/validators/custom.validato
 })
 export class ProfileComponent implements OnInit {
   // Calendario
+
   birthCalendarOpen = false;
   selectedBirthDate = '';
 
   // Funcionamiento del form
+
   isEditing = false;
   submitted = false;
 
   // Modal de confirmación
+
   showConfirmModal = false;
+
+  //  Dropdowns de departamento y ciudad
+
+  departmentDropdownOpen = false;
+  cityDropdownOpen = false;
+
+  selectedDepartment = '';
+  selectedCity = '';
+
+  departments: string[] = [];
+
+  cities: string[] = [];
 
   ngOnInit(): void {
     this.loadProfile();
+
+    this.departments = colombiaData.colombia.map((item) => item.departamento);
   }
 
   constructor(
@@ -83,6 +101,19 @@ export class ProfileComponent implements OnInit {
         });
 
         this.selectedBirthDate = user.birthDate || '';
+
+        // Departamento
+        this.selectedDepartment = user.state || '';
+
+        // Cargar ciudades del departamento
+        const foundDepartment = colombiaData.colombia.find(
+          (item) => item.departamento === this.selectedDepartment,
+        );
+
+        this.cities = foundDepartment?.municipios || [];
+
+        // Ciudad
+        this.selectedCity = user.city || '';
       },
 
       error: (err) => {
@@ -164,6 +195,62 @@ export class ProfileComponent implements OnInit {
     this.birthCalendarOpen = !this.birthCalendarOpen;
   }
 
+  //   Para cambiar de departamento y cargar las ciudades correspondientes
+  onDepartmentChange(department: string): void {
+    const foundDepartment = colombiaData.colombia.find(
+      (item) => item.departamento === department,
+    );
+
+    this.cities = foundDepartment?.municipios || [];
+  }
+
+  toggleDepartmentDropdown(event: Event) {
+    event.stopPropagation();
+
+    this.departmentDropdownOpen = !this.departmentDropdownOpen;
+
+    this.cityDropdownOpen = false;
+  }
+
+  selectDepartment(department: string) {
+    this.selectedDepartment = department;
+
+    this.profileForm.patchValue({
+      state: department,
+      city: '',
+    });
+
+    this.selectedCity = '';
+
+    this.onDepartmentChange(department);
+
+    this.f.state.markAsTouched();
+
+    this.departmentDropdownOpen = false;
+  }
+
+  toggleCityDropdown(event: Event) {
+    event.stopPropagation();
+
+    if (!this.selectedDepartment) return;
+
+    this.cityDropdownOpen = !this.cityDropdownOpen;
+
+    this.departmentDropdownOpen = false;
+  }
+
+  selectCity(city: string) {
+    this.selectedCity = city;
+
+    this.profileForm.patchValue({
+      city,
+    });
+
+    this.f.city.markAsTouched();
+
+    this.cityDropdownOpen = false;
+  }
+
   // =========================
   // CLOSE DROPDOWNS
   // =========================
@@ -171,5 +258,9 @@ export class ProfileComponent implements OnInit {
   @HostListener('document:click')
   closeDropdowns(): void {
     this.birthCalendarOpen = false;
+
+    this.departmentDropdownOpen = false;
+
+    this.cityDropdownOpen = false;
   }
 }
