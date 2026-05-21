@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SharedModule } from '../../shared/shared-module';
+import { SharedModule } from '../../shared/shared.module';
 import { PanelAdminRoutingModule } from './panel-admin-routing.module';
 import { PanelAdmin } from './panel-admin';
 import { NavbarPanelAdminComponent } from './components/navbar-panel-admin/navbar-panel-admin.component';
@@ -18,6 +18,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
 import { ToastNotificationComponent } from './components/toast-notification/toast-notification.component';
 import { EditUserRoleModalComponent } from './pages/users-roles/components/edit-user-role-modal/edit-user-role-modal.component';
+import { ViewUserModalComponent } from './pages/users-roles/components/view-user-modal/view-user-modal.component';
+import { CreateUserModalComponent } from './pages/users-roles/components/create-user-modal/create-user-modal.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +37,8 @@ import { EditUserRoleModalComponent } from './pages/users-roles/components/edit-
     ConfirmModalComponent,
     ToastNotificationComponent,
     EditUserRoleModalComponent,
+    ViewUserModalComponent,
+    CreateUserModalComponent,
   ],
   imports: [
     CommonModule,

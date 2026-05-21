@@ -1,0 +1,452 @@
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.45);
+	backdrop-filter: blur(4px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	z-index: 9999;
+}
+
+.create-user-modal {
+	width: 100%;
+	max-width: 520px;
+	background: var(--color-fondo);
+	border-radius: 24px;
+	padding: 40px;
+	border: 1px solid var(--bordes);
+	box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+	box-sizing: border-box;
+}
+
+/* Form */
+
+.form-register {
+	padding: 30px 24px;
+	margin: 20px auto;
+}
+
+.form-register .logo {
+	text-align: center;
+}
+
+.form-register .logo img {
+	width: 65px;
+}
+
+.form-register h1 {
+	font-size: 22px;
+	font-weight: 600;
+	color: var(--color-texto-principal);
+	text-align: center;
+	margin: 20px 0;
+}
+
+.form-register p {
+	font-size: 13px;
+	color: var(--color-texto-secundario);
+	margin: 15px 0 30px;
+	text-align: center;
+}
+
+.form-register form {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.form-row {
+	display: flex;
+	gap: 12px;
+	width: 100%;
+}
+
+.form-group-small {
+	flex: 0 0 45%;
+}
+
+.form-group-large {
+	flex: 1;
+}
+
+.form-group {
+	position: relative;
+	width: 100%;
+	margin-bottom: 35px;
+}
+
+.form-group input {
+	width: 100%;
+	padding: 10px 16px;
+	border: 1px solid var(--color-iconos);
+	border-radius: 25px;
+	font-size: 13px;
+	color: var(--color-texto-secundario);
+	outline: none;
+	transition: all 0.3s ease;
+	box-sizing: border-box;
+	font-family: "Outfit", sans-serif;
+	background-color: var(--color-fondo);
+}
+
+.form-group input:focus {
+	border-color: var(--color-primario);
+}
+
+.form-group input::placeholder {
+	color: transparent;
+}
+
+/* =========================
+	CUSTOM SELECT
+========================= */
+
+.custom-select-group {
+	position: relative;
+}
+
+.custom-select {
+	position: relative;
+	width: 100%;
+	border: 1px solid var(--color-iconos);
+	border-radius: 25px;
+	background: var(--color-fondo);
+	display: flex;
+	align-items: center;
+	padding: 10px 16px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-sizing: border-box;
+}
+
+.custom-select:hover {
+	border-color: var(--color-primario);
+}
+
+.custom-select.open,
+.custom-select.selected {
+	border-color: var(--color-primario);
+}
+
+.custom-select.invalid {
+	border-color: var(--color-error);
+}
+
+.custom-select-value {
+	font-size: 13px;
+	font-family: "Outfit", sans-serif;
+	color: var(--color-texto-secundario);
+	flex: 1;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.custom-select.selected .custom-select-value {
+	color: var(--color-texto-secundario);
+}
+
+.select-icon {
+	font-size: 12px;
+	color: var(--color-texto-secundario);
+	transition: transform 0.3s ease;
+	flex-shrink: 0;
+	margin-right: 2px;
+	opacity: 0.7;
+}
+
+.custom-select.open .select-icon {
+	transform: rotate(180deg);
+	color: var(--color-primario);
+	opacity: 1;
+}
+
+.custom-select.selected .select-icon,
+.custom-select:hover .select-icon {
+	color: var(--color-primario);
+	opacity: 1;
+}
+
+.custom-select.invalid .select-icon {
+	color: var(--color-error);
+	opacity: 1;
+}
+
+/* =========================
+	LABEL
+========================= */
+
+.custom-select-group label {
+	position: absolute;
+	left: 16px;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 13px;
+	color: var(--color-texto-secundario);
+	pointer-events: none;
+	transition: all 0.3s ease;
+	background: var(--color-fondo);
+	padding: 0 4px;
+}
+
+.custom-select-group label.active {
+	top: -2px;
+	left: 12px;
+	font-size: 11px;
+	color: var(--color-primario);
+}
+
+.custom-select.invalid~label {
+	color: var(--color-error);
+}
+
+/* =========================
+	DROPDOWN
+========================= */
+
+.custom-select-dropdown {
+	position: absolute;
+	top: calc(100% + 10px);
+	left: 0;
+	width: 100%;
+	background: white;
+	border-radius: 18px;
+	border: 1px solid #e8e7e7;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+	overflow: hidden;
+	z-index: 999;
+	animation: fadeIn 0.2s ease;
+}
+
+.custom-option {
+	padding: 14px 18px;
+	font-size: 13px;
+	font-family: "Outfit", sans-serif;
+	color: var(--color-texto-secundario);
+	cursor: pointer;
+	transition: all 0.2s ease;
+	border-bottom: 1px solid #f1f1f1;
+	background: white;
+}
+
+.custom-option:last-child {
+	border-bottom: none;
+}
+
+.custom-option:hover {
+	background: rgba(63, 162, 219, 0.12);
+	color: var(--color-primario);
+}
+
+.custom-option.active {
+	background: rgba(63, 162, 219, 0.18);
+	color: var(--color-primario);
+	font-weight: 500;
+}
+
+/* =========================
+	ANIMATION
+========================= */
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-5px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+
+/* Fin de lo estilos del select */
+.form-group label {
+	position: absolute;
+	left: 16px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: var(--color-texto-secundario);
+	font-size: 13px;
+	pointer-events: none;
+	transition: all 0.3s ease;
+	background: var(--color-fondo);
+	padding: 0 4px;
+}
+
+.form-group input:focus+label,
+.form-group input:not(:placeholder-shown)+label {
+	top: -2px;
+	font-size: 11px;
+	color: var(--color-primario);
+	left: 12px;
+}
+
+.form-group input:valid {
+	border-color: var(--color-primario);
+}
+
+.form-group input.ng-invalid.ng-touched,
+.form-group input.ng-invalid.ng-dirty {
+	border-color: var(--color-error);
+}
+
+.form-group input.ng-invalid.ng-touched+label,
+.form-group input.ng-invalid.ng-dirty+label {
+	color: var(--color-error);
+}
+
+.form-group span {
+	display: block;
+	color: var(--color-error);
+	font-size: 11px;
+	margin-top: 6px;
+	margin-left: 16px;
+	font-weight: 400;
+	position: absolute;
+	max-width: 90%;
+}
+
+.terms-group span {
+	display: block;
+	color: var(--color-error);
+	font-size: 11px;
+	margin-left: 26px;
+	font-weight: 400;
+	width: 100%;
+}
+
+.form-group-password span {
+	display: block;
+	color: var(--color-error);
+	font-size: 11px;
+	margin-top: 6px;
+	margin-left: 16px;
+	font-weight: 400;
+}
+
+.form-group-password {
+	position: relative;
+}
+
+.form-group-password .fa-eye,
+.form-group-password .fa-eye-slash {
+	position: absolute;
+	right: 16px;
+	top: 12px;
+	cursor: pointer;
+	transition: opacity 0.3s, color 0.3s;
+	color: var(--color-texto-secundario);
+}
+
+.form-group-password .fa-eye {
+	display: block;
+	opacity: 0.5;
+}
+
+.form-group-password .fa-eye-slash {
+	display: none;
+	opacity: 0.5;
+}
+
+.form-group-password input:valid~.fa-eye,
+.form-group-password input:valid~.fa-eye-slash {
+	color: var(--color-primario);
+	opacity: 1;
+}
+
+.form-group-password input:focus~.fa-eye,
+.form-group-password input:focus~.fa-eye-slash {
+	color: var(--color-primario);
+	opacity: 1;
+}
+
+.form-group-password input.ng-invalid.ng-touched~.fa-eye,
+.form-group-password input.ng-invalid.ng-touched~.fa-eye-slash {
+	color: var(--color-error);
+	opacity: 1;
+}
+
+.form-group-password .fa-eye:hover,
+.form-group-password .fa-eye-slash:hover {
+	opacity: 1;
+}
+
+.form-group-password input[type="text"]~.fa-eye {
+	display: none;
+}
+
+.form-group-password input[type="text"]~.fa-eye-slash {
+	display: block;
+}
+
+.buttons-row {
+	display: flex;
+	gap: 10px;
+}
+
+.buttons-row button {
+	flex: 1;
+}
+
+.btn-back {
+	background-color: var(--color-fondo);
+	color: var(--color-texto-secundario);
+	border: 1px solid var(--color-iconos);
+}
+
+button {
+	width: 100%;
+	padding: 10px 16px;
+	background: var(--color-primario);
+	color: var(--color-fondo);
+	border: none;
+	border-radius: 25px;
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+	margin-bottom: 10px;
+	transition: all 0.3s ease;
+	font-family: "Outfit", sans-serif;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+	background: var(--color-primario);
+	box-shadow: 0 4px 6px rgba(63, 162, 219, 0.3);
+}
+
+button[type="submit"]:disabled {
+	background: var(--color-texto-secundario);
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
+.login-text {
+	text-align: center;
+	margin-top: 20px;
+	margin-bottom: 12px;
+	font-size: 13px;
+	color: var(--color-texto-secundario);
+}
+
+.login-text a {
+	color: var(--color-primario);
+	text-decoration: none;
+	font-weight: 500;
+	transition: color 0.3s;
+}
+
+.login-text a:hover {
+	text-decoration: underline;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:hover {
+	-webkit-box-shadow: 0 0 0px 1000px white inset !important;
+	-webkit-text-fill-color: var(--color-texto-secundario) !important;
+	transition: background-color 5000s ease-in-out 0s;
+}

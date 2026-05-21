@@ -5,4 +5,5 @@ export interface UserItem {
   email: string;
   role: string;
   status: 'Activo' | 'Inactivo';
+  phone?: number;
 }

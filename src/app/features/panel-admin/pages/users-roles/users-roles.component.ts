@@ -18,7 +18,7 @@ export class UsersRolesComponent {
 
   selectedRole = 'Todos';
 
-  roles = ['Todos', 'Admin', 'Cliente', 'Guía Turístico'];
+  roles = ['Todos', 'Administrador', 'Cliente', 'Guía Turístico'];
 
   // =========================
   // MODALS
@@ -29,6 +29,10 @@ export class UsersRolesComponent {
   showToast = false;
 
   showEditModal = false;
+
+  showViewModal = false;
+
+  showCreateModal = false;
 
   selectedUser: UserItem | null = null;
 
@@ -53,15 +57,20 @@ export class UsersRolesComponent {
       next: (response: any[]) => {
         this.users = response.map((user) => ({
           id: user.id,
+
           image:
-            user.image || `https://ui-avatars.com/api/?name=${user.firstName}`,
+            user.image ||
+            `https://ui-avatars.com/api/?name=${user.firstName}&background=3fa2db&color=fff&size=120`,
+
           name: `${user.firstName} ${user.lastName}`,
+
           email: user.email,
 
-          // AQUI EL FIX
           role: this.mapRole(user.role),
 
-          status: user.status ? 'Activo' : 'Inactivo',
+          status: user.active ? 'Activo' : 'Inactivo',
+
+          phone: user.phone,
         }));
       },
 
@@ -77,7 +86,7 @@ export class UsersRolesComponent {
 
   mapRole(role: string): string {
     const roleMap: any = {
-      ROLE_ADMIN: 'Admin',
+      ADMIN: 'Administrador',
       ROLE_CLIENT: 'Cliente',
       ROLE_GUIDE: 'Guía Turístico',
     };
@@ -166,5 +175,31 @@ export class UsersRolesComponent {
     }
 
     this.showEditModal = false;
+  }
+
+  // =========================
+  // VIEW MODAL
+  // =========================
+
+  openViewModal(user: UserItem): void {
+    this.selectedUser = user;
+
+    this.showViewModal = true;
+  }
+
+  closeViewModal(): void {
+    this.showViewModal = false;
+  }
+
+  // =========================
+  // CREATE MODAL
+  // =========================
+
+  openCreateModal(): void {
+    this.showCreateModal = true;
+  }
+
+  closeCreateModal(): void {
+    this.showViewModal = false;
   }
 }

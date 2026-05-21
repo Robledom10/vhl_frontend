@@ -1,0 +1,143 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="closeModal()">
+
+	<div class="create-user-modal" (click)="closeDropdowns(); $event.stopPropagation()">
+
+		<!-- HEADER -->
+		<div class="modal-header">
+
+			<h2>Crear Usuario</h2>
+
+			<button class="close-btn" (click)="closeModal()">
+				<i class="fa-solid fa-xmark"></i>
+			</button>
+
+		</div>
+
+		<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+			<!-- PASO 1 -->
+			<div *ngIf="currentStep === 1">
+
+				<div class="form-group">
+					<input type="text" formControlName="firstName" placeholder="Nombre" />
+
+					<label [class.active]="f.firstName.value">
+						Nombre
+					</label>
+				</div>
+
+				<div class="form-group">
+					<input type="text" formControlName="lastName" placeholder="Apellido" />
+
+					<label [class.active]="f.lastName.value">
+						Apellido
+					</label>
+				</div>
+
+				<div class="form-group">
+					<input type="email" formControlName="email" placeholder="Correo" />
+
+					<label [class.active]="f.email.value">
+						Correo electrónico
+					</label>
+				</div>
+
+				<div class="modal-actions">
+
+					<button type="button" class="btn-cancel" (click)="closeModal()">
+						Cancelar
+					</button>
+
+					<button type="button" class="btn-save" (click)="nextStep()">
+						Continuar
+					</button>
+
+				</div>
+
+			</div>
+
+			<!-- PASO 2 -->
+			<div *ngIf="currentStep === 2">
+
+				<div class="form-row">
+
+					<div class="form-group form-group-small custom-select-group">
+
+						<div class="custom-select" [class.open]="documentDropdownOpen"
+							(click)="toggleDocumentDropdown($event)">
+
+							<div class="custom-select-value">
+								{{ selectedDocumentType || 'Tipo documento' }}
+							</div>
+
+							<i class="fa-solid fa-angle-down select-icon"></i>
+
+							<div class="custom-select-dropdown" *ngIf="documentDropdownOpen">
+
+								<div class="custom-option" *ngFor="let option of documentTypes"
+									(click)="selectDocumentType(option)">
+									{{ option }}
+								</div>
+
+							</div>
+
+						</div>
+
+						<label [class.active]="selectedDocumentType">
+							Tipo documento
+						</label>
+
+					</div>
+
+					<div class="form-group form-group-large">
+
+						<input type="text" formControlName="documentNumber" placeholder="Documento" />
+
+						<label [class.active]="f.documentNumber.value">
+							Número documento
+						</label>
+
+					</div>
+
+				</div>
+
+				<div class="form-group form-group-password">
+
+					<input type="password" id="password" formControlName="password" placeholder="Contraseña" />
+
+					<label [class.active]="f.password.value">
+						Contraseña
+					</label>
+
+				</div>
+
+				<div class="form-group form-group-password">
+
+					<input type="password" id="confirmPassword" formControlName="confirmPassword"
+						placeholder="Confirmar contraseña" />
+
+					<label [class.active]="f.confirmPassword.value">
+						Confirmar contraseña
+					</label>
+
+				</div>
+
+				<div class="modal-actions">
+
+					<button type="button" class="btn-cancel" (click)="prevStep()">
+						Volver
+					</button>
+
+					<button type="submit" class="btn-save" [disabled]="isLoading">
+						{{ isLoading ? 'Creando...' : 'Crear usuario' }}
+					</button>
+
+				</div>
+
+			</div>
+
+		</form>
+
+	</div>
+
+</div>

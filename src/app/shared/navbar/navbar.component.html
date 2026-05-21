@@ -19,7 +19,7 @@
 	<!-- SI ESTÁ LOGUEADO -->
 	<div class="navbar-user" *ngIf="authService.isAuthenticated()">
 		<div class="user-info" (click)="toggleDropdown($event)">
-			<img src="https://i.pravatar.cc/100" alt="user" class="user-avatar" />
+			<img [src]="'https://ui-avatars.com/api/?name=' + user?.firstName + '&background=3fa2db&color=fff&size=120'" alt="user" class="user-avatar" />
 			<div class="user-text">
 				<h4>{{ user?.firstName }} {{ user?.lastName }}</h4>
 				<span *ngIf="displayRole">

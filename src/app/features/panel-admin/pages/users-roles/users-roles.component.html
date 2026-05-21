@@ -30,7 +30,7 @@
 		</div>
 
 		<!-- ADD -->
-		<button class="add-btn">
+		<button class="add-btn" (click)="openCreateModal()">
 			<i class="fa-solid fa-plus"></i>
 			<span>Agregar</span>
 		</button>
@@ -71,13 +71,22 @@
 
 					<td>
 						<div class="actions">
-							<button class="view">
+
+							<button class="view" (click)="openViewModal(user)">
 								<i class="fa-regular fa-eye"></i>
 							</button>
-							<button class="edit" (click)="openEditModal(user)">Editar</button>
-							<button class="delete" (click)="openDeleteModal(user)">Eliminar</button>
+
+							<button class="edit" (click)="openEditModal(user)">
+								Editar
+							</button>
+
+							<button class="delete" (click)="openDeleteModal(user)">
+								Eliminar
+							</button>
+
 						</div>
 					</td>
+
 				</tr>
 			</tbody>
 		</table>
@@ -99,8 +108,18 @@
 	[message]="'El usuario ' + selectedUser?.name + ' fue desactivado correctamente.'">
 </app-toast-notification>
 
-<!-- Modal editar role usuario -->
+<!-- MODAL EDITAR ROL -->
 
 <app-edit-user-role-modal [isOpen]="showEditModal" [user]="selectedUser" (closed)="closeEditModal()"
 	(updated)="onRoleUpdated($event)">
 </app-edit-user-role-modal>
+
+<!-- MODAL VISUALIZAR USUARIO -->
+
+<app-view-user-modal [isOpen]="showViewModal" [user]="selectedUser" (closed)="closeViewModal()">
+</app-view-user-modal>
+
+<!-- MODAL CREAR USUARIO -->
+
+<app-create-user-modal [isOpen]="showCreateModal" (closed)="closeCreateModal()" (created)="loadUsers()">
+</app-create-user-modal>
