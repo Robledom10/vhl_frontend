@@ -1,20 +1,7 @@
-import {
-  Component,
-  EventEmitter,
-  HostListener,
-  Input,
-  Output,
-} from '@angular/core';
-import {
-  FormBuilder,
-  AbstractControlOptions,
-  Validators,
-} from '@angular/forms';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { FormBuilder, AbstractControlOptions, Validators } from '@angular/forms';
 import { AuthService } from '../../../../../../core/services/auth.service';
-import {
-  passwordMatchValidator,
-  strongPasswordValidator,
-} from '../../../../../../core/validators/custom.validators';
+import { passwordMatchValidator, strongPasswordValidator } from '../../../../../../core/validators/custom.validators';
 
 @Component({
   selector: 'app-create-user-modal',
@@ -30,7 +17,9 @@ export class CreateUserModalComponent {
 
   currentStep = 1;
 
-  submitted = false;
+  step1Submitted = false;
+
+  step2Submitted = false;
 
   isLoading = false;
 
@@ -46,6 +35,18 @@ export class CreateUserModalComponent {
     'Visa',
   ];
 
+  // =========================
+  // MODALS
+  // =========================
+
+  showConfirmCreateModal = false;
+
+  showErrorModal = false;
+
+  showToast = false;
+
+  errorMessage = '';
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -57,13 +58,22 @@ export class CreateUserModalComponent {
 
   registerForm = this.fb.group(
     {
-      firstName: ['', [Validators.required]],
+      firstName: ['', [Validators.required, Validators.minLength(3)]],
+
       lastName: ['', [Validators.required]],
+
       email: ['', [Validators.required, Validators.email]],
 
       documentType: ['', [Validators.required]],
 
-      documentNumber: ['', [Validators.required]],
+      documentNumber: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6),
+          Validators.maxLength(11),
+        ],
+      ],
 
       password: [
         '',
@@ -71,8 +81,6 @@ export class CreateUserModalComponent {
       ],
 
       confirmPassword: ['', Validators.required],
-
-      terms: [true],
     },
     this.formOptions,
   );
@@ -81,13 +89,22 @@ export class CreateUserModalComponent {
     return this.registerForm.controls;
   }
 
+  // =========================
+  // STEP 1
+  // =========================
+
   nextStep(): void {
+    this.step1Submitted = true;
+
+    this.f.firstName.markAsTouched();
+    this.f.lastName.markAsTouched();
+    this.f.email.markAsTouched();
+
     if (
       this.f.firstName.invalid ||
       this.f.lastName.invalid ||
       this.f.email.invalid
     ) {
-      this.registerForm.markAllAsTouched();
       return;
     }
 
@@ -98,13 +115,35 @@ export class CreateUserModalComponent {
     this.currentStep = 1;
   }
 
-  onSubmit(): void {
-    this.submitted = true;
+  // =========================
+  // SUBMIT
+  // =========================
 
-    if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched();
+  onSubmit(): void {
+    this.step2Submitted = true;
+
+    this.registerForm.markAllAsTouched();
+
+    if (
+      this.f.documentType.invalid ||
+      this.f.documentNumber.invalid ||
+      this.f.password.invalid ||
+      this.f.confirmPassword.invalid ||
+      this.registerForm.errors?.['mismatch']
+    ) {
       return;
     }
+
+    // ABRIR MODAL DE CONFIRMACIÓN
+    this.showConfirmCreateModal = true;
+  }
+
+  // =========================
+  // CONFIRM CREATE USER
+  // =========================
+
+  confirmCreateUser(): void {
+    this.showConfirmCreateModal = false;
 
     this.isLoading = true;
 
@@ -123,18 +162,37 @@ export class CreateUserModalComponent {
       next: () => {
         this.isLoading = false;
 
+        this.showToast = true;
+
         this.created.emit();
 
-        this.closeModal();
+        setTimeout(() => {
+          this.showToast = false;
+
+          this.closeModal();
+        }, 2500);
       },
 
       error: (err) => {
         console.error(err);
 
         this.isLoading = false;
+
+        this.errorMessage =
+          err?.error?.message || 'No se pudo crear el usuario';
+
+        this.showErrorModal = true;
       },
     });
   }
+
+  closeConfirmCreateModal(): void {
+    this.showConfirmCreateModal = false;
+  }
+
+  // =========================
+  // DROPDOWN
+  // =========================
 
   toggleDocumentDropdown(event: Event): void {
     event.stopPropagation();
@@ -147,6 +205,8 @@ export class CreateUserModalComponent {
 
     this.f.documentType.setValue(option);
 
+    this.f.documentType.markAsTouched();
+
     this.documentDropdownOpen = false;
   }
 
@@ -155,13 +215,31 @@ export class CreateUserModalComponent {
     this.documentDropdownOpen = false;
   }
 
+  // =========================
+  // CLOSE MODAL
+  // =========================
+
   closeModal(): void {
     this.currentStep = 1;
+
+    this.step1Submitted = false;
+
+    this.step2Submitted = false;
 
     this.registerForm.reset();
 
     this.selectedDocumentType = '';
 
+    this.documentDropdownOpen = false;
+
     this.closed.emit();
+  }
+
+  // =========================
+  // ERROR
+  // =========================
+
+  closeErrorModal(): void {
+    this.showErrorModal = false;
   }
 }

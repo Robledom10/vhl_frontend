@@ -8,6 +8,7 @@
 	justify-content: center;
 	padding: 20px;
 	z-index: 9999;
+	animation: fadeOverlay 0.25s ease;
 }
 
 .create-user-modal {
@@ -19,39 +20,60 @@
 	border: 1px solid var(--bordes);
 	box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
 	box-sizing: border-box;
+	animation: modalShow 0.25s ease;
+	position: relative;
 }
 
-/* Form */
+/* =========================
+	HEADER
+========================= */
 
-.form-register {
-	padding: 30px 24px;
-	margin: 20px auto;
+.modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 30px;
 }
 
-.form-register .logo {
-	text-align: center;
-}
-
-.form-register .logo img {
-	width: 65px;
-}
-
-.form-register h1 {
-	font-size: 22px;
+.modal-header h2 {
+	font-size: 24px;
 	font-weight: 600;
 	color: var(--color-texto-principal);
-	text-align: center;
-	margin: 20px 0;
+	margin: 0;
 }
 
-.form-register p {
-	font-size: 13px;
+.close-btn {
+	width: 38px;
+	height: 38px;
+	border-radius: 50%;
+	border: none;
+	background: #f5f5f5;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.3s ease;
+}
+
+.close-btn i {
+	font-size: 16px;
 	color: var(--color-texto-secundario);
-	margin: 15px 0 30px;
-	text-align: center;
 }
 
-.form-register form {
+.close-btn:hover {
+	background: rgba(255, 59, 59, 0.1);
+	transform: rotate(90deg);
+}
+
+.close-btn:hover i {
+	color: #ff3b3b;
+}
+
+/* =========================
+	FORM
+========================= */
+
+form {
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
@@ -74,12 +96,12 @@
 .form-group {
 	position: relative;
 	width: 100%;
-	margin-bottom: 35px;
+	margin-bottom: 40px;
 }
 
 .form-group input {
 	width: 100%;
-	padding: 10px 16px;
+	padding: 12px 16px;
 	border: 1px solid var(--color-iconos);
 	border-radius: 25px;
 	font-size: 13px;
@@ -93,10 +115,74 @@
 
 .form-group input:focus {
 	border-color: var(--color-primario);
+	box-shadow: 0 0 0 3px rgba(63, 162, 219, 0.08);
 }
 
 .form-group input::placeholder {
 	color: transparent;
+}
+
+/* =========================
+	LABELS
+========================= */
+
+.form-group label {
+	position: absolute;
+	left: 16px;
+	top: 23px;
+	transform: translateY(-50%);
+	color: var(--color-texto-secundario);
+	font-size: 13px;
+	pointer-events: none;
+	transition: all 0.25s ease;
+	background: var(--color-fondo);
+	padding: 0 4px;
+}
+
+.form-group input:focus+label,
+.form-group input:not(:placeholder-shown)+label,
+.form-group input.ng-valid.ng-touched+label,
+.form-group input.ng-invalid.ng-touched+label {
+	top: -2px;
+	font-size: 11px;
+	left: 12px;
+}
+
+.form-group input:focus+label,
+.form-group input.ng-valid+label {
+	color: var(--color-primario);
+}
+
+.form-group input.ng-invalid.ng-touched+label {
+	color: var(--color-error);
+}
+
+/* =========================
+	VALIDACIONES
+========================= */
+
+.form-group input.ng-invalid.ng-touched,
+.form-group input.ng-invalid.ng-dirty {
+	border-color: var(--color-error) !important;
+}
+
+.form-group input.ng-invalid.ng-touched+label,
+.form-group input.ng-invalid.ng-dirty+label {
+	color: var(--color-error) !important;
+}
+
+.form-group input.ng-valid.ng-touched {
+	border-color: var(--color-primario);
+}
+
+.form-group span {
+	position: absolute;
+	left: 16px;
+	top: 54px;
+	color: var(--color-error);
+	font-size: 11px;
+	font-weight: 400;
+	line-height: 1.3;
 }
 
 /* =========================
@@ -115,7 +201,7 @@
 	background: var(--color-fondo);
 	display: flex;
 	align-items: center;
-	padding: 10px 16px;
+	padding: 12px 16px;
 	cursor: pointer;
 	transition: all 0.3s ease;
 	box-sizing: border-box;
@@ -144,16 +230,11 @@
 	text-overflow: ellipsis;
 }
 
-.custom-select.selected .custom-select-value {
-	color: var(--color-texto-secundario);
-}
-
 .select-icon {
 	font-size: 12px;
 	color: var(--color-texto-secundario);
-	transition: transform 0.3s ease;
+	transition: all 0.3s ease;
 	flex-shrink: 0;
-	margin-right: 2px;
 	opacity: 0.7;
 }
 
@@ -171,12 +252,7 @@
 
 .custom-select.invalid .select-icon {
 	color: var(--color-error);
-	opacity: 1;
 }
-
-/* =========================
-	LABEL
-========================= */
 
 .custom-select-group label {
 	position: absolute;
@@ -186,7 +262,7 @@
 	font-size: 13px;
 	color: var(--color-texto-secundario);
 	pointer-events: none;
-	transition: all 0.3s ease;
+	transition: all 0.25s ease;
 	background: var(--color-fondo);
 	padding: 0 4px;
 }
@@ -211,9 +287,9 @@
 	top: calc(100% + 10px);
 	left: 0;
 	width: 100%;
-	background: white;
+	background: var(--color-fondo);
 	border-radius: 18px;
-	border: 1px solid #e8e7e7;
+	border: 1px solid var(--bordes);
 	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 	overflow: hidden;
 	z-index: 999;
@@ -227,8 +303,8 @@
 	color: var(--color-texto-secundario);
 	cursor: pointer;
 	transition: all 0.2s ease;
-	border-bottom: 1px solid #f1f1f1;
-	background: white;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+	background: var(--color-fondo);
 }
 
 .custom-option:last-child {
@@ -247,7 +323,86 @@
 }
 
 /* =========================
-	ANIMATION
+	PASSWORD
+========================= */
+
+.form-group-password {
+	position: relative;
+}
+
+.form-group-password .fa-eye,
+.form-group-password .fa-eye-slash {
+	position: absolute;
+	right: 16px;
+	top: 14px;
+	cursor: pointer;
+	transition: opacity 0.3s, color 0.3s;
+	color: var(--color-texto-secundario);
+	opacity: 0.6;
+}
+
+.form-group-password .fa-eye:hover,
+.form-group-password .fa-eye-slash:hover {
+	opacity: 1;
+	color: var(--color-primario);
+}
+
+/* =========================
+	ACTIONS
+========================= */
+
+.modal-actions {
+	display: flex;
+	gap: 12px;
+	margin-top: 10px;
+}
+
+.modal-actions button {
+	flex: 1;
+	margin-bottom: 0;
+}
+
+button {
+	width: 100%;
+	padding: 12px 16px;
+	border: none;
+	border-radius: 25px;
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	font-family: "Outfit", sans-serif;
+}
+
+.btn-save {
+	background: var(--color-primario);
+	color: var(--color-fondo);
+}
+
+.btn-save:hover:not(:disabled) {
+	transform: translateY(-1px);
+	box-shadow: 0 6px 18px rgba(63, 162, 219, 0.3);
+}
+
+.btn-save:disabled {
+	background: var(--color-texto-secundario);
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
+.btn-cancel {
+	background: transparent;
+	border: 1px solid var(--color-iconos);
+	color: var(--color-texto-secundario);
+}
+
+.btn-cancel:hover {
+	background: rgba(0, 0, 0, 0.04);
+	border-color: var(--color-texto-secundario);
+}
+
+/* =========================
+	ANIMATIONS
 ========================= */
 
 @keyframes fadeIn {
@@ -262,191 +417,54 @@
 	}
 }
 
+@keyframes modalShow {
+	from {
+		opacity: 0;
+		transform: translateY(20px) scale(0.98);
+	}
 
-/* Fin de lo estilos del select */
-.form-group label {
-	position: absolute;
-	left: 16px;
-	top: 50%;
-	transform: translateY(-50%);
-	color: var(--color-texto-secundario);
-	font-size: 13px;
-	pointer-events: none;
-	transition: all 0.3s ease;
-	background: var(--color-fondo);
-	padding: 0 4px;
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
 }
 
-.form-group input:focus+label,
-.form-group input:not(:placeholder-shown)+label {
-	top: -2px;
-	font-size: 11px;
-	color: var(--color-primario);
-	left: 12px;
+@keyframes fadeOverlay {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
 }
 
-.form-group input:valid {
-	border-color: var(--color-primario);
-}
+/* =========================
+	RESPONSIVE
+========================= */
 
-.form-group input.ng-invalid.ng-touched,
-.form-group input.ng-invalid.ng-dirty {
-	border-color: var(--color-error);
-}
+@media (max-width: 600px) {
 
-.form-group input.ng-invalid.ng-touched+label,
-.form-group input.ng-invalid.ng-dirty+label {
-	color: var(--color-error);
-}
+	.create-user-modal {
+		padding: 28px 20px;
+		border-radius: 20px;
+		max-height: 90vh;
+		overflow-y: auto;
+	}
 
-.form-group span {
-	display: block;
-	color: var(--color-error);
-	font-size: 11px;
-	margin-top: 6px;
-	margin-left: 16px;
-	font-weight: 400;
-	position: absolute;
-	max-width: 90%;
-}
+	.form-row {
+		flex-direction: column;
+	}
 
-.terms-group span {
-	display: block;
-	color: var(--color-error);
-	font-size: 11px;
-	margin-left: 26px;
-	font-weight: 400;
-	width: 100%;
-}
+	.form-group-small {
+		flex: 1;
+	}
 
-.form-group-password span {
-	display: block;
-	color: var(--color-error);
-	font-size: 11px;
-	margin-top: 6px;
-	margin-left: 16px;
-	font-weight: 400;
-}
+	.modal-actions {
+		flex-direction: column;
+	}
 
-.form-group-password {
-	position: relative;
-}
-
-.form-group-password .fa-eye,
-.form-group-password .fa-eye-slash {
-	position: absolute;
-	right: 16px;
-	top: 12px;
-	cursor: pointer;
-	transition: opacity 0.3s, color 0.3s;
-	color: var(--color-texto-secundario);
-}
-
-.form-group-password .fa-eye {
-	display: block;
-	opacity: 0.5;
-}
-
-.form-group-password .fa-eye-slash {
-	display: none;
-	opacity: 0.5;
-}
-
-.form-group-password input:valid~.fa-eye,
-.form-group-password input:valid~.fa-eye-slash {
-	color: var(--color-primario);
-	opacity: 1;
-}
-
-.form-group-password input:focus~.fa-eye,
-.form-group-password input:focus~.fa-eye-slash {
-	color: var(--color-primario);
-	opacity: 1;
-}
-
-.form-group-password input.ng-invalid.ng-touched~.fa-eye,
-.form-group-password input.ng-invalid.ng-touched~.fa-eye-slash {
-	color: var(--color-error);
-	opacity: 1;
-}
-
-.form-group-password .fa-eye:hover,
-.form-group-password .fa-eye-slash:hover {
-	opacity: 1;
-}
-
-.form-group-password input[type="text"]~.fa-eye {
-	display: none;
-}
-
-.form-group-password input[type="text"]~.fa-eye-slash {
-	display: block;
-}
-
-.buttons-row {
-	display: flex;
-	gap: 10px;
-}
-
-.buttons-row button {
-	flex: 1;
-}
-
-.btn-back {
-	background-color: var(--color-fondo);
-	color: var(--color-texto-secundario);
-	border: 1px solid var(--color-iconos);
-}
-
-button {
-	width: 100%;
-	padding: 10px 16px;
-	background: var(--color-primario);
-	color: var(--color-fondo);
-	border: none;
-	border-radius: 25px;
-	font-size: 14px;
-	font-weight: 500;
-	cursor: pointer;
-	margin-bottom: 10px;
-	transition: all 0.3s ease;
-	font-family: "Outfit", sans-serif;
-}
-
-button[type="submit"]:hover:not(:disabled) {
-	background: var(--color-primario);
-	box-shadow: 0 4px 6px rgba(63, 162, 219, 0.3);
-}
-
-button[type="submit"]:disabled {
-	background: var(--color-texto-secundario);
-	cursor: not-allowed;
-	opacity: 0.6;
-}
-
-.login-text {
-	text-align: center;
-	margin-top: 20px;
-	margin-bottom: 12px;
-	font-size: 13px;
-	color: var(--color-texto-secundario);
-}
-
-.login-text a {
-	color: var(--color-primario);
-	text-decoration: none;
-	font-weight: 500;
-	transition: color 0.3s;
-}
-
-.login-text a:hover {
-	text-decoration: underline;
-}
-
-input:-webkit-autofill,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:hover {
-	-webkit-box-shadow: 0 0 0px 1000px white inset !important;
-	-webkit-text-fill-color: var(--color-texto-secundario) !important;
-	transition: background-color 5000s ease-in-out 0s;
+	.modal-header h2 {
+		font-size: 20px;
+	}
 }

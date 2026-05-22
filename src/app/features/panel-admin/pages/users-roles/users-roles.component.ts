@@ -87,8 +87,8 @@ export class UsersRolesComponent {
   mapRole(role: string): string {
     const roleMap: any = {
       ADMIN: 'Administrador',
-      ROLE_CLIENT: 'Cliente',
-      ROLE_GUIDE: 'Guía Turístico',
+      CLIENT: 'Cliente',
+      GUIDE: 'Guía Turístico',
     };
 
     return roleMap[role] || role;
@@ -200,6 +200,6 @@ export class UsersRolesComponent {
   }
 
   closeCreateModal(): void {
-    this.showViewModal = false;
+    this.showCreateModal = false;
   }
 }

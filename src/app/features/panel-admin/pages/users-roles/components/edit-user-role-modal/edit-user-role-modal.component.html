@@ -1,5 +1,4 @@
 <div class="modal-overlay" *ngIf="isOpen" (click)="closeModal()">
-
 	<div class="edit-modal" (click)="closeDropdown(); $event.stopPropagation()">
 		<div class="modal-header">
 			<h2>Editar Rol</h2>
@@ -10,19 +9,21 @@
 		</div>
 
 		<form [formGroup]="roleForm">
-
 			<div class="form-group">
+
 				<input type="text" [value]="user?.name" readonly />
+
 				<label class="active">Nombre</label>
 			</div>
 
 			<div class="form-group">
+
 				<input type="text" [value]="user?.email" readonly />
+
 				<label class="active">Correo</label>
 			</div>
 
 			<div class="form-group custom-select-group">
-
 				<div class="custom-select" [class.open]="roleDropdownOpen" (click)="toggleRoleDropdown($event)">
 
 					<div class="custom-select-value">
@@ -32,30 +33,46 @@
 					<i class="fa-solid fa-angle-down select-icon"></i>
 
 					<div class="custom-select-dropdown" *ngIf="roleDropdownOpen" (click)="$event.stopPropagation()">
+
 						<div class="custom-option" *ngFor="let role of roles" [class.active]="selectedRole === role"
 							(click)="selectRole(role, $event)">
 							{{ role }}
 						</div>
-
 					</div>
 				</div>
 
-				<label [class.active]="selectedRole">
-					Rol
-				</label>
+				<label [class.active]="selectedRole">Rol</label>
 			</div>
 
 			<div class="modal-actions">
 
-				<button type="button" class="btn-cancel" (click)="closeModal()">
-					Cancelar
-				</button>
+				<button type="button" class="btn-cancel" (click)="closeModal()">Cancelar</button>
 
-				<button type="button" class="btn-save" (click)="updateRole()">
-					Guardar
+				<button type="button" class="btn-save" (click)="updateRole()" [disabled]="isLoading">
+					{{ isLoading ? 'Guardando...' : 'Guardar' }}
 				</button>
 			</div>
-
 		</form>
 	</div>
 </div>
+
+<!-- MODAL CONFIRMACIÓN -->
+
+<app-confirm-modal [isOpen]="showConfirmModal" title="Actualizar rol"
+	[message]="'¿Seguro que deseas cambiar el rol de ' + user?.name + '?'" confirmText="Actualizar"
+	cancelText="Cancelar" icon="fa-solid fa-circle-question" confirmColor="#3fa2db" iconBg="rgba(63, 162, 219, 0.12)"
+	iconColor="#3fa2db" (confirmed)="confirmUpdateRole()" (closed)="closeConfirmModal()">
+</app-confirm-modal>
+
+<!-- MODAL ERROR -->
+
+<app-confirm-modal [isOpen]="showErrorModal" title="Error" [message]="errorMessage" confirmText="Entendido"
+	cancelText="" icon="fa-solid fa-circle-xmark" confirmColor="#ff3b3b" iconBg="rgba(255, 59, 59, 0.12)"
+	iconColor="#ff3b3b" (confirmed)="closeErrorModal()" (closed)="closeErrorModal()">
+</app-confirm-modal>
+
+<!-- TOAST -->
+
+<app-toast-notification [show]="showToast" title="Rol actualizado"
+	message="El rol del usuario fue actualizado correctamente.">
+</app-toast-notification>

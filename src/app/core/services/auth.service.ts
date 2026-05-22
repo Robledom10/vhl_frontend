@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap, throwError } from 'rxjs';
-import {
-  LoginRequest,
-  LoginResponse,
-  RegisterRequest,
-  RegisterResponse,
-} from '../../features/auth/models/auth.model';
+import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../../features/auth/models/auth.model';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 
@@ -148,8 +143,8 @@ export class AuthService {
   // LIMPIAR SESIÓN
   // =========================
   clearSession(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.clear();
+    sessionStorage.clear();
 
     this.router.navigate(['/']);
   }
