@@ -51,7 +51,7 @@
 			</thead>
 
 			<tbody>
-				<tr *ngFor="let user of filteredUsers">
+				<tr *ngFor="let user of filteredUsers" [class.row-inactive]="user.status === 'Inactivo'">
 
 					<td>
 						<img [src]="user.image">
@@ -64,7 +64,7 @@
 					<td>{{ user.role }}</td>
 
 					<td>
-						<span class="status active">
+						<span class="status" [class.active]="user.status === 'Activo'" [class.inactive]="user.status === 'Inactivo'">
 							{{ user.status }}
 						</span>
 					</td>
@@ -80,8 +80,8 @@
 								Editar
 							</button>
 
-							<button class="delete" (click)="openDeleteModal(user)">
-								Eliminar
+							<button class="delete" [class.activate]="user.status === 'Inactivo'" (click)="openStatusModal(user)" [disabled]="isCurrentUser(user)">
+								{{ user.status === 'Activo' ? 'Desactivar' : 'Activar' }}
 							</button>
 
 						</div>
@@ -95,11 +95,24 @@
 
 <!-- MODAL ELIMINAR -->
 
-<app-confirm-modal [isOpen]="showDeleteModal" title="Eliminar usuario"
-	[message]="'¿Estás seguro de que deseas eliminar el usuario ' + selectedUser?.name + '?'"
-	description="Esta acción desactivará el usuario del sistema." confirmText="Eliminar" cancelText="Cancelar"
-	icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b" iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b"
-	(confirmed)="confirmDelete()" (closed)="closeDeleteModal()">
+<!-- MODAL CAMBIO ESTADO -->
+
+<app-confirm-modal [isOpen]="showStatusModal" [title]="statusAction === 'desactivar'
+		? 'Desactivar usuario'
+		: 'Activar usuario'" [message]="statusAction === 'desactivar'
+		? '¿Estás seguro de que deseas desactivar el usuario ' + selectedUser?.name + '?'
+		: '¿Estás seguro de que deseas activar el usuario ' + selectedUser?.name + '?'" [confirmText]="statusAction === 'desactivar'
+		? 'Desactivar'
+		: 'Activar'" cancelText="Cancelar" [icon]="statusAction === 'desactivar'
+		? 'fa-solid fa-triangle-exclamation'
+		: 'fa-solid fa-circle-check'" [confirmColor]="statusAction === 'desactivar'
+		? '#ff3b3b'
+		: '#3fa2db'" [iconBg]="statusAction === 'desactivar'
+		? 'rgba(255, 59, 59, 0.12)'
+		: 'rgba(63, 162, 219, 0.12)'" [iconColor]="statusAction === 'desactivar'
+		? '#ff3b3b'
+		: '#3fa2db'" (confirmed)="confirmStatusChange()" (closed)="closeStatusModal()">
+
 </app-confirm-modal>
 
 <!-- TOAST -->

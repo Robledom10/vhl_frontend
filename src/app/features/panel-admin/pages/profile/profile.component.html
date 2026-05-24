@@ -3,7 +3,8 @@
 	<div class="profile-header">
 
 		<div class="image-profile">
-			<img [src]="'https://ui-avatars.com/api/?name=' + user?.firstName + '&background=3fa2db&color=fff&size=120'" alt="user" class="user-avatar" />
+			<img [src]="'https://ui-avatars.com/api/?name=' + user?.firstName + '&background=3fa2db&color=fff&size=120'"
+				alt="user" class="user-avatar" />
 		</div>
 
 		<div class="profile-info">
@@ -134,7 +135,7 @@
 		<!-- BOTONES -->
 		<div class="buttons">
 			<button type="button" class="btn-cancel" (click)="cancelEdit()">Cancelar</button>
-			<button type="button" class="btn-save" (click)="saveProfile()">Guardar</button>
+			<button type="button" class="btn-save" (click)="saveProfile()" [disabled]="!hasChanges()">Guardar</button>
 		</div>
 	</form>
 </div>
@@ -145,4 +146,17 @@
 	iconBg="rgba(63, 162, 219, 0.12)" iconColor="var(--color-primario)" (confirmed)="confirmSaveProfile()"
 	(closed)="closeConfirmModal()">
 
+</app-confirm-modal>
+
+<!-- Modal notificación  -->
+
+<app-toast-notification [show]="showSuccessToast" title="Perfil actualizado"
+	message="La información fue actualizada correctamente.">
+</app-toast-notification>
+
+<!-- Modal de error -->
+
+<app-confirm-modal [isOpen]="showErrorModal" title="Error" [message]="errorMessage" confirmText="Entendido"
+	cancelText="" icon="fa-solid fa-circle-xmark" confirmColor="#ff3b3b" iconBg="rgba(255, 59, 59, 0.12)"
+	iconColor="#ff3b3b" (confirmed)="showErrorModal = false" (closed)="showErrorModal = false">
 </app-confirm-modal>

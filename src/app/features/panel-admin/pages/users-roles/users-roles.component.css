@@ -281,6 +281,11 @@ tbody img {
 	width: 35%;
 }
 
+.actions .delete.activate {
+	background: rgba(45, 206, 137, 0.12);
+	color: #22a06b;
+}
+
 /* =========================
 	ANIMATIONS
 ========================= */

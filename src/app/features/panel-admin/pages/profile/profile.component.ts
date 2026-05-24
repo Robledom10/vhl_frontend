@@ -10,6 +10,8 @@ import colombiaData from '../../../../../assets/data/colombia.json';
   styleUrl: './profile.component.css',
 })
 export class ProfileComponent implements OnInit {
+  originalProfileData: any;
+
   // Calendario
 
   birthCalendarOpen = false;
@@ -23,6 +25,12 @@ export class ProfileComponent implements OnInit {
   // Modal de confirmación
 
   showConfirmModal = false;
+
+  showSuccessToast = false;
+
+  showErrorModal = false;
+
+  errorMessage = '';
 
   //  Dropdowns de departamento y ciudad
 
@@ -100,6 +108,8 @@ export class ProfileComponent implements OnInit {
           address: user.address || '',
         });
 
+        this.originalProfileData = this.profileForm.getRawValue();
+
         this.selectedBirthDate = user.birthDate || '';
 
         // Departamento
@@ -134,6 +144,13 @@ export class ProfileComponent implements OnInit {
     this.submitted = false;
   }
 
+  hasChanges(): boolean {
+    return (
+      JSON.stringify(this.originalProfileData) !==
+      JSON.stringify(this.profileForm.getRawValue())
+    );
+  }
+
   // =========================
   // GUARDAR PERFIL
   // =========================
@@ -143,6 +160,15 @@ export class ProfileComponent implements OnInit {
 
     if (this.profileForm.invalid) {
       this.profileForm.markAllAsTouched();
+      return;
+    }
+
+    // 🔥 VALIDAR SI HUBO CAMBIOS
+    if (!this.hasChanges()) {
+      this.errorMessage = 'No realizaste ningún cambio';
+
+      this.showErrorModal = true;
+
       return;
     }
 
@@ -156,15 +182,27 @@ export class ProfileComponent implements OnInit {
 
         this.selectedBirthDate = updatedUser.birthDate || '';
 
+        this.originalProfileData = this.profileForm.getRawValue();
+
         this.isEditing = false;
 
         this.showConfirmModal = false;
+
+        this.showSuccessToast = true;
+
+        setTimeout(() => {
+          this.showSuccessToast = false;
+        }, 2500);
       },
 
       error: (err) => {
         console.error(err);
 
         this.showConfirmModal = false;
+
+        this.errorMessage = err?.message || 'No se pudo actualizar el perfil';
+
+        this.showErrorModal = true;
       },
     });
   }

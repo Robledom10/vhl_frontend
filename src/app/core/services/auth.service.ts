@@ -183,6 +183,40 @@ export class AuthService {
   }
 
   // =========================
+  // DESACTIVAR USER
+  // =========================
+
+  disableUser(userId: number) {
+    return this.http.put(
+      `${environment.apiUrl}/admin/users/${userId}/disable`,
+      {},
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`,
+        },
+      },
+    );
+  }
+
+  // =========================
+  // ACTIVAR USER
+  // =========================
+
+  enableUser(userId: number) {
+    return this.http.put(
+      `${environment.apiUrl}/admin/users/${userId}/enable`,
+      {},
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`,
+        },
+      },
+    );
+  }
+
+  // =========================
   // ERROR HANDLER CENTRALIZADO
   // =========================
   private handleError(error: any) {

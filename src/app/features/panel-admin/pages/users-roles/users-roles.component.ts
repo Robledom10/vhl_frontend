@@ -24,7 +24,9 @@ export class UsersRolesComponent {
   // MODALS
   // =========================
 
-  showDeleteModal = false;
+  showStatusModal = false;
+
+  statusAction = '';
 
   showToast = false;
 
@@ -40,13 +42,25 @@ export class UsersRolesComponent {
   // USERS
   // =========================
 
+  currentUser: any = null;
+
   users: UserItem[] = [];
 
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
+    this.currentUser = this.authService.getUser();
+
     this.loadUsers();
   }
+
+  // =========================
+  // VALIDAR SI ES EL MISMO ADMIN PARA IMPEDIR QUE EL MISMO SE DESACTIVE
+  // =========================
+
+  isCurrentUser(user: UserItem): boolean {
+  return this.currentUser?.id === user.id;
+}
 
   // =========================
   // LOAD USERS
@@ -126,31 +140,47 @@ export class UsersRolesComponent {
   }
 
   // =========================
-  // DELETE MODAL
+  // STATUS MODAL
   // =========================
 
-  openDeleteModal(user: UserItem): void {
+  openStatusModal(user: UserItem): void {
     this.selectedUser = user;
 
-    this.showDeleteModal = true;
+    this.statusAction = user.status === 'Activo' ? 'desactivar' : 'activar';
+
+    this.showStatusModal = true;
   }
 
-  closeDeleteModal(): void {
-    this.showDeleteModal = false;
+  closeStatusModal(): void {
+    this.showStatusModal = false;
   }
 
-  confirmDelete(): void {
+  confirmStatusChange(): void {
     if (!this.selectedUser) return;
 
-    this.selectedUser.status = 'Inactivo';
+    const request =
+      this.selectedUser.status === 'Activo'
+        ? this.authService.disableUser(this.selectedUser.id)
+        : this.authService.enableUser(this.selectedUser.id);
 
-    this.showDeleteModal = false;
+    request.subscribe({
+      next: () => {
+        this.selectedUser!.status =
+          this.selectedUser!.status === 'Activo' ? 'Inactivo' : 'Activo';
 
-    this.showToast = true;
+        this.showStatusModal = false;
 
-    setTimeout(() => {
-      this.showToast = false;
-    }, 3000);
+        this.showToast = true;
+
+        setTimeout(() => {
+          this.showToast = false;
+        }, 3000);
+      },
+
+      error: (err) => {
+        console.error(err);
+      },
+    });
   }
 
   // =========================
