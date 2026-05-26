@@ -9,10 +9,6 @@
     [class.open]="animating"
     (click)="$event.stopPropagation()"
   >
-    <!-- Drag handle -->
-    <div class="drag-handle-wrapper">
-      <div class="drag-handle"></div>
-    </div>
 
     <!-- Close button -->
     <button class="close-btn" (click)="close()">×</button>
@@ -86,20 +82,24 @@
           <div class="includes-row">
             <div class="includes-col">
               <div class="includes-header">
-                <div class="includes-icon-circle green-circle">✓</div>
+                <div class="includes-icon-circle green-circle"><i class="fa-regular fa-thumbs-up"></i></div>
                 <h4 class="includes-title">Incluye</h4>
               </div>
+			  <div class="includes-contenedor">
               <div class="includes-item green-item" *ngFor="let item of package.includes">
                 <span class="check green-check">✓</span> {{ item }}
+			</div>
               </div>
             </div>
             <div class="includes-col">
               <div class="includes-header">
-                <div class="includes-icon-circle red-circle">✗</div>
+                <div class="includes-icon-circle red-circle"><i class="fa-regular fa-thumbs-down"></i></div>
                 <h4 class="includes-title">No Incluye</h4>
               </div>
+			  <div class="includes-contenedor">
               <div class="includes-item red-item" *ngFor="let item of package.notIncludes">
-                <span class="check red-check">✗</span> {{ item }}
+                <span class="check red-check">×</span> {{ item }}
+			</div>
               </div>
             </div>
           </div>
