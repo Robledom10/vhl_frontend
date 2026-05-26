@@ -20,6 +20,11 @@ import { ToastNotificationComponent } from './components/toast-notification/toas
 import { EditUserRoleModalComponent } from './pages/users-roles/components/edit-user-role-modal/edit-user-role-modal.component';
 import { ViewUserModalComponent } from './pages/users-roles/components/view-user-modal/view-user-modal.component';
 import { CreateUserModalComponent } from './pages/users-roles/components/create-user-modal/create-user-modal.component';
+import { ProveedorComponent } from './pages/packages/pages/proveedor/proveedor.component';
+import { PricingPlanComponent } from './pages/packages/pages/pricing-plan/pricing-plan.component';
+import { SegurosComponent } from './pages/packages/pages/seguros/seguros.component';
+import { OrganizationProfileComponent } from './pages/packages/pages/organization-profile/organization-profile.component';
+import { FormPackageCreationComponent } from './pages/packages/components/form-package-creation/form-package-creation.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +44,11 @@ import { CreateUserModalComponent } from './pages/users-roles/components/create-
     EditUserRoleModalComponent,
     ViewUserModalComponent,
     CreateUserModalComponent,
+    ProveedorComponent,
+    PricingPlanComponent,
+    SegurosComponent,
+    OrganizationProfileComponent,
+    FormPackageCreationComponent,
   ],
   imports: [
     CommonModule,
@@ -46,7 +56,7 @@ import { CreateUserModalComponent } from './pages/users-roles/components/create-
     SharedModule,
     RouterModule,
     ReactiveFormsModule,
-	FormsModule
+    FormsModule,
   ],
 })
 export class PanelAdminModule {}

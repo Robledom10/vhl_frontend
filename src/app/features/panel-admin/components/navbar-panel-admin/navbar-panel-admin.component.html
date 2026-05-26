@@ -10,7 +10,14 @@
 	</div>
 
 	<!-- MENU ADMIN -->
-	<a *ngFor="let item of adminMenu" [routerLink]="item.route" routerLinkActive="active" class="menu-item">
+	<div *ngFor="let item of adminMenu">
+
+	<!-- ITEM NORMAL -->
+	<a *ngIf="!item.children"
+		[routerLink]="item.route"
+		routerLinkActive="active"
+		class="menu-item">
+
 		<div class="menu-left">
 			<i [class]="item.icon"></i>
 
@@ -19,9 +26,48 @@
 			</span>
 		</div>
 
-		<!-- BADGE -->
 		<span class="badge" *ngIf="item.badge">
 			{{ item.badge }}
 		</span>
 	</a>
+
+	<!-- ITEM DESPLEGABLE -->
+	<div *ngIf="item.children">
+
+		<button
+			class="menu-item dropdown-btn"
+			(click)="toggleMenu(item)">
+
+			<div class="menu-left">
+				<i [class]="item.icon"></i>
+
+				<span class="menu-label">
+					{{ item.label }}
+				</span>
+			</div>
+
+			<i
+				class="fa-solid fa-chevron-down dropdown-arrow"
+				[class.rotate]="item.open">
+			</i>
+		</button>
+
+		<!-- SUBMENU -->
+		<div class="submenu" *ngIf="item.open">
+
+			<a
+				*ngFor="let child of item.children"
+				[routerLink]="child.route"
+				routerLinkActive="active-submenu"
+				class="submenu-item">
+
+				{{ child.label }}
+
+			</a>
+
+		</div>
+
+	</div>
+
+</div>
 </div>

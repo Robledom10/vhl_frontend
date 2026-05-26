@@ -1,128 +1,137 @@
-<div *ngIf="visible" class="sheet-overlay" [class.open]="animating" (click)="onOverlayClick($event)">
-	<div class="sheet-container" [class.open]="animating" (click)="$event.stopPropagation()">
-		<!-- Drag handle -->
-		<div class="drag-handle-wrapper">
-			<div class="drag-handle"></div>
-		</div>
+<div
+  *ngIf="visible"
+  class="sheet-overlay"
+  [class.open]="animating"
+  (click)="onOverlayClick($event)"
+>
+  <div
+    class="sheet-container"
+    [class.open]="animating"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Drag handle -->
+    <div class="drag-handle-wrapper">
+      <div class="drag-handle"></div>
+    </div>
 
-		<!-- Close button -->
-		<button class="close-btn" (click)="close()">×</button>
+    <!-- Close button -->
+    <button class="close-btn" (click)="close()">×</button>
 
-		<div class="sheet-body" *ngIf="package">
-			<!-- ── SECCIÓN SUPERIOR: imagen grande + info ── -->
-			<div class="top-section">
-				<!-- Imagen principal — dinámica según el paquete -->
-				<div class="main-image-wrap">
-					<img class="main-image" [src]="package.mainImage" [alt]="package.title"
-						onerror="this.src ='https://placehold.co/400x500/b5e5ff/123862?text=Destino'" />
-				</div>
+    <div class="sheet-body" *ngIf="package">
 
-				<!-- Info derecha -->
-				<div class="info-right">
-					<h2 class="title">{{ package.title }}</h2>
-					<p class="subtitle">{{ package.subtitle }}</p>
+      <div class="top-section">
 
-					<!-- Cupos disponibles -->
-					<div class="cupos-btn">
-						<span class="cupos-label">CUPOS DISPONIBLES</span>
-						<span class="cupos-count">{{ package.spotsAvailable }} personas disponibles</span>
-					</div>
+        <!-- COLUMNA IZQUIERDA: imagen + itinerario + galería -->
+        <div class="main-image-wrap">
 
-					<!-- Filas de info — dinámicas según el paquete -->
-					<div class="info-rows">
-						<div class="info-row" *ngFor="let row of infoRows">
-							<div class="info-icon-circle">
-								<i [class]="row.icon"></i>
-							</div>
-							<div class="info-text">
-								<span class="info-row-label">{{ row.label }}</span>
-								<span class="info-row-value">{{ row.value }}</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+          <img
+            class="main-image"
+            [src]="package.mainImage"
+            [alt]="package.title"
+            onerror="this.src='https://placehold.co/400x500/b5e5ff/123862?text=Destino'"
+          />
 
-			<!-- ── SECCIÓN INFERIOR ── -->
-			<div class="bottom-section">
-				<!-- Columna izquierda: itinerario + galería -->
-				<div class="bottom-left">
-					<div class="itinerary-card">
-						<div class="itinerary-header">
-							<i class="fa-solid fa-list"></i>
-							<h3 class="itinerary-title">Itinerario</h3>
-						</div>
-						<div class="itinerary-list">
-							<div class="itinerary-item" *ngFor="let item of package.itinerary">
-								<span class="day-badge">{{ item.day }}</span>
-								<span class="day-desc">{{ item.desc }}</span>
-							</div>
-						</div>
-					</div>
+          <div class="itinerary-card">
+            <div class="itinerary-header">
+              <i class="fa-solid fa-list"></i>
+              <h3 class="itinerary-title">Itinerario</h3>
+            </div>
+            <div class="itinerary-list">
+              <div class="itinerary-item" *ngFor="let item of package.itinerary">
+                <span class="day-badge">{{ item.day }}</span>
+                <span class="day-desc">{{ item.desc }}</span>
+              </div>
+            </div>
+          </div>
 
-					<!-- Galería — dinámica según el paquete, solo si hay imágenes -->
-					<div class="gallery" *ngIf="galleryImages.length > 0">
-						<div class="gallery-img-wrap" *ngFor="let img of galleryImages; let i = index">
-							<img [src]="img" [alt]="'Foto ' + (i + 1)" onerror="
-                  this.src =
-                    'https://placehold.co/180x130/b5e5ff/123862?text=Foto'
-                " />
-						</div>
-					</div>
-				</div>
+          <div class="gallery" *ngIf="galleryImages.length > 0">
+            <div
+              class="gallery-img-wrap"
+              *ngFor="let img of galleryImages; let i = index"
+            >
+              <img
+                [src]="img"
+                [alt]="'Foto ' + (i + 1)"
+                onerror="this.src='https://placehold.co/180x130/b5e5ff/123862?text=Foto'"
+              />
+            </div>
+          </div>
 
-				<!-- Columna derecha: incluye + precio + reservar + políticas -->
-				<div class="bottom-right">
-					<!-- Incluye / No Incluye -->
-					<div class="includes-row">
-						<div class="includes-col">
-							<div class="includes-header">
-								<div class="includes-icon-circle green-circle">✓</div>
-								<h4 class="includes-title">Incluye</h4>
-							</div>
-							<div class="includes-item green-item" *ngFor="let item of package.includes">
-								<span class="check green-check">✓</span> {{ item }}
-							</div>
-						</div>
+        </div>
+        <!-- /main-image-wrap (columna izquierda) -->
 
-						<div class="includes-col">
-							<div class="includes-header">
-								<div class="includes-icon-circle red-circle">✗</div>
-								<h4 class="includes-title">No Incluye</h4>
-							</div>
-							<div class="includes-item red-item" *ngFor="let item of package.notIncludes">
-								<span class="check red-check">✗</span> {{ item }}
-							</div>
-						</div>
-					</div>
+        <!-- COLUMNA DERECHA: toda la info -->
+        <div class="info-right">
 
-					<!-- Precio -->
-					<div class="precio-bar">
-						<i class="fa-solid fa-bag-shopping"></i>
-						<span class="precio-text">
-							Precio
-							<strong>{{ package.price | number: "1.0-0" }}.00</strong> por
-							persona
-						</span>
-					</div>
+          <h2 class="title">{{ package.title }}</h2>
+          <p class="subtitle">{{ package.subtitle }}</p>
 
-					<!-- Reservar -->
-					<button class="reserve-btn">Reservar ahora</button>
+          <div class="cupos-btn">
+            <span class="cupos-label">CUPOS DISPONIBLES</span>
+            <span class="cupos-count">{{ package.spotsAvailable }} personas disponibles</span>
+          </div>
 
-					<!-- Políticas -->
-					<div class="cancel-card">
-						<div class="cancel-header">
-							<div class="cancel-warn-icon">
-								<i class="fa-solid fa-triangle-exclamation"></i>
-							</div>
-							<h4 class="cancel-title">Políticas de cancelación</h4>
-						</div>
-						<ul class="cancel-list">
-							<li *ngFor="let item of package.cancellation">{{ item }}</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+          <div class="info-rows">
+            <div class="info-row" *ngFor="let row of infoRows">
+              <div class="info-icon-circle">
+                <i [class]="row.icon"></i>
+              </div>
+              <div class="info-text">
+                <span class="info-row-label">{{ row.label }}</span>
+                <span class="info-row-value">{{ row.value }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="includes-row">
+            <div class="includes-col">
+              <div class="includes-header">
+                <div class="includes-icon-circle green-circle">✓</div>
+                <h4 class="includes-title">Incluye</h4>
+              </div>
+              <div class="includes-item green-item" *ngFor="let item of package.includes">
+                <span class="check green-check">✓</span> {{ item }}
+              </div>
+            </div>
+            <div class="includes-col">
+              <div class="includes-header">
+                <div class="includes-icon-circle red-circle">✗</div>
+                <h4 class="includes-title">No Incluye</h4>
+              </div>
+              <div class="includes-item red-item" *ngFor="let item of package.notIncludes">
+                <span class="check red-check">✗</span> {{ item }}
+              </div>
+            </div>
+          </div>
+
+          <div class="precio-bar">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span class="precio-text">
+              Precio <strong>{{ package.price | number: "1.0-0" }}.00</strong> por persona
+            </span>
+          </div>
+
+          <button class="reserve-btn">Reservar ahora</button>
+
+          <div class="cancel-card">
+            <div class="cancel-header">
+              <div class="cancel-warn-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+              </div>
+              <h4 class="cancel-title">Políticas de cancelación</h4>
+            </div>
+            <ul class="cancel-list">
+              <li *ngFor="let item of package.cancellation">{{ item }}</li>
+            </ul>
+          </div>
+
+        </div>
+        <!-- /info-right (columna derecha) -->
+
+      </div>
+      <!-- /top-section -->
+
+    </div>
+    <!-- /sheet-body -->
+  </div>
 </div>

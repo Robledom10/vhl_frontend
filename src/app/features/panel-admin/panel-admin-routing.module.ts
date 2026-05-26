@@ -10,6 +10,10 @@ import { PackagesComponent } from './pages/packages/packages.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { ReservationsComponent } from './pages/reservations/reservations.component';
 import { UsersRolesComponent } from './pages/users-roles/users-roles.component';
+import { SegurosComponent } from './pages/packages/pages/seguros/seguros.component';
+import { ProveedorComponent } from './pages/packages/pages/proveedor/proveedor.component';
+import { PricingPlanComponent } from './pages/packages/pages/pricing-plan/pricing-plan.component';
+import { OrganizationProfileComponent } from './pages/packages/pages/organization-profile/organization-profile.component';
 
 const routes: Routes = [
   {
@@ -19,6 +23,11 @@ const routes: Routes = [
       { path: '', redirectTo: 'profile', pathMatch: 'full' },
       { path: 'control-panel', component: ControlPanelComponent },
       { path: 'packages', component: PackagesComponent },
+      { path: 'packages', component: PackagesComponent },
+	  { path: 'packages-organization-profile', component: OrganizationProfileComponent },
+	  { path: 'packages-price-plans', component: PricingPlanComponent },
+	  { path: 'packages-providers', component: ProveedorComponent },
+	  { path: 'packages-seguros', component: SegurosComponent },
       { path: 'reservations', component: ReservationsComponent },
       { path: 'users-roles', component: UsersRolesComponent },
       { path: 'comments', component: CommentsComponent },

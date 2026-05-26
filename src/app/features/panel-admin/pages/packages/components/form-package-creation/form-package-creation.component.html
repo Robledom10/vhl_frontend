@@ -1,0 +1,347 @@
+<div class="modal-overlay" *ngIf="isOpen">
+
+	<div class="modal-container">
+
+		<!-- STEPS -->
+		<div class="steps">
+
+			<div class="step" [class.active]="currentStep >= 1">
+				<i class="fa-solid fa-check" *ngIf="currentStep > 1"></i>
+				<span *ngIf="currentStep <= 1">1</span>
+			</div>
+
+			<div class="line" [class.active]="currentStep >= 2"></div>
+
+			<div class="step" [class.active]="currentStep >= 2">
+				<i class="fa-solid fa-check" *ngIf="currentStep > 2"></i>
+				<span *ngIf="currentStep <= 2">2</span>
+			</div>
+
+			<div class="line" [class.active]="currentStep >= 3"></div>
+
+			<div class="step" [class.active]="currentStep >= 3">
+				<i class="fa-solid fa-check" *ngIf="currentStep > 3"></i>
+				<span *ngIf="currentStep <= 3">3</span>
+			</div>
+
+			<div class="line" [class.active]="currentStep >= 4"></div>
+
+			<div class="step" [class.active]="currentStep >= 4">
+				4
+			</div>
+
+		</div>
+
+		<!-- LABELS -->
+		<div class="step-labels">
+
+			<span [class.active]="currentStep === 1">
+				Información del paquete
+			</span>
+
+			<span [class.active]="currentStep === 2">
+				Detalles del viaje
+			</span>
+
+			<span [class.active]="currentStep === 3">
+				Precio y alojamiento
+			</span>
+
+			<span [class.active]="currentStep === 4">
+				Políticas y confirmación
+			</span>
+
+		</div>
+
+		<!-- TITLE -->
+		<h2 class="modal-title">
+			Crear <span>Paquete</span>
+		</h2>
+
+		<div class="divider"></div>
+
+		<form [formGroup]="packageForm">
+
+			<!-- =========================
+			     STEP 1
+			========================= -->
+
+			<div *ngIf="currentStep === 1" class="step-content">
+
+				<input type="text" placeholder="Nombre del paquete" formControlName="name">
+
+				<input type="text" placeholder="Destino(s)" formControlName="destinations">
+
+				<textarea placeholder="Descripción corta" formControlName="shortDescription">
+				</textarea>
+
+				<!-- UPLOAD -->
+				<div class="upload-grid">
+
+					<!-- PORTADA -->
+					<div class="upload-box small">
+
+						<div class="upload-icon">
+							<i class="fa-solid fa-camera"></i>
+						</div>
+
+					</div>
+
+					<!-- GALERIA -->
+					<div class="upload-box">
+
+						<div class="upload-icon">
+							<i class="fa-solid fa-camera"></i>
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- =========================
+			     STEP 2
+			========================= -->
+
+			<div *ngIf="currentStep === 2" class="step-content">
+
+				<select formControlName="duration">
+					<option value="">Duración (días)</option>
+				</select>
+
+				<input type="date" formControlName="startDate">
+
+				<input type="time" formControlName="departureTime">
+
+				<select formControlName="departurePlace">
+					<option value="">Lugar de salida</option>
+				</select>
+
+				<select formControlName="transportType">
+					<option value="">Tipo de transporte</option>
+				</select>
+
+				<select formControlName="availableSlots">
+					<option value="">Cupos disponibles</option>
+				</select>
+
+			</div>
+
+			<!-- =========================
+			     STEP 3
+			========================= -->
+
+			<div *ngIf="currentStep === 3" class="step-content">
+
+				<input type="number" placeholder="Precio por persona" formControlName="price">
+
+				<input type="text" placeholder="Hotel" formControlName="hotel">
+
+				<input type="text" placeholder="Tipo de habitación" formControlName="roomType">
+
+				<!-- INCLUYE -->
+				<div class="checkbox-section">
+
+					<h3 class="checkbox-title">
+						Qué incluye el paquete
+					</h3>
+
+					<div class="checkbox-list">
+
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span>Transporte terrestre ida y regreso</span>
+						</label>
+
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span>Hospedaje en hotel 3 estrellas</span>
+						</label>
+
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span>Alimentación (desayuno y cena)</span>
+						</label>
+
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span>Tours turísticos guiados</span>
+						</label>
+
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span>Actividades recreativas</span>
+						</label>
+
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span>Seguro de viaje</span>
+						</label>
+
+						<button type="button" class="add-option">
+							<i class="fa-solid fa-plus"></i>
+							Agregar otro
+						</button>
+
+					</div>
+
+				</div>
+
+				<!-- NO INCLUYE -->
+				<div class="checkbox-section">
+
+					<h3 class="checkbox-title">
+						Qué no incluye
+					</h3>
+
+					<ul class="policies-list">
+
+						<li>Gastos personales</li>
+
+						<li>Bebidas alcohólicas</li>
+
+						<li>Entradas a discotecas o actividades no incluidas</li>
+
+						<li>Souvenirs o compras personales</li>
+
+					</ul>
+
+					<button type="button" class="add-option">
+						<i class="fa-solid fa-plus"></i>
+						Agregar otro
+					</button>
+
+				</div>
+
+			</div>
+
+			<!-- =========================
+			     STEP 4
+			========================= -->
+
+			<div *ngIf="currentStep === 4" class="step-content">
+
+				<!-- ITINERARIO -->
+				<div class="checkbox-section">
+
+					<h3 class="checkbox-title">
+						Itinerario
+					</h3>
+
+					<div class="itinerary-list" formArrayName="itinerary">
+
+						<div class="itinerary-item" *ngFor="let item of itinerary.controls; let i = index">
+
+							<input type="text" [placeholder]="'Día ' + (i + 1)" [formControlName]="i">
+
+							<button type="button" class="remove-day" (click)="removeDay(i)"
+								*ngIf="itinerary.length > 1">
+
+								<i class="fa-solid fa-trash"></i>
+
+							</button>
+
+						</div>
+
+					</div>
+
+					<button type="button" class="add-option" (click)="addDay()">
+
+						<i class="fa-solid fa-plus"></i>
+						Agregar día
+
+					</button>
+
+				</div>
+
+				<!-- POLITICAS -->
+				<div class="checkbox-section">
+
+					<h3 class="checkbox-title">
+						Políticas de cancelación
+					</h3>
+
+					<ul class="policies-list">
+
+						<li>Cancelación gratuita hasta 5 días antes del viaje.</li>
+
+						<li>50% de reembolso si cancela 48 horas antes.</li>
+
+						<li>No hay devolución el mismo día del viaje.</li>
+
+						<li>Se permite cambio de fecha una vez.</li>
+
+					</ul>
+
+					<button type="button" class="add-option">
+						<i class="fa-solid fa-plus"></i>
+						Agregar otro
+					</button>
+
+				</div>
+
+				<!-- REQUISITOS -->
+				<div class="checkbox-section">
+
+					<h3 class="checkbox-title">
+						Requisitos
+					</h3>
+
+					<ul class="policies-list">
+
+						<li>Cédula de ciudadanía obligatoria.</li>
+
+						<li>Menores deben viajar con permiso firmado.</li>
+
+						<li>Edad mínima: 5 años.</li>
+
+						<li>Pago completo antes del viaje.</li>
+
+						<li>Seguro obligatorio.</li>
+
+					</ul>
+
+					<button type="button" class="add-option">
+						<i class="fa-solid fa-plus"></i>
+						Agregar otro
+					</button>
+
+				</div>
+
+			</div>
+
+		</form>
+
+		<!-- BUTTONS -->
+		<div class="buttons">
+
+			<button type="button" class="cancel" (click)="closeModal()">
+
+				Cancelar
+			</button>
+
+			<div class="right-buttons">
+
+				<button type="button" class="prev" *ngIf="currentStep > 1" (click)="previousStep()">
+
+					Anterior
+				</button>
+
+				<button type="button" class="next" *ngIf="currentStep < 4" (click)="nextStep()">
+
+					Siguiente
+				</button>
+
+				<button type="button" class="save" *ngIf="currentStep === 4" (click)="submitForm()">
+
+					Crear paquete
+				</button>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div>

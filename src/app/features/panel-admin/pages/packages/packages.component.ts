@@ -8,6 +8,17 @@ import { AdminPackage } from './models/packages.model';
   styleUrl: './packages.component.css',
 })
 export class PackagesComponent {
+  // Modal de from de creación de paquetes
+  showCreateModal = false;
+
+  openCreateModal() {
+    this.showCreateModal = true;
+  }
+
+  closeCreateModal() {
+    this.showCreateModal = false;
+  }
+
   // Bottom sheet
   sheetOpen = false;
   selectedPackageDetail: PackageDetail | null = null;

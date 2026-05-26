@@ -28,6 +28,10 @@ export class NavbarPanelAdminComponent {
     return roleMap[role] || role;
   }
 
+  toggleMenu(item: any) {
+    item.open = !item.open;
+  }
+
   adminMenu = [
     {
       icon: 'fa-regular fa-user',
@@ -39,10 +43,33 @@ export class NavbarPanelAdminComponent {
       label: 'Panel de control',
       route: '/panel-admin/control-panel',
     },
+    // 🔥 MENU DESPLEGABLE
     {
       icon: 'fa-solid fa-briefcase',
       label: 'Paquetes',
-      route: '/panel-admin/packages',
+      open: false,
+      children: [
+		{
+          label: 'Paquetes',
+          route: '/panel-admin/packages',
+        },
+        {
+          label: 'Perfil organización',
+          route: '/panel-admin/packages-organization-profile',
+        },
+        {
+          label: 'Planes de precio',
+          route: '/panel-admin/packages-price-plans',
+        },
+        {
+          label: 'Proveedores',
+          route: '/panel-admin/packages-providers',
+        },
+		{
+          label: 'Seguros',
+          route: '/panel-admin/packages-seguros',
+        }
+      ],
     },
     {
       icon: 'fa-solid fa-check',

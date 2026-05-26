@@ -19,7 +19,7 @@
 		</button>
 
 		<!-- AGREGAR -->
-		<button class="add-btn">
+		<button class="add-btn" (click)="openCreateModal()">
 			<i class="fa-solid fa-plus"></i>
 			<span>Agregar</span>
 		</button>
@@ -96,3 +96,6 @@
 <app-toast-notification [show]="showToast" title="Paquete eliminado con éxito"
 	[message]="'El paquete ' + selectedPackage?.name + ' fue eliminado correctamente.'">
 </app-toast-notification>
+
+<app-form-package-creation [isOpen]="showCreateModal" (closed)="closeCreateModal()">
+</app-form-package-creation>
