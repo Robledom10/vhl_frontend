@@ -99,32 +99,32 @@
 						</div>
 
 						<!-- UPLOAD -->
-				<div class="upload-grid">
+						<div class="upload-grid">
 
-					<!-- PORTADA -->
-					<div class="upload-box small">
+							<!-- PORTADA -->
+							<div class="upload-box small">
 
-						<div class="upload-icon">
-							<i class="fa-solid fa-camera"></i>
+								<div class="upload-icon">
+									<i class="fa-solid fa-camera"></i>
+								</div>
+
+							</div>
+
+							<!-- GALERIA -->
+							<div class="upload-box">
+
+								<div class="upload-icon">
+									<i class="fa-solid fa-camera"></i>
+								</div>
+
+							</div>
+
 						</div>
-
-					</div>
-
-					<!-- GALERIA -->
-					<div class="upload-box">
-
-						<div class="upload-icon">
-							<i class="fa-solid fa-camera"></i>
-						</div>
-
-					</div>
-
-				</div>
 					</div>
 
 					<!-- =========================
-				STEP 2
-			========================= -->
+						STEP 2
+					========================= -->
 
 					<div *ngIf="currentStep === 2" class="step-content">
 						<div class="form-group">
@@ -166,14 +166,22 @@
 							</span>
 						</div>
 
-						<div class="transport-group">
+						<div class="form-group">
+							<input type="number" placeholder=" " formControlName="availableSlots">
+							<label>Cupos disponibles</label>
 
+							<span
+								*ngIf="packageForm.get('availableSlots')?.invalid && packageForm.get('availableSlots')?.touched">
+								Los cupos son obligatorios
+							</span>
+						</div>
+
+						<div class="transport-group">
 							<p class="transport-title">
 								Tipo de transporte
 							</p>
 
 							<div class="transport-list">
-
 								<label class="transport-item">
 									<input type="checkbox" value="Bus" (change)="onTransportChange($event)" />
 
@@ -185,25 +193,13 @@
 
 									<span>Avión</span>
 								</label>
-
 							</div>
-
-						</div>
-
-						<div class="form-group">
-							<input type="number" placeholder=" " formControlName="availableSlots">
-							<label>Cupos disponibles</label>
-
-							<span
-								*ngIf="packageForm.get('availableSlots')?.invalid && packageForm.get('availableSlots')?.touched">
-								Los cupos son obligatorios
-							</span>
 						</div>
 					</div>
 
 					<!-- =========================
-				STEP 3
-			========================= -->
+						STEP 3
+					========================= -->
 
 					<div *ngIf="currentStep === 3" class="step-content">
 						<div class="form-group">
@@ -301,8 +297,8 @@
 					</div>
 
 					<!-- =========================
-				STEP 4
-			========================= -->
+						STEP 4
+					========================= -->
 
 					<div *ngIf="currentStep === 4" class="step-content">
 
@@ -331,7 +327,7 @@
 							</button>
 						</div>
 
-						<!-- POLITICAS -->
+						<!-- POLÍTICAS -->
 
 						<div class="checkbox-section">
 							<h3 class="checkbox-title">Políticas de cancelación</h3>
