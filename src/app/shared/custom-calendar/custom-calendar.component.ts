@@ -18,11 +18,8 @@ export class CustomCalendarComponent implements OnChanges {
   @Output() closed = new EventEmitter<void>();
 
   @Input() isOpen = false;
-
   @Input() selectedDate: string = '';
-
   @Input() disablePastDates = false;
-
   @Input() disableFutureDates = false;
 
   selectedBirthDate = '';
@@ -58,10 +55,14 @@ export class CustomCalendarComponent implements OnChanges {
   constructor() {
     const current = new Date().getFullYear();
 
-    for (let y = current; y >= 1950; y--) {
+    for (let y = current + 10; y >= 1950; y--) {
       this.yearRange.push(y);
     }
   }
+
+  // =========================================================
+  // GETTERS
+  // =========================================================
 
   get monthName() {
     return this.monthNames[this.currentMonth];
@@ -89,6 +90,20 @@ export class CustomCalendarComponent implements OnChanges {
     return days;
   }
 
+  // =========================================================
+  // PARSE DATE
+  // =========================================================
+
+  parseDate(dateString: string): Date {
+    const [year, month, day] = dateString.split('-').map(Number);
+
+    return new Date(year, month - 1, day);
+  }
+
+  // =========================================================
+  // SELECTORS
+  // =========================================================
+
   toggleMonthSelector(event: Event) {
     event.stopPropagation();
 
@@ -113,11 +128,11 @@ export class CustomCalendarComponent implements OnChanges {
     this.showYearSelector = false;
   }
 
-  prevMonth() {
-    if (this.currentYear === 1950 && this.currentMonth === 0) {
-      return;
-    }
+  // =========================================================
+  // MONTH NAVIGATION
+  // =========================================================
 
+  prevMonth() {
     if (this.currentMonth === 0) {
       this.currentMonth = 11;
       this.currentYear--;
@@ -127,16 +142,6 @@ export class CustomCalendarComponent implements OnChanges {
   }
 
   nextMonth() {
-    const next = new Date(this.currentYear, this.currentMonth + 1);
-
-    if (
-      next.getFullYear() > this.today.getFullYear() ||
-      (next.getFullYear() === this.today.getFullYear() &&
-        next.getMonth() > this.today.getMonth())
-    ) {
-      return;
-    }
-
     if (this.currentMonth === 11) {
       this.currentMonth = 0;
       this.currentYear++;
@@ -145,12 +150,21 @@ export class CustomCalendarComponent implements OnChanges {
     }
   }
 
+  // =========================================================
+  // VALIDATIONS
+  // =========================================================
+
   isFutureDate(day: number | null): boolean {
     if (!day) return false;
 
     const date = new Date(this.currentYear, this.currentMonth, day);
 
-    return date > this.today;
+    date.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return date > today;
   }
 
   isPastDate(day: number | null): boolean {
@@ -158,7 +172,6 @@ export class CustomCalendarComponent implements OnChanges {
 
     const date = new Date(this.currentYear, this.currentMonth, day);
 
-    // quitar horas
     date.setHours(0, 0, 0, 0);
 
     const today = new Date();
@@ -167,23 +180,37 @@ export class CustomCalendarComponent implements OnChanges {
     return date < today;
   }
 
+  // =========================================================
+  // SELECT DATE
+  // =========================================================
+
   selectBirthDate(day: number | null) {
-    if (
-      !day ||
-      (this.disablePastDates && this.isPastDate(day)) ||
-      (this.disableFutureDates && this.isFutureDate(day))
-    ) {
-      return;
-    }
+    if (!day) return;
+
+    if (this.disablePastDates && this.isPastDate(day)) return;
+
+    if (this.disableFutureDates && this.isFutureDate(day)) return;
 
     const date = new Date(this.currentYear, this.currentMonth, day);
 
+    // FORMATO VISUAL
     this.selectedBirthDate = `${day}/${this.currentMonth + 1}/${this.currentYear}`;
 
-    this.dateSelected.emit(date.toISOString().split('T')[0]);
+    // FORMATO YYYY-MM-DD
+    const formattedDate = [
+      date.getFullYear(),
+      String(date.getMonth() + 1).padStart(2, '0'),
+      String(date.getDate()).padStart(2, '0'),
+    ].join('-');
+
+    this.dateSelected.emit(formattedDate);
 
     this.closed.emit();
   }
+
+  // =========================================================
+  // STATES
+  // =========================================================
 
   isBirthSelected(day: number | null): boolean {
     if (!day || !this.selectedBirthDate) return false;
@@ -204,23 +231,42 @@ export class CustomCalendarComponent implements OnChanges {
     );
   }
 
+  // =========================================================
+  // CHANGES
+  // =========================================================
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedDate'] && this.selectedDate) {
-      const date = new Date(this.selectedDate);
+      const date = this.parseDate(this.selectedDate);
 
       this.currentMonth = date.getMonth();
-
       this.currentYear = date.getFullYear();
 
       this.selectedBirthDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     }
+
+    // CUANDO SE ABRE EL CALENDARIO
+    if (changes['isOpen'] && this.isOpen && this.selectedDate) {
+      const date = this.parseDate(this.selectedDate);
+
+      this.currentMonth = date.getMonth();
+      this.currentYear = date.getFullYear();
+    }
   }
 
-  @HostListener('document:click')
-  closeDropdowns(): void {
-    this.showMonthSelector = false;
-    this.showYearSelector = false;
+  // =========================================================
+  // CLOSE
+  // =========================================================
 
-    this.closed.emit();
+  @HostListener('document:click', ['$event'])
+  closeDropdowns(event: Event): void {
+    const target = event.target as HTMLElement;
+
+    if (!target.closest('.calendar-dropdown')) {
+      this.showMonthSelector = false;
+      this.showYearSelector = false;
+
+      this.closed.emit();
+    }
   }
 }

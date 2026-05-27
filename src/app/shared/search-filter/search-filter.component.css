@@ -45,7 +45,7 @@
 	font-size: 18px;
 	color: var(--color-texto-principal);
 	margin-bottom: 2px;
-		cursor: pointer;
+	cursor: pointer;
 }
 
 .filter-content input {

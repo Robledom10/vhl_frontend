@@ -18,7 +18,6 @@ export interface TravelPackage {
   styleUrls: ['./packages-card.component.css'],
 })
 export class PackagesCardComponent implements OnInit {
-
   @Input() showAll: boolean = false;
 
   // ── Bottom sheet ──────────────────────────────
@@ -26,12 +25,72 @@ export class PackagesCardComponent implements OnInit {
   selectedPackageDetail: PackageDetail | null = null;
 
   allPackages: TravelPackage[] = [
-    { id: 1, name: 'Piscilago',    location: 'Vía Bogotá – Girardot',  price: 400000, imageUrl: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900/v1777919069/D%C3%ADa_1-27_dvpcwe.jpg',    rating: 4.2, nights: 2, category: 'aventura'  },
-    { id: 2, name: 'Santa Marta',  location: 'Santa Marta – Colombia', price: 700000, imageUrl: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900/v1777919837/D%C3%ADa3-49_qy6mvu.jpg',  rating: 4.5, nights: 4, category: 'playa'     },
-    { id: 3, name: 'Barranquilla', location: 'Barranquilla – Colombia',price: 550000, imageUrl: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900/v1777932611/D%C3%ADa5-13_tcmbm3.jpg', rating: 4.0, nights: 3, category: 'cultura'   },
-    { id: 4, name: 'Cartagena',    location: 'Cartagena – Colombia',   price: 650000, imageUrl: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900/v1777933653/D%C3%ADa_7-9_i02kx8.jpg',    rating: 4.2, nights: 3, category: 'playa'     },
-    { id: 5, name: 'Medellín',     location: 'Guatapé – Colombia',     price: 745000, imageUrl: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900/v1777933653/Diseño_sin_título_g26s3y.png',     rating: 4.5, nights: 4, category: 'naturaleza'},
-    { id: 6, name: 'Eje Cafetero', location: 'Quindío – Colombia',     price: 480000, imageUrl: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900/v1779738517/image_imbit9.png', rating: 4.3, nights: 3, category: 'naturaleza'},
+    {
+      id: 1,
+      name: 'Piscilago',
+      location: 'Vía Bogotá – Girardot',
+      price: 400000,
+      imageUrl:
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900/v1777919069/D%C3%ADa_1-27_dvpcwe.jpg',
+      rating: 4.2,
+      nights: 2,
+      category: 'aventura',
+    },
+    {
+      id: 2,
+      name: 'Santa Marta',
+      location: 'Santa Marta – Colombia',
+      price: 700000,
+      imageUrl:
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900/v1777919837/D%C3%ADa3-49_qy6mvu.jpg',
+      rating: 4.5,
+      nights: 4,
+      category: 'playa',
+    },
+    {
+      id: 3,
+      name: 'Barranquilla',
+      location: 'Barranquilla – Colombia',
+      price: 550000,
+      imageUrl:
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900/v1777932611/D%C3%ADa5-13_tcmbm3.jpg',
+      rating: 4.0,
+      nights: 3,
+      category: 'cultura',
+    },
+    {
+      id: 4,
+      name: 'Cartagena',
+      location: 'Cartagena – Colombia',
+      price: 650000,
+      imageUrl:
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900/v1777933653/D%C3%ADa_7-9_i02kx8.jpg',
+      rating: 4.2,
+      nights: 3,
+      category: 'playa',
+    },
+    {
+      id: 5,
+      name: 'Medellín',
+      location: 'Guatapé – Colombia',
+      price: 745000,
+      imageUrl:
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900/v1777933653/Diseño_sin_título_g26s3y.png',
+      rating: 4.5,
+      nights: 4,
+      category: 'naturaleza',
+    },
+    {
+      id: 6,
+      name: 'Eje Cafetero',
+      location: 'Quindío – Colombia',
+      price: 480000,
+      imageUrl:
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900/v1779738517/image_imbit9.png',
+      rating: 4.3,
+      nights: 3,
+      category: 'naturaleza',
+    },
   ];
 
   displayedPackages: TravelPackage[] = [];
@@ -64,21 +123,36 @@ export class PackagesCardComponent implements OnInit {
       duration: `${pkg.nights + 1} Días / ${pkg.nights} Noches`,
       departurePlace: 'Calarcá, Quindío – Barrio el Cacique',
       date: '17/03/2025 – 6:00 AM',
-      accommodation: 'Hotel 3 estrellas o similar. Habitación múltiple (compartida)',
+      accommodation:
+        'Hotel 3 estrellas o similar. Habitación múltiple (compartida)',
       transport: 'Bus de turismo',
-      mainImage: pkg.imageUrl,        // ← imagen dinámica según el paquete
-      galleryImages: [],              // ← vacío por ahora, se completa después
+      mainImage: pkg.imageUrl,
       itinerary: [
         { day: 'Día 1:', desc: 'Salida y llegada al primer destino' },
         { day: 'Día 2:', desc: `Tour por ${pkg.name} y actividades` },
         { day: 'Día 3:', desc: 'Día libre para explorar' },
       ],
-      includes: ['Transporte', 'Hotel', 'Alimentación', 'Tours Guiados', 'Integraciones'],
-      notIncludes: ['Gastos personales', 'Bebidas alcohólicas', 'Servicios adicionales'],
+      includes: [
+        'Transporte',
+        'Hotel',
+        'Alimentación',
+        'Tours Guiados',
+        'Integraciones',
+      ],
+      notIncludes: [
+        'Gastos personales',
+        'Bebidas alcohólicas',
+        'Servicios adicionales',
+      ],
       cancellation: [
         'Cancelación gratuita hasta 5 días antes',
         '50% de reembolso hasta 48 horas antes',
         'No hay reembolso el mismo día',
+      ],
+      requirements: [
+        'Documento de identidad',
+        'Ropa cómoda',
+        'Pago completo antes del viaje',
       ],
     };
   }

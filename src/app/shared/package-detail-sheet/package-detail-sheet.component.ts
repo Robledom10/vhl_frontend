@@ -23,6 +23,7 @@ export interface PackageDetail {
   includes: string[];
   notIncludes: string[];
   cancellation: string[];
+  requirements: string[];
 }
 
 @Component({
@@ -51,12 +52,36 @@ export class PackageDetailSheetComponent implements OnChanges {
   get infoRows(): InfoRow[] {
     if (!this.package) return [];
     return [
-      { label: 'Destinos',     value: this.package.destinations,   icon: 'fa-regular fa-map' },
-      { label: 'Duración',     value: this.package.duration,       icon: 'fa-regular fa-clock' },
-      { label: 'Salida desde', value: this.package.departurePlace, icon: 'fa-solid fa-route ' },
-      { label: 'Fecha',        value: this.package.date,           icon: 'fa-regular fa-calendar' },
-      { label: 'Alojamiento',  value: this.package.accommodation,  icon: 'fa-solid fa-bed' },
-      { label: 'Transporte',   value: this.package.transport,      icon: 'fa-solid fa-bus-simple' },
+      {
+        label: 'Destinos',
+        value: this.package.destinations,
+        icon: 'fa-regular fa-map',
+      },
+      {
+        label: 'Duración',
+        value: this.package.duration,
+        icon: 'fa-regular fa-clock',
+      },
+      {
+        label: 'Salida desde',
+        value: this.package.departurePlace,
+        icon: 'fa-solid fa-route ',
+      },
+      {
+        label: 'Fecha',
+        value: this.package.date,
+        icon: 'fa-regular fa-calendar',
+      },
+      {
+        label: 'Alojamiento',
+        value: this.package.accommodation,
+        icon: 'fa-solid fa-bed',
+      },
+      {
+        label: 'Transporte',
+        value: this.package.transport,
+        icon: 'fa-solid fa-bus-simple',
+      },
     ];
   }
 

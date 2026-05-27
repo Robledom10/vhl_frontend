@@ -65,6 +65,14 @@
 	width: 100%;
 }
 
+.navbar-links a.active-link {
+	color: var(--color-primario);
+}
+
+.navbar-links a.active-link::after {
+	width: 100%;
+}
+
 /* BOTONES */
 .navbar-auth {
 	display: flex;

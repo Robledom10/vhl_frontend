@@ -53,10 +53,11 @@ body {
 
 	/* Tamaños de Texto */
 	--titulos-grandes-principales: 64px;
-	--titulos-medianos: ;
+	--titulos-medianos: 40px;
 	--titulos-pequeños: ;
 	--Subtitulos-grandes: 20px;
 	--Subtitulos-pequeños: ;
 	--parrafo: ;
 	--links: 18px;
+	--inputs: 16px
 }

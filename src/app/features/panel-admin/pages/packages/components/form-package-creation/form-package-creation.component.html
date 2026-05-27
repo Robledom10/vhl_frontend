@@ -1,8 +1,6 @@
-<div class="modal-overlay" *ngIf="isOpen">
-	<div class="modal-container">
-
+<div class="modal-overlay" *ngIf="isOpen" (click)="closeModal()">
+	<div class="modal-container" (click)="$event.stopPropagation()">
 		<div class="modal-scroll">
-
 			<div class="modal-content">
 
 				<!-- STEPS -->
@@ -128,12 +126,7 @@
 
 					<div *ngIf="currentStep === 2" class="step-content">
 						<div class="form-group">
-							<select formControlName="duration">
-								<option value="" disabled selected hidden></option>
-								<option value="1">1 Día</option>
-								<option value="2">2 Días</option>
-								<option value="3">3 Días</option>
-							</select>
+							<input type="number" placeholder=" " formControlName="duration">
 							<label>Duración</label>
 						</div>
 
@@ -141,14 +134,13 @@
 							<input type="text" placeholder=" " readonly
 								[value]="packageForm.get('startDate')?.value || ''" (click)="toggleCalendar($event)">
 
-							<i class="fa-regular fa-calendar calendar-icon"></i>
 							<label>Fecha de salida</label>
+							<i class="fa-regular fa-calendar calendar-icon"></i>
 
 							<app-custom-calendar *ngIf="showCalendar" [isOpen]="showCalendar"
 								[selectedDate]="packageForm.get('startDate')?.value || ''" [disablePastDates]="true"
 								(dateSelected)="onDateSelected($event)" (closed)="showCalendar = false">
 							</app-custom-calendar>
-
 						</div>
 
 						<div class="form-group">

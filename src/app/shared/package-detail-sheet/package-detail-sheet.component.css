@@ -44,7 +44,7 @@
 }
 
 .sheet-container::-webkit-scrollbar-thumb {
-	background: #b5e5ff;
+	background: var(--color-primario);
 	border-radius: 99px;
 }
 
@@ -108,12 +108,12 @@
 	width: 50%;
 	display: flex;
 	flex-direction: column;
-	gap: 25px;
+	gap: 14px;
 }
 
 .main-image {
 	width: 100%;
-	height: 59%;
+	height: 52.5%;
 	object-fit: cover;
 	border-radius: 28px;
 	display: block;
@@ -234,10 +234,9 @@
 }
 
 .itinerary-card {
-	background: #f8fbff;
-	border: 1px solid #e8e7e7;
-	border-radius: 14px;
-	padding: 14px 16px;
+	background: var(--color-info-paquetes);
+	border-radius: 28px;
+	padding: 18px 14px;
 }
 
 .itinerary-header {
@@ -248,14 +247,15 @@
 }
 
 .itinerary-icon-circle {
-	width: 36px;
-	height: 36px;
+	width: 50px;
+	height: 50px;
 	border-radius: 50%;
-	background: #b5e5ff8b;
+	background: #e8f4fd;
+	color: #3fa2db;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 16px;
+	font-size: 20px;
 	flex-shrink: 0;
 }
 
@@ -267,9 +267,10 @@
 }
 
 .itinerary-list {
+	padding: 0px 8px;
 	display: flex;
 	flex-direction: column;
-	gap: 7px;
+	gap: 15px;
 }
 
 .itinerary-item {
@@ -335,7 +336,7 @@
 	gap: 15px;
 	background: var(--color-info-paquetes);
 	border-radius: 28px;
-	padding: 15px 14px;
+	padding: 18px 14px;
 }
 
 .includes-header {
@@ -375,7 +376,7 @@
 }
 
 .includes-contenedor {
-	padding: 0px 18px;
+	padding: 0px 8px;
 	display: flex;
 	flex-direction: column;
 	gap: 15px;
@@ -402,28 +403,30 @@
 
 /* Precio */
 .precio-bar {
-	background: var(--color-primario-claro);
-	border: 1.5px solid #b5e5ff;
-	border-radius: 10px;
-	padding: 13px 16px;
+	background: #f0f9ff;
+	border: 1.5px solid var(--color-primario);
+	color: var(--color-primario);
+	border-radius: 28px;
+	padding: 20px 14px;
 	display: flex;
+	justify-content: center;
 	align-items: center;
 	gap: 10px;
 }
 
-.precio-icon {
-	font-size: 20px;
+.precio-icon i {
+	font-size: 30px;
 }
 
 .precio-text {
-	font-size: 15px;
-	color: #123862;
+	font-size: 21px;
+	color: var(--color-primario);
 	font-weight: 500;
 }
 
 .precio-text strong {
-	font-weight: 800;
-	color: #123862;
+	font-weight: 700;
+	color: var(--color-primario);
 }
 
 /* Reservar */
@@ -431,9 +434,9 @@
 	background: #3fa2db;
 	color: #fff;
 	border: none;
-	border-radius: 10px;
-	padding: 13px;
-	font-size: 14px;
+	border-radius: 28px;
+	padding: 20px 14px;
+	font-size: 20px;
 	font-weight: 700;
 	font-family: "Outfit", sans-serif;
 	cursor: pointer;
@@ -455,10 +458,9 @@
 
 /* Políticas */
 .cancel-card {
-	background: #fff;
-	border: 1px solid #e8e7e7;
-	border-radius: 12px;
-	padding: 14px 16px;
+	background: var(--color-info-paquetes);
+	border-radius: 28px;
+	padding: 18px 14px;
 }
 
 .cancel-header {
@@ -470,23 +472,63 @@
 
 .cancel-warn-icon {
 	font-size: 24px;
+	color: var(--color-error);
 }
 
 .cancel-title {
-	font-size: 15px;
-	font-weight: 700;
-	color: #123862;
+	font-size: 18px;
+	font-weight: 500;
+	color: var(--color-texto-principal);
 	margin: 0;
 }
 
 .cancel-list {
-	padding-left: 16px;
+	padding-left: 7px;
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
 }
 
 .cancel-list li {
+	font-size: 1px;
+	color: #6b7280;
+	line-height: 1.5;
+}
+
+
+.requirements-card {
+	background: var(--color-info-paquetes);
+	border-radius: 28px;
+	padding: 18px 14px;
+}
+
+.requirements-header {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 10px;
+}
+
+.requirements-warn-icon {
+	font-size: 24px;
+	color: #EAB308;
+}
+
+.requirements-title {
+	font-size: 18px;
+	font-weight: 500;
+	color: var(--color-texto-principal);
+	margin: 0;
+}
+
+.requirements-list {
+	padding-left: 7px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.requirements-list li {
 	font-size: 1px;
 	color: #6b7280;
 	line-height: 1.5;

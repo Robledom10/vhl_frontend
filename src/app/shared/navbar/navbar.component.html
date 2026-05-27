@@ -4,10 +4,10 @@
 	</div>
 
 	<div class="navbar-links">
-		<a routerLink="/">Inicio</a>
-		<a routerLink="/destinations">Destinos</a>
-		<a routerLink="/gallery">Galeria</a>
-		<a routerLink="/panel-admin">panel administrativo</a>
+		<a routerLink="/home" routerLinkActive="active-link">Inicio</a>
+		<a routerLink="/destinations" routerLinkActive="active-link">Destinos</a>
+		<a routerLink="/gallery" routerLinkActive="active-link">Galeria</a>
+		<a routerLink="/panel-admin" routerLinkActive="active-link">panel administrativo</a>
 	</div>
 
 	<!-- SI NO ESTÁ LOGUEADO -->
@@ -19,7 +19,8 @@
 	<!-- SI ESTÁ LOGUEADO -->
 	<div class="navbar-user" *ngIf="authService.isAuthenticated()">
 		<div class="user-info" (click)="toggleDropdown($event)">
-			<img [src]="'https://ui-avatars.com/api/?name=' + user?.firstName + '&background=3fa2db&color=fff&size=120'" alt="user" class="user-avatar" />
+			<img [src]="'https://ui-avatars.com/api/?name=' + user?.firstName + '&background=3fa2db&color=fff&size=120'"
+				alt="user" class="user-avatar" />
 			<div class="user-text">
 				<h4>{{ user?.firstName }} {{ user?.lastName }}</h4>
 				<span *ngIf="displayRole">

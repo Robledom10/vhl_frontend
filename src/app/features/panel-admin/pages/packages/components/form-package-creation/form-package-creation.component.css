@@ -37,7 +37,6 @@
 	max-height: 92vh;
 	overflow-y: auto;
 	overflow-x: hidden;
-	padding-right: 6px;
 	scrollbar-gutter: stable;
 }
 
@@ -65,7 +64,7 @@
 ========================================================= */
 
 .modal-content {
-	padding: 34px 42px 42px;
+	padding: 45px 40px 45px 45px;
 }
 
 /* =========================================================
@@ -88,8 +87,8 @@
 }
 
 .step {
-	width: 46px;
-	height: 46px;
+	width: 35px;
+	height: 35px;
 	border-radius: 50%;
 	border: 2px solid #d8d8d8;
 	background: #fff;
@@ -97,7 +96,7 @@
 	align-items: center;
 	justify-content: center;
 	font-family: "Outfit", sans-serif;
-	font-size: 15px;
+	font-size: var(--inputs);
 	font-weight: 600;
 	color: #b2b2b2;
 	transition: 0.25s ease;
@@ -112,7 +111,7 @@
 /* LINE */
 
 .line {
-	width: 120px;
+	width: 70px;
 	height: 2px;
 	background: #e6e6e6;
 	margin-top: 22px;
@@ -144,11 +143,11 @@
 
 .modal-title {
 	text-align: center;
-	font-size: 52px;
+	font-size: var(--titulos-medianos);
 	font-weight: 700;
 	font-family: "Outfit", sans-serif;
 	color: #1e1e1e;
-	margin-bottom: 14px;
+	margin-bottom: 42px;
 }
 
 .modal-title span {
@@ -179,9 +178,9 @@ form {
 	width: 100%;
 }
 
-.step-content{
+.step-content {
 	display: flex;
-	flex-direction:column ;
+	flex-direction: column;
 	gap: 34px;
 }
 
@@ -196,12 +195,17 @@ select {
 	border: 1px solid #e5e5e5;
 	background: #fff;
 	border-radius: 999px;
-	padding: 12px 16px;
-	font-size: 15px;
+	padding: 13px 16px;
+	font-size: var(--inputs);
 	font-family: "Outfit", sans-serif;
 	color: #1f1f1f;
 	outline: none;
 	transition: 0.25s ease;
+}
+
+button {
+	font-family: "Outfit", sans-serif;
+	font-size: var(--inputs);
 }
 
 /* TEXTAREA */
@@ -240,7 +244,7 @@ select:focus {
 	transform: translateY(-50%);
 	padding: 0 6px;
 	background: #fff;
-	font-size: 14px;
+	font-size: var(--inputs);
 	font-family: "Outfit", sans-serif;
 	color: var(--color-texto-secundario);
 	pointer-events: none;
@@ -283,12 +287,12 @@ select:focus {
 
 .form-group span {
 	position: absolute;
-    left: 16px;
-    top: 54px;
-    color: var(--color-error);
-    font-size: 11px;
-    font-weight: 400;
-    line-height: 1.3;
+	left: 16px;
+	top: 54px;
+	color: var(--color-error);
+	font-size: 11px;
+	font-weight: 400;
+	line-height: 1.3;
 }
 
 /* INPUT ERROR */
@@ -399,7 +403,7 @@ select:focus {
 
 .transport-title {
 	margin: 0;
-	font-size: 15px;
+	font-size: var(--titulos-pequenos);
 	font-weight: 600;
 	font-family: "Outfit", sans-serif;
 	color: #1f1f1f;
@@ -416,7 +420,7 @@ select:focus {
 	align-items: center;
 	gap: 12px;
 	cursor: pointer;
-	font-size: 15px;
+	font-size: var(--inputs);
 	font-family: "Outfit", sans-serif;
 	color: #3b3b3b;
 }
@@ -465,62 +469,91 @@ select:focus {
 }
 
 /* =========================================================
-   LISTS
+   LISTAS MODERNAS
 ========================================================= */
 
 .policies-list,
 .itinerary-list {
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
+	gap: 14px;
 	padding: 0;
-	margin: 0 0 20px;
+	margin: 0;
 	list-style: none;
 }
 
-/* =========================================================
-   LIST ITEMS
-========================================================= */
+/* ITEM */
 
-.list-item-content,
+.list-item-content {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 18px;
+	padding: 16px 18px;
+	border: 1px solid #ececec;
+	border-radius: 22px;
+	transition: all 0.25s ease;
+	position: relative;
+	overflow: hidden;
+	background: white;
+}
+
 .itinerary-item {
 	display: flex;
 	align-items: center;
-	gap: 16px;
+	justify-content: space-between;
+	gap: 18px;
 }
 
-.list-item-content {
-	justify-content: space-between;
+/* EFECTO HOVER */
+
+.list-item-content:hover {
+	transform: translateY(-2px);
+	border-color: rgba(63, 162, 219, 0.35);
+	box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05), 0 4px 10px rgba(63, 162, 219, 0.08);
 }
+
+/* TEXTO */
 
 .list-item-content span {
 	flex: 1;
-	font-size: 15px;
-	line-height: 1.5;
+	font-size: var(--inputs);
+	line-height: 1.6;
 	font-family: "Outfit", sans-serif;
-	color: #3b3b3b;
+	color: #2f2f2f;
+	font-weight: 400;
 }
 
 /* =========================================================
-   REMOVE BUTTONS
+   BOTÓN ELIMINAR
 ========================================================= */
 
 .remove-list-btn,
 .remove-day {
-	width: 35px;
-	height: 35px;
+	width: 38px;
+	height: 38px;
 	border: none;
 	border-radius: 50%;
-	background: rgba(255, 59, 59, 0.12);
-	color: #ff3b3b;
+	background: rgba(255, 59, 59, 0.10);
+	color: #ff4b4b;
 	cursor: pointer;
-	transition: 0.25s ease;
+	flex-shrink: 0;
+	transition: all 0.25s ease;
 }
 
 .remove-list-btn:hover,
 .remove-day:hover {
 	background: #ff3b3b;
 	color: #fff;
+
+	transform: scale(1.05);
+}
+
+/* ICONO */
+
+.remove-list-btn i,
+.remove-day i {
+	font-size: 13px;
 }
 
 /* =========================================================
@@ -548,8 +581,8 @@ select:focus {
 	border-radius: 999px;
 	background: var(--color-primario);
 	color: white;
-	font-family: "Outfit", sans-serif;
 	cursor: pointer;
+	font-size: var(--inputs);
 	transition: 0.25s ease;
 }
 
@@ -562,28 +595,24 @@ select:focus {
 ========================================================= */
 
 .add-option {
-	margin-top: 8px;
-	background: transparent;
+	margin-top: 16px;
+	height: 48px;
+	padding: 0 18px;
+	border-radius: 999px;
+	background: rgba(63, 162, 219, 0.08);
 	border: none;
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	font-size: 15px;
-	font-family: "Outfit", sans-serif;
-	color: #a8a8a8;
-	cursor: pointer;
+	color: var(--color-primario);
+	transition: all 0.25s ease;
+}
+
+.add-option:hover {
+	background: var(--color-primario);
+	color: white;
+	transform: translateY(-1px);
 }
 
 .add-option i {
 	font-size: 13px;
-}
-
-/* =========================================================
-   ITINERARY
-========================================================= */
-
-.itinerary-input {
-	flex: 1;
 }
 
 /* =========================================================
@@ -605,12 +634,9 @@ select:focus {
 
 .buttons button {
 	height: 48px;
-	padding: 0 36px;
+	padding: 0 25px;
 	border: none;
 	border-radius: 999px;
-	font-size: 15px;
-	font-weight: 500;
-	font-family: "Outfit", sans-serif;
 	cursor: pointer;
 	transition: 0.25s ease;
 }
@@ -627,7 +653,7 @@ select:focus {
 }
 
 .prev {
-	background: #cfcfcf;
+	background: #9c9c9c;
 	color: #fff;
 }
 

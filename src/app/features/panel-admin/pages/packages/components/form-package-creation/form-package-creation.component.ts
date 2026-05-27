@@ -1,10 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  HostListener,
-  Input,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
@@ -39,7 +33,6 @@ export class FormPackageCreationComponent {
     name: ['', Validators.required],
     destinations: ['', Validators.required],
     shortDescription: ['', Validators.required],
-
     coverImage: [''],
     galleryImages: [[]],
 
@@ -192,20 +185,21 @@ export class FormPackageCreationComponent {
     this.requirements.removeAt(index);
   }
 
-  //   CALENDARIO
+  // ✅ CALENDARIO (CORREGIDO)
   toggleCalendar(event: Event) {
     event.stopPropagation();
     this.showCalendar = !this.showCalendar;
   }
 
   onDateSelected(date: string) {
-    this.packageForm.patchValue({
-      startDate: date,
-    });
+    this.packageForm.get('startDate')?.setValue(date);
+    this.packageForm.get('startDate')?.markAsDirty();
+    this.packageForm.get('startDate')?.markAsTouched();
 
     this.showCalendar = false;
   }
 
+  // TRANSPORT
   onTransportChange(event: Event) {
     const input = event.target as HTMLInputElement;
 
@@ -216,7 +210,7 @@ export class FormPackageCreationComponent {
     if (input.checked) {
       updatedValues = [...currentValues, input.value];
     } else {
-      updatedValues = currentValues.filter((value) => value !== input.value);
+      updatedValues = currentValues.filter((v) => v !== input.value);
     }
 
     this.packageForm.patchValue({

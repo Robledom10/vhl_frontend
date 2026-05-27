@@ -88,6 +88,7 @@ export class PackagesComponent {
       includes: ['Transporte', 'Hospedaje', 'Tours'],
       notIncludes: ['Gastos personales'],
       cancellation: ['Cancelación gratuita hasta 5 días antes'],
+	  requirements: ['Documento de identidad', 'Pago completo antes del viaje'],
     };
   }
 
