@@ -1,81 +1,104 @@
 <div class="modal-overlay" *ngIf="isOpen">
-
 	<div class="modal-container">
 
-		<!-- STEPS -->
-		<div class="steps">
+		<div class="modal-scroll">
 
-			<div class="step" [class.active]="currentStep >= 1">
-				<i class="fa-solid fa-check" *ngIf="currentStep > 1"></i>
-				<span *ngIf="currentStep <= 1">1</span>
-			</div>
+			<div class="modal-content">
 
-			<div class="line" [class.active]="currentStep >= 2"></div>
+				<!-- STEPS -->
 
-			<div class="step" [class.active]="currentStep >= 2">
-				<i class="fa-solid fa-check" *ngIf="currentStep > 2"></i>
-				<span *ngIf="currentStep <= 2">2</span>
-			</div>
+				<div class="steps-wrapper">
 
-			<div class="line" [class.active]="currentStep >= 3"></div>
+					<!-- STEP 1 -->
+					<div class="step-item">
+						<div class="step" [class.active]="currentStep >= 1">
+							<i class="fa-solid fa-check" *ngIf="currentStep > 1"></i>
+							<span *ngIf="currentStep <= 1">1</span>
+						</div>
 
-			<div class="step" [class.active]="currentStep >= 3">
-				<i class="fa-solid fa-check" *ngIf="currentStep > 3"></i>
-				<span *ngIf="currentStep <= 3">3</span>
-			</div>
+						<p [class.active]="currentStep === 1">Información del paquete</p>
+					</div>
 
-			<div class="line" [class.active]="currentStep >= 4"></div>
+					<div class="line" [class.active]="currentStep >= 2"></div>
 
-			<div class="step" [class.active]="currentStep >= 4">
-				4
-			</div>
+					<!-- STEP 2 -->
+					<div class="step-item">
+						<div class="step" [class.active]="currentStep >= 2">
+							<i class="fa-solid fa-check" *ngIf="currentStep > 2"></i>
+							<span *ngIf="currentStep <= 2">2</span>
+						</div>
+						<p [class.active]="currentStep === 2">Detalles del viaje</p>
+					</div>
 
-		</div>
+					<div class="line" [class.active]="currentStep >= 3"></div>
 
-		<!-- LABELS -->
-		<div class="step-labels">
+					<!-- STEP 3 -->
+					<div class="step-item">
+						<div class="step" [class.active]="currentStep >= 3">
+							<i class="fa-solid fa-check" *ngIf="currentStep > 3"></i>
+							<span *ngIf="currentStep <= 3">3</span>
+						</div>
+						<p [class.active]="currentStep === 3">Precio y alojamiento</p>
+					</div>
 
-			<span [class.active]="currentStep === 1">
-				Información del paquete
-			</span>
+					<div class="line" [class.active]="currentStep >= 4"></div>
 
-			<span [class.active]="currentStep === 2">
-				Detalles del viaje
-			</span>
+					<!-- STEP 4 -->
+					<div class="step-item">
+						<div class="step" [class.active]="currentStep >= 4">
+							<span>4</span>
+						</div>
+						<p [class.active]="currentStep === 4">Políticas y confirmación</p>
+					</div>
+				</div>
 
-			<span [class.active]="currentStep === 3">
-				Precio y alojamiento
-			</span>
+				<!-- TITLE -->
+				<h2 class="modal-title">Crear <span>Paquete</span></h2>
 
-			<span [class.active]="currentStep === 4">
-				Políticas y confirmación
-			</span>
+				<div class="divider"></div>
 
-		</div>
+				<form [formGroup]="packageForm">
 
-		<!-- TITLE -->
-		<h2 class="modal-title">
-			Crear <span>Paquete</span>
-		</h2>
+					<!-- =========================
+						STEP 1
+					========================= -->
 
-		<div class="divider"></div>
+					<div *ngIf="currentStep === 1" class="step-content">
+						<div class="form-group">
+							<input type="text" placeholder=" " formControlName="name"
+								[class.ng-invalid]="packageForm.get('name')?.invalid && packageForm.get('name')?.touched">
+							<label>Nombre del paquete</label>
+							<span *ngIf="packageForm.get('name')?.invalid && packageForm.get('name')?.touched">
+								El nombre es obligatorio
+							</span>
+						</div>
 
-		<form [formGroup]="packageForm">
+						<div class="form-group">
 
-			<!-- =========================
-			     STEP 1
-			========================= -->
+							<input type="text" placeholder=" " formControlName="destinations"
+								[class.ng-invalid]="packageForm.get('destinations')?.invalid && packageForm.get('destinations')?.touched">
 
-			<div *ngIf="currentStep === 1" class="step-content">
+							<label>Destino(s)</label>
 
-				<input type="text" placeholder="Nombre del paquete" formControlName="name">
+							<span
+								*ngIf="packageForm.get('destinations')?.invalid && packageForm.get('destinations')?.touched">
+								Los destinos son obligatorios
+							</span>
+						</div>
 
-				<input type="text" placeholder="Destino(s)" formControlName="destinations">
+						<div class="form-group">
+							<textarea placeholder=" " formControlName="shortDescription"
+								[class.ng-invalid]="packageForm.get('shortDescription')?.invalid && packageForm.get('shortDescription')?.touched"></textarea>
 
-				<textarea placeholder="Descripción corta" formControlName="shortDescription">
-				</textarea>
+							<label>Descripción corta</label>
 
-				<!-- UPLOAD -->
+							<span
+								*ngIf="packageForm.get('shortDescription')?.invalid && packageForm.get('shortDescription')?.touched">
+								La descripción es obligatoria
+							</span>
+						</div>
+
+						<!-- UPLOAD -->
 				<div class="upload-grid">
 
 					<!-- PORTADA -->
@@ -97,251 +120,320 @@
 					</div>
 
 				</div>
-
-			</div>
-
-			<!-- =========================
-			     STEP 2
-			========================= -->
-
-			<div *ngIf="currentStep === 2" class="step-content">
-
-				<select formControlName="duration">
-					<option value="">Duración (días)</option>
-				</select>
-
-				<input type="date" formControlName="startDate">
-
-				<input type="time" formControlName="departureTime">
-
-				<select formControlName="departurePlace">
-					<option value="">Lugar de salida</option>
-				</select>
-
-				<select formControlName="transportType">
-					<option value="">Tipo de transporte</option>
-				</select>
-
-				<select formControlName="availableSlots">
-					<option value="">Cupos disponibles</option>
-				</select>
-
-			</div>
-
-			<!-- =========================
-			     STEP 3
-			========================= -->
-
-			<div *ngIf="currentStep === 3" class="step-content">
-
-				<input type="number" placeholder="Precio por persona" formControlName="price">
-
-				<input type="text" placeholder="Hotel" formControlName="hotel">
-
-				<input type="text" placeholder="Tipo de habitación" formControlName="roomType">
-
-				<!-- INCLUYE -->
-				<div class="checkbox-section">
-
-					<h3 class="checkbox-title">
-						Qué incluye el paquete
-					</h3>
-
-					<div class="checkbox-list">
-
-						<label class="checkbox-item">
-							<input type="checkbox">
-							<span>Transporte terrestre ida y regreso</span>
-						</label>
-
-						<label class="checkbox-item">
-							<input type="checkbox">
-							<span>Hospedaje en hotel 3 estrellas</span>
-						</label>
-
-						<label class="checkbox-item">
-							<input type="checkbox">
-							<span>Alimentación (desayuno y cena)</span>
-						</label>
-
-						<label class="checkbox-item">
-							<input type="checkbox">
-							<span>Tours turísticos guiados</span>
-						</label>
-
-						<label class="checkbox-item">
-							<input type="checkbox">
-							<span>Actividades recreativas</span>
-						</label>
-
-						<label class="checkbox-item">
-							<input type="checkbox">
-							<span>Seguro de viaje</span>
-						</label>
-
-						<button type="button" class="add-option">
-							<i class="fa-solid fa-plus"></i>
-							Agregar otro
-						</button>
-
 					</div>
 
-				</div>
-
-				<!-- NO INCLUYE -->
-				<div class="checkbox-section">
-
-					<h3 class="checkbox-title">
-						Qué no incluye
-					</h3>
-
-					<ul class="policies-list">
-
-						<li>Gastos personales</li>
-
-						<li>Bebidas alcohólicas</li>
-
-						<li>Entradas a discotecas o actividades no incluidas</li>
-
-						<li>Souvenirs o compras personales</li>
-
-					</ul>
-
-					<button type="button" class="add-option">
-						<i class="fa-solid fa-plus"></i>
-						Agregar otro
-					</button>
-
-				</div>
-
-			</div>
-
-			<!-- =========================
-			     STEP 4
+					<!-- =========================
+				STEP 2
 			========================= -->
 
-			<div *ngIf="currentStep === 4" class="step-content">
+					<div *ngIf="currentStep === 2" class="step-content">
+						<div class="form-group">
+							<select formControlName="duration">
+								<option value="" disabled selected hidden></option>
+								<option value="1">1 Día</option>
+								<option value="2">2 Días</option>
+								<option value="3">3 Días</option>
+							</select>
+							<label>Duración</label>
+						</div>
 
-				<!-- ITINERARIO -->
-				<div class="checkbox-section">
+						<div class="form-group calendar-field">
+							<input type="text" placeholder=" " readonly
+								[value]="packageForm.get('startDate')?.value || ''" (click)="toggleCalendar($event)">
 
-					<h3 class="checkbox-title">
-						Itinerario
-					</h3>
+							<i class="fa-regular fa-calendar calendar-icon"></i>
+							<label>Fecha de salida</label>
 
-					<div class="itinerary-list" formArrayName="itinerary">
-
-						<div class="itinerary-item" *ngFor="let item of itinerary.controls; let i = index">
-
-							<input type="text" [placeholder]="'Día ' + (i + 1)" [formControlName]="i">
-
-							<button type="button" class="remove-day" (click)="removeDay(i)"
-								*ngIf="itinerary.length > 1">
-
-								<i class="fa-solid fa-trash"></i>
-
-							</button>
+							<app-custom-calendar *ngIf="showCalendar" [isOpen]="showCalendar"
+								[selectedDate]="packageForm.get('startDate')?.value || ''" [disablePastDates]="true"
+								(dateSelected)="onDateSelected($event)" (closed)="showCalendar = false">
+							</app-custom-calendar>
 
 						</div>
 
+						<div class="form-group">
+							<input type="time" placeholder=" " formControlName="departureTime">
+							<label>Hora de salida</label>
+						</div>
+
+						<div class="form-group">
+							<input type="text" placeholder=" " formControlName="departurePlace">
+							<label>Lugar de salida</label>
+
+							<span
+								*ngIf="packageForm.get('departurePlace')?.invalid && packageForm.get('departurePlace')?.touched">
+								El lugar de salida es obligatorio
+							</span>
+						</div>
+
+						<div class="transport-group">
+
+							<p class="transport-title">
+								Tipo de transporte
+							</p>
+
+							<div class="transport-list">
+
+								<label class="transport-item">
+									<input type="checkbox" value="Bus" (change)="onTransportChange($event)" />
+
+									<span>Bus</span>
+								</label>
+
+								<label class="transport-item">
+									<input type="checkbox" value="Avión" (change)="onTransportChange($event)" />
+
+									<span>Avión</span>
+								</label>
+
+							</div>
+
+						</div>
+
+						<div class="form-group">
+							<input type="number" placeholder=" " formControlName="availableSlots">
+							<label>Cupos disponibles</label>
+
+							<span
+								*ngIf="packageForm.get('availableSlots')?.invalid && packageForm.get('availableSlots')?.touched">
+								Los cupos son obligatorios
+							</span>
+						</div>
 					</div>
 
-					<button type="button" class="add-option" (click)="addDay()">
+					<!-- =========================
+				STEP 3
+			========================= -->
 
-						<i class="fa-solid fa-plus"></i>
-						Agregar día
+					<div *ngIf="currentStep === 3" class="step-content">
+						<div class="form-group">
+							<input type="number" placeholder=" " formControlName="price">
+							<label>Precio por persona</label>
+						</div>
 
+						<div class="form-group">
+							<input type="text" placeholder=" " formControlName="hotel">
+							<label>Hotel</label>
+						</div>
+
+						<div class="form-group">
+							<input type="text" placeholder=" " formControlName="roomType">
+							<label>Tipo de habitación</label>
+						</div>
+
+						<!-- INCLUYE -->
+
+						<div class="checkbox-section">
+							<h3 class="checkbox-title">Qué incluye el paquete</h3>
+
+							<ul class="policies-list">
+								<li *ngFor="let item of included.controls; let i = index">
+									<div class="list-item-content">
+
+										<span>{{ item.value }}</span>
+
+										<button type="button" class="remove-list-btn" (click)="removeIncluded(i)">
+											<i class="fa-solid fa-trash"></i>
+										</button>
+									</div>
+								</li>
+							</ul>
+
+							<!-- INPUT NUEVO -->
+
+							<div class="new-item-box" *ngIf="showIncludedInput">
+								<div class="form-group">
+									<input type="text" placeholder=" " [value]="newIncluded"
+										(input)="newIncluded = $any($event.target).value">
+									<label>Nuevo incluido</label>
+								</div>
+
+								<div class="new-item-actions">
+									<button type="button" class="save-item" (click)="saveIncluded()">
+										Guardar
+									</button>
+								</div>
+							</div>
+
+							<button type="button" class="add-option" *ngIf="!showIncludedInput"
+								(click)="showIncludedInput = true">
+								<i class="fa-solid fa-plus"></i>
+								Agregar otro
+							</button>
+						</div>
+
+						<!-- NO INCLUYE -->
+
+						<div class="checkbox-section">
+							<h3 class="checkbox-title">Qué no incluye</h3>
+
+							<ul class="policies-list">
+								<li *ngFor="let item of notIncluded.controls; let i = index">
+									<div class="list-item-content">
+										<span>{{ item.value }}</span>
+										<button type="button" class="remove-list-btn" (click)="removeNotIncluded(i)">
+											<i class="fa-solid fa-trash"></i>
+										</button>
+									</div>
+								</li>
+							</ul>
+
+							<div class="new-item-box" *ngIf="showNotIncludedInput">
+								<div class="form-group">
+									<input type="text" placeholder=" " [value]="newNotIncluded"
+										(input)="newNotIncluded = $any($event.target).value">
+									<label>Nuevo no incluido</label>
+								</div>
+
+								<div class="new-item-actions">
+									<button type="button" class="save-item" (click)="saveNotIncluded()">
+										Guardar
+									</button>
+								</div>
+							</div>
+
+							<button type="button" class="add-option" *ngIf="!showNotIncludedInput"
+								(click)="showNotIncludedInput = true">
+								<i class="fa-solid fa-plus"></i>
+								Agregar otro
+							</button>
+						</div>
+					</div>
+
+					<!-- =========================
+				STEP 4
+			========================= -->
+
+					<div *ngIf="currentStep === 4" class="step-content">
+
+						<!-- ITINERARIO -->
+
+						<div class="checkbox-section">
+							<h3 class="checkbox-title">Itinerario</h3>
+
+							<div class="itinerary-list" formArrayName="itinerary">
+								<div class="itinerary-item" *ngFor="let item of itinerary.controls; let i = index">
+									<div class="form-group itinerary-input">
+										<input type="text" placeholder=" " [formControlName]="i">
+										<label>Día {{ i + 1 }}</label>
+									</div>
+
+									<button type="button" class="remove-day" (click)="removeDay(i)"
+										*ngIf="itinerary.length > 1">
+										<i class="fa-solid fa-trash"></i>
+									</button>
+								</div>
+							</div>
+
+							<button type="button" class="add-option" (click)="addDay()">
+								<i class="fa-solid fa-plus"></i>
+								Agregar día
+							</button>
+						</div>
+
+						<!-- POLITICAS -->
+
+						<div class="checkbox-section">
+							<h3 class="checkbox-title">Políticas de cancelación</h3>
+
+							<ul class="policies-list">
+								<li *ngFor="let item of cancellationPolicies.controls; let i = index">
+									<div class="list-item-content">
+
+										<span>{{ item.value }}</span>
+
+										<button type="button" class="remove-list-btn" (click)="removePolicy(i)">
+											<i class="fa-solid fa-trash"></i>
+										</button>
+									</div>
+								</li>
+							</ul>
+
+							<div class="new-item-box" *ngIf="showPolicyInput">
+								<div class="form-group">
+									<input type="text" placeholder=" " [value]="newPolicy"
+										(input)="newPolicy = $any($event.target).value">
+									<label>Nueva política</label>
+								</div>
+
+								<button type="button" class="save-item" (click)="savePolicy()">
+									Guardar
+								</button>
+							</div>
+
+							<button type="button" class="add-option" *ngIf="!showPolicyInput"
+								(click)="showPolicyInput = true">
+								<i class="fa-solid fa-plus"></i>
+								Agregar otro
+							</button>
+						</div>
+
+						<!-- REQUISITOS -->
+
+						<div class="checkbox-section">
+							<h3 class="checkbox-title">Requisitos</h3>
+
+							<ul class="policies-list">
+								<li *ngFor="let item of requirements.controls; let i = index">
+									<div class="list-item-content">
+
+										<span>{{ item.value }}</span>
+
+										<button type="button" class="remove-list-btn" (click)="removeRequirement(i)">
+											<i class="fa-solid fa-trash"></i>
+										</button>
+									</div>
+								</li>
+							</ul>
+
+							<div class="new-item-box" *ngIf="showRequirementInput">
+
+								<div class="form-group">
+
+									<input type="text" placeholder=" " [value]="newRequirement"
+										(input)="newRequirement = $any($event.target).value">
+									<label>Nuevo requisito</label>
+
+								</div>
+
+								<button type="button" class="save-item" (click)="saveRequirement()">
+									Guardar
+								</button>
+
+							</div>
+
+							<button type="button" class="add-option" *ngIf="!showRequirementInput"
+								(click)="showRequirementInput = true">
+								<i class="fa-solid fa-plus"></i>
+								Agregar otro
+							</button>
+
+						</div>
+					</div>
+				</form>
+
+				<!-- BUTTONS -->
+				<div class="buttons">
+
+					<button type="button" class="cancel" (click)="closeModal()">
+						Cancelar
 					</button>
 
+					<div class="right-buttons">
+						<button type="button" class="prev" *ngIf="currentStep > 1" (click)="previousStep()">
+							Anterior
+						</button>
+
+						<button type="button" class="next" *ngIf="currentStep < 4" (click)="nextStep()">
+							Siguiente
+						</button>
+
+						<button type="button" class="save" *ngIf="currentStep === 4" (click)="submitForm()">
+							Crear paquete
+						</button>
+					</div>
 				</div>
-
-				<!-- POLITICAS -->
-				<div class="checkbox-section">
-
-					<h3 class="checkbox-title">
-						Políticas de cancelación
-					</h3>
-
-					<ul class="policies-list">
-
-						<li>Cancelación gratuita hasta 5 días antes del viaje.</li>
-
-						<li>50% de reembolso si cancela 48 horas antes.</li>
-
-						<li>No hay devolución el mismo día del viaje.</li>
-
-						<li>Se permite cambio de fecha una vez.</li>
-
-					</ul>
-
-					<button type="button" class="add-option">
-						<i class="fa-solid fa-plus"></i>
-						Agregar otro
-					</button>
-
-				</div>
-
-				<!-- REQUISITOS -->
-				<div class="checkbox-section">
-
-					<h3 class="checkbox-title">
-						Requisitos
-					</h3>
-
-					<ul class="policies-list">
-
-						<li>Cédula de ciudadanía obligatoria.</li>
-
-						<li>Menores deben viajar con permiso firmado.</li>
-
-						<li>Edad mínima: 5 años.</li>
-
-						<li>Pago completo antes del viaje.</li>
-
-						<li>Seguro obligatorio.</li>
-
-					</ul>
-
-					<button type="button" class="add-option">
-						<i class="fa-solid fa-plus"></i>
-						Agregar otro
-					</button>
-
-				</div>
-
 			</div>
-
-		</form>
-
-		<!-- BUTTONS -->
-		<div class="buttons">
-
-			<button type="button" class="cancel" (click)="closeModal()">
-
-				Cancelar
-			</button>
-
-			<div class="right-buttons">
-
-				<button type="button" class="prev" *ngIf="currentStep > 1" (click)="previousStep()">
-
-					Anterior
-				</button>
-
-				<button type="button" class="next" *ngIf="currentStep < 4" (click)="nextStep()">
-
-					Siguiente
-				</button>
-
-				<button type="button" class="save" *ngIf="currentStep === 4" (click)="submitForm()">
-
-					Crear paquete
-				</button>
-
-			</div>
-
 		</div>
-
 	</div>
-
 </div>

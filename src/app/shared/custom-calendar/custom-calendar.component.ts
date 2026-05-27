@@ -1,17 +1,29 @@
-import { Component, HostListener, EventEmitter, Output, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  EventEmitter,
+  Output,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 
 @Component({
   selector: 'app-custom-calendar',
   templateUrl: './custom-calendar.component.html',
   styleUrl: './custom-calendar.component.css',
 })
-
 export class CustomCalendarComponent implements OnChanges {
   @Output() dateSelected = new EventEmitter<string>();
+  @Output() closed = new EventEmitter<void>();
 
   @Input() isOpen = false;
 
   @Input() selectedDate: string = '';
+
+  @Input() disablePastDates = false;
+
+  @Input() disableFutureDates = false;
 
   selectedBirthDate = '';
 
@@ -141,8 +153,28 @@ export class CustomCalendarComponent implements OnChanges {
     return date > this.today;
   }
 
+  isPastDate(day: number | null): boolean {
+    if (!day) return false;
+
+    const date = new Date(this.currentYear, this.currentMonth, day);
+
+    // quitar horas
+    date.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return date < today;
+  }
+
   selectBirthDate(day: number | null) {
-    if (!day || this.isFutureDate(day)) return;
+    if (
+      !day ||
+      (this.disablePastDates && this.isPastDate(day)) ||
+      (this.disableFutureDates && this.isFutureDate(day))
+    ) {
+      return;
+    }
 
     const date = new Date(this.currentYear, this.currentMonth, day);
 
@@ -150,7 +182,7 @@ export class CustomCalendarComponent implements OnChanges {
 
     this.dateSelected.emit(date.toISOString().split('T')[0]);
 
-    this.isOpen = false;
+    this.closed.emit();
   }
 
   isBirthSelected(day: number | null): boolean {
@@ -186,8 +218,9 @@ export class CustomCalendarComponent implements OnChanges {
 
   @HostListener('document:click')
   closeDropdowns(): void {
-    this.isOpen = false;
     this.showMonthSelector = false;
     this.showYearSelector = false;
+
+    this.closed.emit();
   }
 }
