@@ -100,24 +100,45 @@
 						<div class="upload-grid">
 
 							<!-- PORTADA -->
-							<div class="upload-box small">
+							<label class="upload-box small">
 
-								<div class="upload-icon">
+								<input type="file" accept="image/*" hidden (change)="onCoverImageSelected($event)" />
+
+								<img *ngIf="coverPreview" [src]="coverPreview" class="preview-image" />
+
+								<div class="upload-icon" *ngIf="!coverPreview">
 									<i class="fa-solid fa-camera"></i>
 								</div>
 
-							</div>
+							</label>
 
 							<!-- GALERIA -->
-							<div class="upload-box">
+							<label class="upload-box">
 
-								<div class="upload-icon">
+								<input type="file" accept="image/*" multiple hidden
+									(change)="onGalleryImagesSelected($event)" />
+
+								<div class="gallery-preview" *ngIf="galleryPreview.length > 0">
+									<img *ngFor="let image of galleryPreview" [src]="image" />
+								</div>
+
+								<div class="upload-icon" *ngIf="galleryPreview.length === 0">
 									<i class="fa-solid fa-camera"></i>
 								</div>
 
-							</div>
+							</label>
 
 						</div>
+
+						<span class="transport-error"
+							*ngIf="packageForm.get('coverImage')?.invalid &&packageForm.get('coverImage')?.touched">
+							La portada es obligatoria
+						</span>
+
+						<span class="transport-error"
+							*ngIf="packageForm.get('galleryImages')?.invalid &&packageForm.get('galleryImages')?.touched">
+							Debe subir al menos una imagen
+						</span>
 					</div>
 
 					<!-- =========================
@@ -126,8 +147,18 @@
 
 					<div *ngIf="currentStep === 2" class="step-content">
 						<div class="form-group">
-							<input type="number" placeholder=" " formControlName="duration">
-							<label>Duración</label>
+							<input type="number" placeholder=" " min="1" formControlName="duration"
+								[class.ng-invalid]="packageForm.get('duration')?.invalid && packageForm.get('duration')?.touched">
+
+							<label>Duración (Días)</label>
+
+							<span *ngIf="packageForm.get('duration')?.invalid && packageForm.get('duration')?.touched">
+								La duración es obligatoria
+							</span>
+
+							<span *ngIf="packageForm.get('duration')?.errors?.['min']">
+								Mínimo 1 día
+							</span>
 						</div>
 
 						<div class="form-group calendar-field">
@@ -141,11 +172,24 @@
 								[selectedDate]="packageForm.get('startDate')?.value || ''" [disablePastDates]="true"
 								(dateSelected)="onDateSelected($event)" (closed)="showCalendar = false">
 							</app-custom-calendar>
+
+							<span
+								*ngIf="packageForm.get('startDate')?.invalid && packageForm.get('startDate')?.touched">
+
+								La fecha es obligatoria
+							</span>
 						</div>
 
 						<div class="form-group">
-							<input type="time" placeholder=" " formControlName="departureTime">
+							<input type="time" placeholder=" " formControlName="departureTime"
+								[class.ng-invalid]="packageForm.get('departureTime')?.invalid && packageForm.get('departureTime')?.touched">
+
 							<label>Hora de salida</label>
+
+							<span
+								*ngIf="packageForm.get('departureTime')?.invalid && packageForm.get('departureTime')?.touched">
+								La hora es obligatoria
+							</span>
 						</div>
 
 						<div class="form-group">
@@ -163,8 +207,12 @@
 							<label>Cupos disponibles</label>
 
 							<span
-								*ngIf="packageForm.get('availableSlots')?.invalid && packageForm.get('availableSlots')?.touched">
+								*ngIf="packageForm.get('availableSlots')?.errors?.['required'] && packageForm.get('availableSlots')?.touched">
 								Los cupos son obligatorios
+							</span>
+
+							<span *ngIf="packageForm.get('availableSlots')?.errors?.['min']">
+								Debe haber mínimo 1 cupo
 							</span>
 						</div>
 
@@ -175,16 +223,23 @@
 
 							<div class="transport-list">
 								<label class="transport-item">
-									<input type="checkbox" value="Bus" (change)="onTransportChange($event)" />
+									<input type="checkbox" value="Bus de turismo" (change)="onTransportChange($event)"
+										[checked]="packageForm.get('transportType')?.value?.includes('Bus de turismo')" />
 
-									<span>Bus</span>
+									<span>Bus de turismo</span>
 								</label>
 
 								<label class="transport-item">
-									<input type="checkbox" value="Avión" (change)="onTransportChange($event)" />
+									<input type="checkbox" value="Avion" (change)="onTransportChange($event)"
+										[checked]="packageForm.get('transportType')?.value?.includes('Avion')" />
 
 									<span>Avión</span>
 								</label>
+
+								<span class="transport-error"
+									*ngIf="packageForm.get('transportType')?.invalid &&packageForm.get('transportType')?.touched">
+									Debe seleccionar al menos un transporte
+								</span>
 							</div>
 						</div>
 					</div>
@@ -195,18 +250,41 @@
 
 					<div *ngIf="currentStep === 3" class="step-content">
 						<div class="form-group">
-							<input type="number" placeholder=" " formControlName="price">
+							<input type="number" placeholder=" " min="10000" formControlName="price"
+								[class.ng-invalid]="packageForm.get('price')?.invalid && packageForm.get('price')?.touched">
+
 							<label>Precio por persona</label>
+
+							<span
+								*ngIf="packageForm.get('price')?.errors?.['required'] && packageForm.get('price')?.touched">
+								El precio es obligatorio
+							</span>
+
+							<span *ngIf="packageForm.get('price')?.errors?.['min']">
+								El precio mínimo es 1000
+							</span>
 						</div>
 
 						<div class="form-group">
-							<input type="text" placeholder=" " formControlName="hotel">
+							<input type="text" placeholder=" " formControlName="hotel"
+								[class.ng-invalid]="packageForm.get('hotel')?.invalid && packageForm.get('hotel')?.touched">
+
 							<label>Hotel</label>
+
+							<span *ngIf="packageForm.get('hotel')?.invalid && packageForm.get('hotel')?.touched">
+								El hotel es obligatorio
+							</span>
 						</div>
 
 						<div class="form-group">
-							<input type="text" placeholder=" " formControlName="roomType">
+							<input type="text" placeholder=" " formControlName="roomType"
+								[class.ng-invalid]="packageForm.get('roomType')?.invalid && packageForm.get('roomType')?.touched">
+
 							<label>Tipo de habitación</label>
+
+							<span *ngIf="packageForm.get('roomType')?.invalid && packageForm.get('roomType')?.touched">
+								El tipo de habitación es obligatorio
+							</span>
 						</div>
 
 						<!-- INCLUYE -->
@@ -302,8 +380,14 @@
 							<div class="itinerary-list" formArrayName="itinerary">
 								<div class="itinerary-item" *ngFor="let item of itinerary.controls; let i = index">
 									<div class="form-group itinerary-input">
-										<input type="text" placeholder=" " [formControlName]="i">
+										<input type="text" placeholder=" " [formControlName]="i"
+											[class.ng-invalid]="item.invalid && item.touched">
+
 										<label>Día {{ i + 1 }}</label>
+
+										<span *ngIf="item.invalid && item.touched">
+											El día es obligatorio
+										</span>
 									</div>
 
 									<button type="button" class="remove-day" (click)="removeDay(i)"
