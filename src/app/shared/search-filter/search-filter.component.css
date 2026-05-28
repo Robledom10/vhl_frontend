@@ -11,7 +11,7 @@
 	background: var(--color-fondo);
 	border-radius: 18px;
 	box-shadow: 0 2px 15px rgba(125, 125, 125, 0.181);
-	padding: 23px;
+	padding: 20px;
 	gap: 20px;
 	width: 100%;
 	border: 1px solid #e8e7e7ae;
@@ -31,7 +31,7 @@
 	align-items: center;
 	justify-content: center;
 	color: #3fa2db;
-	font-size: 22px;
+	font-size: 20px;
 	padding: 14px 12px;
 }
 
@@ -51,7 +51,7 @@
 .filter-content input {
 	border: none;
 	outline: none;
-	font-size: 12px;
+	font-size: 16px;
 	color: var(--color-texto-secundario);
 	background: transparent;
 	font-family: "Outfit", sans-serif;
@@ -70,7 +70,7 @@
 	border: none;
 	border-radius: 14px;
 	padding: 12px 40px;
-	font-size: 17px;
+	font-size: 18px;
 	cursor: pointer;
 	transition: box-shadow 0.3s ease;
 	font-family: "Outfit", sans-serif;
@@ -85,16 +85,6 @@
 	display: none;
 }
 
-.date-input {
-	border: none;
-	outline: none;
-	font-size: 12px;
-	color: var(--color-texto-secundario);
-	background: transparent;
-	width: 100%;
-	cursor: pointer;
-}
-
 /* Personaliza el panel del calendario */
 .date-wrapper {
 	position: relative;
@@ -102,96 +92,6 @@
 }
 
 .date-display {
-	font-size: 12px;
+	font-size: 16px;
 	color: var(--color-texto-secundario);
-}
-
-.calendar-dropdown {
-	width: 100%;
-	position: absolute;
-	top: calc(100% + 16px);
-	left: 0;
-	z-index: 999;
-	background: #fff;
-	border-radius: 16px;
-	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-	padding: 16px;
-}
-
-.cal-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 12px;
-}
-
-.cal-header span {
-	font-weight: 600;
-	font-size: 14px;
-	color: var(--color-texto-principal);
-}
-
-.cal-header button {
-	background: none;
-	border: none;
-	cursor: pointer;
-	color: var(--color-primario);
-	font-size: 14px;
-	padding: 4px 8px;
-	border-radius: 8px;
-	transition: background 0.2s;
-	font-family: "Outfit", sans-serif;
-}
-
-.cal-header button:hover {
-	background: var(--color-fondo-iconos);
-}
-
-.cal-days-header {
-	display: grid;
-	grid-template-columns: repeat(7, 1fr);
-	text-align: center;
-	margin-bottom: 8px;
-}
-
-.cal-days-header span {
-	font-size: 11px;
-	font-weight: 600;
-	color: var(--color-texto-secundario);
-	padding: 4px 0;
-}
-
-.cal-grid {
-	display: grid;
-	grid-template-columns: repeat(7, 1fr);
-	gap: 4px;
-	text-align: center;
-}
-
-.cal-grid span {
-	padding: 6px 0;
-	border-radius: 50%;
-	font-size: 13px;
-	cursor: pointer;
-	color: var(--color-texto-principal);
-	transition: background 0.2s;
-}
-
-.cal-grid span:hover:not(.empty) {
-	background: var(--color-fondo-iconos);
-}
-
-.cal-grid span.selected {
-	background: var(--color-primario);
-	color: #fff;
-}
-
-.cal-grid span.today {
-	border: 1.5px solid var(--color-primario);
-	color: var(--color-primario);
-	font-weight: 700;
-}
-
-.cal-grid span.empty {
-	cursor: default;
 }

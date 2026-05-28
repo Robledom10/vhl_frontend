@@ -2,7 +2,6 @@
 	width: 87%;
 	margin: 0 auto;
 	padding: 64px 0;
-
 	column-count: 3;
 	column-gap: 25px;
 }
@@ -10,12 +9,9 @@
 .photo-item {
 	break-inside: avoid;
 	margin-bottom: 25px;
-
 	border-radius: 14px;
 	overflow: hidden;
-
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-
 	transition: transform 0.3s ease;
 }
 
