@@ -100,45 +100,63 @@
 						<div class="upload-grid">
 
 							<!-- PORTADA -->
-							<label class="upload-box small">
+							<div class="upload-wrapper">
+								<label class="upload-box small"
+									[class.upload-error]="packageForm.get('coverImage')?.invalid && packageForm.get('coverImage')?.touched">
 
-								<input type="file" accept="image/*" hidden (change)="onCoverImageSelected($event)" />
+									<input type="file" accept="image/*" hidden
+										(change)="onCoverImageSelected($event)" />
 
-								<img *ngIf="coverPreview" [src]="coverPreview" class="preview-image" />
+									<div class="image-wrapper" *ngIf="coverPreview">
+										<img [src]="coverPreview" class="preview-image" />
 
-								<div class="upload-icon" *ngIf="!coverPreview">
-									<i class="fa-solid fa-camera"></i>
-								</div>
+										<button type="button" class="remove-image-btn"
+											(click)="removeCoverImage($event)">
+											<i class="fa-solid fa-xmark"></i>
+										</button>
+									</div>
 
-							</label>
+									<div class="upload-icon" *ngIf="!coverPreview">
+										<i class="fa-solid fa-camera"></i>
+									</div>
+								</label>
+
+								<span class="upload-error-text"
+									*ngIf="packageForm.get('coverImage')?.invalid && packageForm.get('coverImage')?.touched">
+									La portada es obligatoria
+								</span>
+							</div>
 
 							<!-- GALERIA -->
-							<label class="upload-box">
+							<div class="upload-wrapper">
+								<label class="upload-box"
+									[class.upload-error]="packageForm.get('galleryImages')?.invalid && packageForm.get('galleryImages')?.touched">
 
-								<input type="file" accept="image/*" multiple hidden
-									(change)="onGalleryImagesSelected($event)" />
+									<input type="file" accept="image/*" multiple hidden
+										(change)="onGalleryImagesSelected($event)" />
 
-								<div class="gallery-preview" *ngIf="galleryPreview.length > 0">
-									<img *ngFor="let image of galleryPreview" [src]="image" />
-								</div>
+									<div class="gallery-preview" *ngIf="galleryPreview.length > 0">
+										<div class="image-wrapper" *ngFor="let image of galleryPreview; let i = index">
+											<img [src]="image" />
 
-								<div class="upload-icon" *ngIf="galleryPreview.length === 0">
-									<i class="fa-solid fa-camera"></i>
-								</div>
+											<button type="button" class="remove-image-btn"
+												(click)="removeGalleryImage(i, $event)">
+												<i class="fa-solid fa-xmark"></i>
+											</button>
+										</div>
+									</div>
 
-							</label>
+									<div class="upload-icon" *ngIf="galleryPreview.length === 0">
+										<i class="fa-solid fa-camera"></i>
+									</div>
+								</label>
 
+								<span class="upload-error-text"
+									*ngIf="packageForm.get('galleryImages')?.invalid && packageForm.get('galleryImages')?.touched">
+									Debe subir al menos una imagen
+								</span>
+							</div>
 						</div>
-
-						<span class="transport-error"
-							*ngIf="packageForm.get('coverImage')?.invalid &&packageForm.get('coverImage')?.touched">
-							La portada es obligatoria
-						</span>
-
-						<span class="transport-error"
-							*ngIf="packageForm.get('galleryImages')?.invalid &&packageForm.get('galleryImages')?.touched">
-							Debe subir al menos una imagen
-						</span>
 					</div>
 
 					<!-- =========================
@@ -175,19 +193,50 @@
 
 							<span
 								*ngIf="packageForm.get('startDate')?.invalid && packageForm.get('startDate')?.touched">
-
 								La fecha es obligatoria
 							</span>
 						</div>
 
-						<div class="form-group">
-							<input type="time" placeholder=" " formControlName="departureTime"
-								[class.ng-invalid]="packageForm.get('departureTime')?.invalid && packageForm.get('departureTime')?.touched">
+						<div class="form-group time-field">
+							<input type="text" placeholder=" " readonly
+								[value]="packageForm.get('departureTime')?.value || ''"
+								(click)="toggleTimePicker($event)" />
 
 							<label>Hora de salida</label>
 
+							<i class="fa-regular fa-clock time-icon"></i>
+
+							<div class="time-picker" *ngIf="showTimePicker">
+
+								<!-- HORAS -->
+								<div class="time-column">
+									<button type="button" *ngFor="let hour of hours" (click)="selectHour(hour)"
+										[class.active]="selectedHour === hour">
+										{{ hour }}
+									</button>
+								</div>
+
+								<div class="separator">:</div>
+
+								<!-- MINUTOS -->
+								<div class="time-column">
+									<button type="button" *ngFor="let minute of minutes" (click)="selectMinute(minute)"
+										[class.active]="selectedMinute === minute">
+										{{ minute }}
+									</button>
+								</div>
+
+								<!-- AM PM -->
+								<div class="period-column">
+									<button type="button" *ngFor="let period of periods" (click)="selectPeriod(period)"
+										[class.active]="selectedPeriod === period">
+										{{ period }}
+									</button>
+								</div>
+							</div>
+
 							<span
-								*ngIf="packageForm.get('departureTime')?.invalid && packageForm.get('departureTime')?.touched">
+								*ngIf="packageForm.get('departureTime')?.invalid&& packageForm.get('departureTime')?.touched">
 								La hora es obligatoria
 							</span>
 						</div>

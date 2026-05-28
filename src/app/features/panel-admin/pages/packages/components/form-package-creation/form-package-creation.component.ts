@@ -248,6 +248,34 @@ export class FormPackageCreationComponent {
     }
   }
 
+  removeCoverImage(event: Event) {
+    event.stopPropagation();
+
+    this.coverPreview = null;
+
+    this.packageForm.patchValue({
+      coverImage: null,
+    });
+
+    this.packageForm.get('coverImage')?.markAsTouched();
+  }
+
+  removeGalleryImage(index: number, event: Event) {
+    event.stopPropagation();
+
+    this.galleryPreview.splice(index, 1);
+
+    const currentImages = this.packageForm.get('galleryImages')?.value || [];
+
+    currentImages.splice(index, 1);
+
+    this.packageForm.patchValue({
+      galleryImages: currentImages,
+    });
+
+    this.packageForm.get('galleryImages')?.markAsTouched();
+  }
+
   closeModal() {
     this.closed.emit();
   }
@@ -431,5 +459,60 @@ ${JSON.stringify(err.error, null, 2)}
     });
 
     this.packageForm.get('transportType')?.markAsTouched();
+  }
+
+  //   HORA
+  showTimePicker = false;
+
+  hours: string[] = [];
+  minutes: string[] = [];
+  periods = ['AM', 'PM'];
+
+  selectedHour = '';
+  selectedMinute = '';
+  selectedPeriod = 'AM';
+
+  ngOnInit() {
+    this.hours = Array.from({ length: 12 }, (_, i) =>
+      (i + 1).toString().padStart(2, '0'),
+    );
+
+    this.minutes = Array.from({ length: 60 }, (_, i) =>
+      i.toString().padStart(2, '0'),
+    );
+  }
+
+  toggleTimePicker(event: Event) {
+    event.stopPropagation();
+
+    this.showTimePicker = !this.showTimePicker;
+  }
+
+  selectHour(hour: string) {
+    this.selectedHour = hour;
+    this.updateTime();
+  }
+
+  selectMinute(minute: string) {
+    this.selectedMinute = minute;
+    this.updateTime();
+  }
+
+  selectPeriod(period: string) {
+    this.selectedPeriod = period;
+    this.updateTime();
+  }
+
+  updateTime() {
+    if (this.selectedHour && this.selectedMinute && this.selectedPeriod) {
+      const formattedTime = `${this.selectedHour}:${this.selectedMinute} ${this.selectedPeriod}`;
+
+      this.packageForm.get('departureTime')?.setValue(formattedTime);
+
+      this.packageForm.get('departureTime')?.markAsTouched();
+
+      // CERRAR PICKER
+      this.showTimePicker = false;
+    }
   }
 }
