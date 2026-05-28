@@ -23,10 +23,8 @@ interface Destination {
 })
 export class InteractiveMapComponent implements OnInit, OnDestroy {
   private map: any = null;
-  private mapsReady = false;
   private markers: any[] = [];
-  private routePolyline: any = null;
-  private infoWindows: any[] = [];
+  private markerBubbles: Map<string, HTMLImageElement> = new Map();
 
   isDropdownOpen = false;
   selectedDestination: Destination | null = null;
@@ -35,26 +33,31 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
 
   destinations: Destination[] = [
     {
-      id: 'calarca',
-      name: 'Calarcá',
-      label: 'Calarcá, Quindío, Colombia',
-      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1779948930/Quindio_b3feaf.jpg',
-      description: 'Punto de partida. Un municipio cafetero rodeado de paisajes naturales y cercano al Valle del Cocora.',
-      lat: 4.5297,
-      lng: -75.6406,
+      id: 'quindio',
+      name: 'Hernando Lopera',
+      label: 'Calraca, Quindio',
+      image:
+        'https://res.cloudinary.com/dqcviyp18/image/upload/v1780001558/image_g9cu67.png',
+      description:
+        'El corazón del Eje Cafetero. Valle del Cocora, palmas de cera, fincas cafeteras y el encanto de sus pueblos patrimonio.',
+      lat: 4.5318,
+      lng: -75.6442,
       placeId: 'ChIJx8bT4x7Koo8R7x4X0sJfR5M',
       photos: [],
       thumbnail: '',
       photosLoaded: false,
     },
+
     {
       id: 'santamarta',
       name: 'Santa Marta',
       label: 'Magdalena, Colombia',
-      image: '🏖️',
-      description: 'La ciudad más antigua de Colombia. Playas paradisíacas, la Sierra Nevada y el Parque Tayrona.',
+      image:
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/El_Rodadero%2C_Santa_Marta.jpg/640px-El_Rodadero%2C_Santa_Marta.jpg',
+      description:
+        'La ciudad más antigua de Colombia. Playas paradisíacas, la Sierra Nevada y el Parque Tayrona.',
       lat: 11.2408,
-      lng: -74.2110,
+      lng: -74.211,
       placeId: 'ChIJRcbVhzJa-o4Rz5GJkFDZ1uE',
       photos: [],
       thumbnail: '',
@@ -64,9 +67,11 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'cartagena',
       name: 'Cartagena',
       label: 'Bolívar, Colombia',
-      image: '🏰',
-      description: 'Ciudad amurallada Patrimonio de la Humanidad. Historia colonial, islas del Rosario y playas del Caribe.',
-      lat: 10.3910,
+      image:
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Cartagena_de_Indias_-_Centro_Historico.jpg/640px-Cartagena_de_Indias_-_Centro_Historico.jpg',
+      description:
+        'Ciudad amurallada Patrimonio de la Humanidad. Historia colonial, islas del Rosario y playas del Caribe.',
+      lat: 10.391,
       lng: -75.4794,
       placeId: 'ChIJp9r1aNIm-Y4RVWBS3g8Xv6A',
       photos: [],
@@ -77,8 +82,10 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'barranquilla',
       name: 'Barranquilla',
       label: 'Atlántico, Colombia',
-      image: '🎉',
-      description: 'La capital de la alegría. Sede del famoso Carnaval declarado Patrimonio Inmaterial de la Humanidad.',
+      image:
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Barranquilla_panoramica.jpg/640px-Barranquilla_panoramica.jpg',
+      description:
+        'La capital de la alegría. Sede del famoso Carnaval declarado Patrimonio Inmaterial de la Humanidad.',
       lat: 10.9685,
       lng: -74.7813,
       placeId: 'ChIJR1fBKzR6-Y4RAoGRzMsU2bE',
@@ -90,8 +97,10 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'medellin',
       name: 'Medellín',
       label: 'Antioquia, Colombia',
-      image: '🌸',
-      description: 'La ciudad de la eterna primavera. Innovación, cultura, flores y la calidez de su gente paisa.',
+      image:
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Medellin_Vista_Parcial.jpg/640px-Medellin_Vista_Parcial.jpg',
+      description:
+        'La ciudad de la eterna primavera. Innovación, cultura, flores y la calidez de su gente paisa.',
       lat: 6.2442,
       lng: -75.5812,
       placeId: 'ChIJaUjKMaKRRI8R9VsEUJM2fLI',
@@ -107,14 +116,15 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
     this.loadGoogleMaps();
   }
 
-  // ─── Carga del SDK ─────────────────────────────────────────────────────────
+  // ─── Carga del SDK ──────────────────────────────────────────────────────────
 
   loadGoogleMaps(): void {
     if (typeof google !== 'undefined' && google.maps?.Map) {
       this.initMap();
       return;
     }
-    (window as any)['initMapCallback'] = () => this.ngZone.run(() => this.initMap());
+    (window as any)['initMapCallback'] = () =>
+      this.ngZone.run(() => this.initMap());
     const script = document.createElement('script');
     script.src =
       'https://maps.googleapis.com/maps/api/js?key=AIzaSyCChhbt5C8uOtQrdF6lFwEYaHxbtuFcNmE&libraries=marker,places&loading=async&callback=initMapCallback';
@@ -136,55 +146,33 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       fullscreenControl: false,
     });
 
-    this.mapsReady = true;
-    this.addRouteToMap();
-    this.loadAllThumbnails();
+    this.addMarkersToMap();
   }
 
-  // ─── Ruta y marcadores en el mapa ─────────────────────────────────────────
+  // ─── Marcadores con imagen estática ────────────────────────────────────────
 
-  addRouteToMap(): void {
-    const routeCoords = this.destinations.map(d => ({ lat: d.lat, lng: d.lng }));
-
-    this.routePolyline = new google.maps.Polyline({
-      path: routeCoords,
-      geodesic: true,
-      strokeColor: '#3fa2db',
-      strokeOpacity: 0.85,
-      strokeWeight: 3,
-      icons: [{
-        icon: { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW, scale: 4, fillColor: '#3fa2db', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 1 },
-        offset: '100%',
-        repeat: '120px',
-      }],
-    });
-    this.routePolyline.setMap(this.map);
-
-    this.destinations.forEach((dest, index) => {
+  addMarkersToMap(): void {
+    this.destinations.forEach((dest) => {
       const pinEl = document.createElement('div');
-      pinEl.style.cssText = `
-        display: flex; flex-direction: column; align-items: center; cursor: pointer;
-      `;
+      pinEl.style.cssText = `display: flex; flex-direction: column; align-items: center; cursor: pointer;`;
+
       const bubble = document.createElement('div');
       bubble.style.cssText = `
-        width: 38px; height: 38px; border-radius: 50%; background: #fff;
-        border: 3px solid ${index === 0 ? '#10B981' : '#3fa2db'};
+        width: 44px; height: 44px; border-radius: 50%; background: #e2e8f0;
+        border: 3px solid #3fa2db;
         display: flex; align-items: center; justify-content: center;
-        font-size: 18px; box-shadow: 0 3px 12px rgba(0,0,0,0.25);
-        transition: transform 0.2s;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+        transition: transform 0.2s; overflow: hidden;
       `;
-      bubble.innerHTML = `
-  <img 
-    src="${dest.image}" 
-    alt="${dest.name}"
-    style="
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-    "
-  >
-`;
+
+      const img = document.createElement('img');
+      img.alt = dest.name;
+      img.style.cssText = `width: 100%; height: 100%; border-radius: 50%; object-fit: cover;`;
+      img.src = dest.image || this.getPlaceholderDataUrl(dest.name[0]);
+
+      this.markerBubbles.set(dest.id, img);
+      bubble.appendChild(img);
+
       const label = document.createElement('div');
       label.style.cssText = `
         background: #1a1a2e; color: #fff; font-size: 10px; font-family: sans-serif;
@@ -192,6 +180,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
         font-weight: 600; letter-spacing: 0.3px;
       `;
       label.textContent = dest.name;
+
       pinEl.appendChild(bubble);
       pinEl.appendChild(label);
 
@@ -210,28 +199,28 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ─── Cargar miniaturas de la API para todos los destinos ──────────────────
-
-  async loadAllThumbnails(): Promise<void> {
-    for (const dest of this.destinations) {
-      try {
-        const place = new google.maps.places.Place({ id: dest.placeId });
-        await place.fetchFields({ fields: ['photos', 'displayName'] });
-        if (place.photos?.length > 0) {
-          dest.thumbnail = place.photos[0].getURI({ maxWidth: 120, maxHeight: 120 });
-        }
-      } catch {
-        dest.thumbnail = '';
-      }
-    }
+  private getPlaceholderDataUrl(letter: string): string {
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44">
+        <rect width="44" height="44" rx="22" fill="#cbd5e1"/>
+        <text x="22" y="28" text-anchor="middle"
+              font-family="sans-serif" font-size="18" font-weight="bold" fill="#64748b">
+          ${letter.toUpperCase()}
+        </text>
+      </svg>`;
+    return `data:image/svg+xml;base64,${btoa(svg)}`;
   }
 
-  // ─── Selección de destino ─────────────────────────────────────────────────
+  // ─── Selección de destino ───────────────────────────────────────────────────
 
   async selectDestination(dest: Destination): Promise<void> {
     this.selectedDestination = dest;
     this.isDropdownOpen = false;
     this.activePhotoIndex = 0;
+
+    // ✅ Garantizar thumbnail e imagen de galería inmediatamente con la imagen estática
+    if (!dest.thumbnail) dest.thumbnail = dest.image;
+    if (dest.photos.length === 0) dest.photos = [dest.image];
 
     if (this.map) {
       this.map.panTo({ lat: dest.lat, lng: dest.lng });
@@ -247,11 +236,13 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
     }
   }
 
+  // ─── Places API: enriquece solo si responde; si falla usa imagen estática ──
+
   private async loadDestinationPhotos(dest: Destination): Promise<void> {
     try {
       const place = new google.maps.places.Place({ id: dest.placeId });
       await place.fetchFields({
-        fields: ['photos', 'displayName', 'editorialSummary', 'formattedAddress'],
+        fields: ['photos', 'displayName', 'editorialSummary'],
       });
 
       const photos: string[] = [];
@@ -262,30 +253,44 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       }
 
       this.ngZone.run(() => {
-        dest.photos = photos;
-        dest.photosLoaded = true;
-        if (photos.length > 0) dest.thumbnail = place.photos[0].getURI({ maxWidth: 120, maxHeight: 120 });
+        // ✅ Solo reemplaza si Places devolvió fotos reales
+        if (photos.length > 0) {
+          dest.photos = photos;
+          dest.thumbnail = place.photos[0].getURI({
+            maxWidth: 120,
+            maxHeight: 120,
+          });
+          const imgEl = this.markerBubbles.get(dest.id);
+          if (imgEl) imgEl.src = dest.thumbnail;
+        }
+        // Si Places no devuelve fotos, dest.photos conserva [dest.image] del paso anterior
+
         if (place.editorialSummary) dest.description = place.editorialSummary;
+        dest.photosLoaded = true;
       });
-    } catch (err) {
-      console.error('Error cargando fotos:', err);
-      this.ngZone.run(() => { dest.photosLoaded = true; });
+    } catch {
+      // ✅ Places bloqueado o sin respuesta: dest.photos ya tiene la imagen estática, no tocar nada
+      this.ngZone.run(() => {
+        dest.photosLoaded = true;
+      });
     }
   }
 
-  // ─── Resaltar marcador activo ─────────────────────────────────────────────
+  // ─── Resaltar marcador activo ───────────────────────────────────────────────
 
   highlightMarker(dest: Destination): void {
     this.markers.forEach((marker, i) => {
       const bubble = marker.content?.querySelector('div');
       if (bubble) {
-        bubble.style.transform = this.destinations[i].id === dest.id ? 'scale(1.35)' : 'scale(1)';
-        bubble.style.borderColor = this.destinations[i].id === dest.id ? '#7C3AED' : (i === 0 ? '#10B981' : '#FF6B35');
+        bubble.style.transform =
+          this.destinations[i].id === dest.id ? 'scale(1.35)' : 'scale(1)';
+        bubble.style.borderColor =
+          this.destinations[i].id === dest.id ? '#b5e5ff' : '#7bdcff';
       }
     });
   }
 
-  // ─── Controles del dropdown ───────────────────────────────────────────────
+  // ─── Controles ─────────────────────────────────────────────────────────────
 
   toggleDropdown(): void {
     this.isDropdownOpen = !this.isDropdownOpen;
@@ -296,15 +301,16 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
   }
 
   prevPhoto(): void {
-    if (this.selectedDestination && this.activePhotoIndex > 0) {
+    if (this.selectedDestination && this.activePhotoIndex > 0)
       this.activePhotoIndex--;
-    }
   }
 
   nextPhoto(): void {
-    if (this.selectedDestination && this.activePhotoIndex < this.selectedDestination.photos.length - 1) {
+    if (
+      this.selectedDestination &&
+      this.activePhotoIndex < this.selectedDestination.photos.length - 1
+    )
       this.activePhotoIndex++;
-    }
   }
 
   showAll(): void {
@@ -312,11 +318,11 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       this.selectedDestination = null;
       this.map.panTo({ lat: 7.5, lng: -75.2 });
       this.map.setZoom(6);
-      this.markers.forEach((marker, i) => {
+      this.markers.forEach((marker) => {
         const bubble = marker.content?.querySelector('div');
         if (bubble) {
           bubble.style.transform = 'scale(1)';
-          bubble.style.borderColor = i === 0 ? '#10B981' : '#FF6B35';
+          bubble.style.borderColor = '#3acaff';
         }
       });
     }
@@ -327,7 +333,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.markers.forEach(m => m.map = null);
-    if (this.routePolyline) this.routePolyline.setMap(null);
+    this.markers.forEach((m) => (m.map = null));
+    this.markerBubbles.clear();
   }
 }
