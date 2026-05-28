@@ -21,13 +21,6 @@ const routes: Routes = [
       import('./features/auth/auth.module').then((m) => m.AuthModule),
   },
   {
-    path: 'destinations',
-    loadChildren: () =>
-      import('./features/destinations/destinations.module').then(
-        (m) => m.DestinationsModule,
-      ),
-  },
-  {
     path: 'gallery',
     loadChildren: () =>
       import('./features/gallery/gallery.module').then((m) => m.GalleryModule),
@@ -39,6 +32,13 @@ const routes: Routes = [
         (m) => m.PanelAdminModule,
       ),
     // canActivate: [AuthGuard],
+  },
+  {
+    path: 'packages',
+    loadChildren: () =>
+      import('./features/packages/packages.module').then(
+        (m) => m.PackagesModule,
+      ),
   },
 
   {
