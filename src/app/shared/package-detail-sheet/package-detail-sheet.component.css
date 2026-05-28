@@ -17,7 +17,7 @@
 }
 
 .sheet-container {
-	position: absolute;
+	position: fixed;
 	bottom: 0;
 	left: 0;
 	right: 0;
@@ -113,7 +113,7 @@
 
 .main-image {
 	width: 100%;
-	height: 52.5%;
+	height: 48%;
 	object-fit: cover;
 	border-radius: 28px;
 	display: block;
@@ -217,7 +217,7 @@
 
 .info-row-value {
 	font-size: 14px;
-	color: #6b7280;
+	color: var(--color-texto-secundario);
 	font-weight: 300;
 }
 
@@ -262,7 +262,7 @@
 .itinerary-title {
 	font-size: 15px;
 	font-weight: 700;
-	color: #123862;
+	color: var(--color-texto-principal);
 	margin: 0;
 }
 
@@ -289,7 +289,7 @@
 
 .day-desc {
 	font-size: 15px;
-	color: #6b7280;
+	color: var(--color-texto-secundario);
 	font-weight: 400;
 	line-height: 1.4;
 }
@@ -388,7 +388,7 @@
 	display: flex;
 	gap: 10px;
 	align-items: flex-start;
-	color: #6b7280;
+	color: var(--color-texto-secundario);
 }
 
 .check.green-check {
@@ -482,16 +482,17 @@
 	margin: 0;
 }
 
-.cancel-list {
-	padding-left: 7px;
+.cancel-list{
+	padding-left: 39px;
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
 }
 
 .cancel-list li {
-	font-size: 1px;
-	color: #6b7280;
+	font-size: 15px;
+	color: var(--color-texto-secundario);
+	display: block;
 	line-height: 1.5;
 }
 
@@ -511,7 +512,7 @@
 
 .requirements-warn-icon {
 	font-size: 24px;
-	color: #EAB308;
+	color: #FFD93D;
 }
 
 .requirements-title {
@@ -522,15 +523,16 @@
 }
 
 .requirements-list {
-	padding-left: 7px;
+	padding-left: 39px;
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
 }
 
 .requirements-list li {
-	font-size: 1px;
-	color: #6b7280;
+	font-size: 15px;
+	display: block;
+	color: var(--color-texto-secundario);
 	line-height: 1.5;
 }
 
