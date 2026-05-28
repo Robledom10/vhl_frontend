@@ -3,16 +3,16 @@
   <!-- ─── Header / Selector de destinos ─────────────────────────────── -->
   <div class="route-header">
     <div class="route-meta">
-      <span class="route-tag">Excursión Colombia</span>
-      <span class="route-stops">{{ totalDestinations }} destinos · Eje Cafetero → Costa → Medellín</span>
+      <span class="route-tag">Ruta Bachilleres</span>
+      <span class="route-stops">{{ totalDestinations }} destinos · Eje Cafetero → Piscilago → Santa Marta → Cartagena → Barranquilla → Medellin</span>
     </div>
 
     <!-- Dropdown trigger -->
     <div class="dropdown-container" (clickOutside)="closeDropdown()">
       <button class="destination-trigger" (click)="toggleDropdown()" [class.open]="isDropdownOpen">
         <span class="trigger-inner">
-          <span class="trigger-emoji" *ngIf="selectedDestination">{{ selectedDestination.emoji }}</span>
-          <span class="trigger-emoji default-icon" *ngIf="!selectedDestination">🗺️</span>
+          <span class="trigger-emoji" *ngIf="selectedDestination">{{ selectedDestination.image }}</span>
+          <span class="trigger-emoji default-icon" *ngIf="!selectedDestination"><i class="fa-solid fa-bus-simple"></i></span>
           <span class="trigger-text">
             {{ selectedDestination ? selectedDestination.name : 'Selecciona un destino' }}
           </span>
@@ -41,7 +41,7 @@
               class="dest-thumb"
             />
             <div class="dest-thumb-placeholder" *ngIf="!dest.thumbnail">
-              <span>{{ dest.emoji }}</span>
+              <span>{{ dest.image }}</span>
             </div>
           </div>
           <div class="dest-info">
@@ -99,7 +99,7 @@
           </div>
         </div>
         <div class="no-photo-placeholder" *ngIf="selectedDestination.photos.length === 0">
-          <span class="placeholder-emoji">{{ selectedDestination.emoji }}</span>
+          <span class="placeholder-emoji">{{ selectedDestination.image }}</span>
         </div>
       </div>
 
@@ -111,7 +111,7 @@
       <!-- Info -->
       <div class="detail-body">
         <div class="detail-top">
-          <span class="detail-emoji">{{ selectedDestination.emoji }}</span>
+          <span class="detail-emoji">{{ selectedDestination.image }}</span>
           <div>
             <h3 class="detail-name">{{ selectedDestination.name }}</h3>
             <span class="detail-city">{{ selectedDestination.label }}</span>

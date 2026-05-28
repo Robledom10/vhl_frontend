@@ -6,7 +6,7 @@ interface Destination {
   id: string;
   name: string;
   label: string;
-  emoji: string;
+  image: string;
   description: string;
   lat: number;
   lng: number;
@@ -35,14 +35,14 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
 
   destinations: Destination[] = [
     {
-      id: 'quindio',
-      name: 'Eje Cafetero',
-      label: 'Quindío, Colombia',
-      emoji: '☕',
-      description: 'Punto de partida. La tierra del café, con paisajes de montaña, fincas cafeteras y el Valle del Cocora.',
-      lat: 4.5339,
-      lng: -75.6811,
-      placeId: 'ChIJl7qvH_LKoo8RoGaMNhh8g1I',
+      id: 'calarca',
+      name: 'Calarcá',
+      label: 'Calarcá, Quindío, Colombia',
+      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1779948930/Quindio_b3feaf.jpg',
+      description: 'Punto de partida. Un municipio cafetero rodeado de paisajes naturales y cercano al Valle del Cocora.',
+      lat: 4.5297,
+      lng: -75.6406,
+      placeId: 'ChIJx8bT4x7Koo8R7x4X0sJfR5M',
       photos: [],
       thumbnail: '',
       photosLoaded: false,
@@ -51,7 +51,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'santamarta',
       name: 'Santa Marta',
       label: 'Magdalena, Colombia',
-      emoji: '🏖️',
+      image: '🏖️',
       description: 'La ciudad más antigua de Colombia. Playas paradisíacas, la Sierra Nevada y el Parque Tayrona.',
       lat: 11.2408,
       lng: -74.2110,
@@ -64,7 +64,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'cartagena',
       name: 'Cartagena',
       label: 'Bolívar, Colombia',
-      emoji: '🏰',
+      image: '🏰',
       description: 'Ciudad amurallada Patrimonio de la Humanidad. Historia colonial, islas del Rosario y playas del Caribe.',
       lat: 10.3910,
       lng: -75.4794,
@@ -77,7 +77,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'barranquilla',
       name: 'Barranquilla',
       label: 'Atlántico, Colombia',
-      emoji: '🎉',
+      image: '🎉',
       description: 'La capital de la alegría. Sede del famoso Carnaval declarado Patrimonio Inmaterial de la Humanidad.',
       lat: 10.9685,
       lng: -74.7813,
@@ -90,7 +90,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'medellin',
       name: 'Medellín',
       label: 'Antioquia, Colombia',
-      emoji: '🌸',
+      image: '🌸',
       description: 'La ciudad de la eterna primavera. Innovación, cultura, flores y la calidez de su gente paisa.',
       lat: 6.2442,
       lng: -75.5812,
@@ -101,7 +101,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
     },
   ];
 
-  constructor(private ngZone: NgZone) {}
+  constructor(private ngZone: NgZone) { }
 
   ngOnInit(): void {
     this.loadGoogleMaps();
@@ -149,11 +149,11 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
     this.routePolyline = new google.maps.Polyline({
       path: routeCoords,
       geodesic: true,
-      strokeColor: '#FF6B35',
+      strokeColor: '#3fa2db',
       strokeOpacity: 0.85,
       strokeWeight: 3,
       icons: [{
-        icon: { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW, scale: 4, fillColor: '#FF6B35', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 1 },
+        icon: { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW, scale: 4, fillColor: '#3fa2db', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 1 },
         offset: '100%',
         repeat: '120px',
       }],
@@ -168,12 +168,23 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       const bubble = document.createElement('div');
       bubble.style.cssText = `
         width: 38px; height: 38px; border-radius: 50%; background: #fff;
-        border: 3px solid ${index === 0 ? '#10B981' : '#FF6B35'};
+        border: 3px solid ${index === 0 ? '#10B981' : '#3fa2db'};
         display: flex; align-items: center; justify-content: center;
         font-size: 18px; box-shadow: 0 3px 12px rgba(0,0,0,0.25);
         transition: transform 0.2s;
       `;
-      bubble.textContent = dest.emoji;
+      bubble.innerHTML = `
+  <img 
+    src="${dest.image}" 
+    alt="${dest.name}"
+    style="
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    "
+  >
+`;
       const label = document.createElement('div');
       label.style.cssText = `
         background: #1a1a2e; color: #fff; font-size: 10px; font-family: sans-serif;
