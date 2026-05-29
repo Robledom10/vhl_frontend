@@ -59,7 +59,7 @@
 	gap: 20px;
 	flex-wrap: wrap;
 
-		background: var(--color-fondo-navegador);
+	background: var(--color-fondo-navegador);
 
 
 	border-bottom: 1px solid var(--bordes);
@@ -73,23 +73,14 @@
 
 .route-tag {
 	width: fit-content;
-
 	padding: 6px 14px;
-
 	border-radius: 999px;
-
-	font-family: 'Playfair Display', serif;
 	font-size: 13px;
 	font-weight: 700;
 	letter-spacing: 0.03em;
-
 	color: #ffffff;
-
 	background:
-		linear-gradient(135deg,
-			var(--color-primario),
-			#69c8ff);
-
+		linear-gradient(135deg, var(--color-primario),#69c8ff);
 	box-shadow:
 		0 8px 20px rgba(63, 162, 219, 0.25);
 }
