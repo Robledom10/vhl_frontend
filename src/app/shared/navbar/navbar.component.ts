@@ -31,7 +31,7 @@ export class NavbarComponent {
     return this.authService.getUser();
   }
 
-  hiddenRoles = ['ROLE_CLIENT'];
+  hiddenRoles = ['CLIENT'];
 
   get displayRole(): string | null {
     const role = this.user?.role;
@@ -42,7 +42,9 @@ export class NavbarComponent {
 
     const roleMap: { [key: string]: string } = {
       ADMIN: 'Administrador',
+      GUIDE: 'Guía Turístico',
     };
+
     return roleMap[role] || role;
   }
 

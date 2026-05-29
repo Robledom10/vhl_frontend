@@ -9,7 +9,6 @@ import { PackagesComponent } from './pages/packages/packages.component';
 import { ReservationsComponent } from './pages/reservations/reservations.component';
 import { UsersRolesComponent } from './pages/users-roles/users-roles.component';
 import { CommentsComponent } from './pages/comments/comments.component';
-import { GalleryComponent } from './pages/gallery/gallery.component';
 import { MessagesComponent } from './pages/messages/messages.component';
 import { OffersComponent } from './pages/offers/offers.component';
 import { ProfileComponent } from './pages/profile/profile.component';
@@ -25,6 +24,8 @@ import { PricingPlanComponent } from './pages/packages/pages/pricing-plan/pricin
 import { SegurosComponent } from './pages/packages/pages/seguros/seguros.component';
 import { OrganizationProfileComponent } from './pages/packages/pages/organization-profile/organization-profile.component';
 import { FormPackageCreationComponent } from './pages/packages/components/form-package-creation/form-package-creation.component';
+import { MediaUploadModalComponent } from './pages/gallery-admin/components/media-upload-modal/media-upload-modal.component';
+import { GalleryAdminComponent } from './pages/gallery-admin/gallery-admin.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,6 @@ import { FormPackageCreationComponent } from './pages/packages/components/form-p
     ReservationsComponent,
     UsersRolesComponent,
     CommentsComponent,
-    GalleryComponent,
     MessagesComponent,
     OffersComponent,
     ProfileComponent,
@@ -49,6 +49,8 @@ import { FormPackageCreationComponent } from './pages/packages/components/form-p
     SegurosComponent,
     OrganizationProfileComponent,
     FormPackageCreationComponent,
+    MediaUploadModalComponent,
+    GalleryAdminComponent,
   ],
   imports: [
     CommonModule,

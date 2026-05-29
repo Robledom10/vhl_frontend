@@ -9,7 +9,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 export class NavbarPanelAdminComponent {
   constructor(public authService: AuthService) {}
 
-  hiddenRoles = ['ROLE_CLIENT'];
+  hiddenRoles = ['CLIENT'];
 
   get user() {
     return this.authService.getUser();
@@ -24,6 +24,7 @@ export class NavbarPanelAdminComponent {
 
     const roleMap: { [key: string]: string } = {
       ADMIN: 'Administrador',
+      GUIDE: 'Guía Turístico',
     };
     return roleMap[role] || role;
   }
@@ -49,7 +50,7 @@ export class NavbarPanelAdminComponent {
       label: 'Paquetes',
       open: false,
       children: [
-		{
+        {
           label: 'Paquetes',
           route: '/panel-admin/packages',
         },
@@ -65,10 +66,10 @@ export class NavbarPanelAdminComponent {
           label: 'Proveedores',
           route: '/panel-admin/packages-providers',
         },
-		{
+        {
           label: 'Seguros',
           route: '/panel-admin/packages-seguros',
-        }
+        },
       ],
     },
     {
@@ -89,7 +90,7 @@ export class NavbarPanelAdminComponent {
     {
       icon: 'fa-regular fa-image',
       label: 'Galería',
-      route: '/panel-admin/admin-gallery',
+      route: '/panel-admin/gallery-admin',
     },
     {
       icon: 'fa-regular fa-message',

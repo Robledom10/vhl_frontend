@@ -42,4 +42,12 @@ export class MediaService {
   getByLocation(location: string): Observable<MediaResponse[]> {
     return this.http.get<MediaResponse[]>(`${this.API}/location/${location}`);
   }
+
+  uploadMedia(formData: FormData): Observable<MediaResponse> {
+    return this.http.post<MediaResponse>(this.API, formData);
+  }
+
+  deleteMedia(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.API}/${id}`);
+  }
 }

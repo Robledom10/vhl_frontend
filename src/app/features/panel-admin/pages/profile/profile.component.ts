@@ -69,7 +69,7 @@ export class ProfileComponent implements OnInit {
     return this.profileForm.controls;
   }
 
-  hiddenRoles = ['ROLE_CLIENT'];
+  hiddenRoles = ['CLIENT'];
 
   get user() {
     return this.authService.getUser();
@@ -84,6 +84,7 @@ export class ProfileComponent implements OnInit {
 
     const roleMap: { [key: string]: string } = {
       ADMIN: 'Administrador',
+      GUIDE: 'Guía Turístico',
     };
 
     return roleMap[role] || role;

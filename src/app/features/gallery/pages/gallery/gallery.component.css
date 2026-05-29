@@ -9,14 +9,16 @@
 .photo-item {
 	break-inside: avoid;
 	margin-bottom: 25px;
-	border-radius: 14px;
+	border-radius: 18px;
 	overflow: hidden;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-	transition: transform 0.3s ease;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+	transition: transform 0.25s ease, box-shadow 0.25s ease;
+	position: relative;
 }
 
 .photo-item:hover {
-	transform: translateY(-5px);
+	transform: translateY(-6px);
+	box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
 }
 
 .photo-item img {
@@ -24,4 +26,9 @@
 	height: auto;
 	display: block;
 	object-fit: cover;
+	transition: transform 0.4s ease;
+}
+
+.photo-item:hover img {
+	transform: scale(1.05);
 }

@@ -277,8 +277,6 @@
 	width: 430px;
 	height: 430px;
 	z-index: 1;
-	outline: 2px solid var(--color-primario);
-	outline-offset: 6px;
 }
 
 .stack-middle {

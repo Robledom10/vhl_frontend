@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { PanelAdmin } from './panel-admin';
 import { CommentsComponent } from './pages/comments/comments.component';
 import { ControlPanelComponent } from './pages/control-panel/control-panel.component';
-import { GalleryComponent } from './pages/gallery/gallery.component';
 import { MessagesComponent } from './pages/messages/messages.component';
 import { OffersComponent } from './pages/offers/offers.component';
 import { PackagesComponent } from './pages/packages/packages.component';
@@ -14,6 +13,7 @@ import { SegurosComponent } from './pages/packages/pages/seguros/seguros.compone
 import { ProveedorComponent } from './pages/packages/pages/proveedor/proveedor.component';
 import { PricingPlanComponent } from './pages/packages/pages/pricing-plan/pricing-plan.component';
 import { OrganizationProfileComponent } from './pages/packages/pages/organization-profile/organization-profile.component';
+import { GalleryAdminComponent } from './pages/gallery-admin/gallery-admin.component';
 
 const routes: Routes = [
   {
@@ -31,7 +31,7 @@ const routes: Routes = [
       { path: 'reservations', component: ReservationsComponent },
       { path: 'users-roles', component: UsersRolesComponent },
       { path: 'comments', component: CommentsComponent },
-      { path: 'admin-gallery', component: GalleryComponent },
+      { path: 'gallery-admin', component: GalleryAdminComponent },
       { path: 'messages', component: MessagesComponent },
       { path: 'offers', component: OffersComponent },
       { path: 'profile', component: ProfileComponent },
