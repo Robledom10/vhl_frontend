@@ -25,19 +25,31 @@ export class GalleryAdminComponent implements OnInit {
 
   selectedYear = '';
 
-  selectedLocation = '';
+  selectedExcursion = '';
+
+  selectedActivity = '';
 
   selectedType = '';
 
   yearDropdownOpen = false;
 
-  locationDropdownOpen = false;
+  excursionDropdownOpen = false;
+
+  activityDropdownOpen = false;
 
   typeDropdownOpen = false;
 
+  selectedMedia: MediaResponse | null = null;
+
   years: number[] = [];
 
-  locations: string[] = [];
+  excursions: string[] = [];
+
+  activities: string[] = [];
+
+  sortYearsDesc = (a: any, b: any): number => {
+    return Number(b.key) - Number(a.key);
+  };
 
   constructor(private mediaService: MediaService) {}
 
@@ -70,11 +82,17 @@ export class GalleryAdminComponent implements OnInit {
   }
 
   extractFilters() {
-    this.years = [...new Set(this.mediaList.map((m) => m.year))].sort(
-      (a, b) => b - a,
-    );
+    const currentYear = new Date().getFullYear();
 
-    this.locations = [...new Set(this.mediaList.map((m) => m.location))];
+    this.years = [];
+
+    for (let year = currentYear; year >= 2023; year--) {
+      this.years.push(year);
+    }
+
+    this.excursions = [...new Set(this.mediaList.map((m) => m.excursion))];
+
+    this.activities = [...new Set(this.mediaList.map((m) => m.activity))];
   }
 
   applyFilters() {
@@ -86,13 +104,22 @@ export class GalleryAdminComponent implements OnInit {
       const matchesYear =
         !this.selectedYear || media.year.toString() === this.selectedYear;
 
+      const matchesExcursion =
+        !this.selectedExcursion || media.excursion === this.selectedExcursion;
+
       const matchesLocation =
-        !this.selectedLocation || media.location === this.selectedLocation;
+        !this.selectedActivity || media.activity === this.selectedActivity;
 
       const matchesType =
         !this.selectedType || media.type === this.selectedType;
 
-      return matchesSearch && matchesYear && matchesLocation && matchesType;
+      return (
+        matchesSearch &&
+        matchesYear &&
+        matchesExcursion &&
+        matchesLocation &&
+        matchesType
+      );
     });
 
     this.groupMedia();
@@ -126,6 +153,7 @@ export class GalleryAdminComponent implements OnInit {
 
   closeModal() {
     this.showModal = false;
+    this.selectedMedia = null;
     this.loadMedia();
   }
 
@@ -145,12 +173,22 @@ export class GalleryAdminComponent implements OnInit {
     });
   }
 
+  editMedia(media: MediaResponse) {
+    this.selectedMedia = media;
+
+    this.showModal = true;
+  }
+
+  toggleExcursionDropdown() {
+    this.excursionDropdownOpen = !this.excursionDropdownOpen;
+  }
+
   toggleYearDropdown() {
     this.yearDropdownOpen = !this.yearDropdownOpen;
   }
 
-  toggleLocationDropdown() {
-    this.locationDropdownOpen = !this.locationDropdownOpen;
+  toggleActivityropdown() {
+    this.activityDropdownOpen = !this.activityDropdownOpen;
   }
 
   toggleTypeDropdown() {
@@ -165,10 +203,10 @@ export class GalleryAdminComponent implements OnInit {
     this.applyFilters();
   }
 
-  selectLocation(location: string) {
-    this.selectedLocation = location;
+  selectActivity(activity: string) {
+    this.selectedActivity = activity;
 
-    this.locationDropdownOpen = false;
+    this.activityDropdownOpen = false;
 
     this.applyFilters();
   }
@@ -177,6 +215,14 @@ export class GalleryAdminComponent implements OnInit {
     this.selectedType = type;
 
     this.typeDropdownOpen = false;
+
+    this.applyFilters();
+  }
+
+  selectExcursion(excursion: string) {
+    this.selectedExcursion = excursion;
+
+    this.excursionDropdownOpen = false;
 
     this.applyFilters();
   }

@@ -5,220 +5,166 @@
 	======================================== -->
 
 	<div class="top-bar">
-
 		<!-- SEARCH -->
 		<div class="search-box">
-
 			<input type="text" placeholder="Buscar excursión..." [(ngModel)]="searchTerm" (input)="applyFilters()" />
-
 			<button>
 				<i class="fa-solid fa-magnifying-glass"></i>
 			</button>
-
 		</div>
 
 		<!-- YEAR FILTER -->
 		<div class="filter-wrapper">
-
 			<button class="filter-btn" (click)="toggleYearDropdown()">
-
 				<div class="filter-content">
-
 					<i class="fa-solid fa-sliders"></i>
-
-					<span>
-						{{ selectedYear || 'Año' }}
-					</span>
-
+					<span>{{ selectedYear || 'Año' }}</span>
 				</div>
 
-				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="yearDropdownOpen">
-				</i>
-
+				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="yearDropdownOpen"></i>
 			</button>
 
 			<div class="dropdown" *ngIf="yearDropdownOpen">
-
 				<div class="dropdown-item" (click)="selectYear('')">
-
 					Todos
-
 				</div>
 
 				<div class="dropdown-item" *ngFor="let year of years" (click)="selectYear(year.toString())">
-
 					{{ year }}
-
 				</div>
-
 			</div>
-
 		</div>
 
-		<!-- LOCATION FILTER -->
+		<!-- ACTIVITY FILTER -->
 		<div class="filter-wrapper">
-
-			<button class="filter-btn" (click)="toggleLocationDropdown()">
-
+			<button class="filter-btn" (click)="toggleActivityropdown()">
 				<div class="filter-content">
-
 					<i class="fa-solid fa-sliders"></i>
-
-					<span>
-						{{ selectedLocation || 'Sitio turístico' }}
-					</span>
-
+					<span>{{ selectedActivity || 'Actividad' }}</span>
 				</div>
 
-				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="locationDropdownOpen">
-				</i>
-
+				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="activityDropdownOpen"></i>
 			</button>
 
-			<div class="dropdown" *ngIf="locationDropdownOpen">
-
-				<div class="dropdown-item" (click)="selectLocation('')">
-
+			<div class="dropdown" *ngIf="activityDropdownOpen">
+				<div class="dropdown-item" (click)="selectActivity('')">
 					Todos
-
 				</div>
 
-				<div class="dropdown-item" *ngFor="let location of locations" (click)="selectLocation(location)">
-
-					{{ location }}
-
+				<div class="dropdown-item" *ngFor="let activity of activities" (click)="selectActivity(activity)">
+					{{ activity }}
 				</div>
-
 			</div>
+		</div>
 
+		<!-- EXCURSION FILTER -->
+		<div class="filter-wrapper">
+			<button class="filter-btn" (click)="toggleExcursionDropdown()">
+				<div class="filter-content">
+					<i class="fa-solid fa-sliders"></i>
+					<span>
+						{{ selectedExcursion || 'Ubicación' }}
+					</span>
+				</div>
+
+				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="excursionDropdownOpen"></i>
+			</button>
+
+			<div class="dropdown" *ngIf="excursionDropdownOpen">
+				<div class="dropdown-item" (click)="selectExcursion('')">
+					Todos
+				</div>
+
+				<div class="dropdown-item" *ngFor="let excursion of excursions" (click)="selectExcursion(excursion)">
+					{{ excursion }}
+				</div>
+			</div>
 		</div>
 
 		<!-- TYPE FILTER -->
 		<div class="filter-wrapper">
-
 			<button class="filter-btn" (click)="toggleTypeDropdown()">
-
 				<div class="filter-content">
-
 					<i class="fa-solid fa-sliders"></i>
-
 					<span>
-						{{ selectedTypeLabel }}
+						{{ selectedType || 'Tipo' }}
 					</span>
-
 				</div>
 
-				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="typeDropdownOpen">
-				</i>
-
+				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="typeDropdownOpen"></i>
 			</button>
 
 			<div class="dropdown" *ngIf="typeDropdownOpen">
-
 				<div class="dropdown-item" (click)="selectType('')">
-
 					Todos
-
 				</div>
 
 				<div class="dropdown-item" (click)="selectType('IMAGE')">
-
 					Imagen
-
 				</div>
 
 				<div class="dropdown-item" (click)="selectType('VIDEO')">
-
 					Video
-
 				</div>
-
 			</div>
-
 		</div>
 
 		<!-- ADD -->
 		<button class="add-btn" (click)="openModal()">
-
 			<i class="fa-solid fa-plus"></i>
-
 			<span>Agregar</span>
-
 		</button>
-
 	</div>
 
 	<!-- ========================================
 		GALLERY
 	======================================== -->
 
-	<div *ngFor="let group of groupedMedia | keyvalue">
-
-		<h2 class="year-title">
-			{{ group.key }}
-		</h2>
+	<div *ngFor="let group of groupedMedia | keyvalue: sortYearsDesc">
+		<h2 class="year-title">{{ group.key }}</h2>
 
 		<div class="gallery-grid">
-
 			<div class="media-card" *ngFor="let media of group.value">
-
 				<div class="media-image">
-
 					<img *ngIf="media.type === 'IMAGE'" [src]="media.url" />
 
-					<video *ngIf="media.type === 'VIDEO'" [src]="media.url" controls>
-					</video>
+					<video *ngIf="media.type === 'VIDEO'" [src]="media.url" controls></video>
+
+					<!-- EDIT -->
+
+					<button class="edit-btn" (click)="editMedia(media)">
+						<i class="fa-solid fa-pen"></i>
+					</button>
 
 					<!-- DELETE -->
 
 					<button class="delete-btn" (click)="deleteMedia(media.id)">
-
 						<i class="fa-solid fa-trash"></i>
-
 					</button>
 
 					<!-- OVERLAY -->
 
 					<div class="media-overlay">
-
 						<div class="media-info">
-
-							<h3>
-								{{ media.excursion }}
-							</h3>
+							<h3>{{ media.excursion }}</h3>
 
 							<p>
-
 								<i class="fa-solid fa-location-dot"></i>
-
-								{{ media.location }}
-
+								{{ media.activity }}
 							</p>
 
 							<span>
-
-								{{ media.type === 'IMAGE'
-								? 'Imagen'
-								: 'Video' }}
-
+								{{ media.type === 'IMAGE'? 'Imagen': 'Video' }}
 							</span>
-
 						</div>
-
 					</div>
-
 				</div>
-
 			</div>
-
 		</div>
-
 	</div>
 
 	<!-- MODAL -->
 
-	<app-media-upload-modal [isOpen]="showModal" (closed)="closeModal()">
-
+	<app-media-upload-modal [isOpen]="showModal" [media]="selectedMedia" (closed)="closeModal()">
 	</app-media-upload-modal>
-
 </div>

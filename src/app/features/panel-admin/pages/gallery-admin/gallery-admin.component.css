@@ -168,10 +168,23 @@
 ========================================================= */
 
 .gallery-grid {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+	display: flex;
+	flex-wrap: nowrap;
+
 	gap: 24px;
+
+	overflow-x: auto;
+	overflow-y: hidden;
+
+	width: 100%;
+	max-width: 100%;
+
+	padding-bottom: 12px;
 	margin-bottom: 50px;
+}
+
+.gallery-grid>* {
+	flex-shrink: 0;
 }
 
 /* =========================================================
@@ -180,9 +193,12 @@
 
 .media-card {
 	position: relative;
+	min-width: 320px;
+	width: 320px;
+	height: 260px;
+	flex-shrink: 0;
 	border-radius: 28px;
 	overflow: hidden;
-	height: 260px;
 	background: white;
 	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
@@ -286,6 +302,34 @@
 }
 
 /* =========================================================
+	EDIT BUTTON
+========================================================= */
+
+.edit-btn {
+	position: absolute;
+	top: 16px;
+	right: 68px;
+	width: 42px;
+	height: 42px;
+	border: none;
+	border-radius: 50%;
+	background: rgba(63, 162, 219, .95);
+	color: white;
+	cursor: pointer;
+	z-index: 5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 15px;
+	transition: .25s ease;
+}
+
+.edit-btn:hover {
+	transform: scale(1.08);
+	background: #2692cf;
+}
+
+/* =========================================================
 	RESPONSIVE
 ========================================================= */
 
@@ -317,9 +361,13 @@
 
 @media (max-width: 600px) {
 
-	.gallery-grid {
-		grid-template-columns: 1fr;
+	@media (max-width: 600px) {
+	.media-card {
+		width: 280px;
+		min-width: 280px;
+		height: 220px;
 	}
+}
 
 	.media-card {
 		height: 220px;

@@ -159,7 +159,8 @@ select:focus {
 }
 
 .upload-box {
-	height: 340px;
+	min-height: 340px;
+	height: auto;
 	border: 2px dashed #dadada;
 	border-radius: 28px;
 	background: #fafafa;
@@ -234,6 +235,31 @@ select:focus {
 	font-size: 30px;
 }
 
+.preview-grid {
+	width: 100%;
+	height: 100%;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+	gap: 14px;
+	padding: 16px;
+	overflow-y: auto;
+}
+
+.preview-card {
+	position: relative;
+	height: 140px;
+	border-radius: 18px;
+	overflow: hidden;
+	background: #f5f5f5;
+}
+
+.preview-image,
+.preview-video {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
 /* =========================================================
 	REMOVE BUTTON
 ========================================================= */
@@ -267,8 +293,9 @@ select:focus {
 
 .buttons {
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-end;
 	margin-top: 40px;
+	gap: 20px;
 }
 
 .buttons button {
@@ -369,9 +396,9 @@ select:focus {
 
 /* LABEL ACTIVE */
 
-.custom-select-group select:focus + label,
-.custom-select-group select.ng-valid + label,
-.custom-select-group select:not([value=""]) + label {
+.custom-select-group select:focus+label,
+.custom-select-group select.ng-valid+label,
+.custom-select-group select:not([value=""])+label {
 	top: 0;
 	transform: translateY(-50%);
 	font-size: 11px;
@@ -380,7 +407,7 @@ select:focus {
 
 /* LABEL ERROR */
 
-.custom-select-group select.ng-invalid.ng-touched + label {
+.custom-select-group select.ng-invalid.ng-touched+label {
 	color: var(--color-error);
 }
 

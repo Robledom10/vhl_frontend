@@ -1,20 +1,32 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { MediaService } from '../../../../../../core/services/media.service';
+import {
+  MediaResponse,
+  MediaService,
+} from '../../../../../../core/services/media.service';
 
 @Component({
   selector: 'app-media-upload-modal',
   templateUrl: './media-upload-modal.component.html',
   styleUrl: './media-upload-modal.component.css',
 })
-export class MediaUploadModalComponent {
+export class MediaUploadModalComponent implements OnChanges {
   @Input() isOpen = false;
 
   @Output() closed = new EventEmitter<void>();
 
-  preview: string | null = null;
+  @Input() media: MediaResponse | null = null;
 
-  selectedFile!: File;
+  previews: string[] = [];
+
+  selectedFiles: File[] = [];
 
   loading = false;
 
@@ -30,20 +42,31 @@ export class MediaUploadModalComponent {
   }
 
   mediaForm = this.fb.group({
-    type: ['', Validators.required],
-
+    type: [{ value: '', disabled: true }, Validators.required],
     year: ['', Validators.required],
-
     excursion: [
       '',
       [Validators.required, Validators.minLength(3), Validators.maxLength(50)],
     ],
 
-    location: [
+    activity: [
       '',
       [Validators.required, Validators.minLength(3), Validators.maxLength(50)],
     ],
   });
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['media'] && this.media) {
+      this.mediaForm.patchValue({
+        type: this.media.type,
+        year: this.media.year.toString(),
+        excursion: this.media.excursion,
+        activity: this.media.activity,
+      });
+
+      this.previews = [this.media.url];
+    }
+  }
 
   generateYears() {
     for (let year = this.currentYear; year >= 2023; year--) {
@@ -56,22 +79,49 @@ export class MediaUploadModalComponent {
 
     if (!input.files?.length) return;
 
-    const file = input.files[0];
+    const files = Array.from(input.files);
 
-    this.selectedFile = file;
+    this.selectedFiles = files;
 
-    const reader = new FileReader();
+    this.previews = [];
 
-    reader.onload = () => {
-      this.preview = reader.result as string;
-    };
+    // =========================================
+    // DETECTAR TIPO AUTOMÁTICAMENTE
+    // =========================================
 
-    reader.readAsDataURL(file);
+    const hasVideo = files.some((file) => file.type.startsWith('video'));
+
+    this.mediaForm.patchValue({
+      type: hasVideo ? 'VIDEO' : 'IMAGE',
+    });
+
+    // =========================================
+    // GENERAR PREVIEWS
+    // =========================================
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        this.previews.push(reader.result as string);
+      };
+
+      reader.readAsDataURL(file);
+    });
   }
 
   submit() {
-    if (this.mediaForm.invalid || !this.selectedFile) {
+    if (this.mediaForm.invalid) {
       this.mediaForm.markAllAsTouched();
+
+      return;
+    }
+
+    // =========================================
+    // VALIDAR ARCHIVO SOLO EN CREACIÓN
+    // =========================================
+
+    if (!this.media && !this.selectedFiles.length) {
       return;
     }
 
@@ -79,39 +129,127 @@ export class MediaUploadModalComponent {
 
     const formData = new FormData();
 
-    formData.append('file', this.selectedFile);
+    // =========================================
+    // SOLO ENVÍA FILE SI EXISTE
+    // =========================================
+
+    if (this.selectedFiles.length) {
+      formData.append('file', this.selectedFiles[0]);
+    }
+
+    const raw = this.mediaForm.getRawValue();
 
     const payload = {
-      type: this.mediaForm.value.type,
-      year: Number(this.mediaForm.value.year),
-      excursion: this.mediaForm.value.excursion,
-      location: this.mediaForm.value.location,
+      type: raw.type,
+      year: Number(raw.year),
+      excursion: raw.excursion,
+      activity: raw.activity,
     };
 
     formData.append('data', JSON.stringify(payload));
 
-    this.mediaService.uploadMedia(formData).subscribe({
-      next: () => {
-        this.loading = false;
-        this.close();
-      },
+    // =========================================
+    // UPDATE
+    // =========================================
 
-      error: (err) => {
-        console.error(err);
-        this.loading = false;
-      },
-    });
+    if (this.media) {
+      this.mediaService.updateMedia(this.media.id, formData).subscribe({
+        next: () => {
+          this.loading = false;
+
+          this.resetModal();
+
+          this.close();
+        },
+
+        error: (err) => {
+          console.error(err);
+
+          this.loading = false;
+        },
+      });
+
+      return;
+    }
+
+    // =========================================
+    // CREATE
+    // =========================================
+
+    if (this.selectedFiles.length) {
+      const createFormData = new FormData();
+
+      this.selectedFiles.forEach((file) => {
+        createFormData.append('files', file);
+      });
+
+      createFormData.append('data', JSON.stringify(payload));
+
+      this.mediaService.uploadMedia(createFormData).subscribe({
+        next: () => {
+          this.loading = false;
+
+          this.resetModal();
+          this.close();
+        },
+
+        error: (err) => {
+          console.error(err);
+
+          this.loading = false;
+        },
+      });
+    }
   }
 
-  removeFile(event: Event) {
+  removeFile(index: number, event: Event) {
     event.stopPropagation();
 
-    this.preview = null;
+    // =========================================
+    // SI ES ARCHIVO NUEVO
+    // =========================================
 
-    this.selectedFile = null as any;
+    if (this.selectedFiles.length) {
+      this.selectedFiles.splice(index, 1);
+    }
+
+    this.previews.splice(index, 1);
+
+    // =========================================
+    // SI NO HAY NUEVOS ARCHIVOS
+    // Y TAMPOCO MEDIA ORIGINAL
+    // =========================================
+
+    if (!this.selectedFiles.length && !this.media) {
+      this.mediaForm.patchValue({
+        type: '',
+      });
+    }
+  }
+
+  // =========================================
+  // LIMPIAR MODAL
+  // =========================================
+
+  resetModal() {
+    this.previews = [];
+
+    this.selectedFiles = [];
+
+    this.loading = false;
+
+    this.mediaForm.reset();
+
+    this.mediaForm.markAsPristine();
+
+    this.mediaForm.markAsUntouched();
+
+    this.media = null;
   }
 
   close() {
+    this.resetModal();
+
     this.closed.emit();
   }
 }

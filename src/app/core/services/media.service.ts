@@ -10,7 +10,7 @@ export interface MediaResponse {
   type: 'IMAGE' | 'VIDEO';
   year: number;
   excursion: string;
-  location: string;
+  activity: string;
   folder: string;
   createdAt: string;
 }
@@ -39,8 +39,8 @@ export class MediaService {
     return this.http.get<MediaResponse[]>(`${this.API}/excursion/${excursion}`);
   }
 
-  getByLocation(location: string): Observable<MediaResponse[]> {
-    return this.http.get<MediaResponse[]>(`${this.API}/location/${location}`);
+  getByActivity(location: string): Observable<MediaResponse[]> {
+    return this.http.get<MediaResponse[]>(`${this.API}/activity/${location}`);
   }
 
   uploadMedia(formData: FormData): Observable<MediaResponse> {
@@ -49,5 +49,9 @@ export class MediaService {
 
   deleteMedia(id: string): Observable<void> {
     return this.http.delete<void>(`${this.API}/${id}`);
+  }
+
+  updateMedia(id: string, formData: FormData): Observable<MediaResponse> {
+    return this.http.put<MediaResponse>(`${this.API}/${id}`, formData);
   }
 }

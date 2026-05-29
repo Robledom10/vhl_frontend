@@ -1,15 +1,13 @@
 <div class="modal-overlay" *ngIf="isOpen" (click)="close()">
-
 	<div class="modal-container" (click)="$event.stopPropagation()">
-
 		<div class="modal-scroll">
-
 			<div class="modal-content">
 
 				<!-- TITLE -->
 
 				<h2 class="modal-title">
-					Subir <span>Archivo</span>
+					{{ media ? 'Editar' : 'Subir' }}
+					<span>Archivo</span>
 				</h2>
 
 				<div class="divider"></div>
@@ -21,90 +19,69 @@
 					========================= -->
 
 					<div class="upload-wrapper">
-
-						<label class="upload-box" [class.upload-error]="!selectedFile && mediaForm.touched">
-
-							<input type="file" hidden accept="image/*,video/*" (change)="onFileSelected($event)" />
-
+						<label class="upload-box" [class.upload-error]="!selectedFiles.length && !media && mediaForm.touched">
+							<input type="file" hidden multiple accept="image/*,video/*"
+								(change)="onFileSelected($event)" />
 							<!-- PREVIEW -->
 
-							<div class="image-wrapper" *ngIf="preview">
+							<div class="preview-grid" *ngIf="previews.length">
+								<div class="preview-card" *ngFor="let preview of previews; let i = index">
+									<img *ngIf="selectedFiles[i]?.type?.startsWith('image') ||(!selectedFiles[i] && media?.type === 'IMAGE')"
+										[src]="preview" class="preview-image" />
 
-								<img *ngIf="selectedFile?.type?.startsWith('image')" [src]="preview"
-									class="preview-image" />
+									<video
+										*ngIf="selectedFiles[i]?.type?.startsWith('video') ||(!selectedFiles[i] && media?.type === 'VIDEO')"
+										[src]="preview" class="preview-video" controls>
+									</video>
 
-								<video *ngIf="selectedFile?.type?.startsWith('video')" [src]="preview"
-									class="preview-video" controls>
-								</video>
-
-								<button type="button" class="remove-image-btn" (click)="removeFile($event)">
-
-									<i class="fa-solid fa-xmark"></i>
-
-								</button>
+									<button type="button" class="remove-image-btn" (click)="removeFile(i, $event)">
+										<i class="fa-solid fa-xmark"></i>
+									</button>
+								</div>
 
 							</div>
 
 							<!-- PLACEHOLDER -->
 
-							<div class="upload-placeholder" *ngIf="!preview">
-
+							<div class="upload-placeholder" *ngIf="!previews.length">
 								<div class="upload-icon">
 									<i class="fa-solid fa-camera"></i>
 								</div>
 
 								<p>Seleccionar archivo</p>
-
 							</div>
-
 						</label>
 
-						<span class="upload-error-text" *ngIf="!selectedFile && mediaForm.touched">
-
+						<span class="upload-error-text" *ngIf="!selectedFiles.length && !media && mediaForm.touched">
 							Debe seleccionar un archivo
-
 						</span>
-
 					</div>
 
 					<!-- TYPE -->
 
 					<div class="form-group custom-select-group">
-
 						<select formControlName="type"
 							[class.ng-invalid]="mediaForm.get('type')?.invalid && mediaForm.get('type')?.touched">
-
 							<option value="" disabled hidden></option>
-
 							<option value="IMAGE">Imagen</option>
-
 							<option value="VIDEO">Video</option>
-
 						</select>
 
 						<label>Tipo de archivo</label>
 
-						<i class="fa-solid fa-chevron-down select-icon"></i>
 
 						<span *ngIf="mediaForm.get('type')?.invalid && mediaForm.get('type')?.touched">
 							El tipo es obligatorio
 						</span>
-
 					</div>
 
 					<!-- YEAR -->
 
 					<div class="form-group custom-select-group">
-
 						<select formControlName="year"
 							[class.ng-invalid]="mediaForm.get('year')?.invalid && mediaForm.get('year')?.touched">
-
 							<option value="" disabled hidden></option>
-
-							<option *ngFor="let year of years" [value]="year">
-								{{ year }}
-							</option>
-
+							<option *ngFor="let year of years" [value]="year">{{ year }}</option>
 						</select>
 
 						<label>Año</label>
@@ -114,63 +91,48 @@
 						<span *ngIf="mediaForm.get('year')?.invalid && mediaForm.get('year')?.touched">
 							El año es obligatorio
 						</span>
-
 					</div>
 
 					<!-- EXCURSION -->
 
 					<div class="form-group">
-
 						<input type="text" placeholder=" " formControlName="excursion"
 							[class.ng-invalid]="mediaForm.get('excursion')?.invalid && mediaForm.get('excursion')?.touched" />
 
-						<label>Excursión</label>
+						<label>Ubicación</label>
 
 						<span *ngIf="mediaForm.get('excursion')?.invalid && mediaForm.get('excursion')?.touched">
-							La excursión es obligatoria
+							La ubicación es obligatoria
 						</span>
-
 					</div>
 
 					<!-- LOCATION -->
 
 					<div class="form-group">
+						<input type="text" placeholder=" " formControlName="activity"
+							[class.ng-invalid]="mediaForm.get('activity')?.invalid && mediaForm.get('activity')?.touched" />
 
-						<input type="text" placeholder=" " formControlName="location"
-							[class.ng-invalid]="mediaForm.get('location')?.invalid && mediaForm.get('location')?.touched" />
+						<label>Actividad</label>
 
-						<label>Ubicación</label>
-
-						<span *ngIf="mediaForm.get('location')?.invalid && mediaForm.get('location')?.touched">
-							La ubicación es obligatoria
+						<span *ngIf="mediaForm.get('activity')?.invalid && mediaForm.get('activity')?.touched">
+							La Actividad es obligatoria
 						</span>
-
 					</div>
-
 				</form>
 
 				<!-- BUTTONS -->
 
 				<div class="buttons">
-
 					<button class="cancel" type="button" (click)="close()">
-
 						Cancelar
-
 					</button>
 
 					<button class="save" type="button" [disabled]="loading" (click)="submit()">
-
-						{{ loading ? 'Subiendo...' : 'Subir archivo' }}
-
+						{{ loading? (media ? 'Actualizando...' : 'Subiendo...') :
+						(media ? 'Actualizar archivo' : 'Subir archivo')}}
 					</button>
-
 				</div>
-
 			</div>
-
 		</div>
-
 	</div>
-
 </div>
