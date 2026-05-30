@@ -19,12 +19,14 @@
 					========================= -->
 
 					<div class="upload-wrapper">
-						<label class="upload-box" [class.upload-error]="!selectedFiles.length && !media && mediaForm.touched">
+						<label class="upload-box"
+							[class.upload-error]="!selectedFiles.length && !media && mediaForm.touched">
 							<input type="file" hidden multiple accept="image/*,video/*"
 								(change)="onFileSelected($event)" />
 							<!-- PREVIEW -->
 
-							<div class="preview-grid" *ngIf="previews.length">
+							<div class="preview-grid" [class.single-preview]="previews.length === 1"
+								*ngIf="previews.length">
 								<div class="preview-card" *ngFor="let preview of previews; let i = index">
 									<img *ngIf="selectedFiles[i]?.type?.startsWith('image') ||(!selectedFiles[i] && media?.type === 'IMAGE')"
 										[src]="preview" class="preview-image" />
@@ -51,6 +53,10 @@
 								<p>Seleccionar archivo</p>
 							</div>
 						</label>
+						<div class="upload-helper">
+							<i class="fa-solid fa-circle-info"></i>
+							Puedes seleccionar una o varias imágenes y videos.
+						</div>
 
 						<span class="upload-error-text" *ngIf="!selectedFiles.length && !media && mediaForm.touched">
 							Debe seleccionar un archivo

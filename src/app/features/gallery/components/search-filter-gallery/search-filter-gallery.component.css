@@ -136,7 +136,6 @@
 	padding: 8px;
 	min-width: 160px;
 	z-index: 999;
-
 	opacity: 0;
 	visibility: hidden;
 	transform: translateY(10px);
@@ -150,11 +149,6 @@
 	visibility: visible;
 	transform: translateY(0);
 	pointer-events: all;
-}
-
-.calendar-dropdown {
-	width: 250px;
-	padding: 20px;
 }
 
 .dropdown-option {
@@ -171,7 +165,7 @@
 }
 
 .dropdown-option.selected {
-	color: var(--color-primario);
+	background: var(--color-fondo-iconos);
 	font-weight: 500;
 }
 
@@ -179,38 +173,9 @@
 	CALENDAR
 ========================= */
 
-.cal-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 18px;
-}
-
-.cal-header span {
-	font-weight: 600;
-	font-size: 15px;
-	color: var(--color-texto-principal);
-}
-
-.cal-header button {
-	background: none;
-	border: none;
-	cursor: pointer;
-	color: var(--color-primario);
-	font-size: 18px;
-	padding: 4px 10px;
-	border-radius: 8px;
-	transition: background 0.2s;
-}
-
-.cal-header button:hover {
-	background: var(--color-fondo-iconos);
-}
-
 .cal-grid {
 	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 8px;
+	gap: 5px;
 	text-align: center;
 }
 
@@ -229,8 +194,7 @@
 }
 
 .cal-grid span.selected {
-	background: var(--color-primario);
-	color: #fff;
+	background: var(--color-fondo-iconos);
 	font-weight: 500;
 }
 

@@ -4,6 +4,7 @@
 	flex-direction: column;
 	gap: 32px;
 	padding: 20px;
+	overflow-x: hidden;
 }
 
 /* =========================================================
@@ -167,24 +168,40 @@
 	GRID
 ========================================================= */
 
-.gallery-grid {
-	display: flex;
-	flex-wrap: nowrap;
-
-	gap: 24px;
-
-	overflow-x: auto;
-	overflow-y: hidden;
-
+.year-section {
 	width: 100%;
-	max-width: 100%;
-
-	padding-bottom: 12px;
-	margin-bottom: 50px;
+	overflow: hidden;
+	contain: layout style;
 }
 
-.gallery-grid>* {
-	flex-shrink: 0;
+.year-gallery {
+	display: flex;
+	flex-wrap: nowrap;
+	gap: 24px;
+	width: 100%;
+	overflow-x: auto;
+	overflow-y: hidden;
+	scroll-behavior: smooth;
+	padding-bottom: 25px;
+	overscroll-behavior-x: contain;
+	-webkit-overflow-scrolling: touch;
+}
+
+.year-gallery::-webkit-scrollbar {
+	height: 8px;
+}
+
+.year-gallery::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.year-gallery::-webkit-scrollbar-thumb {
+	background: #b5e5ff;
+	border-radius: 999px;
+}
+
+.year-gallery::-webkit-scrollbar-thumb:hover {
+	background: #87d3ff;
 }
 
 /* =========================================================
@@ -194,13 +211,14 @@
 .media-card {
 	position: relative;
 	min-width: 320px;
+	flex: 0 0 320px;
 	width: 320px;
 	height: 260px;
 	flex-shrink: 0;
 	border-radius: 28px;
 	overflow: hidden;
 	background: white;
-	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+	box-shadow: 0 6px 22px rgba(0, 0, 0, 0.08);
 }
 
 .media-image {
@@ -362,12 +380,12 @@
 @media (max-width: 600px) {
 
 	@media (max-width: 600px) {
-	.media-card {
-		width: 280px;
-		min-width: 280px;
-		height: 220px;
+		.media-card {
+			width: 280px;
+			min-width: 280px;
+			height: 220px;
+		}
 	}
-}
 
 	.media-card {
 		height: 220px;

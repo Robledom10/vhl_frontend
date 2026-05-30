@@ -120,10 +120,10 @@
 		GALLERY
 	======================================== -->
 
-	<div *ngFor="let group of groupedMedia | keyvalue: sortYearsDesc">
+	<div *ngFor="let group of groupedMedia | keyvalue: sortYearsDesc" class="year-section">
 		<h2 class="year-title">{{ group.key }}</h2>
 
-		<div class="gallery-grid">
+		<div class="year-gallery">
 			<div class="media-card" *ngFor="let media of group.value">
 				<div class="media-image">
 					<img *ngIf="media.type === 'IMAGE'" [src]="media.url" />

@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
-import {
-  MediaResponse,
-  MediaService,
-} from '../../../../core/services/media.service';
+import { MediaResponse, MediaService } from '../../../../core/services/media.service';
 
 @Component({
   selector: 'app-gallery-admin',
@@ -12,39 +8,22 @@ import {
 })
 export class GalleryAdminComponent implements OnInit {
   mediaList: MediaResponse[] = [];
-
   filteredMedia: MediaResponse[] = [];
-
   groupedMedia: { [key: string]: MediaResponse[] } = {};
-
   showModal = false;
-
   loading = false;
-
   searchTerm = '';
-
   selectedYear = '';
-
   selectedExcursion = '';
-
   selectedActivity = '';
-
   selectedType = '';
-
   yearDropdownOpen = false;
-
   excursionDropdownOpen = false;
-
   activityDropdownOpen = false;
-
   typeDropdownOpen = false;
-
   selectedMedia: MediaResponse | null = null;
-
   years: number[] = [];
-
   excursions: string[] = [];
-
   activities: string[] = [];
 
   sortYearsDesc = (a: any, b: any): number => {
@@ -63,19 +42,14 @@ export class GalleryAdminComponent implements OnInit {
     this.mediaService.getAll().subscribe({
       next: (data) => {
         this.mediaList = data;
-
         this.filteredMedia = data;
-
         this.extractFilters();
-
         this.groupMedia();
-
         this.loading = false;
       },
 
       error: (err) => {
         console.error(err);
-
         this.loading = false;
       },
     });
@@ -91,7 +65,6 @@ export class GalleryAdminComponent implements OnInit {
     }
 
     this.excursions = [...new Set(this.mediaList.map((m) => m.excursion))];
-
     this.activities = [...new Set(this.mediaList.map((m) => m.activity))];
   }
 
@@ -141,9 +114,7 @@ export class GalleryAdminComponent implements OnInit {
 
   get selectedTypeLabel(): string {
     if (this.selectedType === 'IMAGE') return 'Imagen';
-
     if (this.selectedType === 'VIDEO') return 'Video';
-
     return 'Actividad';
   }
 
@@ -175,7 +146,6 @@ export class GalleryAdminComponent implements OnInit {
 
   editMedia(media: MediaResponse) {
     this.selectedMedia = media;
-
     this.showModal = true;
   }
 
@@ -197,33 +167,25 @@ export class GalleryAdminComponent implements OnInit {
 
   selectYear(year: string) {
     this.selectedYear = year;
-
     this.yearDropdownOpen = false;
-
     this.applyFilters();
   }
 
   selectActivity(activity: string) {
     this.selectedActivity = activity;
-
     this.activityDropdownOpen = false;
-
     this.applyFilters();
   }
 
   selectType(type: string) {
     this.selectedType = type;
-
     this.typeDropdownOpen = false;
-
     this.applyFilters();
   }
 
   selectExcursion(excursion: string) {
     this.selectedExcursion = excursion;
-
     this.excursionDropdownOpen = false;
-
     this.applyFilters();
   }
 }

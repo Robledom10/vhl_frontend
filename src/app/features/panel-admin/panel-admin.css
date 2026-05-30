@@ -1,10 +1,13 @@
 .admin-layout {
 	display: flex;
 	min-height: 100vh;
+	overflow-x: hidden /* ← añadir */
 }
 
 .admin-content {
 	flex: 1;
 	padding: 40px;
 	background: var(--color-fondo);
+	overflow-x: hidden; /* ← añadir */
+	min-width: 0; /* ← crítico en flex: evita que el hijo empuje al padre */
 }

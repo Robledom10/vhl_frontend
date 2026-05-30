@@ -9,6 +9,8 @@
 
 	<!-- Filtro fuera del contenedor para que ocupe más ancho -->
 	<div class="explore-filter">
-		<app-search-filter-gallery></app-search-filter-gallery>
+		<app-search-filter-gallery [availableYears]="years" [siteOptions]="excursions" [activityOptions]="activities"
+			(search)="onSearch($event)">
+		</app-search-filter-gallery>
 	</div>
 </section>

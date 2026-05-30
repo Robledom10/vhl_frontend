@@ -1,8 +1,7 @@
-import { Component, EventEmitter, HostListener, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 
 export interface SearchFilters {
   year: number | null;
-  month: number | null;
   site: string;
   activity: string;
 }
@@ -13,45 +12,19 @@ export interface SearchFilters {
   styleUrl: './search-filter-gallery.component.css',
 })
 export class SearchFilterGalleryComponent {
+  @Input() availableYears: number[] = [];
+  @Input() siteOptions: string[] = [];
+  @Input() activityOptions: string[] = [];
+
   @Output() search = new EventEmitter<SearchFilters>();
 
-  calYear = new Date().getFullYear();
-
   selectedYear: number | null = null;
-  selectedMonth: number | null = null;
-
   selectedSite = 'Todos';
   selectedActivity = 'Todos';
 
   calendarOpen = false;
   siteOpen = false;
   actOpen = false;
-
-  months = [
-    'Ene',
-    'Feb',
-    'Mar',
-    'Abr',
-    'May',
-    'Jun',
-    'Jul',
-    'Ago',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dic',
-  ];
-
-  siteOptions = ['Todos', 'Playa', 'Montaña', 'Ciudad', 'Selva', 'Desierto'];
-
-  activityOptions = [
-    'Todos',
-    'Senderismo',
-    'Buceo',
-    'Ciclismo',
-    'Kayak',
-    'Escalada',
-  ];
 
   @HostListener('document:click')
   closeAll(): void {
@@ -62,11 +35,8 @@ export class SearchFilterGalleryComponent {
 
   toggleCalendar(event: Event): void {
     event.stopPropagation();
-
     const wasOpen = this.calendarOpen;
-
     this.closeAll();
-
     this.calendarOpen = !wasOpen;
   }
 
@@ -81,35 +51,19 @@ export class SearchFilterGalleryComponent {
       this.siteOpen = !wasOpen;
     } else {
       const wasOpen = this.actOpen;
-
       this.closeAll();
-
       this.actOpen = !wasOpen;
     }
   }
 
-  changeYear(dir: number): void {
-    this.calYear += dir;
-  }
-
-  selectMonth(index: number): void {
-    this.selectedYear = this.calYear;
-    this.selectedMonth = index;
-
+  selectYear(year: number): void {
+    this.selectedYear = year;
     this.calendarOpen = false;
   }
 
   clearDate(): void {
     this.selectedYear = null;
-    this.selectedMonth = null;
-
     this.calendarOpen = false;
-  }
-
-  isCurrentMonth(index: number): boolean {
-    const now = new Date();
-
-    return index === now.getMonth() && this.calYear === now.getFullYear();
   }
 
   selectOption(type: 'site' | 'act', value: string): void {
@@ -123,11 +77,12 @@ export class SearchFilterGalleryComponent {
   }
 
   onSearch(): void {
-    this.search.emit({
+    const filters = {
       year: this.selectedYear,
-      month: this.selectedMonth,
       site: this.selectedSite,
       activity: this.selectedActivity,
-    });
+    };
+
+    this.search.emit(filters);
   }
 }

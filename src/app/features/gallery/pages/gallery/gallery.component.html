@@ -1,5 +1,6 @@
 <app-navbar></app-navbar>
-<app-filter-gallery></app-filter-gallery>
+<app-filter-gallery [years]="years" [excursions]="excursions" [activities]="activities" (search)="onSearch($event)">
+</app-filter-gallery>
 
 <div class="gallery-container">
 	<div class="photo-item" *ngFor="let item of media">

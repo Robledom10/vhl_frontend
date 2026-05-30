@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MediaResponse, MediaService } from '../../../../core/services/media.service';
+import { SearchFilters } from '../../components/search-filter-gallery/search-filter-gallery.component';
 
 @Component({
   selector: 'app-gallery',
@@ -8,7 +9,11 @@ import { MediaResponse, MediaService } from '../../../../core/services/media.ser
 })
 export class GalleryComponent implements OnInit {
   media: MediaResponse[] = [];
-  loading = true;
+  allMedia: MediaResponse[] = [];
+
+  years: number[] = [];
+  excursions: string[] = [];
+  activities: string[] = [];
 
   constructor(private mediaService: MediaService) {}
 
@@ -16,18 +21,38 @@ export class GalleryComponent implements OnInit {
     this.loadMedia();
   }
 
-  loadMedia() {
-    this.loading = true;
-
+  loadMedia(): void {
     this.mediaService.getAll().subscribe({
       next: (data) => {
+        this.allMedia = data;
         this.media = data;
-        this.loading = false;
+
+        this.years = [...new Set(data.map((m) => m.year))].sort(
+          (a, b) => b - a,
+        );
+
+        this.excursions = ['Todos', ...new Set(data.map((m) => m.excursion))];
+
+        this.activities = ['Todos', ...new Set(data.map((m) => m.activity))];
       },
-      error: (err) => {
-        console.error('Error cargando galería', err);
-        this.loading = false;
-      },
+    });
+  }
+
+  onSearch(filters: SearchFilters): void {
+    this.media = this.allMedia.filter((item) => {
+      const matchYear = !filters.year || item.year === filters.year;
+
+      const matchSite =
+        !filters.site ||
+        filters.site === 'Todos' ||
+        item.excursion === filters.site;
+
+      const matchActivity =
+        !filters.activity ||
+        filters.activity === 'Todos' ||
+        item.activity === filters.activity;
+
+      return matchYear && matchSite && matchActivity;
     });
   }
 }

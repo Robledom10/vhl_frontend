@@ -11,25 +11,16 @@
 				<label>Fecha</label>
 
 				<div class="filter-selector">
-					<span>{{selectedMonth !== null? months[selectedMonth] + ' ' + selectedYear: 'Todos'}}</span>
+					<span>{{selectedYear !== null? selectedYear : 'Todos'}}</span>
 					<i class="fa-solid fa-chevron-down chevron"></i>
 				</div>
 			</div>
 
 			<div class="calendar-dropdown" [class.open]="calendarOpen" (click)="$event.stopPropagation()">
-				<div class="cal-header">
-					<button (click)="changeYear(-1)">&#8249;</button>
-
-					<span>{{ calYear }}</span>
-
-					<button (click)="changeYear(1)">&#8250;</button>
-				</div>
-
 				<div class="cal-grid">
-					<span *ngFor="let m of months; let i = index"
-						[class.selected]="selectedYear === calYear && selectedMonth === i"
-						[class.today]="isCurrentMonth(i)" (click)="selectMonth(i)">
-						{{ m }}
+					<span *ngFor="let year of availableYears" [class.selected]="selectedYear === year"
+						(click)="selectYear(year)">
+						{{ year }}
 					</span>
 				</div>
 
@@ -48,7 +39,7 @@
 			</div>
 
 			<div class="filter-content">
-				<label>Sitio turístico</label>
+				<label>Ubicación</label>
 
 				<div class="filter-selector">
 					<span>{{ selectedSite || 'Todos' }}</span>
