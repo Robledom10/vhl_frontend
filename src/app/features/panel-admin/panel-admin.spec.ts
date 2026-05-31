@@ -3,21 +3,21 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PanelAdmin } from './panel-admin';
 
 describe('PanelAdmin', () => {
-  let component: PanelAdmin;
-  let fixture: ComponentFixture<PanelAdmin>;
+	let component: PanelAdmin;
+	let fixture: ComponentFixture<PanelAdmin>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [PanelAdmin]
-    })
-    .compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [PanelAdmin]
+		})
+			.compileComponents();
 
-    fixture = TestBed.createComponent(PanelAdmin);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+		fixture = TestBed.createComponent(PanelAdmin);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

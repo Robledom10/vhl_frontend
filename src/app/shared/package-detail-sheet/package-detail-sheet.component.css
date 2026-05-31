@@ -5,9 +5,7 @@
 	backdrop-filter: blur(0px);
 	z-index: 1000;
 	pointer-events: none;
-	transition:
-		background 0.35s ease,
-		backdrop-filter 0.35s ease;
+	transition: background 0.35s ease, backdrop-filter 0.35s ease;
 }
 
 .sheet-overlay.open {
@@ -37,15 +35,6 @@
 
 .sheet-container.open {
 	transform: translateY(0);
-}
-
-.sheet-container::-webkit-scrollbar {
-	width: 4px;
-}
-
-.sheet-container::-webkit-scrollbar-thumb {
-	background: var(--color-primario);
-	border-radius: 99px;
 }
 
 .drag-handle-wrapper {
@@ -482,7 +471,7 @@
 	margin: 0;
 }
 
-.cancel-list{
+.cancel-list {
 	padding-left: 29px;
 	display: flex;
 	flex-direction: column;
@@ -511,7 +500,7 @@
 
 .requirements-warn-icon {
 	font-size: 24px;
-	color: #FFBE0B   ;
+	color: #FFBE0B;
 }
 
 .requirements-title {

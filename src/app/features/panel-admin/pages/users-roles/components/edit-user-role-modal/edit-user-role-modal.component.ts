@@ -4,167 +4,167 @@ import { AuthService } from '../../../../../../core/services/auth.service';
 import { UserItem } from '../../models/user.model';
 
 @Component({
-  selector: 'app-edit-user-role-modal',
-  templateUrl: './edit-user-role-modal.component.html',
-  styleUrl: './edit-user-role-modal.component.css',
+	selector: 'app-edit-user-role-modal',
+	templateUrl: './edit-user-role-modal.component.html',
+	styleUrl: './edit-user-role-modal.component.css',
 })
 export class EditUserRoleModalComponent implements OnChanges {
-  @Input() isOpen = false;
+	@Input() isOpen = false;
 
-  @Input() user: UserItem | null = null;
+	@Input() user: UserItem | null = null;
 
-  @Output() closed = new EventEmitter<void>();
+	@Output() closed = new EventEmitter<void>();
 
-  @Output() updated = new EventEmitter<UserItem>();
+	@Output() updated = new EventEmitter<UserItem>();
 
-  roleDropdownOpen = false;
+	roleDropdownOpen = false;
 
-  selectedRole = '';
+	selectedRole = '';
 
-  isLoading = false;
+	isLoading = false;
 
-  // =========================
-  // MODALS
-  // =========================
+	// =========================
+	// MODALS
+	// =========================
 
-  showConfirmModal = false;
+	showConfirmModal = false;
 
-  showErrorModal = false;
+	showErrorModal = false;
 
-  showToast = false;
+	showToast = false;
 
-  errorMessage = '';
+	errorMessage = '';
 
-  roles = ['Cliente', 'Guía Turístico'];
+	roles = ['Cliente', 'Guía Turístico'];
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-  ) {}
+	constructor(
+		private fb: FormBuilder,
+		private authService: AuthService,
+	) { }
 
-  roleForm = this.fb.group({
-    role: [''],
-  });
+	roleForm = this.fb.group({
+		role: [''],
+	});
 
-  ngOnChanges(): void {
-    if (this.user) {
-      this.selectedRole = this.user.role;
+	ngOnChanges(): void {
+		if (this.user) {
+			this.selectedRole = this.user.role;
 
-      this.roleForm.patchValue({
-        role: this.user.role,
-      });
-    }
-  }
+			this.roleForm.patchValue({
+				role: this.user.role,
+			});
+		}
+	}
 
-  // =========================
-  // DROPDOWN
-  // =========================
+	// =========================
+	// DROPDOWN
+	// =========================
 
-  toggleRoleDropdown(event: Event): void {
-    event.stopPropagation();
+	toggleRoleDropdown(event: Event): void {
+		event.stopPropagation();
 
-    this.roleDropdownOpen = !this.roleDropdownOpen;
-  }
+		this.roleDropdownOpen = !this.roleDropdownOpen;
+	}
 
-  selectRole(role: string, event: Event): void {
-    event.stopPropagation();
+	selectRole(role: string, event: Event): void {
+		event.stopPropagation();
 
-    this.selectedRole = role;
+		this.selectedRole = role;
 
-    this.roleForm.patchValue({
-      role,
-    });
+		this.roleForm.patchValue({
+			role,
+		});
 
-    this.roleDropdownOpen = false;
-  }
+		this.roleDropdownOpen = false;
+	}
 
-  @HostListener('document:click')
-  closeDropdown(): void {
-    this.roleDropdownOpen = false;
-  }
+	@HostListener('document:click')
+	closeDropdown(): void {
+		this.roleDropdownOpen = false;
+	}
 
-  // =========================
-  // CLOSE
-  // =========================
+	// =========================
+	// CLOSE
+	// =========================
 
-  closeModal(): void {
-    this.closed.emit();
-  }
+	closeModal(): void {
+		this.closed.emit();
+	}
 
-  // =========================
-  // OPEN CONFIRM
-  // =========================
+	// =========================
+	// OPEN CONFIRM
+	// =========================
 
-  updateRole(): void {
-    if (!this.user) return;
+	updateRole(): void {
+		if (!this.user) return;
 
-    this.showConfirmModal = true;
-  }
+		this.showConfirmModal = true;
+	}
 
-  // =========================
-  // CONFIRM UPDATE
-  // =========================
+	// =========================
+	// CONFIRM UPDATE
+	// =========================
 
-  confirmUpdateRole(): void {
-    if (!this.user) return;
+	confirmUpdateRole(): void {
+		if (!this.user) return;
 
-    this.showConfirmModal = false;
+		this.showConfirmModal = false;
 
-    this.isLoading = true;
+		this.isLoading = true;
 
-    const roleMap: any = {
-      Admin: 'ADMIN',
-      Cliente: 'CLIENT',
-      'Guía Turístico': 'GUIDE',
-    };
+		const roleMap: any = {
+			Admin: 'ADMIN',
+			Cliente: 'CLIENT',
+			'Guía Turístico': 'GUIDE',
+		};
 
-    const request = {
-      userId: this.user.id,
-      roleName: roleMap[this.selectedRole],
-    };
+		const request = {
+			userId: this.user.id,
+			roleName: roleMap[this.selectedRole],
+		};
 
-    this.authService.assignRole(request).subscribe({
-      next: () => {
-        this.isLoading = false;
+		this.authService.assignRole(request).subscribe({
+			next: () => {
+				this.isLoading = false;
 
-        const updatedUser: UserItem = {
-          ...this.user!,
-          role: this.selectedRole,
-        };
+				const updatedUser: UserItem = {
+					...this.user!,
+					role: this.selectedRole,
+				};
 
-        this.updated.emit(updatedUser);
+				this.updated.emit(updatedUser);
 
-        this.showToast = true;
+				this.showToast = true;
 
-        setTimeout(() => {
-          this.showToast = false;
+				setTimeout(() => {
+					this.showToast = false;
 
-          this.closeModal();
-        }, 2500);
-      },
+					this.closeModal();
+				}, 2500);
+			},
 
-      error: (err) => {
-        console.error(err);
+			error: (err) => {
+				console.error(err);
 
-        this.isLoading = false;
+				this.isLoading = false;
 
-        this.errorMessage =
-          err?.error?.message || 'No se pudo actualizar el rol';
+				this.errorMessage =
+					err?.error?.message || 'No se pudo actualizar el rol';
 
-        this.showErrorModal = true;
-      },
-    });
-  }
+				this.showErrorModal = true;
+			},
+		});
+	}
 
-  // =========================
-  // CLOSE MODALS
-  // =========================
+	// =========================
+	// CLOSE MODALS
+	// =========================
 
-  closeConfirmModal(): void {
-    this.showConfirmModal = false;
-  }
+	closeConfirmModal(): void {
+		this.showConfirmModal = false;
+	}
 
-  closeErrorModal(): void {
-    this.showErrorModal = false;
-  }
+	closeErrorModal(): void {
+		this.showErrorModal = false;
+	}
 }

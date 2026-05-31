@@ -3,53 +3,53 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full',
-  },
+	{
+		path: '',
+		redirectTo: 'home',
+		pathMatch: 'full',
+	},
 
-  {
-    path: 'home',
-    loadChildren: () =>
-      import('./features/home/home.module').then((m) => m.HomeModule),
-  },
+	{
+		path: 'home',
+		loadChildren: () =>
+			import('./features/home/home.module').then((m) => m.HomeModule),
+	},
 
-  {
-    path: 'auth',
-    loadChildren: () =>
-      import('./features/auth/auth.module').then((m) => m.AuthModule),
-  },
-  {
-    path: 'gallery',
-    loadChildren: () =>
-      import('./features/gallery/gallery.module').then((m) => m.GalleryModule),
-  },
-  {
-    path: 'panel-admin',
-    loadChildren: () =>
-      import('./features/panel-admin/panel-admin.module').then(
-        (m) => m.PanelAdminModule,
-      ),
-    // canActivate: [AuthGuard],
-  },
-  {
-    path: 'packages',
-    loadChildren: () =>
-      import('./features/packages/packages.module').then(
-        (m) => m.PackagesModule,
-      ),
-  },
+	{
+		path: 'auth',
+		loadChildren: () =>
+			import('./features/auth/auth.module').then((m) => m.AuthModule),
+	},
+	{
+		path: 'gallery',
+		loadChildren: () =>
+			import('./features/gallery/gallery.module').then((m) => m.GalleryModule),
+	},
+	{
+		path: 'panel-admin',
+		loadChildren: () =>
+			import('./features/panel-admin/panel-admin.module').then(
+				(m) => m.PanelAdminModule,
+			),
+		// canActivate: [AuthGuard],
+	},
+	{
+		path: 'packages',
+		loadChildren: () =>
+			import('./features/packages/packages.module').then(
+				(m) => m.PackagesModule,
+			),
+	},
 
-  {
-    path: '**',
-    redirectTo: 'home',
-  },
+	{
+		path: '**',
+		redirectTo: 'home',
+	},
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+	imports: [RouterModule.forRoot(routes)],
 
-  exports: [RouterModule],
+	exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

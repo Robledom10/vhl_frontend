@@ -6,235 +6,235 @@ import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root',
+	providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl}/auth`;
+	private apiUrl = `${environment.apiUrl}/auth`;
 
-  constructor(
-    private http: HttpClient,
-    private router: Router,
-  ) {}
+	constructor(
+		private http: HttpClient,
+		private router: Router,
+	) { }
 
-  // =========================
-  // LOGIN
-  // =========================
-  login(request: LoginRequest) {
-    return this.http
-      .post<LoginResponse>(`${this.apiUrl}/login`, request, {
-        withCredentials: true, // 🔴 IMPORTANTE
-      })
-      .pipe(
-        tap((response) => {
-          localStorage.setItem('token', response.accessToken);
+	// =========================
+	// LOGIN
+	// =========================
+	login(request: LoginRequest) {
+		return this.http
+			.post<LoginResponse>(`${this.apiUrl}/login`, request, {
+				withCredentials: true, // 🔴 IMPORTANTE
+			})
+			.pipe(
+				tap((response) => {
+					localStorage.setItem('token', response.accessToken);
 
-          if (response.user) {
-            localStorage.setItem('user', JSON.stringify(response.user));
-          }
-        }),
-        catchError(this.handleError),
-      );
-  }
+					if (response.user) {
+						localStorage.setItem('user', JSON.stringify(response.user));
+					}
+				}),
+				catchError(this.handleError),
+			);
+	}
 
-  refreshToken() {
-    return this.http.post<{ accessToken: string }>(
-      `${this.apiUrl}/tokens/refresh`,
-      {},
-      {
-        withCredentials: true, // 🔴 ENVÍA COOKIE
-      },
-    );
-  }
+	refreshToken() {
+		return this.http.post<{ accessToken: string }>(
+			`${this.apiUrl}/tokens/refresh`,
+			{},
+			{
+				withCredentials: true, // 🔴 ENVÍA COOKIE
+			},
+		);
+	}
 
-  // =========================
-  // REGISTER
-  // =========================
-  register(request: RegisterRequest) {
-    return this.http
-      .post<RegisterResponse>(`${this.apiUrl}/register`, request, {
-        withCredentials: true,
-      })
-      .pipe(catchError(this.handleError));
-  }
+	// =========================
+	// REGISTER
+	// =========================
+	register(request: RegisterRequest) {
+		return this.http
+			.post<RegisterResponse>(`${this.apiUrl}/register`, request, {
+				withCredentials: true,
+			})
+			.pipe(catchError(this.handleError));
+	}
 
-  // =========================
-  // LOGOUT
-  // =========================
-  logout() {
-    return this.http
-      .post(
-        `${this.apiUrl}/tokens/logout`,
-        {},
-        {
-          withCredentials: true,
-          responseType: 'text',
-          headers: {
-            Authorization: `Bearer ${this.getToken()}`,
-          },
-        },
-      )
-      .pipe(
-        tap(() => {
-          this.clearSession();
-        }),
-        catchError((error) => {
-          // aunque falle el backend
-          // limpiamos sesión local
-          this.clearSession();
+	// =========================
+	// LOGOUT
+	// =========================
+	logout() {
+		return this.http
+			.post(
+				`${this.apiUrl}/tokens/logout`,
+				{},
+				{
+					withCredentials: true,
+					responseType: 'text',
+					headers: {
+						Authorization: `Bearer ${this.getToken()}`,
+					},
+				},
+			)
+			.pipe(
+				tap(() => {
+					this.clearSession();
+				}),
+				catchError((error) => {
+					// aunque falle el backend
+					// limpiamos sesión local
+					this.clearSession();
 
-          return throwError(() => error);
-        }),
-      );
-  }
+					return throwError(() => error);
+				}),
+			);
+	}
 
-  // =========================
-  // GET PROFILE
-  // =========================
-  getProfile() {
-    return this.http.get(`${this.apiUrl}/profile`, {
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${this.getToken()}`,
-      },
-    });
-  }
+	// =========================
+	// GET PROFILE
+	// =========================
+	getProfile() {
+		return this.http.get(`${this.apiUrl}/profile`, {
+			withCredentials: true,
+			headers: {
+				Authorization: `Bearer ${this.getToken()}`,
+			},
+		});
+	}
 
-  // =========================
-  // UPDATE PROFILE
-  // =========================
-  updateProfile(data: any) {
-    return this.http
-      .put(`${this.apiUrl}/profile/update`, data, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${this.getToken()}`,
-        },
-      })
-      .pipe(catchError(this.handleError));
-  }
+	// =========================
+	// UPDATE PROFILE
+	// =========================
+	updateProfile(data: any) {
+		return this.http
+			.put(`${this.apiUrl}/profile/update`, data, {
+				withCredentials: true,
+				headers: {
+					Authorization: `Bearer ${this.getToken()}`,
+				},
+			})
+			.pipe(catchError(this.handleError));
+	}
 
-  // =========================
-  // USERS
-  // =========================
+	// =========================
+	// USERS
+	// =========================
 
-  getAllUsers() {
-    return this.http.get<any[]>(`${environment.apiUrl}/admin/users`, {
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${this.getToken()}`,
-      },
-    });
-  }
+	getAllUsers() {
+		return this.http.get<any[]>(`${environment.apiUrl}/admin/users`, {
+			withCredentials: true,
+			headers: {
+				Authorization: `Bearer ${this.getToken()}`,
+			},
+		});
+	}
 
-  // =========================
-  // ASSIGN ROLE
-  // =========================
+	// =========================
+	// ASSIGN ROLE
+	// =========================
 
-  assignRole(data: any) {
-    return this.http.post(`${environment.apiUrl}/admin/roles/assign`, data, {
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${this.getToken()}`,
-      },
-    });
-  }
+	assignRole(data: any) {
+		return this.http.post(`${environment.apiUrl}/admin/roles/assign`, data, {
+			withCredentials: true,
+			headers: {
+				Authorization: `Bearer ${this.getToken()}`,
+			},
+		});
+	}
 
-  // =========================
-  // LIMPIAR SESIÓN
-  // =========================
-  clearSession(): void {
-    localStorage.clear();
-    sessionStorage.clear();
+	// =========================
+	// LIMPIAR SESIÓN
+	// =========================
+	clearSession(): void {
+		localStorage.clear();
+		sessionStorage.clear();
 
-    this.router.navigate(['/']);
-  }
+		this.router.navigate(['/']);
+	}
 
-  // =========================
-  // TOKEN HELPERS
-  // =========================
-  getToken(): string | null {
-    return localStorage.getItem('token');
-  }
+	// =========================
+	// TOKEN HELPERS
+	// =========================
+	getToken(): string | null {
+		return localStorage.getItem('token');
+	}
 
-  isAuthenticated(): boolean {
-    const token = this.getToken();
-    const user = this.getUser();
+	isAuthenticated(): boolean {
+		const token = this.getToken();
+		const user = this.getUser();
 
-    return !!token && !!user;
-  }
+		return !!token && !!user;
+	}
 
-  // Obtener usuario del localStorage
-  getUser() {
-    const user = localStorage.getItem('user');
+	// Obtener usuario del localStorage
+	getUser() {
+		const user = localStorage.getItem('user');
 
-    if (!user || user === 'undefined') {
-      return null;
-    }
+		if (!user || user === 'undefined') {
+			return null;
+		}
 
-    try {
-      return JSON.parse(user);
-    } catch (error) {
-      console.error('Error parseando usuario:', error);
+		try {
+			return JSON.parse(user);
+		} catch (error) {
+			console.error('Error parseando usuario:', error);
 
-      localStorage.removeItem('user');
+			localStorage.removeItem('user');
 
-      return null;
-    }
-  }
+			return null;
+		}
+	}
 
-  // =========================
-  // DESACTIVAR USER
-  // =========================
+	// =========================
+	// DESACTIVAR USER
+	// =========================
 
-  disableUser(userId: number) {
-    return this.http.put(
-      `${environment.apiUrl}/admin/users/${userId}/disable`,
-      {},
-      {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${this.getToken()}`,
-        },
-      },
-    );
-  }
+	disableUser(userId: number) {
+		return this.http.put(
+			`${environment.apiUrl}/admin/users/${userId}/disable`,
+			{},
+			{
+				withCredentials: true,
+				headers: {
+					Authorization: `Bearer ${this.getToken()}`,
+				},
+			},
+		);
+	}
 
-  // =========================
-  // ACTIVAR USER
-  // =========================
+	// =========================
+	// ACTIVAR USER
+	// =========================
 
-  enableUser(userId: number) {
-    return this.http.put(
-      `${environment.apiUrl}/admin/users/${userId}/enable`,
-      {},
-      {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${this.getToken()}`,
-        },
-      },
-    );
-  }
+	enableUser(userId: number) {
+		return this.http.put(
+			`${environment.apiUrl}/admin/users/${userId}/enable`,
+			{},
+			{
+				withCredentials: true,
+				headers: {
+					Authorization: `Bearer ${this.getToken()}`,
+				},
+			},
+		);
+	}
 
-  // =========================
-  // ERROR HANDLER CENTRALIZADO
-  // =========================
-  private handleError(error: any) {
-    console.error('AuthService Error:', error);
+	// =========================
+	// ERROR HANDLER CENTRALIZADO
+	// =========================
+	private handleError(error: any) {
+		console.error('AuthService Error:', error);
 
-    let errorMessage = 'Error desconocido';
+		let errorMessage = 'Error desconocido';
 
-    if (error.error?.message) {
-      errorMessage = error.error.message;
-    } else if (error.error?.error) {
-      errorMessage = error.error.error;
-    } else if (error.message) {
-      errorMessage = error.message;
-    }
+		if (error.error?.message) {
+			errorMessage = error.error.message;
+		} else if (error.error?.error) {
+			errorMessage = error.error.error;
+		} else if (error.message) {
+			errorMessage = error.message;
+		}
 
-    return throwError(() => ({
-      message: errorMessage,
-      status: error.status,
-    }));
-  }
+		return throwError(() => ({
+			message: errorMessage,
+			status: error.status,
+		}));
+	}
 }

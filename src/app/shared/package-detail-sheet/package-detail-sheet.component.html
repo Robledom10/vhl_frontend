@@ -1,4 +1,3 @@
-
 <div *ngIf="visible" class="sheet-overlay" [class.open]="animating" (click)="onOverlayClick($event)">
 	<div class="sheet-container" [class.open]="animating" (click)="$event.stopPropagation()">
 
@@ -108,14 +107,11 @@
 							</div>
 							<h4 class="cancel-title">Políticas de cancelación</h4>
 						</div>
-					<ul class="cancel-list">
-  <li
-    *ngFor="let item of package.cancellation"
-
-  >
-    {{ item }}
-  </li>
-</ul>
+						<ul class="cancel-list">
+							<li *ngFor="let item of package.cancellation">
+								{{ item }}
+							</li>
+						</ul>
 					</div>
 
 					<div class="requirements-card">
@@ -126,13 +122,10 @@
 							<h4 class="requirements-title">Requisitos</h4>
 						</div>
 						<ul class="requirements-list">
-  <li
-    *ngFor="let item of package.requirements"
-
-  >
-    {{ item }}
-  </li>
-</ul>
+							<li *ngFor="let item of package.requirements">
+								{{ item }}
+							</li>
+						</ul>
 					</div>
 
 				</div>

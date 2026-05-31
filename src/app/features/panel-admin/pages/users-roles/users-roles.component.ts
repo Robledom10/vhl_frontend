@@ -3,233 +3,235 @@ import { UserItem } from './models/user.model';
 import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
-  selector: 'app-users-roles',
-  templateUrl: './users-roles.component.html',
-  styleUrl: './users-roles.component.css',
+	selector: 'app-users-roles',
+	templateUrl: './users-roles.component.html',
+	styleUrl: './users-roles.component.css',
 })
 export class UsersRolesComponent {
-  // =========================
-  // SEARCH & FILTER
-  // =========================
+	// =========================
+	// SEARCH & FILTER
+	// =========================
 
-  search = '';
+	search = '';
 
-  dropdownOpen = false;
+	dropdownOpen = false;
 
-  selectedRole = 'Todos';
+	selectedRole = 'Todos';
 
-  roles = ['Todos', 'Administrador', 'Cliente', 'Guía Turístico'];
+	roles = ['Todos', 'Administrador', 'Cliente', 'Guía Turístico'];
 
-  // =========================
-  // MODALS
-  // =========================
+	// =========================
+	// MODALS
+	// =========================
 
-  showStatusModal = false;
+	showStatusModal = false;
 
-  statusAction = '';
+	statusAction = '';
 
-  showToast = false;
+	showToast = false;
 
-  showEditModal = false;
+	showEditModal = false;
 
-  showViewModal = false;
+	showViewModal = false;
 
-  showCreateModal = false;
+	showCreateModal = false;
 
-  selectedUser: UserItem | null = null;
+	selectedUser: UserItem | null = null;
 
-  // =========================
-  // USERS
-  // =========================
+	// =========================
+	// USERS
+	// =========================
 
-  currentUser: any = null;
+	currentUser: any = null;
 
-  users: UserItem[] = [];
+	users: UserItem[] = [];
 
-  constructor(private authService: AuthService) {}
+	constructor(private authService: AuthService) { }
 
-  ngOnInit(): void {
-    this.currentUser = this.authService.getUser();
+	ngOnInit(): void {
+		this.currentUser = this.authService.getUser();
 
-    this.loadUsers();
-  }
+		this.loadUsers();
+	}
 
-  // =========================
-  // VALIDAR SI ES EL MISMO ADMIN PARA IMPEDIR QUE EL MISMO SE DESACTIVE
-  // =========================
+	// =========================
+	// VALIDAR SI ES EL MISMO ADMIN PARA IMPEDIR QUE EL MISMO SE DESACTIVE
+	// =========================
 
-  isCurrentUser(user: UserItem): boolean {
-  return this.currentUser?.id === user.id;
-}
+	isCurrentUser(user: UserItem): boolean {
+		return this.currentUser?.id === user.id;
+	}
 
-  // =========================
-  // LOAD USERS
-  // =========================
+	// =========================
+	// LOAD USERS
+	// =========================
 
-  loadUsers(): void {
-    this.authService.getAllUsers().subscribe({
-      next: (response: any[]) => {
-        this.users = response.map((user) => ({
-          id: user.id,
+	loadUsers(): void {
+		this.authService.getAllUsers().subscribe({
+			next: (response: any[]) => {
+				this.users = response.map((user) => ({
+					id: user.id,
 
-          image:
-            user.image ||
-            `https://ui-avatars.com/api/?name=${user.firstName}&background=3fa2db&color=fff&size=120`,
+					image:
+						user.image ||
+						`https://ui-avatars.com/api/?name=${user.firstName}&background=3fa2db&color=fff&size=120`,
 
-          name: `${user.firstName} ${user.lastName}`,
+					name: `${user.firstName} ${user.lastName}`,
 
-          email: user.email,
+					email: user.email,
 
-          role: this.mapRole(user.role),
+					role: this.mapRole(user.role),
 
-          status: user.active ? 'Activo' : 'Inactivo',
+					status: user.active ? 'Activo' : 'Inactivo',
 
-          phone: user.phone,
-        }));
-      },
+					phone: user.phone,
+				}));
+			},
 
-      error: (err) => {
-        console.error(err);
-      },
-    });
-  }
+			error: (err) => {
+				console.error(err);
+			},
+		});
+	}
 
-  // =========================
-  // MAP ROLE
-  // =========================
+	// =========================
+	// MAP ROLE
+	// =========================
 
-  mapRole(role: string): string {
-    const roleMap: any = {
-      ADMIN: 'Administrador',
-      CLIENT: 'Cliente',
-      GUIDE: 'Guía Turístico',
-    };
+	mapRole(role: string): string {
+		const roleMap: any = {
+			ADMIN: 'Administrador',
+			CLIENT: 'Cliente',
+			GUIDE: 'Guía Turístico',
+		};
 
-    return roleMap[role] || role;
-  }
+		return roleMap[role] || role;
+	}
 
-  // =========================
-  // FILTERED USERS
-  // =========================
-
-  get filteredUsers(): UserItem[] {
-    return this.users.filter((user) => {
-      const matchesSearch =
-        user.name.toLowerCase().includes(this.search.toLowerCase()) ||
-        user.email.toLowerCase().includes(this.search.toLowerCase());
-
-      const matchesRole =
-        this.selectedRole === 'Todos' ? true : user.role === this.selectedRole;
-
-      return matchesSearch && matchesRole;
-    });
-  }
-
-  // =========================
-  // DROPDOWN
-  // =========================
-
-  toggleDropdown(): void {
-    this.dropdownOpen = !this.dropdownOpen;
-  }
-
-  selectRole(role: string): void {
-    this.selectedRole = role;
-
-    this.dropdownOpen = false;
-  }
-
-  // =========================
-  // STATUS MODAL
-  // =========================
-
-  openStatusModal(user: UserItem): void {
-    this.selectedUser = user;
-
-    this.statusAction = user.status === 'Activo' ? 'desactivar' : 'activar';
-
-    this.showStatusModal = true;
-  }
-
-  closeStatusModal(): void {
-    this.showStatusModal = false;
-  }
-
-  confirmStatusChange(): void {
-    if (!this.selectedUser) return;
-
-    const request =
-      this.selectedUser.status === 'Activo'
-        ? this.authService.disableUser(this.selectedUser.id)
-        : this.authService.enableUser(this.selectedUser.id);
-
-    request.subscribe({
-      next: () => {
-        this.selectedUser!.status =
-          this.selectedUser!.status === 'Activo' ? 'Inactivo' : 'Activo';
-
-        this.showStatusModal = false;
-
-        this.showToast = true;
-
-        setTimeout(() => {
-          this.showToast = false;
-        }, 3000);
-      },
-
-      error: (err) => {
-        console.error(err);
-      },
-    });
-  }
-
-  // =========================
-  // EDIT MODAL
-  // =========================
-
-  openEditModal(user: UserItem): void {
-    this.selectedUser = user;
-
-    this.showEditModal = true;
-  }
-
-  closeEditModal(): void {
-    this.showEditModal = false;
-  }
-
-  onRoleUpdated(updatedUser: UserItem): void {
-    const index = this.users.findIndex((user) => user.id === updatedUser.id);
-
-    if (index !== -1) {
-      this.users[index] = updatedUser;
-    }
-
-    this.showEditModal = false;
-  }
-
-  // =========================
-  // VIEW MODAL
-  // =========================
-
-  openViewModal(user: UserItem): void {
-    this.selectedUser = user;
-
-    this.showViewModal = true;
-  }
-
-  closeViewModal(): void {
-    this.showViewModal = false;
-  }
-
-  // =========================
-  // CREATE MODAL
-  // =========================
-
-  openCreateModal(): void {
-    this.showCreateModal = true;
-  }
-
-  closeCreateModal(): void {
-    this.showCreateModal = false;
-  }
+	// =========================
+	// FILTERED USERS
+	// =========================
+
+	get filteredUsers(): UserItem[] {
+		return this.users.filter((user) => {
+			const matchesSearch =
+				user.name.toLowerCase().includes(this.search.toLowerCase()) ||
+				user.email.toLowerCase().includes(this.search.toLowerCase());
+
+			const matchesRole =
+				this.selectedRole === 'Todos' ? true : user.role === this.selectedRole;
+
+			return matchesSearch && matchesRole;
+		});
+	}
+
+	// =========================
+	// DROPDOWN
+	// =========================
+
+	toggleDropdown(): void {
+		this.dropdownOpen = !this.dropdownOpen;
+	}
+
+	selectRole(role: string): void {
+		this.selectedRole = role;
+		this.dropdownOpen = false;
+	}
+
+	// =========================
+	// STATUS MODAL
+	// =========================
+
+	openStatusModal(user: UserItem): void {
+		this.selectedUser = user;
+		this.statusAction = user.status === 'Activo' ? 'desactivar' : 'activar';
+		this.showStatusModal = true;
+		document.body.style.overflow = 'hidden';
+	}
+
+	closeStatusModal(): void {
+		this.showStatusModal = false;
+		document.body.style.overflow = 'auto';
+	}
+
+	confirmStatusChange(): void {
+		if (!this.selectedUser) return;
+
+		const request =
+			this.selectedUser.status === 'Activo'
+				? this.authService.disableUser(this.selectedUser.id)
+				: this.authService.enableUser(this.selectedUser.id);
+
+		request.subscribe({
+			next: () => {
+				this.selectedUser!.status =
+					this.selectedUser!.status === 'Activo' ? 'Inactivo' : 'Activo';
+
+				this.showStatusModal = false;
+				this.showToast = true;
+
+				setTimeout(() => {
+					this.showToast = false;
+				}, 3000);
+			},
+
+			error: (err) => {
+				console.error(err);
+			},
+		});
+	}
+
+	// =========================
+	// EDIT MODAL
+	// =========================
+
+	openEditModal(user: UserItem): void {
+		this.selectedUser = user;
+		document.body.style.overflow = 'hidden';
+		this.showEditModal = true;
+	}
+
+	closeEditModal(): void {
+		this.showEditModal = false;
+		document.body.style.overflow = 'auto';
+	}
+
+	onRoleUpdated(updatedUser: UserItem): void {
+		const index = this.users.findIndex((user) => user.id === updatedUser.id);
+
+		if (index !== -1) {
+			this.users[index] = updatedUser;
+		}
+
+		this.showEditModal = false;
+	}
+
+	// =========================
+	// VIEW MODAL
+	// =========================
+
+	openViewModal(user: UserItem): void {
+		this.selectedUser = user;
+		document.body.style.overflow = 'hidden';
+		this.showViewModal = true;
+	}
+
+	closeViewModal(): void {
+		this.showViewModal = false;
+		document.body.style.overflow = 'auto';
+	}
+
+	// =========================
+	// CREATE MODAL
+	// =========================
+
+	openCreateModal(): void {
+		this.showCreateModal = true;
+		document.body.style.overflow = 'hidden';
+	}
+
+	closeCreateModal(): void {
+		this.showCreateModal = false;
+		document.body.style.overflow = 'auto';
+	}
 }

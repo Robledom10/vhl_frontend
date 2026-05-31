@@ -15,15 +15,15 @@ import { RegisterComponent } from './pages/register/register.component';
  */
 const routes: Routes = [
 
-  { path: 'register', component: RegisterComponent },
+	{ path: 'register', component: RegisterComponent },
 
-  { path: 'login', component: LoginComponent }
+	{ path: 'login', component: LoginComponent }
 ];
 
 @NgModule({
 
-  imports: [RouterModule.forChild(routes)],
+	imports: [RouterModule.forChild(routes)],
 
-  exports: [RouterModule]
+	exports: [RouterModule]
 })
 export class AuthRoutingModule { }

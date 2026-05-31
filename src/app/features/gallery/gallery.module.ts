@@ -8,15 +8,15 @@ import { SearchFilterGalleryComponent } from './components/search-filter-gallery
 
 
 @NgModule({
-  declarations: [
-    GalleryComponent,
-    FilterGalleryComponent,
-    SearchFilterGalleryComponent,
-  ],
-  imports: [
-    CommonModule,
-    GalleryRoutingModule,
-    SharedModule
-]
+	declarations: [
+		GalleryComponent,
+		FilterGalleryComponent,
+		SearchFilterGalleryComponent,
+	],
+	imports: [
+		CommonModule,
+		GalleryRoutingModule,
+		SharedModule
+	]
 })
 export class GalleryModule { }

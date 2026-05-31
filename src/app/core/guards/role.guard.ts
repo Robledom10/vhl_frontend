@@ -7,22 +7,22 @@ export const roleGuard: CanActivateFn = (route: ActivatedRouteSnapshot): boolean
 	const authService = inject(AuthService);
 	const router = inject(Router);
 
-  // Usuario actual
-  const user = authService.getUser();
+	// Usuario actual
+	const user = authService.getUser();
 
-  // Roles permitidos
-  const allowedRoles = route.data['roles'] as string[];
+	// Roles permitidos
+	const allowedRoles = route.data['roles'] as string[];
 
-  // No logueado
-  if (!user) {
-    return router.createUrlTree(['/auth/login']);
-  }
+	// No logueado
+	if (!user) {
+		return router.createUrlTree(['/auth/login']);
+	}
 
-  // Rol no permitido
-  if (!allowedRoles.includes(user.role)) {
-    return router.createUrlTree(['/']);
-  }
+	// Rol no permitido
+	if (!allowedRoles.includes(user.role)) {
+		return router.createUrlTree(['/']);
+	}
 
-  // Acceso permitido
-  return true;
+	// Acceso permitido
+	return true;
 };

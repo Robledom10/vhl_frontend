@@ -3,56 +3,56 @@ import { MediaResponse, MediaService } from '../../../../core/services/media.ser
 import { SearchFilters } from '../../components/search-filter-gallery/search-filter-gallery.component';
 
 @Component({
-  selector: 'app-gallery',
-  templateUrl: './gallery.component.html',
-  styleUrl: './gallery.component.css',
+	selector: 'app-gallery',
+	templateUrl: './gallery.component.html',
+	styleUrl: './gallery.component.css',
 })
 export class GalleryComponent implements OnInit {
-  media: MediaResponse[] = [];
-  allMedia: MediaResponse[] = [];
+	media: MediaResponse[] = [];
+	allMedia: MediaResponse[] = [];
 
-  years: number[] = [];
-  excursions: string[] = [];
-  activities: string[] = [];
+	years: number[] = [];
+	excursions: string[] = [];
+	activities: string[] = [];
 
-  constructor(private mediaService: MediaService) {}
+	constructor(private mediaService: MediaService) { }
 
-  ngOnInit(): void {
-    this.loadMedia();
-  }
+	ngOnInit(): void {
+		this.loadMedia();
+	}
 
-  loadMedia(): void {
-    this.mediaService.getAll().subscribe({
-      next: (data) => {
-        this.allMedia = data;
-        this.media = data;
+	loadMedia(): void {
+		this.mediaService.getAll().subscribe({
+			next: (data) => {
+				this.allMedia = data;
+				this.media = data;
 
-        this.years = [...new Set(data.map((m) => m.year))].sort(
-          (a, b) => b - a,
-        );
+				this.years = [...new Set(data.map((m) => m.year))].sort(
+					(a, b) => b - a,
+				);
 
-        this.excursions = ['Todos', ...new Set(data.map((m) => m.excursion))];
+				this.excursions = ['Todos', ...new Set(data.map((m) => m.excursion))];
 
-        this.activities = ['Todos', ...new Set(data.map((m) => m.activity))];
-      },
-    });
-  }
+				this.activities = ['Todos', ...new Set(data.map((m) => m.activity))];
+			},
+		});
+	}
 
-  onSearch(filters: SearchFilters): void {
-    this.media = this.allMedia.filter((item) => {
-      const matchYear = !filters.year || item.year === filters.year;
+	onSearch(filters: SearchFilters): void {
+		this.media = this.allMedia.filter((item) => {
+			const matchYear = !filters.year || item.year === filters.year;
 
-      const matchSite =
-        !filters.site ||
-        filters.site === 'Todos' ||
-        item.excursion === filters.site;
+			const matchSite =
+				!filters.site ||
+				filters.site === 'Todos' ||
+				item.excursion === filters.site;
 
-      const matchActivity =
-        !filters.activity ||
-        filters.activity === 'Todos' ||
-        item.activity === filters.activity;
+			const matchActivity =
+				!filters.activity ||
+				filters.activity === 'Todos' ||
+				item.activity === filters.activity;
 
-      return matchYear && matchSite && matchActivity;
-    });
-  }
+			return matchYear && matchSite && matchActivity;
+		});
+	}
 }

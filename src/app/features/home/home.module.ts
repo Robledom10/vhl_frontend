@@ -9,16 +9,16 @@ import { SliderWorkTeamComponent } from './components/slider-work-team/slider-wo
 
 
 @NgModule({
-  declarations: [
-    HomeComponent,
-    InteractiveMapComponent,
-    SliderWorkTeamComponent,
-  ],
-  imports: [
-    CommonModule,
-    HomeRoutingModule,
-    SharedModule, 
-    FormsModule
-  ]
+	declarations: [
+		HomeComponent,
+		InteractiveMapComponent,
+		SliderWorkTeamComponent,
+	],
+	imports: [
+		CommonModule,
+		HomeRoutingModule,
+		SharedModule,
+		FormsModule
+	]
 })
 export class HomeModule { }

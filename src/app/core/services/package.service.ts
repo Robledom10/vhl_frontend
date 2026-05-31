@@ -5,32 +5,32 @@ import { SolicitudPaqueteTuristico, RespuestaPaqueteTuristico } from '../../feat
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root',
+	providedIn: 'root',
 })
 export class PackageService {
-  private apiUrl = `${environment.apiUrl}/paquetes`;
+	private apiUrl = `${environment.apiUrl}/paquetes`;
 
-  constructor(private http: HttpClient) {}
+	constructor(private http: HttpClient) { }
 
-  createPackage(
-    request: SolicitudPaqueteTuristico,
-  ): Observable<RespuestaPaqueteTuristico> {
-    return this.http.post<RespuestaPaqueteTuristico>(this.apiUrl, request);
-  }
+	createPackage(
+		request: SolicitudPaqueteTuristico,
+	): Observable<RespuestaPaqueteTuristico> {
+		return this.http.post<RespuestaPaqueteTuristico>(this.apiUrl, request);
+	}
 
-  getPackages() {
-    return this.http.get(this.apiUrl);
-  }
+	getPackages() {
+		return this.http.get(this.apiUrl);
+	}
 
-  getPackageById(id: number) {
-    return this.http.get(`${this.apiUrl}/${id}`);
-  }
+	getPackageById(id: number) {
+		return this.http.get(`${this.apiUrl}/${id}`);
+	}
 
-  updatePackage(id: number, request: SolicitudPaqueteTuristico) {
-    return this.http.put(`${this.apiUrl}/${id}`, request);
-  }
+	updatePackage(id: number, request: SolicitudPaqueteTuristico) {
+		return this.http.put(`${this.apiUrl}/${id}`, request);
+	}
 
-  deletePackage(id: number) {
-    return this.http.delete(`${this.apiUrl}/${id}`);
-  }
+	deletePackage(id: number) {
+		return this.http.delete(`${this.apiUrl}/${id}`);
+	}
 }

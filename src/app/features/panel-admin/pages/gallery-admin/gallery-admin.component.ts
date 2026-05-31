@@ -2,190 +2,242 @@ import { Component, OnInit } from '@angular/core';
 import { MediaResponse, MediaService } from '../../../../core/services/media.service';
 
 @Component({
-  selector: 'app-gallery-admin',
-  templateUrl: './gallery-admin.component.html',
-  styleUrl: './gallery-admin.component.css',
+	selector: 'app-gallery-admin',
+	templateUrl: './gallery-admin.component.html',
+	styleUrl: './gallery-admin.component.css',
 })
 export class GalleryAdminComponent implements OnInit {
-  mediaList: MediaResponse[] = [];
-  filteredMedia: MediaResponse[] = [];
-  groupedMedia: { [key: string]: MediaResponse[] } = {};
-  showModal = false;
-  loading = false;
-  searchTerm = '';
-  selectedYear = '';
-  selectedExcursion = '';
-  selectedActivity = '';
-  selectedType = '';
-  yearDropdownOpen = false;
-  excursionDropdownOpen = false;
-  activityDropdownOpen = false;
-  typeDropdownOpen = false;
-  selectedMedia: MediaResponse | null = null;
-  years: number[] = [];
-  excursions: string[] = [];
-  activities: string[] = [];
+	mediaList: MediaResponse[] = [];
+	filteredMedia: MediaResponse[] = [];
+	groupedMedia: { [key: string]: MediaResponse[] } = {};
+	showModal = false;
+	loading = false;
+	searchTerm = '';
+	selectedYear = '';
+	selectedExcursion = '';
+	selectedActivity = '';
+	selectedType = '';
+	yearDropdownOpen = false;
+	excursionDropdownOpen = false;
+	activityDropdownOpen = false;
+	typeDropdownOpen = false;
+	selectedMedia: MediaResponse | null = null;
+	years: number[] = [];
+	excursions: string[] = [];
+	activities: string[] = [];
 
-  sortYearsDesc = (a: any, b: any): number => {
-    return Number(b.key) - Number(a.key);
-  };
+	//   Modal de notificación
+	showToast = false;
+	toastTitle = '';
+	toastMessage = '';
 
-  constructor(private mediaService: MediaService) {}
+	//   Para eliminar una imagen
+	showDeleteModal = false;
+	selectedMediaToDelete: MediaResponse | null = null;
 
-  ngOnInit(): void {
-    this.loadMedia();
-  }
+	sortYearsDesc = (a: any, b: any): number => {
+		return Number(b.key) - Number(a.key);
+	};
 
-  loadMedia() {
-    this.loading = true;
+	constructor(private mediaService: MediaService) { }
 
-    this.mediaService.getAll().subscribe({
-      next: (data) => {
-        this.mediaList = data;
-        this.filteredMedia = data;
-        this.extractFilters();
-        this.groupMedia();
-        this.loading = false;
-      },
+	ngOnInit(): void {
+		this.loadMedia();
+	}
 
-      error: (err) => {
-        console.error(err);
-        this.loading = false;
-      },
-    });
-  }
+	loadMedia() {
+		this.loading = true;
 
-  extractFilters() {
-    const currentYear = new Date().getFullYear();
+		this.mediaService.getAll().subscribe({
+			next: (data) => {
+				this.mediaList = data;
+				this.filteredMedia = data;
+				this.extractFilters();
+				this.groupMedia();
+				this.loading = false;
+			},
 
-    this.years = [];
+			error: (err) => {
+				console.error(err);
+				this.loading = false;
+			},
+		});
+	}
 
-    for (let year = currentYear; year >= 2023; year--) {
-      this.years.push(year);
-    }
+	extractFilters() {
+		const currentYear = new Date().getFullYear();
 
-    this.excursions = [...new Set(this.mediaList.map((m) => m.excursion))];
-    this.activities = [...new Set(this.mediaList.map((m) => m.activity))];
-  }
+		this.years = [];
 
-  applyFilters() {
-    this.filteredMedia = this.mediaList.filter((media) => {
-      const matchesSearch = media.excursion
-        .toLowerCase()
-        .includes(this.searchTerm.toLowerCase());
+		for (let year = currentYear; year >= 2023; year--) {
+			this.years.push(year);
+		}
 
-      const matchesYear =
-        !this.selectedYear || media.year.toString() === this.selectedYear;
+		this.excursions = [...new Set(this.mediaList.map((m) => m.excursion))];
+		this.activities = [...new Set(this.mediaList.map((m) => m.activity))];
+	}
 
-      const matchesExcursion =
-        !this.selectedExcursion || media.excursion === this.selectedExcursion;
+	applyFilters() {
+		this.filteredMedia = this.mediaList.filter((media) => {
+			const matchesSearch = media.excursion
+				.toLowerCase()
+				.includes(this.searchTerm.toLowerCase());
 
-      const matchesLocation =
-        !this.selectedActivity || media.activity === this.selectedActivity;
+			const matchesYear =
+				!this.selectedYear || media.year.toString() === this.selectedYear;
 
-      const matchesType =
-        !this.selectedType || media.type === this.selectedType;
+			const matchesExcursion =
+				!this.selectedExcursion || media.excursion === this.selectedExcursion;
 
-      return (
-        matchesSearch &&
-        matchesYear &&
-        matchesExcursion &&
-        matchesLocation &&
-        matchesType
-      );
-    });
+			const matchesLocation =
+				!this.selectedActivity || media.activity === this.selectedActivity;
 
-    this.groupMedia();
-  }
+			const matchesType =
+				!this.selectedType || media.type === this.selectedType;
 
-  groupMedia() {
-    this.groupedMedia = {};
+			return (
+				matchesSearch &&
+				matchesYear &&
+				matchesExcursion &&
+				matchesLocation &&
+				matchesType
+			);
+		});
 
-    this.filteredMedia.forEach((media) => {
-      const year = media.year.toString();
+		this.groupMedia();
+	}
 
-      if (!this.groupedMedia[year]) {
-        this.groupedMedia[year] = [];
-      }
+	groupMedia() {
+		this.groupedMedia = {};
 
-      this.groupedMedia[year].push(media);
-    });
-  }
+		this.filteredMedia.forEach((media) => {
+			const year = media.year.toString();
 
-  get selectedTypeLabel(): string {
-    if (this.selectedType === 'IMAGE') return 'Imagen';
-    if (this.selectedType === 'VIDEO') return 'Video';
-    return 'Actividad';
-  }
+			if (!this.groupedMedia[year]) {
+				this.groupedMedia[year] = [];
+			}
 
-  openModal() {
-    this.showModal = true;
-  }
+			this.groupedMedia[year].push(media);
+		});
+	}
 
-  closeModal() {
-    this.showModal = false;
-    this.selectedMedia = null;
-    this.loadMedia();
-  }
+	get selectedTypeLabel(): string {
+		if (this.selectedType === 'IMAGE') return 'Imagen';
+		if (this.selectedType === 'VIDEO') return 'Video';
+		return 'Actividad';
+	}
 
-  deleteMedia(id: string) {
-    const confirmed = confirm('¿Seguro que desea eliminar este archivo?');
+	openModal() {
+		this.showModal = true;
+		document.body.style.overflow = 'hidden';
+	}
 
-    if (!confirmed) return;
+	closeModal(success: boolean = false) {
+		const wasEditing = !!this.selectedMedia;
 
-    this.mediaService.deleteMedia(id).subscribe({
-      next: () => {
-        this.loadMedia();
-      },
+		this.showModal = false;
+		this.selectedMedia = null;
+		document.body.style.overflow = '';
 
-      error: (err) => {
-        console.error(err);
-      },
-    });
-  }
+		if (success) {
+			this.toastTitle = wasEditing ? 'Archivo actualizado' : 'Archivo agregado';
 
-  editMedia(media: MediaResponse) {
-    this.selectedMedia = media;
-    this.showModal = true;
-  }
+			this.toastMessage = wasEditing
+				? 'El archivo fue actualizado correctamente.'
+				: 'El archivo fue agregado correctamente.';
 
-  toggleExcursionDropdown() {
-    this.excursionDropdownOpen = !this.excursionDropdownOpen;
-  }
+			this.showToast = true;
 
-  toggleYearDropdown() {
-    this.yearDropdownOpen = !this.yearDropdownOpen;
-  }
+			setTimeout(() => {
+				this.showToast = false;
+			}, 3000);
+		}
 
-  toggleActivityropdown() {
-    this.activityDropdownOpen = !this.activityDropdownOpen;
-  }
+		this.loadMedia();
+	}
 
-  toggleTypeDropdown() {
-    this.typeDropdownOpen = !this.typeDropdownOpen;
-  }
+	editMedia(media: MediaResponse) {
+		this.selectedMedia = media;
+		this.showModal = true;
+		document.body.style.overflow = 'hidden';
+	}
 
-  selectYear(year: string) {
-    this.selectedYear = year;
-    this.yearDropdownOpen = false;
-    this.applyFilters();
-  }
+	toggleExcursionDropdown() {
+		this.excursionDropdownOpen = !this.excursionDropdownOpen;
+	}
 
-  selectActivity(activity: string) {
-    this.selectedActivity = activity;
-    this.activityDropdownOpen = false;
-    this.applyFilters();
-  }
+	toggleYearDropdown() {
+		this.yearDropdownOpen = !this.yearDropdownOpen;
+	}
 
-  selectType(type: string) {
-    this.selectedType = type;
-    this.typeDropdownOpen = false;
-    this.applyFilters();
-  }
+	toggleActivityropdown() {
+		this.activityDropdownOpen = !this.activityDropdownOpen;
+	}
 
-  selectExcursion(excursion: string) {
-    this.selectedExcursion = excursion;
-    this.excursionDropdownOpen = false;
-    this.applyFilters();
-  }
+	toggleTypeDropdown() {
+		this.typeDropdownOpen = !this.typeDropdownOpen;
+	}
+
+	selectYear(year: string) {
+		this.selectedYear = year;
+		this.yearDropdownOpen = false;
+		this.applyFilters();
+	}
+
+	selectActivity(activity: string) {
+		this.selectedActivity = activity;
+		this.activityDropdownOpen = false;
+		this.applyFilters();
+	}
+
+	selectType(type: string) {
+		this.selectedType = type;
+		this.typeDropdownOpen = false;
+		this.applyFilters();
+	}
+
+	selectExcursion(excursion: string) {
+		this.selectedExcursion = excursion;
+		this.excursionDropdownOpen = false;
+		this.applyFilters();
+	}
+
+	//   Modal para eliminar una imagen
+	openDeleteModal(media: MediaResponse) {
+		this.selectedMediaToDelete = media;
+		this.showDeleteModal = true;
+		document.body.style.overflow = 'hidden';
+	}
+
+	closeDeleteModal() {
+		this.showDeleteModal = false;
+		document.body.style.overflow = '';
+		this.selectedMediaToDelete = null;
+	}
+
+	confirmDelete() {
+		if (!this.selectedMediaToDelete) return;
+
+		this.mediaService.deleteMedia(this.selectedMediaToDelete.id).subscribe({
+			next: () => {
+				this.showDeleteModal = false;
+				document.body.style.overflow = '';
+
+				this.toastTitle = 'Archivo eliminado';
+				this.toastMessage = 'El archivo fue eliminado correctamente.';
+				this.showToast = true;
+
+				setTimeout(() => {
+					this.showToast = false;
+				}, 3000);
+
+				this.selectedMediaToDelete = null;
+				this.loadMedia();
+			},
+
+			error: (err) => {
+				console.error(err);
+			},
+		});
+	}
 }
