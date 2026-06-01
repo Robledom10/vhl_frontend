@@ -217,6 +217,39 @@ export class AuthService {
 	}
 
 	// =========================
+	// Login con Google
+	// =========================
+
+	googleLogin(idToken: string) {
+		return this.http
+			.post<LoginResponse>(
+				`${this.apiUrl}/google-login`,
+				{
+					idToken
+				},
+				{
+					withCredentials: true
+				}
+			)
+			.pipe(
+				tap((response) => {
+					localStorage.setItem(
+						'token',
+						response.accessToken
+					);
+
+					if (response.user) {
+						localStorage.setItem(
+							'user',
+							JSON.stringify(response.user)
+						);
+					}
+				}),
+				catchError(this.handleError)
+			);
+	}
+
+	// =========================
 	// ERROR HANDLER CENTRALIZADO
 	// =========================
 	private handleError(error: any) {

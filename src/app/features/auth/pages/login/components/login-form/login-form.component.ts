@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../../../core/services/auth.service';
 import { LoginRequest } from '../../../../models/auth.model';
+import { GoogleService } from '../../../../../../core/services/google.service';
 
 @Component({
 	selector: 'app-login-form',
@@ -18,7 +19,8 @@ export class LoginFormComponent {
 	constructor(
 		private fb: FormBuilder,
 		private authService: AuthService,
-		private router: Router
+		private router: Router,
+		private googleService: GoogleService
 	) { }
 
 	loginForm = this.fb.group({
@@ -39,7 +41,6 @@ export class LoginFormComponent {
 
 		// Mostrar estado de carga
 		this.isLoading = true;
-
 		const formValue = this.loginForm.value;
 
 		const request: LoginRequest = {
@@ -77,5 +78,30 @@ export class LoginFormComponent {
 	// Getter para acceder fácilmente a los controles del formulario
 	get f() {
 		return this.loginForm.controls;
+	}
+
+	// Login con Google
+	ngOnInit(): void {
+
+		this.googleService.initGoogle((credential) => {
+			console.log('TOKEN GOOGLE:', credential);
+
+
+			this.authService.googleLogin(credential)
+				.subscribe({
+					next: () => {
+						this.router.navigate(['/home']);
+					},
+					error: err => {
+						console.error(err);
+					}
+				});
+
+		});
+
+	}
+
+	loginGoogle() {
+		this.googleService.prompt();
 	}
 }

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { RegisterRequest } from '../../../../models/auth.model';
 import { passwordMatchValidator, strongPasswordValidator } from '../../../../../../core/validators/custom.validators';
 import { FormBuilder, Validators, AbstractControlOptions } from '@angular/forms';
+import { GoogleService } from '../../../../../../core/services/google.service';
 
 @Component({
 	selector: 'app-register-form',
@@ -33,6 +34,7 @@ export class RegisterFormComponent {
 		private fb: FormBuilder,
 		private authService: AuthService,
 		private router: Router,
+		private googleService: GoogleService
 	) { }
 
 	formOptions: AbstractControlOptions = {
@@ -156,5 +158,25 @@ export class RegisterFormComponent {
 	@HostListener('document:click')
 	closeDropdowns(): void {
 		this.documentDropdownOpen = false;
+	}
+
+	// Registro con Google
+	registerWithGoogle() {
+
+		this.googleService.initGoogle((credential) => {
+
+			this.authService.googleLogin(credential)
+				.subscribe({
+					next: () => {
+						this.router.navigate(['/home']);
+					},
+					error: (err) => {
+						console.error(err);
+					}
+				});
+
+		});
+
+		this.googleService.prompt();
 	}
 }

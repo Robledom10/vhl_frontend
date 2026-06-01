@@ -5,7 +5,8 @@
 
 	<h1>Comienza Tu Nueva Aventura</h1>
 	<p>
-		Regístrate y empieza a descubrir destinos increíbles, excursiones únicas y experiencias diseñadas especialmente para ti.
+		Regístrate y empieza a descubrir destinos increíbles, excursiones únicas y experiencias diseñadas especialmente
+		para ti.
 	</p>
 
 	<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
@@ -160,5 +161,5 @@
 		¿Ya tienes cuenta? <a routerLink="/auth/login">Inicia Sesión</a>
 	</div>
 
-	<app-login-types text=" o Regístrate con"></app-login-types>
+	<app-login-types text="o Regístrate con" (googleClicked)="registerWithGoogle()"></app-login-types>
 </div>

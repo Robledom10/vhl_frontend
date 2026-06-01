@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
 	selector: 'app-login-types',
@@ -7,5 +7,11 @@ import { Component, Input } from '@angular/core';
 })
 export class LoginTypesComponent {
 
-	@Input() text: string = '';
+	@Input() text = '';
+
+	@Output() googleClicked = new EventEmitter<void>();
+
+	loginGoogle() {
+		this.googleClicked.emit();
+	}
 }

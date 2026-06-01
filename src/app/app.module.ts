@@ -7,6 +7,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { environment } from '../environments/environment';
 
 @NgModule({
 	declarations: [
@@ -22,7 +23,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 		{
 			provide: HTTP_INTERCEPTORS,
 			useClass: AuthInterceptor,
-			multi: true
+			multi: true,
+
 		},
 		provideAnimationsAsync()
 	],

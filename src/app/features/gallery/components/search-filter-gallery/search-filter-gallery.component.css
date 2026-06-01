@@ -162,11 +162,12 @@
 
 .dropdown-option:hover {
 	background: var(--color-fondo-iconos);
+	color: var(--color-primario);
 }
 
 .dropdown-option.selected {
 	background: var(--color-fondo-iconos);
-	font-weight: 500;
+	color: var(--color-primario);
 }
 
 /* =========================
@@ -191,11 +192,12 @@
 .cal-grid span:hover {
 	background: var(--color-fondo-iconos);
 	transform: translateY(-1px);
+	color: var(--color-primario);
 }
 
 .cal-grid span.selected {
 	background: var(--color-fondo-iconos);
-	font-weight: 500;
+	color: var(--color-primario);
 }
 
 .cal-grid span.today {
