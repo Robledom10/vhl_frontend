@@ -28,21 +28,20 @@
 		<div class="divider"></div>
 
 		<!-- Fecha salida -->
-		<div class="filter-item date-wrapper" (click)="toggleCalendar($event)">
+		<div class="filter-item date-wrapper">
 
 			<div class="filter-icon">
 				<i class="fa-regular fa-calendar"></i>
 			</div>
 
-			<div class="filter-content">
+			<div class="filter-content" (click)="toggleCalendar($event)">
 				<label>Fecha salida</label>
-				<span class="date-display">
-					{{ fechaSalida || 'Selecciona tu fecha' }}
-				</span>
+				<input type="text" readonly [value]="fechaSalida" placeholder="Selecciona tu fecha">
 			</div>
 
-			<app-custom-calendar *ngIf="showCalendar" [isOpen]="showCalendar" [selectedDate]="fechaSalidaISO"
-				[disablePastDates]="true" (dateSelected)="onDateSelected($event)" (closed)="showCalendar = false">
+			<app-custom-calendar (click)="$event.stopPropagation()" *ngIf="showCalendar" [isOpen]="showCalendar"
+				[selectedDate]="fechaSalidaISO" [disablePastDates]="true" (dateSelected)="onDateSelected($event)"
+				(closed)="showCalendar = false">
 			</app-custom-calendar>
 		</div>
 
