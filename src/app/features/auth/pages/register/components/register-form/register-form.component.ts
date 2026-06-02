@@ -162,21 +162,6 @@ export class RegisterFormComponent {
 
 	// Registro con Google
 	registerWithGoogle() {
-
-		this.googleService.initGoogle((credential) => {
-
-			this.authService.googleLogin(credential)
-				.subscribe({
-					next: () => {
-						this.router.navigate(['/home']);
-					},
-					error: (err) => {
-						console.error(err);
-					}
-				});
-
-		});
-
-		this.googleService.prompt();
+		this.googleService.loginPopup();
 	}
 }

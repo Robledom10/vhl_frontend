@@ -1,12 +1,4 @@
-import {
-	Component,
-	HostListener,
-	EventEmitter,
-	Output,
-	Input,
-	OnChanges,
-	SimpleChanges,
-} from '@angular/core';
+import { Component, HostListener, EventEmitter, Output, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
 	selector: 'app-custom-calendar',
@@ -262,10 +254,11 @@ export class CustomCalendarComponent implements OnChanges {
 	closeDropdowns(event: Event): void {
 		const target = event.target as HTMLElement;
 
-		if (!target.closest('.calendar-dropdown')) {
+		const clickedInside = target.closest('app-custom-calendar');
+
+		if (!clickedInside) {
 			this.showMonthSelector = false;
 			this.showYearSelector = false;
-
 			this.closed.emit();
 		}
 	}

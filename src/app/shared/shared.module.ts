@@ -3,9 +3,6 @@ import { CommonModule } from '@angular/common';
 import { NavbarComponent } from './navbar/navbar.component';
 import { RouterModule } from '@angular/router';
 import { SearchFilterComponent } from './search-filter/search-filter.component';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatInputModule } from '@angular/material/input';
-import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { PackagesCardComponent } from './packages-card/packages-card.component';
 import { FooterComponent } from './footer/footer.component';
@@ -24,17 +21,11 @@ import { CustomCalendarComponent } from './custom-calendar/custom-calendar.compo
 	imports: [
 		CommonModule,
 		RouterModule,
-		MatDatepickerModule,
-		MatInputModule,
-		MatNativeDateModule,
 		FormsModule
 	],
 	exports: [
 		NavbarComponent,
 		SearchFilterComponent,
-		MatDatepickerModule,
-		MatInputModule,
-		MatNativeDateModule,
 		PackagesCardComponent,
 		FooterComponent,
 		PackageDetailSheetComponent,

@@ -2,13 +2,11 @@
 	<div class="create-user-modal" (click)="$event.stopPropagation()">
 		<!-- HEADER -->
 		<div class="modal-header">
-
-			<h2>Crear Usuario</h2>
-
 			<button type="button" class="close-btn" (click)="closeModal()">
 				<i class="fa-solid fa-xmark"></i>
 			</button>
 
+			<h2>Crear <span>Usuario</span></h2>
 		</div>
 
 		<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">

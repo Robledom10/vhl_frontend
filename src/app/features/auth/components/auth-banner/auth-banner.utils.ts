@@ -32,8 +32,8 @@ export const BANNER_DATA: BannerSlide[] = [
 		descripcion: 'Encuentra excursiones, viajes y planes pensados para disfrutar cada momento. Prepárate para vivir experiencias inolvidables.',
 	},
 	{
-		imgFondo: `https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1777932610/D%C3%ADa5-12_uuxr8x.jpg`,
-		imgFrente: `https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_700,ar_4:5/v1777932611/D%C3%ADa5-13_tcmbm3.jpg`,
+		imgFondo: `https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1780080999/D%C3%ADa5-12_ayipp0.jpg`,
+		imgFrente: `https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_700,ar_4:5/v1780081000/D%C3%ADa5-13_ga9bok.jpg`,
 		titulo: 'Viaja, explora y disfruta',
 		descripcion: 'Conecta con la naturaleza, la cultura y nuevas emociones en cada recorrido. Haz de cada viaje una historia inolvidable.',
 	},

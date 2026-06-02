@@ -81,27 +81,7 @@ export class LoginFormComponent {
 	}
 
 	// Login con Google
-	ngOnInit(): void {
-
-		this.googleService.initGoogle((credential) => {
-			console.log('TOKEN GOOGLE:', credential);
-
-
-			this.authService.googleLogin(credential)
-				.subscribe({
-					next: () => {
-						this.router.navigate(['/home']);
-					},
-					error: err => {
-						console.error(err);
-					}
-				});
-
-		});
-
-	}
-
 	loginGoogle() {
-		this.googleService.prompt();
+		this.googleService.loginPopup();
 	}
 }
