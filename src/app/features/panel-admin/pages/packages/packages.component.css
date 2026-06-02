@@ -2,7 +2,7 @@
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	gap: 24px;
+	gap: 26px;
 }
 
 /* =========================
@@ -12,6 +12,7 @@
 .top-bar {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	gap: 16px;
 	flex-wrap: wrap;
 }
@@ -89,6 +90,211 @@
 	border: none;
 }
 
+.advanced-filters {
+	display: grid;
+	grid-template-columns: minmax(220px, 1fr) minmax(260px, 1.1fr) minmax(240px, 1.1fr) auto;
+	gap: 16px;
+	align-items: end;
+	padding: 22px 24px;
+	background: white;
+	border: 1px solid #e5e5e5;
+	border-radius: 22px;
+	box-shadow: 0 10px 28px rgba(0, 0, 0, 0.07);
+}
+
+.filter-field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	position: relative;
+}
+
+.filter-field label {
+	font-size: 13px;
+	font-weight: 600;
+	color: #7d7d7d;
+}
+
+.filter-field input,
+.filter-field select {
+	height: 44px;
+	padding: 0 16px;
+	border: 1px solid #e5e5e5;
+	border-radius: 14px;
+	outline: none;
+	font-size: 15px;
+	color: var(--color-texto-principal);
+	background: white;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filter-field input:focus,
+.filter-field select:focus,
+.date-filter-input:focus {
+	border-color: var(--color-primario);
+	box-shadow: 0 0 0 4px rgba(63, 162, 219, 0.12);
+}
+
+.date-filter-input {
+	width: 100%;
+	height: 44px;
+	padding: 0 14px 0 16px;
+	border: 1px solid #e5e5e5;
+	border-radius: 14px;
+	background: white;
+	color: var(--color-texto-principal);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	font-family: "Outfit", sans-serif;
+	font-size: 15px;
+	cursor: pointer;
+	outline: none;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.date-filter-input .placeholder {
+	color: #8f96a3;
+}
+
+.date-filter-input i {
+	color: var(--color-primario);
+	font-size: 15px;
+}
+
+.status-select-wrapper {
+	position: relative;
+	border-radius: 14px;
+	background: linear-gradient(white, white) padding-box,
+		linear-gradient(135deg, rgba(63, 162, 219, 0.75), rgba(34, 160, 107, 0.45)) border-box;
+	border: 1px solid transparent;
+	box-shadow: 0 8px 18px rgba(63, 162, 219, 0.08);
+}
+
+.status-select-wrapper:focus-within {
+	box-shadow: 0 0 0 4px rgba(63, 162, 219, 0.12), 0 10px 22px rgba(63, 162, 219, 0.12);
+}
+
+.status-select-wrapper::after {
+	content: "";
+	position: absolute;
+	right: 16px;
+	top: 50%;
+	width: 8px;
+	height: 8px;
+	border-right: 2px solid var(--color-texto-principal);
+	border-bottom: 2px solid var(--color-texto-principal);
+	transform: translateY(-65%) rotate(45deg);
+	pointer-events: none;
+}
+
+.status-select-wrapper select {
+	width: 100%;
+	border: none;
+	box-shadow: none;
+	appearance: none;
+	padding-right: 42px;
+	background: transparent;
+	cursor: pointer;
+}
+
+.status-select-wrapper select:focus {
+	box-shadow: none;
+}
+
+.status-select-wrapper option {
+	color: var(--color-texto-principal);
+	background: white;
+}
+
+.date-filter-field ::ng-deep .calendar-dropdown {
+	top: calc(100% + 12px);
+	left: 0;
+	width: 320px;
+	padding: 22px 24px 24px;
+	border: 1px solid rgba(229, 229, 229, 0.72);
+	border-radius: 22px;
+	box-shadow: 0 18px 35px rgba(15, 23, 42, 0.14);
+}
+
+.date-filter-field ::ng-deep .cal-header {
+	margin-bottom: 16px;
+}
+
+.date-filter-field ::ng-deep .cal-header button {
+	width: 32px;
+	height: 32px;
+	background: transparent;
+	color: var(--color-primario);
+}
+
+.date-filter-field ::ng-deep .cal-header button:first-child {
+	background: rgba(63, 162, 219, 0.18);
+}
+
+.date-filter-field ::ng-deep .calendar-title {
+	gap: 5px;
+}
+
+.date-filter-field ::ng-deep .month-year-btn {
+	font-size: 16px;
+	font-weight: 700;
+	color: #111827;
+}
+
+.date-filter-field ::ng-deep .cal-days-header,
+.date-filter-field ::ng-deep .cal-grid {
+	gap: 10px;
+}
+
+.date-filter-field ::ng-deep .cal-days-header span {
+	font-size: 13px;
+	font-weight: 700;
+	color: #727a89;
+}
+
+.date-filter-field ::ng-deep .cal-grid span {
+	width: 30px;
+	height: 30px;
+	font-size: 15px;
+	color: #111827;
+}
+
+.date-filter-field ::ng-deep .cal-grid span.selected {
+	background: white;
+	border: 1.5px solid var(--color-primario);
+	color: var(--color-primario);
+}
+
+.date-filter-field ::ng-deep .cal-grid span.today:not(.selected) {
+	border: 1.5px solid var(--color-primario);
+	color: var(--color-primario);
+	background: white;
+}
+
+.filter-actions {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 12px;
+	align-self: end;
+}
+
+.clear-filter {
+	height: 44px;
+	padding: 0 20px;
+	border-radius: 999px;
+	border: none;
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.clear-filter {
+	background: rgba(255, 59, 59, 0.1);
+	color: #ff6b6b;
+}
+
 /* =========================
 	TABLA
 ========================= */
@@ -113,7 +319,7 @@ thead th {
 
 tbody tr {
 	background: white;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 3px 14px rgba(0, 0, 0, 0.08);
 	border-radius: 18px;
 	transition: all 0.25s ease;
 }
@@ -181,7 +387,9 @@ tbody img {
 .actions {
 	display: flex;
 	align-items: center;
-	justify-content: space-around;
+	justify-content: center;
+	gap: 10px;
+	white-space: nowrap;
 }
 
 .actions button {
@@ -216,4 +424,43 @@ tbody img {
 	padding: 10px 16px;
 	background: rgba(255, 59, 59, 0.12);
 	color: #ff3b3b;
+}
+
+.fa-spinner {
+	animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+	to { transform: rotate(360deg); }
+}
+
+@media (max-width: 1100px) {
+	.advanced-filters {
+		grid-template-columns: repeat(2, minmax(220px, 1fr));
+	}
+
+	.filter-actions {
+		justify-content: flex-start;
+	}
+}
+
+@media (max-width: 720px) {
+	.top-bar,
+	.advanced-filters {
+		grid-template-columns: 1fr;
+	}
+
+	.search-box,
+	.filter-btn,
+	.add-btn,
+	.filter-actions,
+	.clear-filter {
+		width: 100%;
+	}
+
+	.filter-btn,
+	.add-btn,
+	.filter-actions {
+		justify-content: center;
+	}
 }
