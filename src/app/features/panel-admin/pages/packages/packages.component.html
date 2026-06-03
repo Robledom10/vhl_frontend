@@ -5,15 +5,14 @@
 
 		<!-- BUSCADOR -->
 		<div class="search-box">
-			<input type="text" placeholder="Buscar paquete..." />
-
-			<button>
+			<input type="text" placeholder="Buscar por paquete o destino..." [(ngModel)]="busqueda" (keyup.enter)="buscar()" />
+			<button (click)="buscar()">
 				<i class="fa-solid fa-magnifying-glass"></i>
 			</button>
 		</div>
 
 		<!-- FILTRO -->
-		<button class="filter-btn">
+		<button class="filter-btn" (click)="toggleFilters()">
 			<i class="fa-solid fa-sliders"></i>
 			<span>Filtrar</span>
 		</button>
@@ -25,8 +24,56 @@
 		</button>
 	</div>
 
+	<div class="advanced-filters" *ngIf="showFilters">
+		<div class="filter-field">
+			<label>Duración (días)</label>
+			<input
+				type="number"
+				min="1"
+				placeholder="7"
+				[(ngModel)]="duracionFiltro"
+				(ngModelChange)="autoApplyFilters()" />
+		</div>
+
+		<div class="filter-field date-filter-field">
+			<label>Fecha de salida</label>
+			<button class="date-filter-input" type="button" (click)="toggleFilterCalendar($event)">
+				<span [class.placeholder]="!fechaSalidaFiltro">{{ formattedFilterDate }}</span>
+				<i class="fa-regular fa-calendar"></i>
+			</button>
+
+			<app-custom-calendar
+				*ngIf="showFilterCalendar"
+				[isOpen]="showFilterCalendar"
+				[selectedDate]="fechaSalidaFiltro"
+				(dateSelected)="onFilterDateSelected($event)"
+				(closed)="showFilterCalendar = false">
+			</app-custom-calendar>
+		</div>
+
+		<div class="filter-field status-filter-field">
+			<label>Estado</label>
+			<div class="status-select-wrapper">
+				<select [(ngModel)]="estadoFiltro" (ngModelChange)="autoApplyFilters(0)">
+					<option>Activos</option>
+					<option>Inactivos</option>
+					<option>Todos</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="filter-actions">
+			<button class="clear-filter" type="button" (click)="clearFilters()">Limpiar</button>
+		</div>
+	</div>
+
+	<!-- CARGANDO -->
+	<div *ngIf="cargando" class="loading">
+		<p>Cargando paquetes...</p>
+	</div>
+
 	<!-- TABLA -->
-	<div class="table-container">
+	<div class="table-container" *ngIf="!cargando">
 		<table>
 			<thead>
 				<tr>
@@ -73,9 +120,16 @@
 							<button class="view" (click)="openDetail(item); $event.stopPropagation()">
 								<i class="fa-regular fa-eye"></i>
 							</button>
-							<button class="edit">Editar</button>
-							<button class="delete" (click)="openDeleteModal(item)">Eliminar</button>
+							<button class="edit" (click)="openEditModal(item); $event.stopPropagation()">Editar</button>
+							<button class="delete" (click)="openDeleteModal(item); $event.stopPropagation()">Eliminar</button>
 						</div>
+					</td>
+				</tr>
+
+				<!-- SIN RESULTADOS -->
+				<tr *ngIf="packages.length === 0">
+					<td colspan="9" style="text-align:center; padding: 2rem;">
+						No se encontraron paquetes.
 					</td>
 				</tr>
 			</tbody>
@@ -87,15 +141,22 @@
 	(closed)="closeDetail()"></app-package-detail-sheet>
 
 <app-confirm-modal [isOpen]="showDeleteModal" title="Eliminar paquete"
-	message="Esta acción eliminará toda la información del paquete." confirmText="Eliminar" cancelText="Cancelar"
+	message="Esta acción dejará el paquete como inactivo." confirmText="Eliminar" cancelText="Cancelar"
 	icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b" iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b"
 	(confirmed)="confirmDelete()" (closed)="closeDeleteModal()">
-
 </app-confirm-modal>
 
-<app-toast-notification [show]="showToast" title="Paquete eliminado con éxito"
-	[message]="'El paquete ' + selectedPackage?.name + ' fue eliminado correctamente.'">
+<app-toast-notification
+	[show]="showToast"
+	[title]="toastTitle"
+	[message]="toastMessage"
+	[type]="toastType">
 </app-toast-notification>
 
-<app-form-package-creation [isOpen]="showCreateModal" (closed)="closeCreateModal()">
+<app-form-package-creation
+	[isOpen]="showCreateModal"
+	[mode]="editingPackage ? 'edit' : 'create'"
+	[editPackage]="editingPackage"
+	(saved)="handlePackageSaved($event)"
+	(closed)="closeCreateModal()">
 </app-form-package-creation>
