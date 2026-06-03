@@ -23,6 +23,7 @@ export interface SolicitudPaqueteTuristico {
   incluye: string[];
   noIncluye: string[];
   politicasCancelacion: string[];
+  requisitos?: string[];
   itinerario: SolicitudActividadItinerario[];
 }
 
@@ -47,6 +48,7 @@ export interface RespuestaPaqueteTuristico {
   incluye: string[];
   noIncluye: string[];
   politicasCancelacion: string[];
+  requisitos: string[];
   activo: boolean;
   itinerario: {
     id: number;

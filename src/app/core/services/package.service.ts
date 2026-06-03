@@ -46,6 +46,10 @@ export class PackageService {
 		return this.http.delete<void>(`${this.apiUrl}/${id}`);
 	}
 
+	deletePackagePermanent(id: number): Observable<void> {
+		return this.http.delete<void>(`${this.apiUrl}/${id}/permanente`);
+	}
+
 	uploadImage(file: File): Observable<RespuestaImagenPaquete> {
 		const formData = new FormData();
 		formData.append('file', file);

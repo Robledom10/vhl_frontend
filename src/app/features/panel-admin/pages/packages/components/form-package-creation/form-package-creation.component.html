@@ -431,30 +431,18 @@
 						<div class="checkbox-section">
 							<h3 class="checkbox-title">Itinerario</h3>
 
-							<div class="itinerary-list" formArrayName="itinerary">
+							<div class="itinerary-grid" formArrayName="itinerary">
 								<div class="itinerary-item" *ngFor="let item of itinerary.controls; let i = index">
+									<span class="day-badge">Día {{ i + 1 }}</span>
 									<div class="form-group itinerary-input">
-										<input type="text" placeholder=" " [formControlName]="i"
+										<input type="text" placeholder="Actividad del día {{ i + 1 }}" [formControlName]="i"
 											[class.ng-invalid]="item.invalid && item.touched">
-
-										<label>Día {{ i + 1 }}</label>
-
-										<span *ngIf="item.invalid && item.touched">
+										<span class="field-error" *ngIf="item.invalid && item.touched">
 											El día es obligatorio
 										</span>
 									</div>
-
-									<button type="button" class="remove-day" (click)="removeDay(i)"
-										*ngIf="itinerary.length > 1">
-										<i class="fa-solid fa-trash"></i>
-									</button>
 								</div>
 							</div>
-
-							<button type="button" class="add-option" (click)="addDay()">
-								<i class="fa-solid fa-plus"></i>
-								Agregar día
-							</button>
 						</div>
 
 						<!-- POLÍTICAS -->
@@ -554,10 +542,9 @@
 							Siguiente
 						</button>
 
-						<button type="button" class="save" *ngIf="currentStep === 4" (click)="submitForm()"
-							[disabled]="enviando">
+						<button type="button" class="save" *ngIf="currentStep === 4" (click)="submitForm()" [disabled]="enviando">
 							<i class="fa-solid fa-spinner" *ngIf="enviando"></i>
-							{{ enviando ? 'Generando...' : mode === 'edit' ? 'Actualizar paquete' : 'Crear paquete' }}
+					{{ enviando ? 'Generando...' : mode === 'edit' ? 'Actualizar paquete' : 'Crear paquete' }}
 						</button>
 					</div>
 				</div>
