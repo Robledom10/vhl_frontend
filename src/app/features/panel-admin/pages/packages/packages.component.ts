@@ -5,227 +5,227 @@ import { PackageService } from '../../../../core/services/package.service';
 import { RespuestaPaqueteTuristico, PageResponse } from '../../models/package.model';
 
 @Component({
-  selector: 'app-packages',
-  templateUrl: './packages.component.html',
-  styleUrls: ['./packages.component.css'],
+	selector: 'app-packages',
+	templateUrl: './packages.component.html',
+	styleUrls: ['./packages.component.css'],
 })
 export class PackagesComponent implements OnInit {
 
-  showCreateModal = false;
-  showFilters = true;
-  showFilterCalendar = false;
-  sheetOpen = false;
-  selectedPackageDetail: PackageDetail | null = null;
-  showDeleteModal = false;
-  showToast = false;
-  toastTitle = '';
-  toastMessage = '';
-  toastType: 'success' | 'edit' | 'delete' = 'success';
-  selectedPackage: AdminPackage | null = null;
-  editingPackage: RespuestaPaqueteTuristico | null = null;
-  packages: AdminPackage[] = [];
-  busqueda = '';
-  destinoFiltro = '';
-  duracionFiltro: number | null = null;
-  fechaSalidaFiltro = '';
-  estadoFiltro = 'Activos';
-  cargando = false;
-  private filterChangeTimer: ReturnType<typeof setTimeout> | null = null;
+	showCreateModal = false;
+	showFilters = true;
+	showFilterCalendar = false;
+	sheetOpen = false;
+	selectedPackageDetail: PackageDetail | null = null;
+	showDeleteModal = false;
+	showToast = false;
+	toastTitle = '';
+	toastMessage = '';
+	toastType: 'success' | 'edit' | 'delete' = 'success';
+	selectedPackage: AdminPackage | null = null;
+	editingPackage: RespuestaPaqueteTuristico | null = null;
+	packages: AdminPackage[] = [];
+	busqueda = '';
+	destinoFiltro = '';
+	duracionFiltro: number | null = null;
+	fechaSalidaFiltro = '';
+	estadoFiltro = 'Activos';
+	cargando = false;
+	private filterChangeTimer: ReturnType<typeof setTimeout> | null = null;
 
-  constructor(private packageService: PackageService) {}
+	constructor(private packageService: PackageService) { }
 
-  ngOnInit(): void {
-    this.cargarPaquetes();
-  }
+	ngOnInit(): void {
+		this.cargarPaquetes();
+	}
 
-  openEditModal(pkg: AdminPackage): void {
-    this.editingPackage = pkg.source;
-    this.showCreateModal = true;
-    document.body.style.overflow = 'hidden';
-  }
+	openEditModal(pkg: AdminPackage): void {
+		this.editingPackage = pkg.source;
+		this.showCreateModal = true;
+		document.body.style.overflow = 'hidden';
+	}
 
-  openCreateModal(): void {
-    this.editingPackage = null;
-    this.showCreateModal = true;
-    document.body.style.overflow = 'hidden';
-  }
+	openCreateModal(): void {
+		this.editingPackage = null;
+		this.showCreateModal = true;
+		document.body.style.overflow = 'hidden';
+	}
 
-  closeCreateModal(): void {
-    this.editingPackage = null;
-    this.showCreateModal = false;
-    document.body.style.overflow = '';
-  }
+	closeCreateModal(): void {
+		this.editingPackage = null;
+		this.showCreateModal = false;
+		document.body.style.overflow = '';
+	}
 
-  handlePackageSaved(event: { action: 'created' | 'updated'; name: string }): void {
-    if (event.action === 'created') {
-      this.showFeedbackToast(
-        'Paquete creado con éxito',
-        `El paquete "${event.name}" ya está disponible en la lista.`,
-        'success',
-      );
-    } else {
-      this.showFeedbackToast(
-        'Paquete actualizado',
-        `Los cambios de "${event.name}" se guardaron correctamente.`,
-        'edit',
-      );
-    }
+	handlePackageSaved(event: { action: 'created' | 'updated'; name: string }): void {
+		if (event.action === 'created') {
+			this.showFeedbackToast(
+				'Paquete creado con éxito',
+				`El paquete "${event.name}" ya está disponible en la lista.`,
+				'success',
+			);
+		} else {
+			this.showFeedbackToast(
+				'Paquete actualizado',
+				`Los cambios de "${event.name}" se guardaron correctamente.`,
+				'edit',
+			);
+		}
 
-    this.cargarPaquetes();
-  }
+		this.cargarPaquetes();
+	}
 
-  private showFeedbackToast(title: string, message: string, type: 'success' | 'edit' | 'delete'): void {
-    this.toastTitle = title;
-    this.toastMessage = message;
-    this.toastType = type;
-    this.showToast = true;
+	private showFeedbackToast(title: string, message: string, type: 'success' | 'edit' | 'delete'): void {
+		this.toastTitle = title;
+		this.toastMessage = message;
+		this.toastType = type;
+		this.showToast = true;
 
-    setTimeout(() => { this.showToast = false; }, 3200);
-  }
+		setTimeout(() => { this.showToast = false; }, 3200);
+	}
 
-  cargarPaquetes(): void {
-    this.cargando = true;
-    this.packageService.getPackages({
-      busqueda: this.busqueda || undefined,
-      destino: this.destinoFiltro || undefined,
-      duracionDias: this.duracionFiltro || undefined,
-      fechaInicio: this.fechaSalidaFiltro || undefined,
-      activo: this.estadoFiltro === 'Activos' ? true : this.estadoFiltro === 'Inactivos' ? false : undefined,
-    }).subscribe({
-      next: (page: PageResponse<RespuestaPaqueteTuristico>) => {
-        this.packages = page.content.map((p: RespuestaPaqueteTuristico) => this.mapToAdminPackage(p));
-        this.cargando = false;
-      },
-      error: (err: any) => {
-        console.error('Error cargando paquetes:', err);
-        this.cargando = false;
-      }
-    });
-  }
+	cargarPaquetes(): void {
+		this.cargando = true;
+		this.packageService.getPackages({
+			busqueda: this.busqueda || undefined,
+			destino: this.destinoFiltro || undefined,
+			duracionDias: this.duracionFiltro || undefined,
+			fechaInicio: this.fechaSalidaFiltro || undefined,
+			activo: this.estadoFiltro === 'Activos' ? true : this.estadoFiltro === 'Inactivos' ? false : undefined,
+		}).subscribe({
+			next: (page: PageResponse<RespuestaPaqueteTuristico>) => {
+				this.packages = page.content.map((p: RespuestaPaqueteTuristico) => this.mapToAdminPackage(p));
+				this.cargando = false;
+			},
+			error: (err: any) => {
+				console.error('Error cargando paquetes:', err);
+				this.cargando = false;
+			}
+		});
+	}
 
-  buscar(): void {
-    this.showFilterCalendar = false;
-    this.cargarPaquetes();
-  }
+	buscar(): void {
+		this.showFilterCalendar = false;
+		this.cargarPaquetes();
+	}
 
-  autoApplyFilters(delay = 300): void {
-    if (this.filterChangeTimer) {
-      clearTimeout(this.filterChangeTimer);
-    }
+	autoApplyFilters(delay = 300): void {
+		if (this.filterChangeTimer) {
+			clearTimeout(this.filterChangeTimer);
+		}
 
-    this.filterChangeTimer = setTimeout(() => {
-      this.showFilterCalendar = false;
-      this.cargarPaquetes();
-    }, delay);
-  }
+		this.filterChangeTimer = setTimeout(() => {
+			this.showFilterCalendar = false;
+			this.cargarPaquetes();
+		}, delay);
+	}
 
-  toggleFilters(): void {
-    this.showFilters = !this.showFilters;
-  }
+	toggleFilters(): void {
+		this.showFilters = !this.showFilters;
+	}
 
-  clearFilters(): void {
-    if (this.filterChangeTimer) {
-      clearTimeout(this.filterChangeTimer);
-      this.filterChangeTimer = null;
-    }
+	clearFilters(): void {
+		if (this.filterChangeTimer) {
+			clearTimeout(this.filterChangeTimer);
+			this.filterChangeTimer = null;
+		}
 
-    this.busqueda = '';
-    this.destinoFiltro = '';
-    this.duracionFiltro = null;
-    this.fechaSalidaFiltro = '';
-    this.showFilterCalendar = false;
-    this.estadoFiltro = 'Activos';
-    this.cargarPaquetes();
-  }
+		this.busqueda = '';
+		this.destinoFiltro = '';
+		this.duracionFiltro = null;
+		this.fechaSalidaFiltro = '';
+		this.showFilterCalendar = false;
+		this.estadoFiltro = 'Activos';
+		this.cargarPaquetes();
+	}
 
-  toggleFilterCalendar(event: Event): void {
-    event.stopPropagation();
-    this.showFilterCalendar = !this.showFilterCalendar;
-  }
+	toggleFilterCalendar(event: Event): void {
+		event.stopPropagation();
+		this.showFilterCalendar = !this.showFilterCalendar;
+	}
 
-  onFilterDateSelected(date: string): void {
-    this.fechaSalidaFiltro = date;
-    this.showFilterCalendar = false;
-    this.autoApplyFilters(0);
-  }
+	onFilterDateSelected(date: string): void {
+		this.fechaSalidaFiltro = date;
+		this.showFilterCalendar = false;
+		this.autoApplyFilters(0);
+	}
 
-  get formattedFilterDate(): string {
-    if (!this.fechaSalidaFiltro) return 'dd / mm / aaaa';
+	get formattedFilterDate(): string {
+		if (!this.fechaSalidaFiltro) return 'dd / mm / aaaa';
 
-    const [year, month, day] = this.fechaSalidaFiltro.split('-');
-    return `${day}/${month}/${year}`;
-  }
+		const [year, month, day] = this.fechaSalidaFiltro.split('-');
+		return `${day}/${month}/${year}`;
+	}
 
-  private mapToAdminPackage(p: RespuestaPaqueteTuristico): AdminPackage {
-    return {
-      id: p.id,
-      name: p.titulo,
-      location: p.destino,
-      duration: `${p.duracionDias} días`,
-      date: p.fechaInicio,
-      price: p.precio,
-      capacity: p.cupo,
-      status: p.activo ? 'activo' : 'inactivo',
-      imageUrl: p.fotoVerticalUrl || p.fotoHorizontalUrl || 'https://picsum.photos/200',
-      source: p,
-    };
-  }
+	private mapToAdminPackage(p: RespuestaPaqueteTuristico): AdminPackage {
+		return {
+			id: p.id,
+			name: p.titulo,
+			location: p.destino,
+			duration: `${p.duracionDias} días`,
+			date: p.fechaInicio,
+			price: p.precio,
+			capacity: p.cupo,
+			status: p.activo ? 'activo' : 'inactivo',
+			imageUrl: p.fotoVerticalUrl || p.fotoHorizontalUrl || 'https://picsum.photos/200',
+			source: p,
+		};
+	}
 
-  openDetail(pkg: AdminPackage): void {
-    this.selectedPackageDetail = this.mapToPackageDetail(pkg.source);
-    this.sheetOpen = true;
-  }
+	openDetail(pkg: AdminPackage): void {
+		this.selectedPackageDetail = this.mapToPackageDetail(pkg.source);
+		this.sheetOpen = true;
+	}
 
-  private mapToPackageDetail(p: RespuestaPaqueteTuristico): PackageDetail {
-    return {
-      title: p.titulo,
-      subtitle: `Disfruta una experiencia increíble en ${p.destino}.`,
-      spotsAvailable: p.cupo,
-      price: p.precio,
-      destinations: p.destino,
-      duration: `${p.duracionDias} días`,
-      departurePlace: p.lugarSalida,
-      date: p.fechaInicio,
-      accommodation: p.alojamiento,
-      transport: p.tipoTransporte,
-      mainImage: p.fotoVerticalUrl || p.fotoHorizontalUrl,
-      galleryImages: p.fotoHorizontalUrl ? [p.fotoHorizontalUrl] : [],
-      itinerary: (p.itinerario || []).map((i: any) => ({ day: `Día ${i.numeroDia}`, desc: i.titulo })),
-      includes: p.incluye || [],
-      notIncludes: p.noIncluye || [],
-      cancellation: p.politicasCancelacion || [],
-      requirements: [],
-    };
-  }
+	private mapToPackageDetail(p: RespuestaPaqueteTuristico): PackageDetail {
+		return {
+			title: p.titulo,
+			subtitle: `Disfruta una experiencia increíble en ${p.destino}.`,
+			spotsAvailable: p.cupo,
+			price: p.precio,
+			destinations: p.destino,
+			duration: `${p.duracionDias} días`,
+			departurePlace: p.lugarSalida,
+			date: p.fechaInicio,
+			accommodation: p.alojamiento,
+			transport: p.tipoTransporte,
+			mainImage: p.fotoVerticalUrl || p.fotoHorizontalUrl,
+			galleryImages: p.fotoHorizontalUrl ? [p.fotoHorizontalUrl] : [],
+			itinerary: (p.itinerario || []).map((i: any) => ({ day: `Día ${i.numeroDia}`, desc: i.titulo })),
+			includes: p.incluye || [],
+			notIncludes: p.noIncluye || [],
+			cancellation: p.politicasCancelacion || [],
+			requirements: [],
+		};
+	}
 
-  closeDetail(): void {
-    this.sheetOpen = false;
-  }
+	closeDetail(): void {
+		this.sheetOpen = false;
+	}
 
-  openDeleteModal(pkg: AdminPackage): void {
-    this.selectedPackage = pkg;
-    this.showDeleteModal = true;
-  }
+	openDeleteModal(pkg: AdminPackage): void {
+		this.selectedPackage = pkg;
+		this.showDeleteModal = true;
+	}
 
-  closeDeleteModal(): void {
-    this.showDeleteModal = false;
-  }
+	closeDeleteModal(): void {
+		this.showDeleteModal = false;
+	}
 
-  confirmDelete(): void {
-    if (!this.selectedPackage) return;
-    this.packageService.deletePackage(this.selectedPackage.id).subscribe({
-      next: () => {
-        this.showDeleteModal = false;
-        const deletedName = this.selectedPackage?.name || 'El paquete';
-        this.showFeedbackToast(
-          'Paquete movido a inactivos',
-          `"${deletedName}" ya no aparece entre los paquetes activos.`,
-          'delete',
-        );
-        this.packages = this.packages.filter(pkg => pkg.id !== this.selectedPackage?.id);
-        this.cargarPaquetes();
-      },
-      error: (err: any) => console.error('Error eliminando paquete:', err)
-    });
-  }
+	confirmDelete(): void {
+		if (!this.selectedPackage) return;
+		this.packageService.deletePackage(this.selectedPackage.id).subscribe({
+			next: () => {
+				this.showDeleteModal = false;
+				const deletedName = this.selectedPackage?.name || 'El paquete';
+				this.showFeedbackToast(
+					'Paquete movido a inactivos',
+					`"${deletedName}" ya no aparece entre los paquetes activos.`,
+					'delete',
+				);
+				this.packages = this.packages.filter(pkg => pkg.id !== this.selectedPackage?.id);
+				this.cargarPaquetes();
+			},
+			error: (err: any) => console.error('Error eliminando paquete:', err)
+		});
+	}
 }

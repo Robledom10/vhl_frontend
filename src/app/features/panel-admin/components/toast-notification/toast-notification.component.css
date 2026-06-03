@@ -11,61 +11,26 @@
 	background: white;
 	min-width: 340px;
 	max-width: 450px;
-	padding: 18px 22px;
+	padding: 22px 20px;
 	border-radius: 18px;
 	box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
-	text-align: left;
+	text-align: center;
 	font-family: "Outfit", sans-serif;
-	border: 1px solid rgba(229, 229, 229, 0.8);
-	border-left: 6px solid var(--color-primario);
-	display: flex;
-	align-items: center;
-	gap: 14px;
-}
-
-.toast-icon {
-	width: 44px;
-	height: 44px;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: rgba(63, 162, 219, 0.12);
-	color: var(--color-primario);
-	font-size: 20px;
-	flex-shrink: 0;
+	border-top: 5px solid var(--color-primario);
 }
 
 .toast-content h4 {
 	margin: 0;
-	font-size: 17px;
+	font-size: 20px;
 	font-weight: 600;
 	color: var(--color-texto-principal);
 }
 
 .toast-content p {
-	margin: 4px 0 0;
-	font-size: 15px;
+	margin-top: 10px;
+	font-size: 18px;
 	color: var(--color-texto-secundario);
-	line-height: 1.35;
-}
-
-.toast.edit .toast-content {
-	border-left-color: #f3b63f;
-}
-
-.toast.edit .toast-icon {
-	background: rgba(243, 182, 63, 0.18);
-	color: #c99700;
-}
-
-.toast.delete .toast-content {
-	border-left-color: #ff6b6b;
-}
-
-.toast.delete .toast-icon {
-	background: rgba(255, 59, 59, 0.12);
-	color: #ff3b3b;
+	line-height: 1.5;
 }
 
 @keyframes slideDown {

@@ -5,7 +5,8 @@
 
 		<!-- BUSCADOR -->
 		<div class="search-box">
-			<input type="text" placeholder="Buscar por paquete o destino..." [(ngModel)]="busqueda" (keyup.enter)="buscar()" />
+			<input type="text" placeholder="Buscar por paquete o destino..." [(ngModel)]="busqueda"
+				(keyup.enter)="buscar()" />
 			<button (click)="buscar()">
 				<i class="fa-solid fa-magnifying-glass"></i>
 			</button>
@@ -27,11 +28,7 @@
 	<div class="advanced-filters" *ngIf="showFilters">
 		<div class="filter-field">
 			<label>Duración (días)</label>
-			<input
-				type="number"
-				min="1"
-				placeholder="7"
-				[(ngModel)]="duracionFiltro"
+			<input type="number" min="1" placeholder="7" [(ngModel)]="duracionFiltro"
 				(ngModelChange)="autoApplyFilters()" />
 		</div>
 
@@ -42,11 +39,8 @@
 				<i class="fa-regular fa-calendar"></i>
 			</button>
 
-			<app-custom-calendar
-				*ngIf="showFilterCalendar"
-				[isOpen]="showFilterCalendar"
-				[selectedDate]="fechaSalidaFiltro"
-				(dateSelected)="onFilterDateSelected($event)"
+			<app-custom-calendar *ngIf="showFilterCalendar" [isOpen]="showFilterCalendar"
+				[selectedDate]="fechaSalidaFiltro" (dateSelected)="onFilterDateSelected($event)"
 				(closed)="showFilterCalendar = false">
 			</app-custom-calendar>
 		</div>
@@ -120,8 +114,12 @@
 							<button class="view" (click)="openDetail(item); $event.stopPropagation()">
 								<i class="fa-regular fa-eye"></i>
 							</button>
-							<button class="edit" (click)="openEditModal(item); $event.stopPropagation()">Editar</button>
-							<button class="delete" (click)="openDeleteModal(item); $event.stopPropagation()">Eliminar</button>
+							<button class="edit" (click)="openEditModal(item); $event.stopPropagation()">
+								Editar
+							</button>
+							<button class="delete" (click)="openDeleteModal(item); $event.stopPropagation()">
+								Eliminar
+							</button>
 						</div>
 					</td>
 				</tr>
@@ -146,17 +144,9 @@
 	(confirmed)="confirmDelete()" (closed)="closeDeleteModal()">
 </app-confirm-modal>
 
-<app-toast-notification
-	[show]="showToast"
-	[title]="toastTitle"
-	[message]="toastMessage"
-	[type]="toastType">
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
 </app-toast-notification>
 
-<app-form-package-creation
-	[isOpen]="showCreateModal"
-	[mode]="editingPackage ? 'edit' : 'create'"
-	[editPackage]="editingPackage"
-	(saved)="handlePackageSaved($event)"
-	(closed)="closeCreateModal()">
+<app-form-package-creation [isOpen]="showCreateModal" [mode]="editingPackage ? 'edit' : 'create'"
+	[editPackage]="editingPackage" (saved)="handlePackageSaved($event)" (closed)="closeCreateModal()">
 </app-form-package-creation>

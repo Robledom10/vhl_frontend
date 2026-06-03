@@ -554,9 +554,10 @@
 							Siguiente
 						</button>
 
-						<button type="button" class="save" *ngIf="currentStep === 4" (click)="submitForm()" [disabled]="enviando">
+						<button type="button" class="save" *ngIf="currentStep === 4" (click)="submitForm()"
+							[disabled]="enviando">
 							<i class="fa-solid fa-spinner" *ngIf="enviando"></i>
-					{{ enviando ? 'Generando...' : mode === 'edit' ? 'Actualizar paquete' : 'Crear paquete' }}
+							{{ enviando ? 'Generando...' : mode === 'edit' ? 'Actualizar paquete' : 'Crear paquete' }}
 						</button>
 					</div>
 				</div>

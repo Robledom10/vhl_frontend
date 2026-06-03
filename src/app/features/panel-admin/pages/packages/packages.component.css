@@ -431,7 +431,9 @@ tbody img {
 }
 
 @keyframes spin {
-	to { transform: rotate(360deg); }
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 @media (max-width: 1100px) {
@@ -445,6 +447,7 @@ tbody img {
 }
 
 @media (max-width: 720px) {
+
 	.top-bar,
 	.advanced-filters {
 		grid-template-columns: 1fr;
