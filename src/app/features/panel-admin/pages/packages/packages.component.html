@@ -5,41 +5,37 @@
 
 		<!-- BUSCADOR -->
 		<div class="search-box">
-			<input type="text" placeholder="Buscar por paquete o destino..." [(ngModel)]="busqueda" (keyup.enter)="buscar()" />
+			<input type="text" placeholder="Buscar por paquete o destino..." [(ngModel)]="busqueda" (ngModelChange)="autoApplyFilters()" (keyup.enter)="buscar()" />
 			<button (click)="buscar()">
 				<i class="fa-solid fa-magnifying-glass"></i>
 			</button>
 		</div>
 
-		<!-- FILTRO -->
-		<button class="filter-btn" (click)="toggleFilters()">
-			<i class="fa-solid fa-sliders"></i>
-			<span>Filtrar</span>
-		</button>
+		<!-- FILTRO ESTADO -->
+		<div class="filter-wrapper">
+			<button class="filter-btn" (click)="toggleFilters()">
+				<div class="filter-content">
+					<i class="fa-solid fa-sliders"></i>
+					<span>{{ estadoFiltro }}</span>
+				</div>
+				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="showFilters"></i>
+			</button>
 
-		<!-- AGREGAR -->
-		<button class="add-btn" (click)="openCreateModal()">
-			<i class="fa-solid fa-plus"></i>
-			<span>Agregar</span>
-		</button>
-	</div>
-
-	<div class="advanced-filters" *ngIf="showFilters">
-		<div class="filter-field">
-			<label>Duración (días)</label>
-			<input
-				type="number"
-				min="1"
-				placeholder="7"
-				[(ngModel)]="duracionFiltro"
-				(ngModelChange)="autoApplyFilters()" />
+			<div class="dropdown" *ngIf="showFilters">
+				<div class="dropdown-item" (click)="selectEstado('Activos')">Activos</div>
+				<div class="dropdown-item" (click)="selectEstado('Inactivos')">Inactivos</div>
+				<div class="dropdown-item" (click)="selectEstado('Todos')">Todos</div>
+			</div>
 		</div>
 
-		<div class="filter-field date-filter-field">
-			<label>Fecha de salida</label>
-			<button class="date-filter-input" type="button" (click)="toggleFilterCalendar($event)">
-				<span [class.placeholder]="!fechaSalidaFiltro">{{ formattedFilterDate }}</span>
-				<i class="fa-regular fa-calendar"></i>
+		<!-- FILTRO FECHA -->
+		<div class="filter-wrapper calendar-filter">
+			<button class="filter-btn" type="button" (click)="toggleFilterCalendar($event)">
+				<div class="filter-content">
+					<i class="fa-regular fa-calendar"></i>
+					<span>{{ fechaSalidaFiltro ? formattedFilterDate : 'Fecha' }}</span>
+				</div>
+				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="showFilterCalendar"></i>
 			</button>
 
 			<app-custom-calendar
@@ -51,20 +47,16 @@
 			</app-custom-calendar>
 		</div>
 
-		<div class="filter-field status-filter-field">
-			<label>Estado</label>
-			<div class="status-select-wrapper">
-				<select [(ngModel)]="estadoFiltro" (ngModelChange)="autoApplyFilters(0)">
-					<option>Activos</option>
-					<option>Inactivos</option>
-					<option>Todos</option>
-				</select>
-			</div>
-		</div>
+		<!-- LIMPIAR -->
+		<button class="clear-filter" type="button" (click)="clearFilters()" *ngIf="busqueda || fechaSalidaFiltro || estadoFiltro !== 'Activos'">
+			Limpiar
+		</button>
 
-		<div class="filter-actions">
-			<button class="clear-filter" type="button" (click)="clearFilters()">Limpiar</button>
-		</div>
+		<!-- AGREGAR -->
+		<button class="add-btn" (click)="openCreateModal()">
+			<i class="fa-solid fa-plus"></i>
+			<span>Agregar</span>
+		</button>
 	</div>
 
 	<!-- CARGANDO -->
@@ -140,8 +132,11 @@
 <app-package-detail-sheet [isOpen]="sheetOpen" [package]="selectedPackageDetail"
 	(closed)="closeDetail()"></app-package-detail-sheet>
 
-<app-confirm-modal [isOpen]="showDeleteModal" title="Eliminar paquete"
-	message="Esta acción dejará el paquete como inactivo." confirmText="Eliminar" cancelText="Cancelar"
+<app-confirm-modal [isOpen]="showDeleteModal"
+	[title]="isSelectedInactive ? 'Eliminar permanentemente' : 'Eliminar paquete'"
+	[message]="isSelectedInactive ? 'Esta acción eliminará el paquete de forma permanente y no se podrá recuperar.' : 'Esta acción dejará el paquete como inactivo.'"
+	[confirmText]="isSelectedInactive ? 'Eliminar definitivamente' : 'Eliminar'"
+	cancelText="Cancelar"
 	icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b" iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b"
 	(confirmed)="confirmDelete()" (closed)="closeDeleteModal()">
 </app-confirm-modal>

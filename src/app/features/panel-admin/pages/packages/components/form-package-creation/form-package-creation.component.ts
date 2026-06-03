@@ -108,6 +108,19 @@ export class FormPackageCreationComponent implements OnInit, OnChanges {
     this.hours = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
     this.minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
     this.updateFileValidators();
+    this.packageForm.get('duration')?.valueChanges.subscribe(value => {
+      const days = Number(value);
+      if (days >= 1) this.syncItineraryWithDuration(days);
+    });
+  }
+
+  private syncItineraryWithDuration(days: number) {
+    while (this.itinerary.length < days) {
+      this.itinerary.push(this.fb.control('', Validators.required));
+    }
+    while (this.itinerary.length > days) {
+      this.itinerary.removeAt(this.itinerary.length - 1);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -169,11 +182,23 @@ export class FormPackageCreationComponent implements OnInit, OnChanges {
     const notIncludedArray = this.fb.array(pkg.noIncluye?.map(item => this.fb.control(item)) || [], Validators.required);
     this.packageForm.setControl('notIncluded', notIncludedArray);
 
-    const itineraryArray = this.fb.array(pkg.itinerario?.map(item => this.fb.control(item.titulo, Validators.required)) || [this.fb.control('', Validators.required)]);
+    const numDays = pkg.duracionDias || 1;
+    const existingTitles = pkg.itinerario?.map(item => item.titulo) || [];
+    while (existingTitles.length < numDays) existingTitles.push('');
+    const itineraryArray = this.fb.array(
+      existingTitles.slice(0, numDays).map(titulo => this.fb.control(titulo, Validators.required))
+    );
     this.packageForm.setControl('itinerary', itineraryArray);
 
     const cancellationArray = this.fb.array(pkg.politicasCancelacion?.map(item => this.fb.control(item)) || [] , Validators.required);
     this.packageForm.setControl('cancellationPolicies', cancellationArray);
+
+    const requirementsArray = this.fb.array(pkg.requisitos?.map(item => this.fb.control(item)) || [
+      this.fb.control('Cédula de ciudadanía obligatoria.'),
+      this.fb.control('Edad mínima: 5 años.'),
+      this.fb.control('Pago completo antes del viaje.'),
+    ]);
+    this.packageForm.setControl('requirements', requirementsArray);
   }
   get included(): FormArray { return this.packageForm.get('included') as FormArray; }
   get notIncluded(): FormArray { return this.packageForm.get('notIncluded') as FormArray; }
@@ -291,6 +316,7 @@ export class FormPackageCreationComponent implements OnInit, OnChanges {
         incluye: this.included.value as string[],
         noIncluye: this.notIncluded.value as string[],
         politicasCancelacion: this.cancellationPolicies.value as string[],
+        requisitos: this.requirements.value as string[],
         itinerario: this.itinerary.controls.map((control, index) => ({
           numeroDia: index + 1,
           titulo: String(control.value || '').trim(),

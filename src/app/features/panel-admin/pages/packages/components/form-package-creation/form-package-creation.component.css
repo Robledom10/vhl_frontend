@@ -608,11 +608,62 @@ select:valid {
 	background: white;
 }
 
+.itinerary-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 12px;
+}
+
 .itinerary-item {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	gap: 18px;
+	gap: 10px;
+	background: #f8fafc;
+	border: 1px solid #ececec;
+	border-radius: 14px;
+	padding: 10px 14px;
+	transition: border-color 0.2s ease;
+}
+
+.itinerary-item:focus-within {
+	border-color: var(--color-primario);
+	background: white;
+}
+
+.day-badge {
+	font-size: 12px;
+	font-weight: 700;
+	color: var(--color-primario);
+	white-space: nowrap;
+	min-width: 42px;
+}
+
+.itinerary-item .itinerary-input {
+	flex: 1;
+	margin: 0;
+}
+
+.itinerary-item .itinerary-input input {
+	width: 100%;
+	border: none;
+	outline: none;
+	background: transparent;
+	font-size: 14px;
+	font-family: "Outfit", sans-serif;
+	color: var(--color-texto-principal);
+	padding: 0;
+}
+
+.itinerary-item .itinerary-input input::placeholder {
+	color: #b0b8c1;
+	font-size: 13px;
+}
+
+.field-error {
+	font-size: 11px;
+	color: var(--color-error);
+	display: block;
+	margin-top: 2px;
 }
 
 /* EFECTO HOVER */

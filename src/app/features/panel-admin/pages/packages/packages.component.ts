@@ -123,6 +123,12 @@ export class PackagesComponent implements OnInit {
     this.showFilters = !this.showFilters;
   }
 
+  selectEstado(estado: string): void {
+    this.estadoFiltro = estado;
+    this.showFilters = false;
+    this.cargarPaquetes();
+  }
+
   clearFilters(): void {
     if (this.filterChangeTimer) {
       clearTimeout(this.filterChangeTimer);
@@ -179,7 +185,7 @@ export class PackagesComponent implements OnInit {
   private mapToPackageDetail(p: RespuestaPaqueteTuristico): PackageDetail {
     return {
       title: p.titulo,
-      subtitle: `Disfruta una experiencia increíble en ${p.destino}.`,
+      subtitle: p.descripcion || '',
       spotsAvailable: p.cupo,
       price: p.precio,
       destinations: p.destino,
@@ -194,7 +200,7 @@ export class PackagesComponent implements OnInit {
       includes: p.incluye || [],
       notIncludes: p.noIncluye || [],
       cancellation: p.politicasCancelacion || [],
-      requirements: [],
+      requirements: p.requisitos || [],
     };
   }
 
@@ -211,15 +217,24 @@ export class PackagesComponent implements OnInit {
     this.showDeleteModal = false;
   }
 
+  get isSelectedInactive(): boolean {
+    return this.selectedPackage?.status === 'inactivo';
+  }
+
   confirmDelete(): void {
     if (!this.selectedPackage) return;
-    this.packageService.deletePackage(this.selectedPackage.id).subscribe({
+    const deletedName = this.selectedPackage.name;
+    const isInactive = this.selectedPackage.status === 'inactivo';
+    const delete$ = isInactive
+      ? this.packageService.deletePackagePermanent(this.selectedPackage.id)
+      : this.packageService.deletePackage(this.selectedPackage.id);
+
+    delete$.subscribe({
       next: () => {
         this.showDeleteModal = false;
-        const deletedName = this.selectedPackage?.name || 'El paquete';
         this.showFeedbackToast(
-          'Paquete movido a inactivos',
-          `"${deletedName}" ya no aparece entre los paquetes activos.`,
+          isInactive ? 'Paquete eliminado definitivamente' : 'Paquete movido a inactivos',
+          isInactive ? `"${deletedName}" fue eliminado permanentemente.` : `"${deletedName}" ya no aparece entre los paquetes activos.`,
           'delete',
         );
         this.packages = this.packages.filter(pkg => pkg.id !== this.selectedPackage?.id);
