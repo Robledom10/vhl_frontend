@@ -435,8 +435,8 @@
 								<div class="itinerary-item" *ngFor="let item of itinerary.controls; let i = index">
 									<span class="day-badge">Día {{ i + 1 }}</span>
 									<div class="form-group itinerary-input">
-										<input type="text" placeholder="Actividad del día {{ i + 1 }}" [formControlName]="i"
-											[class.ng-invalid]="item.invalid && item.touched">
+										<input type="text" placeholder="Actividad del día {{ i + 1 }}"
+											[formControlName]="i" [class.ng-invalid]="item.invalid && item.touched">
 										<span class="field-error" *ngIf="item.invalid && item.touched">
 											El día es obligatorio
 										</span>
@@ -542,9 +542,10 @@
 							Siguiente
 						</button>
 
-						<button type="button" class="save" *ngIf="currentStep === 4" (click)="submitForm()" [disabled]="enviando">
+						<button type="button" class="save" *ngIf="currentStep === 4" (click)="submitForm()"
+							[disabled]="enviando">
 							<i class="fa-solid fa-spinner" *ngIf="enviando"></i>
-					{{ enviando ? 'Generando...' : mode === 'edit' ? 'Actualizar paquete' : 'Crear paquete' }}
+							{{ enviando ? 'Generando...' : mode === 'edit' ? 'Actualizar paquete' : 'Crear paquete' }}
 						</button>
 					</div>
 				</div>
