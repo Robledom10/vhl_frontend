@@ -1,0 +1,107 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="closeModal()">
+	<div class="modal-container" (click)="$event.stopPropagation()">
+		<div class="modal-content">
+			<h2 class="modal-title">
+				{{ mode === 'edit'? 'Editar': mode === 'view'? 'Detalle': 'Crear' }}
+				<span>Proveedor</span>
+			</h2>
+
+			<div class="divider"></div>
+
+			<form [formGroup]="providerForm">
+
+				<!-- NOMBRE -->
+
+				<div class="form-group">
+					<input type="text" placeholder=" " formControlName="nombre"
+						[class.ng-invalid]="providerForm.get('nombre')?.invalid && providerForm.get('nombre')?.touched">
+
+					<label>Nombre del proveedor</label>
+
+					<span *ngIf="providerForm.get('nombre')?.touched">
+
+						<ng-container *ngIf="providerForm.get('nombre')?.errors?.['required']">
+							El nombre es obligatorio
+						</ng-container>
+
+						<ng-container *ngIf="providerForm.get('nombre')?.errors?.['minlength']">
+							Mínimo 3 caracteres
+						</ng-container>
+
+						<ng-container *ngIf="providerForm.get('nombre')?.errors?.['maxlength']">
+							Máximo 80 caracteres
+						</ng-container>
+
+					</span>
+				</div>
+
+				<!-- TIPO -->
+
+				<div class="form-group">
+					<select formControlName="tipoProveedor"
+						[class.ng-invalid]="providerForm.get('tipoProveedor')?.invalid && providerForm.get('tipoProveedor')?.touched">
+						<option value="Hotel">Hotel</option>
+						<option value="Transporte">Transporte</option>
+						<option value="Restaurante">Restaurante</option>
+						<option value="Guía">Guía</option>
+					</select>
+
+					<label>Tipo de proveedor</label>
+
+					<span
+						*ngIf="providerForm.get('tipoProveedor')?.errors?.['required'] && providerForm.get('tipoProveedor')?.touched">
+						Seleccione un tipo de proveedor
+					</span>
+				</div>
+
+				<!-- CORREO -->
+
+				<div class="form-group">
+					<input type="email" placeholder=" " formControlName="correo"
+						[class.ng-invalid]="providerForm.get('correo')?.invalid && providerForm.get('correo')?.touched">
+					<label>Correo electrónico</label>
+					<span *ngIf="providerForm.get('correo')?.touched">
+
+						<ng-container *ngIf="providerForm.get('correo')?.errors?.['required']">
+							El correo es obligatorio
+						</ng-container>
+
+						<ng-container *ngIf="providerForm.get('correo')?.errors?.['email']">
+							Correo electrónico inválido
+						</ng-container>
+					</span>
+				</div>
+
+				<!-- TELEFONO -->
+
+				<div class="form-group">
+					<input type="text" placeholder=" " formControlName="telefono"
+						[class.ng-invalid]="providerForm.get('telefono')?.invalid && providerForm.get('telefono')?.touched">
+					<label>Teléfono</label>
+
+					<span *ngIf="providerForm.get('nombre')?.touched">
+
+						<ng-container *ngIf="providerForm.get('telefono')?.errors?.['required']">
+							El teléfono es obligatorio
+						</ng-container>
+
+						<ng-container *ngIf="providerForm.get('telefono')?.errors?.['pattern']">
+							Solo números (7 a 15 dígitos)
+						</ng-container>
+					</span>
+				</div>
+			</form>
+
+			<div class="buttons">
+				<button type="button" class="cancel" (click)="closeModal()">
+					Cerrar
+				</button>
+
+				<button type="button" class="save" *ngIf="mode !== 'view'" (click)="submitForm()" [disabled]="loading">
+					<i class="fa-solid fa-spinner" *ngIf="loading"></i>
+					{{loading? 'Guardando...': mode === 'edit'? 'Actualizar proveedor': 'Crear proveedor'}}
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

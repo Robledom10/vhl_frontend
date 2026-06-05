@@ -31,7 +31,7 @@ const routes: Routes = [
 			import('./features/panel-admin/panel-admin.module').then(
 				(m) => m.PanelAdminModule,
 			),
-		// canActivate: [AuthGuard],
+		canActivate: [AuthGuard],
 	},
 	{
 		path: 'packages',

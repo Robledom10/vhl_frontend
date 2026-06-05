@@ -10,17 +10,11 @@ import { UserItem } from '../../models/user.model';
 })
 export class EditUserRoleModalComponent implements OnChanges {
 	@Input() isOpen = false;
-
 	@Input() user: UserItem | null = null;
-
 	@Output() closed = new EventEmitter<void>();
-
 	@Output() updated = new EventEmitter<UserItem>();
-
 	roleDropdownOpen = false;
-
 	selectedRole = '';
-
 	isLoading = false;
 
 	// =========================

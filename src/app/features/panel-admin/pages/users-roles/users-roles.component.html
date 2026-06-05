@@ -60,7 +60,8 @@
 					<td>{{ user.email }}</td>
 					<td>{{ user.role }}</td>
 					<td>
-						<span class="status" [class.active]="user.status === 'Activo'" [class.inactive]="user.status === 'Inactivo'">
+						<span class="status" [class.active]="user.status === 'Activo'"
+							[class.inactive]="user.status === 'Inactivo'">
 							{{ user.status }}
 						</span>
 					</td>
@@ -75,7 +76,8 @@
 								Editar
 							</button>
 
-							<button class="delete" [class.activate]="user.status === 'Inactivo'" (click)="openStatusModal(user)" [disabled]="isCurrentUser(user)">
+							<button class="delete" [class.activate]="user.status === 'Inactivo'"
+								(click)="openStatusModal(user)" [disabled]="isCurrentUser(user)">
 								{{ user.status === 'Activo' ? 'Desactivar' : 'Activar' }}
 							</button>
 
