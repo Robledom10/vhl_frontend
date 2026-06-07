@@ -2,14 +2,28 @@
 
   <div class="page-header">
     <div>
-      <h2 class="page-title">Información <span>Médica</span></h2>
-      <p class="page-subtitle">Consulta y actualiza la información médica de cada viajero</p>
+      <h2 class="page-title">Informacion <span>Medica</span></h2>
+      <p class="page-subtitle">Consulta y actualiza la informacion medica de cada viajero</p>
     </div>
+    <button class="btn-nuevo" (click)="abrirNuevo()">
+      Nuevo registro
+    </button>
+  </div>
+
+  <!-- SELECTOR DE VIAJE -->
+  <div class="form-group" style="max-width: 420px; margin-bottom: 8px;">
+    <label style="font-size:13px; font-weight:500; color:var(--color-texto-secundario); padding-left:6px;">Filtrar por viaje</label>
+    <select (change)="onViajeChange($event)" style="height:52px; border-radius:25px; border:1.5px solid #e8e8e8; padding:0 22px; font-family:'Outfit',sans-serif; font-size:15px; outline:none; background:white; width:100%;">
+      <option value="">Seleccionar viaje...</option>
+      <option *ngFor="let v of viajes" [value]="v.id" [selected]="v.id === idViajeSeleccionado">
+        Viaje #{{ v.id }} &mdash; Paquete {{ v.idPaquete }} ({{ v.fechaSalida }})
+      </option>
+    </select>
   </div>
 
   <div class="section-title">
     <i class="fa-solid fa-heart-pulse"></i>
-    <h3>Registros médicos de viajeros</h3>
+    <h3>Registros medicos de viajeros</h3>
   </div>
 
   <div class="table-container">
@@ -17,32 +31,32 @@
       <thead>
         <tr>
           <th>Viajero</th>
-          <th>Grupo sanguíneo</th>
+          <th>Tipo de sangre</th>
           <th>Alergias</th>
           <th>Medicamentos</th>
           <th>Condiciones</th>
-          <th>Acción</th>
+          <th>Accion</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let r of registros">
-          <td><strong>{{ r.viajero }}</strong></td>
-          <td><span class="badge-sg">{{ r.grupoSanguineo }}</span></td>
+          <td>{{ getNombreViajero(r.idViajero) }}</td>
+          <td><span class="badge-sg">{{ r.tipoSangre }}</span></td>
           <td>
-            <span class="tag-condicion" [class.con-alerta]="r.alergias !== 'Ninguna'">{{ r.alergias }}</span>
+            <span class="tag-condicion" [class.con-alerta]="r.alergias && r.alergias.toLowerCase() !== 'ninguna' && r.alergias !== ''">{{ r.alergias || '&mdash;' }}</span>
           </td>
-          <td>{{ r.medicamentos }}</td>
+          <td>{{ r.medicamentos || '&mdash;' }}</td>
           <td>
-            <span class="tag-condicion" [class.con-alerta]="r.tieneCondicion">{{ r.condiciones }}</span>
+            <span class="tag-condicion" [class.con-alerta]="r.condicionesMedicas && r.condicionesMedicas.toLowerCase() !== 'ninguna' && r.condicionesMedicas !== ''">{{ r.condicionesMedicas || '&mdash;' }}</span>
           </td>
           <td>
-            <button class="btn-accion" (click)="abrir(r)">
-              <i class="fa-solid fa-pen-to-square"></i> Editar
-            </button>
+            <div class="actions">
+              <button class="edit" (click)="abrir(r)">Editar</button>
+            </div>
           </td>
         </tr>
         <tr *ngIf="registros.length === 0">
-          <td colspan="6" class="empty">No hay registros médicos.</td>
+          <td colspan="6" class="empty">No hay registros medicos para este viaje.</td>
         </tr>
       </tbody>
     </table>
@@ -52,45 +66,55 @@
   <div class="modal-backdrop" *ngIf="showForm" (click)="cerrar()"></div>
   <div class="modal-panel" *ngIf="showForm">
     <div class="modal-header">
-      <h3>Editar info médica — {{ editando?.viajero }}</h3>
-      <button class="btn-cerrar" (click)="cerrar()"><i class="fa-solid fa-xmark"></i></button>
+      <h3>{{ editando ? 'Editar info medica &mdash; ' + getNombreViajero(editando.idViajero) : 'Nuevo registro medico' }}</h3>
+      <button class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
     </div>
 
     <form [formGroup]="medForm" (ngSubmit)="guardar()">
       <div class="form-grid">
+        <div class="form-group span-2" *ngIf="!editando">
+          <label>Viajero *</label>
+          <select formControlName="idViajero">
+            <option value="">Seleccionar viajero...</option>
+            <option *ngFor="let u of usuarios" [value]="u.id">{{ u.firstName }} {{ u.lastName }}</option>
+          </select>
+          <span class="error" *ngIf="medForm.get('idViajero')?.invalid && medForm.get('idViajero')?.touched">Selecciona un viajero</span>
+        </div>
+
         <div class="form-group">
-          <label>Grupo sanguíneo *</label>
-          <select formControlName="grupoSanguineo">
+          <label>Tipo de sangre *</label>
+          <select formControlName="tipoSangre">
             <option value="">Seleccionar...</option>
             <option *ngFor="let g of gruposSanguineos" [value]="g">{{ g }}</option>
           </select>
-          <span class="error" *ngIf="medForm.get('grupoSanguineo')?.invalid && medForm.get('grupoSanguineo')?.touched">Campo requerido</span>
+          <span class="error" *ngIf="medForm.get('tipoSangre')?.invalid && medForm.get('tipoSangre')?.touched">Campo requerido</span>
         </div>
 
         <div class="form-group">
-          <label>Alergias *</label>
+          <label>Telefono medico</label>
+          <input type="text" formControlName="telefonoMedico" placeholder="+57 300 000 0000">
+          <span class="error" *ngIf="medForm.get('telefonoMedico')?.invalid && medForm.get('telefonoMedico')?.touched">Formato invalido</span>
+        </div>
+
+        <div class="form-group span-2">
+          <label>Alergias</label>
           <input type="text" formControlName="alergias" placeholder='Ej: Polen, mariscos o "Ninguna"'>
-          <span class="error" *ngIf="medForm.get('alergias')?.invalid && medForm.get('alergias')?.touched">Campo requerido</span>
         </div>
 
-        <div class="form-group">
-          <label>Medicamentos *</label>
+        <div class="form-group span-2">
+          <label>Medicamentos</label>
           <input type="text" formControlName="medicamentos" placeholder='Ej: Metformina o "Ninguno"'>
-          <span class="error" *ngIf="medForm.get('medicamentos')?.invalid && medForm.get('medicamentos')?.touched">Campo requerido</span>
         </div>
 
-        <div class="form-group">
-          <label>Condiciones médicas *</label>
+        <div class="form-group span-2">
+          <label>Condiciones medicas</label>
           <input type="text" formControlName="condiciones" placeholder='Ej: Diabetes tipo 2 o "Ninguna"'>
-          <span class="error" *ngIf="medForm.get('condiciones')?.invalid && medForm.get('condiciones')?.touched">Campo requerido</span>
         </div>
       </div>
 
       <div class="modal-actions">
         <button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
         <button type="submit" class="btn-guardar" [disabled]="enviando">
-          <i class="fa-solid fa-floppy-disk" *ngIf="!enviando"></i>
-          <i class="fa-solid fa-spinner spinning" *ngIf="enviando"></i>
           {{ enviando ? 'Guardando...' : 'Guardar cambios' }}
         </button>
       </div>

@@ -1,58 +1,121 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-
-interface Incidente {
-  id: number; viaje: string; tipo: string; descripcion: string;
-  fecha: string; estado: 'abierto' | 'en-proceso' | 'resuelto'; reportadoPor: string;
-}
+import { OperacionesService } from '../../../../../../core/services/operaciones.service';
+import { Viaje, Incidente } from '../../../../models/operaciones.models';
 
 @Component({
   selector: 'app-incidentes',
   templateUrl: './incidentes.component.html',
   styleUrl: './incidentes.component.css',
 })
-export class IncidentesComponent {
+export class IncidentesComponent implements OnInit {
   showForm = false;
   enviando = false;
   showToast = false;
   toastMsg = '';
 
-  incidentes: Incidente[] = [
-    { id: 1, viaje: 'Plan turístico Isla de Barú', tipo: 'Accidente leve', descripcion: 'Viajero se torció el tobillo durante caminata.', fecha: '2026-06-05', estado: 'en-proceso', reportadoPor: 'Guía Juan Pérez' },
-    { id: 2, viaje: 'Plan vacacional Medellín', tipo: 'Pérdida de equipaje', descripcion: 'Maleta no llegó en vuelo de conexión.', fecha: '2026-06-04', estado: 'resuelto', reportadoPor: 'Op. Sara Barmar' },
+  viajes: Viaje[] = [];
+  idViajeSeleccionado: number | null = null;
+  incidentes: Incidente[] = [];
+
+  tiposIncidente = [
+    'Accidente leve', 'Accidente grave', 'Perdida de equipaje',
+    'Problema de salud', 'Retraso de transporte',
+    'Conflicto entre viajeros', 'Problema de alojamiento', 'Otro'
   ];
 
-  tiposIncidente = ['Accidente leve', 'Accidente grave', 'Pérdida de equipaje', 'Problema de salud', 'Retraso de transporte', 'Conflicto entre viajeros', 'Problema de alojamiento', 'Otro'];
-
-  viajes = ['Plan excursión 2026', 'Plan turístico Isla de Barú', 'Plan vacacional Medellín'];
+  severidades = ['BAJO', 'MEDIO', 'ALTO', 'CRITICO'];
 
   incidenteForm = this.fb.group({
-    viaje: ['', Validators.required],
-    tipo: ['', Validators.required],
+    idViaje:     ['', Validators.required],
+    tipo:        ['', Validators.required],
     descripcion: ['', [Validators.required, Validators.minLength(10)]],
-    reportadoPor: ['', Validators.required],
+    severidad:   ['', Validators.required],
+    reportadoPor:['', Validators.required],
+    idViajero:   [''],
   });
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private svc: OperacionesService) {}
 
-  abrir(): void { this.incidenteForm.reset(); this.showForm = true; }
+  ngOnInit(): void {
+    this.svc.getViajes().subscribe({
+      next: (viajes) => {
+        this.viajes = viajes;
+        if (viajes.length > 0) {
+          this.idViajeSeleccionado = viajes[0].id;
+          this.cargarIncidentes();
+        }
+      },
+      error: () => {}
+    });
+  }
+
+  onViajeChange(event: Event): void {
+    const id = Number((event.target as HTMLSelectElement).value);
+    this.idViajeSeleccionado = id || null;
+    this.incidentes = [];
+    if (this.idViajeSeleccionado) this.cargarIncidentes();
+  }
+
+  cargarIncidentes(): void {
+    if (!this.idViajeSeleccionado) return;
+    this.svc.getIncidentes(this.idViajeSeleccionado).subscribe({
+      next: (items) => { this.incidentes = items; },
+      error: () => {}
+    });
+  }
+
+  abrir(): void {
+    this.incidenteForm.reset({ idViaje: this.idViajeSeleccionado?.toString() || '' });
+    this.showForm = true;
+  }
   cerrar(): void { this.showForm = false; }
 
   guardar(): void {
     if (this.incidenteForm.invalid) { this.incidenteForm.markAllAsTouched(); return; }
     this.enviando = true;
-    setTimeout(() => {
-      const v = this.incidenteForm.value;
-      this.incidentes.unshift({ id: Date.now(), viaje: v.viaje!, tipo: v.tipo!, descripcion: v.descripcion!, fecha: new Date().toISOString().split('T')[0], estado: 'abierto', reportadoPor: v.reportadoPor! });
-      this.enviando = false;
-      this.showForm = false;
-      this.mostrarToast('Incidente registrado correctamente');
-    }, 700);
+
+    const v = this.incidenteForm.value;
+    const idViaje = Number(v.idViaje);
+    const body = {
+      tipo:        v.tipo || '',
+      descripcion: v.descripcion || '',
+      severidad:   v.severidad || 'MEDIO',
+      reportadoPor:v.reportadoPor || '',
+      idViajero:   v.idViajero ? Number(v.idViajero) : null,
+    };
+
+    this.svc.registrarIncidente(idViaje, body).subscribe({
+      next: (result) => {
+        this.incidentes.unshift(result);
+        this.enviando = false;
+        this.showForm = false;
+        this.mostrarToast('Incidente registrado correctamente');
+      },
+      error: (err) => {
+        this.enviando = false;
+        this.mostrarToast(err?.error?.mensaje || 'Error al registrar incidente');
+      }
+    });
   }
 
   cambiarEstado(inc: Incidente): void {
-    const ciclo: Record<string, 'abierto' | 'en-proceso' | 'resuelto'> = { 'abierto': 'en-proceso', 'en-proceso': 'resuelto', 'resuelto': 'abierto' };
-    inc.estado = ciclo[inc.estado];
+    const ciclo: Record<string, string> = {
+      'pendiente':   'en-proceso',
+      'en-proceso':  'resuelto',
+      'resuelto':    'pendiente'
+    };
+    const nuevoEstado = ciclo[inc.estado] || 'pendiente';
+    this.svc.actualizarEstadoIncidente(inc.id, nuevoEstado).subscribe({
+      next: (result) => {
+        const idx = this.incidentes.findIndex(i => i.id === inc.id);
+        if (idx !== -1) this.incidentes[idx] = result;
+        this.mostrarToast('Estado actualizado');
+      },
+      error: (err) => {
+        this.mostrarToast(err?.error?.mensaje || 'Error al actualizar estado');
+      }
+    });
   }
 
   mostrarToast(msg: string): void {
@@ -61,7 +124,9 @@ export class IncidentesComponent {
   }
 
   getEstadoLabel(estado: string): string {
-    const map: Record<string, string> = { 'abierto': 'Abierto', 'en-proceso': 'En proceso', 'resuelto': 'Resuelto' };
+    const map: Record<string, string> = {
+      'pendiente': 'Pendiente', 'en-proceso': 'En proceso', 'resuelto': 'Resuelto'
+    };
     return map[estado] || estado;
   }
 }

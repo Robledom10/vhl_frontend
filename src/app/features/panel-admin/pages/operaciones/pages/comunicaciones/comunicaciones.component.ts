@@ -1,53 +1,93 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-
-interface Comunicacion {
-  id: number; viaje: string; destinatario: string; asunto: string;
-  mensaje: string; fecha: string; tipo: 'grupal' | 'individual';
-}
+import { OperacionesService } from '../../../../../../core/services/operaciones.service';
+import { Viaje, Notificacion } from '../../../../models/operaciones.models';
 
 @Component({
   selector: 'app-comunicaciones',
   templateUrl: './comunicaciones.component.html',
   styleUrl: './comunicaciones.component.css',
 })
-export class ComunicacionesComponent {
+export class ComunicacionesComponent implements OnInit {
   showForm = false;
   enviando = false;
   showToast = false;
   toastMsg = '';
 
-  comunicaciones: Comunicacion[] = [
-    { id: 1, viaje: 'Plan excursión 2026', destinatario: 'Todos los viajeros', asunto: 'Punto de encuentro mañana', mensaje: 'El bus saldrá desde la Terminal Norte a las 6:00 AM. Por favor estar 15 minutos antes.', fecha: '2026-06-04', tipo: 'grupal' },
-    { id: 2, viaje: 'Plan vacacional Medellín', destinatario: 'Pedro López', asunto: 'Información sobre equipaje', mensaje: 'Su maleta fue localizada y llegará en el próximo vuelo.', fecha: '2026-06-05', tipo: 'individual' },
-  ];
+  viajes: Viaje[] = [];
+  idViajeSeleccionado: number | null = null;
+  comunicaciones: Notificacion[] = [];
 
-  viajes = ['Plan excursión 2026', 'Plan turístico Isla de Barú', 'Plan vacacional Medellín'];
-  tiposDestinatario = ['Todos los viajeros', 'Carlos Martínez', 'Ana García', 'Pedro López'];
+  canales = ['EMAIL', 'SMS', 'PUSH', 'WHATSAPP'];
 
   comForm = this.fb.group({
-    viaje: ['', Validators.required],
-    destinatario: ['', Validators.required],
-    asunto: ['', [Validators.required, Validators.minLength(5)]],
-    mensaje: ['', [Validators.required, Validators.minLength(20)]],
-    tipo: ['grupal', Validators.required],
+    idViaje:  ['', Validators.required],
+    asunto:   ['', [Validators.required, Validators.minLength(5)]],
+    mensaje:  ['', [Validators.required, Validators.minLength(20)]],
+    canal:    ['EMAIL', Validators.required],
   });
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private svc: OperacionesService) {}
 
-  abrir(): void { this.comForm.reset({ tipo: 'grupal' }); this.showForm = true; }
+  ngOnInit(): void {
+    this.svc.getViajes().subscribe({
+      next: (viajes) => {
+        this.viajes = viajes;
+        if (viajes.length > 0) {
+          this.idViajeSeleccionado = viajes[0].id;
+          this.cargarNotificaciones();
+        }
+      },
+      error: () => {}
+    });
+  }
+
+  onViajeChange(event: Event): void {
+    const id = Number((event.target as HTMLSelectElement).value);
+    this.idViajeSeleccionado = id || null;
+    this.comunicaciones = [];
+    if (this.idViajeSeleccionado) this.cargarNotificaciones();
+  }
+
+  cargarNotificaciones(): void {
+    if (!this.idViajeSeleccionado) return;
+    this.svc.getNotificaciones(this.idViajeSeleccionado).subscribe({
+      next: (items) => { this.comunicaciones = items; },
+      error: () => {}
+    });
+  }
+
+  abrir(): void {
+    this.comForm.reset({ canal: 'EMAIL', idViaje: this.idViajeSeleccionado?.toString() || '' });
+    this.showForm = true;
+  }
   cerrar(): void { this.showForm = false; }
 
   enviar(): void {
     if (this.comForm.invalid) { this.comForm.markAllAsTouched(); return; }
     this.enviando = true;
-    setTimeout(() => {
-      const v = this.comForm.value;
-      this.comunicaciones.unshift({ id: Date.now(), viaje: v.viaje!, destinatario: v.destinatario!, asunto: v.asunto!, mensaje: v.mensaje!, fecha: new Date().toISOString().split('T')[0], tipo: v.tipo as 'grupal' | 'individual' });
-      this.enviando = false;
-      this.showForm = false;
-      this.mostrarToast('Comunicación enviada exitosamente');
-    }, 800);
+
+    const v = this.comForm.value;
+    const idViaje = Number(v.idViaje);
+    const body = {
+      asunto:       v.asunto || '',
+      mensaje:      v.mensaje || '',
+      canal:        v.canal || 'EMAIL',
+      destinatarios: [],
+    };
+
+    this.svc.enviarNotificacion(idViaje, body).subscribe({
+      next: (result) => {
+        this.comunicaciones.unshift(result);
+        this.enviando = false;
+        this.showForm = false;
+        this.mostrarToast('Comunicacion enviada exitosamente');
+      },
+      error: (err) => {
+        this.enviando = false;
+        this.mostrarToast(err?.error?.mensaje || 'Error al enviar comunicacion');
+      }
+    });
   }
 
   mostrarToast(msg: string): void {

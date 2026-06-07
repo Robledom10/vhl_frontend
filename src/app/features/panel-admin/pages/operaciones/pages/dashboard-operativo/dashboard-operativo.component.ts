@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { OperacionesService } from '../../../../../../core/services/operaciones.service';
+import { Viaje, Dashboard } from '../../../../models/operaciones.models';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
-interface ViajeOperativo {
-  id: number;
-  nombre: string;
-  destino: string;
-  fecha: string;
-  totalViajeros: number;
-  transporteAsignado: boolean;
-  alojamientoAsignado: boolean;
+interface ViajeConStats extends Viaje {
+  transportesAsignados: number;
+  alojamientosAsignados: number;
   incidentes: number;
-  estado: 'activo' | 'en-curso' | 'finalizado';
+  viajerosRegistrados: number;
 }
 
 @Component({
@@ -19,38 +19,92 @@ interface ViajeOperativo {
 })
 export class DashboardOperativoComponent implements OnInit {
   cargando = false;
-
-  viajes: ViajeOperativo[] = [
-    { id: 1, nombre: 'Plan excursión 2026', destino: 'Santa Marta', fecha: '2026-06-09', totalViajeros: 4, transporteAsignado: true, alojamientoAsignado: true, incidentes: 0, estado: 'activo' },
-    { id: 2, nombre: 'Plan turístico Isla de Barú', destino: 'Isla de Barú', fecha: '2026-06-23', totalViajeros: 4, transporteAsignado: false, alojamientoAsignado: false, incidentes: 1, estado: 'activo' },
-    { id: 3, nombre: 'Plan vacacional Medellín', destino: 'Medellín', fecha: '2026-06-10', totalViajeros: 12, transporteAsignado: true, alojamientoAsignado: false, incidentes: 0, estado: 'en-curso' },
-  ];
+  viajes: ViajeConStats[] = [];
 
   get totalViajeros(): number {
-    return this.viajes.reduce((sum, v) => sum + v.totalViajeros, 0);
+    return this.viajes.reduce((sum, v) => sum + v.viajerosRegistrados, 0);
   }
 
   get transportesAsignados(): number {
-    return this.viajes.filter(v => v.transporteAsignado).length;
+    return this.viajes.reduce((sum, v) => sum + v.transportesAsignados, 0);
   }
 
   get alojamientosAsignados(): number {
-    return this.viajes.filter(v => v.alojamientoAsignado).length;
+    return this.viajes.reduce((sum, v) => sum + v.alojamientosAsignados, 0);
   }
 
   get totalIncidentes(): number {
     return this.viajes.reduce((sum, v) => sum + v.incidentes, 0);
   }
 
-  ngOnInit(): void {}
+  constructor(private svc: OperacionesService, private router: Router) {}
+
+  ir(ruta: string): void {
+    this.router.navigate(['/panel-admin', ruta]);
+  }
+
+  ngOnInit(): void {
+    this.cargar();
+  }
+
+  cargar(): void {
+    this.cargando = true;
+    this.svc.getViajes().subscribe({
+      next: (viajes) => {
+        if (viajes.length === 0) {
+          this.viajes = [];
+          this.cargando = false;
+          return;
+        }
+        const dashboardCalls = viajes.map(v =>
+          this.svc.getDashboard(v.id).pipe(catchError(() => of(null)))
+        );
+        forkJoin(dashboardCalls).subscribe({
+          next: (dashboards) => {
+            this.viajes = viajes.map((v, i) => {
+              const d = dashboards[i] as Dashboard | null;
+              return {
+                ...v,
+                transportesAsignados: d?.transportesAsignados ?? 0,
+                alojamientosAsignados: d?.alojamientosAsignados ?? 0,
+                incidentes: d?.incidentesRegistrados ?? 0,
+                viajerosRegistrados: d?.viajerosRegistrados ?? 0,
+              };
+            });
+            this.cargando = false;
+          },
+          error: () => { this.cargando = false; }
+        });
+      },
+      error: () => { this.cargando = false; }
+    });
+  }
 
   actualizar(): void {
-    this.cargando = true;
-    setTimeout(() => { this.cargando = false; }, 800);
+    this.cargar();
   }
 
   getEstadoLabel(estado: string): string {
-    const map: Record<string, string> = { 'activo': 'Activo', 'en-curso': 'En curso', 'finalizado': 'Finalizado' };
+    const map: Record<string, string> = {
+      'programado': 'Programado',
+      'activo': 'Activo',
+      'en-curso': 'En curso',
+      'finalizado': 'Finalizado'
+    };
     return map[estado] || estado;
+  }
+
+  getEstadoClass(estado: string): string {
+    const map: Record<string, string> = {
+      'programado': 'activo',
+      'activo': 'activo',
+      'en-curso': 'en-curso',
+      'finalizado': 'finalizado'
+    };
+    return map[estado] || 'activo';
+  }
+
+  getNombreViaje(viaje: Viaje): string {
+    return `Viaje #${viaje.id} — Paquete ${viaje.idPaquete}`;
   }
 }

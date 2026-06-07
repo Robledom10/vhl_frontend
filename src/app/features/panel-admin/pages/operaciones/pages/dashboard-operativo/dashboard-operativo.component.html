@@ -5,15 +5,14 @@
       <h2 class="page-title">Dashboard <span>Operativo</span></h2>
       <p class="page-subtitle">Resumen del estado operativo de todos los viajes activos</p>
     </div>
-    <button class="btn-actualizar" (click)="actualizar()">
-      <i class="fa-solid fa-rotate" [class.spinning]="cargando"></i>
-      Actualizar
+    <button class="btn-actualizar" (click)="actualizar()" [disabled]="cargando">
+      {{ cargando ? 'Cargando...' : 'Actualizar' }}
     </button>
   </div>
 
   <!-- KPI CARDS -->
   <div class="kpi-grid">
-    <div class="kpi-card">
+    <div class="kpi-card kpi-clickable" (click)="ir('operaciones-check-in')" title="Ver check-ins">
       <div class="kpi-icon blue">
         <i class="fa-solid fa-users"></i>
       </div>
@@ -21,9 +20,10 @@
         <span class="kpi-value">{{ totalViajeros }}</span>
         <span class="kpi-label">Viajeros totales</span>
       </div>
+      <i class="fa-solid fa-arrow-right kpi-arrow"></i>
     </div>
 
-    <div class="kpi-card">
+    <div class="kpi-card kpi-clickable" (click)="ir('operaciones-transporte')" title="Gestionar transporte">
       <div class="kpi-icon green">
         <i class="fa-solid fa-bus-simple"></i>
       </div>
@@ -31,9 +31,10 @@
         <span class="kpi-value">{{ transportesAsignados }}/{{ viajes.length }}</span>
         <span class="kpi-label">Transportes asignados</span>
       </div>
+      <i class="fa-solid fa-arrow-right kpi-arrow"></i>
     </div>
 
-    <div class="kpi-card">
+    <div class="kpi-card kpi-clickable" (click)="ir('operaciones-alojamiento')" title="Gestionar alojamiento">
       <div class="kpi-icon teal">
         <i class="fa-solid fa-bed"></i>
       </div>
@@ -41,9 +42,10 @@
         <span class="kpi-value">{{ alojamientosAsignados }}/{{ viajes.length }}</span>
         <span class="kpi-label">Alojamientos asignados</span>
       </div>
+      <i class="fa-solid fa-arrow-right kpi-arrow"></i>
     </div>
 
-    <div class="kpi-card">
+    <div class="kpi-card kpi-clickable" (click)="ir('operaciones-incidentes')" title="Ver incidentes">
       <div class="kpi-icon red">
         <i class="fa-solid fa-triangle-exclamation"></i>
       </div>
@@ -51,6 +53,7 @@
         <span class="kpi-value">{{ totalIncidentes }}</span>
         <span class="kpi-label">Incidentes registrados</span>
       </div>
+      <i class="fa-solid fa-arrow-right kpi-arrow"></i>
     </div>
   </div>
 
@@ -65,8 +68,8 @@
       <thead>
         <tr>
           <th>Viaje</th>
-          <th>Destino</th>
-          <th>Fecha</th>
+          <th>Paquete</th>
+          <th>Fecha salida</th>
           <th>Viajeros</th>
           <th>Transporte</th>
           <th>Alojamiento</th>
@@ -76,31 +79,34 @@
       </thead>
       <tbody>
         <tr *ngFor="let viaje of viajes">
-          <td>{{ viaje.nombre }}</td>
-          <td>{{ viaje.destino }}</td>
-          <td>{{ viaje.fecha }}</td>
-          <td><span class="badge-num">{{ viaje.totalViajeros }}</span></td>
+          <td>{{ getNombreViaje(viaje) }}</td>
+          <td>#{{ viaje.idPaquete }}</td>
+          <td>{{ viaje.fechaSalida }}</td>
           <td>
-            <span class="estado-dot" [class.ok]="viaje.transporteAsignado" [class.pendiente]="!viaje.transporteAsignado">
-              <i [class]="viaje.transporteAsignado ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
-              {{ viaje.transporteAsignado ? 'Asignado' : 'Pendiente' }}
+            <span class="badge-num link-cell" (click)="ir('operaciones-check-in')">{{ viaje.viajerosRegistrados }}</span>
+          </td>
+          <td>
+            <span class="estado-dot link-cell" [class.ok]="viaje.transportesAsignados > 0" [class.pendiente]="viaje.transportesAsignados === 0" (click)="ir('operaciones-transporte')">
+              {{ viaje.transportesAsignados > 0 ? 'Asignado' : 'Pendiente' }}
             </span>
           </td>
           <td>
-            <span class="estado-dot" [class.ok]="viaje.alojamientoAsignado" [class.pendiente]="!viaje.alojamientoAsignado">
-              <i [class]="viaje.alojamientoAsignado ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
-              {{ viaje.alojamientoAsignado ? 'Asignado' : 'Pendiente' }}
+            <span class="estado-dot link-cell" [class.ok]="viaje.alojamientosAsignados > 0" [class.pendiente]="viaje.alojamientosAsignados === 0" (click)="ir('operaciones-alojamiento')">
+              {{ viaje.alojamientosAsignados > 0 ? 'Asignado' : 'Pendiente' }}
             </span>
           </td>
           <td>
-            <span class="incidente-badge" [class.con-incidentes]="viaje.incidentes > 0">{{ viaje.incidentes }}</span>
+            <span class="incidente-badge link-cell" [class.con-incidentes]="viaje.incidentes > 0" (click)="ir('operaciones-incidentes')">{{ viaje.incidentes }}</span>
           </td>
           <td>
-            <span class="status" [class]="viaje.estado">{{ getEstadoLabel(viaje.estado) }}</span>
+            <span class="status" [class]="getEstadoClass(viaje.estado)">{{ getEstadoLabel(viaje.estado) }}</span>
           </td>
         </tr>
-        <tr *ngIf="viajes.length === 0">
+        <tr *ngIf="viajes.length === 0 && !cargando">
           <td colspan="8" class="empty">No hay viajes activos.</td>
+        </tr>
+        <tr *ngIf="cargando">
+          <td colspan="8" class="empty">Cargando...</td>
         </tr>
       </tbody>
     </table>

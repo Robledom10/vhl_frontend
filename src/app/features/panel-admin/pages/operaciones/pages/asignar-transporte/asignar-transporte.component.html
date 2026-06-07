@@ -18,34 +18,32 @@
       <thead>
         <tr>
           <th>Viaje</th>
-          <th>Destino</th>
-          <th>Fecha</th>
-          <th>Cupo</th>
+          <th>Paquete</th>
+          <th>Fecha salida</th>
           <th>Transporte</th>
-          <th>Acción</th>
+          <th>Accion</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let viaje of viajes">
           <td>{{ viaje.nombre }}</td>
-          <td>{{ viaje.destino }}</td>
+          <td>#{{ viaje.id }}</td>
           <td>{{ viaje.fecha }}</td>
-          <td><span class="badge-num">{{ viaje.cupo }}</span></td>
           <td>
             <span class="estado-dot" [class.ok]="viaje.transporteAsignado" [class.pendiente]="!viaje.transporteAsignado">
-              <i [class]="viaje.transporteAsignado ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
               {{ viaje.transporteAsignado ? 'Asignado' : 'Pendiente' }}
             </span>
           </td>
           <td>
-            <button class="btn-accion" (click)="seleccionarViaje(viaje)" [disabled]="viaje.transporteAsignado">
-              <i class="fa-solid fa-pen-to-square"></i>
-              {{ viaje.transporteAsignado ? 'Ya asignado' : 'Asignar' }}
-            </button>
+            <div class="actions">
+              <button [class]="viaje.transporteAsignado ? 'edit' : 'assign'" (click)="seleccionarViaje(viaje)">
+                {{ viaje.transporteAsignado ? 'Editar' : 'Asignar' }}
+              </button>
+            </div>
           </td>
         </tr>
         <tr *ngIf="viajes.length === 0">
-          <td colspan="6" class="empty">No hay viajes disponibles.</td>
+          <td colspan="5" class="empty">No hay viajes disponibles.</td>
         </tr>
       </tbody>
     </table>
@@ -55,13 +53,13 @@
   <div class="modal-backdrop" *ngIf="showForm" (click)="cerrarForm()"></div>
   <div class="modal-panel" *ngIf="showForm">
     <div class="modal-header">
-      <h3>Asignar transporte — {{ viajeSeleccionado?.nombre }}</h3>
-      <button class="btn-cerrar" (click)="cerrarForm()"><i class="fa-solid fa-xmark"></i></button>
+      <h3>{{ editandoTransporteId ? 'Editar' : 'Asignar' }} transporte &mdash; {{ viajeSeleccionado?.nombre }}</h3>
+      <button class="btn-cerrar" (click)="cerrarForm()">&#x2715;</button>
     </div>
 
-    <div class="alert-capacidad" *ngIf="transporteForm.get('capacidad')?.value && !capacidadSuficiente()">
+    <div class="alert-capacidad" *ngIf="!capacidadSuficiente() && transporteForm.get('capacidad')?.value && transporteForm.get('cantidadViajeros')?.value">
       <i class="fa-solid fa-triangle-exclamation"></i>
-      La capacidad ingresada es menor al cupo del viaje ({{ viajeSeleccionado?.cupo }} personas).
+      La capacidad del vehiculo es menor a la cantidad de viajeros.
     </div>
 
     <form [formGroup]="transporteForm" (ngSubmit)="guardar()">
@@ -69,11 +67,11 @@
         <div class="form-group">
           <label>Empresa de transporte *</label>
           <input type="text" formControlName="empresa" placeholder="Ej: Transportes Caribe S.A.S">
-          <span class="error" *ngIf="transporteForm.get('empresa')?.invalid && transporteForm.get('empresa')?.touched">Campo requerido (mín. 3 caracteres)</span>
+          <span class="error" *ngIf="transporteForm.get('empresa')?.invalid && transporteForm.get('empresa')?.touched">Campo requerido (min. 3 caracteres)</span>
         </div>
 
         <div class="form-group">
-          <label>Tipo de vehículo *</label>
+          <label>Tipo de vehiculo *</label>
           <select formControlName="tipoVehiculo">
             <option value="">Seleccionar...</option>
             <option *ngFor="let tipo of tiposVehiculo" [value]="tipo">{{ tipo }}</option>
@@ -84,13 +82,31 @@
         <div class="form-group">
           <label>Capacidad (personas) *</label>
           <input type="number" formControlName="capacidad" placeholder="Ej: 40" min="1">
-          <span class="error" *ngIf="transporteForm.get('capacidad')?.invalid && transporteForm.get('capacidad')?.touched">Capacidad requerida (mín. 1)</span>
+          <span class="error" *ngIf="transporteForm.get('capacidad')?.invalid && transporteForm.get('capacidad')?.touched">Capacidad requerida (min. 1)</span>
         </div>
 
         <div class="form-group">
-          <label>Placa del vehículo *</label>
+          <label>Cantidad de viajeros *</label>
+          <input type="number" formControlName="cantidadViajeros" placeholder="Ej: 35" min="1">
+          <span class="error" *ngIf="transporteForm.get('cantidadViajeros')?.invalid && transporteForm.get('cantidadViajeros')?.touched">Campo requerido</span>
+        </div>
+
+        <div class="form-group">
+          <label>Placa del vehiculo *</label>
           <input type="text" formControlName="placa" placeholder="Ej: ABC-123">
-          <span class="error" *ngIf="transporteForm.get('placa')?.invalid && transporteForm.get('placa')?.touched">Placa requerida (mín. 5 caracteres)</span>
+          <span class="error" *ngIf="transporteForm.get('placa')?.invalid && transporteForm.get('placa')?.touched">Placa requerida (min. 5 caracteres)</span>
+        </div>
+
+        <div class="form-group">
+          <label>Conductor *</label>
+          <input type="text" formControlName="conductor" placeholder="Ej: Carlos Romero">
+          <span class="error" *ngIf="transporteForm.get('conductor')?.invalid && transporteForm.get('conductor')?.touched">Campo requerido</span>
+        </div>
+
+        <div class="form-group">
+          <label>Telefono del conductor *</label>
+          <input type="text" formControlName="telefonoConductor" placeholder="Ej: +57 300 000 0000">
+          <span class="error" *ngIf="transporteForm.get('telefonoConductor')?.invalid && transporteForm.get('telefonoConductor')?.touched">Telefono invalido</span>
         </div>
 
         <div class="form-group">
@@ -98,20 +114,12 @@
           <input type="datetime-local" formControlName="horarioSalida">
           <span class="error" *ngIf="transporteForm.get('horarioSalida')?.invalid && transporteForm.get('horarioSalida')?.touched">Horario requerido</span>
         </div>
-
-        <div class="form-group">
-          <label>Horario de regreso *</label>
-          <input type="datetime-local" formControlName="horarioRegreso">
-          <span class="error" *ngIf="transporteForm.get('horarioRegreso')?.invalid && transporteForm.get('horarioRegreso')?.touched">Horario requerido</span>
-        </div>
       </div>
 
       <div class="modal-actions">
         <button type="button" class="btn-cancelar" (click)="cerrarForm()">Cancelar</button>
         <button type="submit" class="btn-guardar" [disabled]="enviando">
-          <i class="fa-solid fa-floppy-disk" *ngIf="!enviando"></i>
-          <i class="fa-solid fa-spinner spinning" *ngIf="enviando"></i>
-          {{ enviando ? 'Guardando...' : 'Guardar asignación' }}
+          {{ enviando ? 'Guardando...' : 'Guardar asignacion' }}
         </button>
       </div>
     </form>

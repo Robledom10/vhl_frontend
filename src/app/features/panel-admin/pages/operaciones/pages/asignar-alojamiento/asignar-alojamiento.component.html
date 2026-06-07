@@ -3,7 +3,7 @@
   <div class="page-header">
     <div>
       <h2 class="page-title">Asignar <span>Alojamiento</span></h2>
-      <p class="page-subtitle">Gestiona el alojamiento asignado a cada viaje activo</p>
+      <p class="page-subtitle">Gestiona el alojamiento asignado a cada viajero por viaje</p>
     </div>
   </div>
 
@@ -17,34 +17,32 @@
       <thead>
         <tr>
           <th>Viaje</th>
-          <th>Destino</th>
-          <th>Fecha</th>
-          <th>Cupo</th>
+          <th>Paquete</th>
+          <th>Fecha salida</th>
           <th>Alojamiento</th>
-          <th>Acción</th>
+          <th>Accion</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let viaje of viajes">
           <td>{{ viaje.nombre }}</td>
-          <td>{{ viaje.destino }}</td>
+          <td>#{{ viaje.id }}</td>
           <td>{{ viaje.fecha }}</td>
-          <td><span class="badge-num">{{ viaje.cupo }}</span></td>
           <td>
             <span class="estado-dot" [class.ok]="viaje.alojamientoAsignado" [class.pendiente]="!viaje.alojamientoAsignado">
-              <i [class]="viaje.alojamientoAsignado ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
               {{ viaje.alojamientoAsignado ? 'Asignado' : 'Pendiente' }}
             </span>
           </td>
           <td>
-            <button class="btn-accion" (click)="seleccionarViaje(viaje)" [disabled]="viaje.alojamientoAsignado">
-              <i class="fa-solid fa-pen-to-square"></i>
-              {{ viaje.alojamientoAsignado ? 'Ya asignado' : 'Asignar' }}
-            </button>
+            <div class="actions">
+              <button class="assign" (click)="seleccionarViaje(viaje)">
+                Asignar
+              </button>
+            </div>
           </td>
         </tr>
         <tr *ngIf="viajes.length === 0">
-          <td colspan="6" class="empty">No hay viajes disponibles.</td>
+          <td colspan="5" class="empty">No hay viajes disponibles.</td>
         </tr>
       </tbody>
     </table>
@@ -54,37 +52,31 @@
   <div class="modal-backdrop" *ngIf="showForm" (click)="cerrarForm()"></div>
   <div class="modal-panel" *ngIf="showForm">
     <div class="modal-header">
-      <h3>Asignar alojamiento — {{ viajeSeleccionado?.nombre }}</h3>
-      <button class="btn-cerrar" (click)="cerrarForm()"><i class="fa-solid fa-xmark"></i></button>
+      <h3>Asignar alojamiento &mdash; {{ viajeSeleccionado?.nombre }}</h3>
+      <button class="btn-cerrar" (click)="cerrarForm()">&#x2715;</button>
     </div>
 
     <form [formGroup]="alojamientoForm" (ngSubmit)="guardar()">
       <div class="form-grid">
-        <div class="form-group span-2">
-          <label>Nombre del hotel / hospedaje *</label>
+        <div class="form-group">
+          <label>Hotel / Hospedaje *</label>
           <input type="text" formControlName="nombreHotel" placeholder="Ej: Hotel Caribe Royal">
-          <span class="error" *ngIf="alojamientoForm.get('nombreHotel')?.invalid && alojamientoForm.get('nombreHotel')?.touched">Campo requerido</span>
-        </div>
-
-        <div class="form-group span-2">
-          <label>Dirección *</label>
-          <input type="text" formControlName="direccion" placeholder="Ej: Cra. 1 # 17-21, Santa Marta">
-          <span class="error" *ngIf="alojamientoForm.get('direccion')?.invalid && alojamientoForm.get('direccion')?.touched">Campo requerido</span>
+          <span class="error" *ngIf="alojamientoForm.get('nombreHotel')?.invalid && alojamientoForm.get('nombreHotel')?.touched">Campo requerido (min. 3 caracteres)</span>
         </div>
 
         <div class="form-group">
-          <label>Tipo de habitación *</label>
-          <select formControlName="tipoHabitacion">
+          <label>Tipo de habitacion *</label>
+          <select formControlName="habitacion">
             <option value="">Seleccionar...</option>
             <option *ngFor="let tipo of tiposHabitacion" [value]="tipo">{{ tipo }}</option>
           </select>
-          <span class="error" *ngIf="alojamientoForm.get('tipoHabitacion')?.invalid && alojamientoForm.get('tipoHabitacion')?.touched">Selecciona un tipo</span>
+          <span class="error" *ngIf="alojamientoForm.get('habitacion')?.invalid && alojamientoForm.get('habitacion')?.touched">Selecciona un tipo</span>
         </div>
 
         <div class="form-group">
-          <label>Número de habitaciones *</label>
-          <input type="number" formControlName="numHabitaciones" placeholder="Ej: 2" min="1">
-          <span class="error" *ngIf="alojamientoForm.get('numHabitaciones')?.invalid && alojamientoForm.get('numHabitaciones')?.touched">Campo requerido (mín. 1)</span>
+          <label>Direccion *</label>
+          <input type="text" formControlName="direccion" placeholder="Ej: Cra. 1 # 17-21, Santa Marta">
+          <span class="error" *ngIf="alojamientoForm.get('direccion')?.invalid && alojamientoForm.get('direccion')?.touched">Campo requerido</span>
         </div>
 
         <div class="form-group">
@@ -98,20 +90,12 @@
           <input type="date" formControlName="checkOut">
           <span class="error" *ngIf="alojamientoForm.get('checkOut')?.invalid && alojamientoForm.get('checkOut')?.touched">Fecha requerida</span>
         </div>
-
-        <div class="form-group span-2">
-          <label>Contacto del hotel *</label>
-          <input type="text" formControlName="contactoHotel" placeholder="Ej: +57 300 123 4567">
-          <span class="error" *ngIf="alojamientoForm.get('contactoHotel')?.invalid && alojamientoForm.get('contactoHotel')?.touched">Campo requerido</span>
-        </div>
       </div>
 
       <div class="modal-actions">
         <button type="button" class="btn-cancelar" (click)="cerrarForm()">Cancelar</button>
         <button type="submit" class="btn-guardar" [disabled]="enviando">
-          <i class="fa-solid fa-floppy-disk" *ngIf="!enviando"></i>
-          <i class="fa-solid fa-spinner spinning" *ngIf="enviando"></i>
-          {{ enviando ? 'Guardando...' : 'Guardar asignación' }}
+          {{ enviando ? 'Guardando...' : 'Guardar asignacion' }}
         </button>
       </div>
     </form>
