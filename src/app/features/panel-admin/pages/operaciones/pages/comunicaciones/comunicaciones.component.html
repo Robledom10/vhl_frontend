@@ -1,0 +1,107 @@
+<div class="operaciones-container">
+
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Centro de <span>Comunicaciones</span></h2>
+      <p class="page-subtitle">Envía mensajes a viajeros individuales o grupos de forma masiva</p>
+    </div>
+    <button class="btn-nuevo" (click)="abrir()">
+      <i class="fa-solid fa-paper-plane"></i> Nuevo mensaje
+    </button>
+  </div>
+
+  <div class="section-title">
+    <i class="fa-solid fa-envelope-open-text"></i>
+    <h3>Mensajes enviados</h3>
+    <span class="badge-count">{{ comunicaciones.length }}</span>
+  </div>
+
+  <div class="empty-state" *ngIf="comunicaciones.length === 0">
+    <i class="fa-solid fa-inbox"></i>
+    <p>No hay mensajes enviados aún.</p>
+  </div>
+
+  <div class="comunicaciones-list" *ngIf="comunicaciones.length > 0">
+    <div class="com-card" *ngFor="let c of comunicaciones">
+      <div class="com-header">
+        <div class="com-icon" [class.grupal]="c.tipo === 'grupal'">
+          <i [class]="c.tipo === 'grupal' ? 'fa-solid fa-users' : 'fa-solid fa-user'"></i>
+        </div>
+        <div class="com-meta">
+          <p class="com-asunto">{{ c.asunto }}</p>
+          <p class="com-sub">{{ c.destinatario }} · {{ c.viaje }}</p>
+        </div>
+        <div class="com-right">
+          <span class="com-tipo" [class.grupal]="c.tipo === 'grupal'">{{ c.tipo === 'grupal' ? 'Grupal' : 'Individual' }}</span>
+          <span class="com-fecha">{{ c.fecha }}</span>
+        </div>
+      </div>
+      <p class="com-mensaje">{{ c.mensaje }}</p>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-backdrop" *ngIf="showForm" (click)="cerrar()"></div>
+  <div class="modal-panel" *ngIf="showForm">
+    <div class="modal-header">
+      <h3>Nuevo mensaje</h3>
+      <button class="btn-cerrar" (click)="cerrar()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <form [formGroup]="comForm" (ngSubmit)="enviar()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Viaje *</label>
+          <select formControlName="viaje">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let v of viajes" [value]="v">{{ v }}</option>
+          </select>
+          <span class="error" *ngIf="comForm.get('viaje')?.invalid && comForm.get('viaje')?.touched">Campo requerido</span>
+        </div>
+
+        <div class="form-group">
+          <label>Tipo de envío *</label>
+          <select formControlName="tipo">
+            <option value="grupal">Grupal (todos los viajeros)</option>
+            <option value="individual">Individual</option>
+          </select>
+        </div>
+
+        <div class="form-group span-2">
+          <label>Destinatario *</label>
+          <select formControlName="destinatario">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let d of tiposDestinatario" [value]="d">{{ d }}</option>
+          </select>
+          <span class="error" *ngIf="comForm.get('destinatario')?.invalid && comForm.get('destinatario')?.touched">Campo requerido</span>
+        </div>
+
+        <div class="form-group span-2">
+          <label>Asunto *</label>
+          <input type="text" formControlName="asunto" placeholder="Ej: Información importante sobre el itinerario">
+          <span class="error" *ngIf="comForm.get('asunto')?.invalid && comForm.get('asunto')?.touched">Asunto requerido (mín. 5 caracteres)</span>
+        </div>
+
+        <div class="form-group span-2">
+          <label>Mensaje *</label>
+          <textarea formControlName="mensaje" placeholder="Escribe el mensaje para los viajeros..." rows="5"></textarea>
+          <span class="error" *ngIf="comForm.get('mensaje')?.invalid && comForm.get('mensaje')?.touched">Mensaje requerido (mín. 20 caracteres)</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="btn-enviar" [disabled]="enviando">
+          <i class="fa-solid fa-paper-plane" *ngIf="!enviando"></i>
+          <i class="fa-solid fa-spinner spinning" *ngIf="enviando"></i>
+          {{ enviando ? 'Enviando...' : 'Enviar mensaje' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="toast-success" *ngIf="showToast">
+    <i class="fa-solid fa-circle-check"></i> {{ toastMsg }}
+  </div>
+
+</div>

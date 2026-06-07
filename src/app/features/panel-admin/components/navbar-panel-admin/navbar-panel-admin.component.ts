@@ -103,5 +103,44 @@ export class NavbarPanelAdminComponent {
 			label: 'Ofertas',
 			route: '/panel-admin/offers',
 		},
+		{
+			icon: 'fa-solid fa-route',
+			label: 'Operaciones',
+			open: false,
+			children: [
+				{
+					label: 'Dashboard operativo',
+					route: '/panel-admin/operaciones-dashboard',
+				},
+				{
+					label: 'Asignar transporte',
+					route: '/panel-admin/operaciones-transporte',
+				},
+				{
+					label: 'Check-in por QR',
+					route: '/panel-admin/operaciones-check-in',
+				},
+				{
+					label: 'Asignar alojamiento',
+					route: '/panel-admin/operaciones-alojamiento',
+				},
+				{
+					label: 'Información médica',
+					route: '/panel-admin/operaciones-info-medica',
+				},
+				{
+					label: 'Contactos de emergencia',
+					route: '/panel-admin/operaciones-contactos',
+				},
+				{
+					label: 'Incidentes',
+					route: '/panel-admin/operaciones-incidentes',
+				},
+				{
+					label: 'Comunicaciones',
+					route: '/panel-admin/operaciones-comunicaciones',
+				},
+			],
+		},
 	];
 }

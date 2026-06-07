@@ -1,0 +1,104 @@
+<div class="operaciones-container">
+
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Información <span>Médica</span></h2>
+      <p class="page-subtitle">Consulta y actualiza la información médica de cada viajero</p>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <i class="fa-solid fa-heart-pulse"></i>
+    <h3>Registros médicos de viajeros</h3>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Viajero</th>
+          <th>Grupo sanguíneo</th>
+          <th>Alergias</th>
+          <th>Medicamentos</th>
+          <th>Condiciones</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of registros">
+          <td><strong>{{ r.viajero }}</strong></td>
+          <td><span class="badge-sg">{{ r.grupoSanguineo }}</span></td>
+          <td>
+            <span class="tag-condicion" [class.con-alerta]="r.alergias !== 'Ninguna'">{{ r.alergias }}</span>
+          </td>
+          <td>{{ r.medicamentos }}</td>
+          <td>
+            <span class="tag-condicion" [class.con-alerta]="r.tieneCondicion">{{ r.condiciones }}</span>
+          </td>
+          <td>
+            <button class="btn-accion" (click)="abrir(r)">
+              <i class="fa-solid fa-pen-to-square"></i> Editar
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="registros.length === 0">
+          <td colspan="6" class="empty">No hay registros médicos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-backdrop" *ngIf="showForm" (click)="cerrar()"></div>
+  <div class="modal-panel" *ngIf="showForm">
+    <div class="modal-header">
+      <h3>Editar info médica — {{ editando?.viajero }}</h3>
+      <button class="btn-cerrar" (click)="cerrar()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <form [formGroup]="medForm" (ngSubmit)="guardar()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Grupo sanguíneo *</label>
+          <select formControlName="grupoSanguineo">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let g of gruposSanguineos" [value]="g">{{ g }}</option>
+          </select>
+          <span class="error" *ngIf="medForm.get('grupoSanguineo')?.invalid && medForm.get('grupoSanguineo')?.touched">Campo requerido</span>
+        </div>
+
+        <div class="form-group">
+          <label>Alergias *</label>
+          <input type="text" formControlName="alergias" placeholder='Ej: Polen, mariscos o "Ninguna"'>
+          <span class="error" *ngIf="medForm.get('alergias')?.invalid && medForm.get('alergias')?.touched">Campo requerido</span>
+        </div>
+
+        <div class="form-group">
+          <label>Medicamentos *</label>
+          <input type="text" formControlName="medicamentos" placeholder='Ej: Metformina o "Ninguno"'>
+          <span class="error" *ngIf="medForm.get('medicamentos')?.invalid && medForm.get('medicamentos')?.touched">Campo requerido</span>
+        </div>
+
+        <div class="form-group">
+          <label>Condiciones médicas *</label>
+          <input type="text" formControlName="condiciones" placeholder='Ej: Diabetes tipo 2 o "Ninguna"'>
+          <span class="error" *ngIf="medForm.get('condiciones')?.invalid && medForm.get('condiciones')?.touched">Campo requerido</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="btn-guardar" [disabled]="enviando">
+          <i class="fa-solid fa-floppy-disk" *ngIf="!enviando"></i>
+          <i class="fa-solid fa-spinner spinning" *ngIf="enviando"></i>
+          {{ enviando ? 'Guardando...' : 'Guardar cambios' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="toast-success" *ngIf="showToast">
+    <i class="fa-solid fa-circle-check"></i> {{ toastMsg }}
+  </div>
+
+</div>
