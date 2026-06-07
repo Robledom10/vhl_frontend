@@ -186,7 +186,9 @@ export class FormPackageCreationComponent implements OnInit, OnChanges {
     const existingTitles = pkg.itinerario?.map(item => item.titulo) || [];
     while (existingTitles.length < numDays) existingTitles.push('');
     const itineraryArray = this.fb.array(
-      existingTitles.slice(0, numDays).map(titulo => this.fb.control(titulo, Validators.required))
+      existingTitles.slice(0, numDays).map(titulo =>
+        this.fb.control(titulo, titulo?.trim() ? Validators.required : [])
+      )
     );
     this.packageForm.setControl('itinerary', itineraryArray);
 

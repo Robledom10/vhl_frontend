@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 
 export interface InfoRow {
 	label: string;
@@ -39,15 +39,18 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 	visible = false;
 	animating = false;
 	private scrollY = 0;
+	private closeTimer: ReturnType<typeof setTimeout> | null = null;
 
-	ngOnChanges(): void {
+	ngOnChanges(changes: SimpleChanges): void {
+		if (!changes['isOpen']) return;
 		if (this.isOpen) {
+			if (this.closeTimer) { clearTimeout(this.closeTimer); this.closeTimer = null; }
 			this.visible = true;
 			setTimeout(() => (this.animating = true), 10);
 			this.blockScroll();
 		} else {
 			this.animating = false;
-			setTimeout(() => (this.visible = false), 420);
+			this.closeTimer = setTimeout(() => { this.visible = false; this.closeTimer = null; }, 420);
 			this.restoreScroll();
 		}
 	}

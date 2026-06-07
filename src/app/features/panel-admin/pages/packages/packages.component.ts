@@ -12,7 +12,7 @@ import { RespuestaPaqueteTuristico, PageResponse } from '../../models/package.mo
 export class PackagesComponent implements OnInit {
 
   showCreateModal = false;
-  showFilters = true;
+  showFilters = false;
   showFilterCalendar = false;
   sheetOpen = false;
   selectedPackageDetail: PackageDetail | null = null;
