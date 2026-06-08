@@ -8,6 +8,7 @@ import { PackagesCardComponent } from './packages-card/packages-card.component';
 import { FooterComponent } from './footer/footer.component';
 import { PackageDetailSheetComponent } from './package-detail-sheet/package-detail-sheet.component';
 import { CustomCalendarComponent } from './custom-calendar/custom-calendar.component';
+import { ReservationWizardComponent } from './reservation-wizard/reservation-wizard.component';
 
 @NgModule({
 	declarations: [
@@ -16,7 +17,8 @@ import { CustomCalendarComponent } from './custom-calendar/custom-calendar.compo
 		PackagesCardComponent,
 		FooterComponent,
 		PackageDetailSheetComponent,
-		CustomCalendarComponent
+		CustomCalendarComponent,
+		ReservationWizardComponent
 	],
 	imports: [
 		CommonModule,
@@ -29,7 +31,8 @@ import { CustomCalendarComponent } from './custom-calendar/custom-calendar.compo
 		PackagesCardComponent,
 		FooterComponent,
 		PackageDetailSheetComponent,
-		CustomCalendarComponent
+		CustomCalendarComponent,
+		ReservationWizardComponent
 	],
 })
 export class SharedModule { }

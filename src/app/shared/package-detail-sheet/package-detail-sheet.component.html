@@ -89,16 +89,49 @@
 						</div>
 					</div>
 
-					<div class="precio-bar">
-						<div class="precio-icon">
-							<i class="fa-solid fa-bag-shopping"></i>
+					<div class="reservation-card">
+						<div class="reservation-header">
+							<h3>Reserva tu viaje</h3>
+							<span>Selecciona cuántas personas viajarán</span>
 						</div>
-						<span class="precio-text">
-							Precio <strong>{{ package.price | number: "1.0-0" }}.00</strong> por persona
-						</span>
-					</div>
 
-					<button class="reserve-btn">Reservar ahora</button>
+						<div class="travelers-selector">
+							<button class="qty-btn" (click)="decreaseTravelers()" [disabled]="travelers === 1">
+								<i class="fa-solid fa-minus"></i>
+							</button>
+
+							<div class="qty-info">
+								<span class="qty-number">
+									{{ travelers }}
+								</span>
+								<span class="qty-label">
+									{{ travelers === 1 ? 'Viajero' : 'Viajeros' }}
+								</span>
+							</div>
+
+							<button class="qty-btn" (click)="increaseTravelers()"
+								[disabled]="travelers >= package!.spotsAvailable">
+								<i class="fa-solid fa-plus"></i>
+							</button>
+						</div>
+
+						<div class="reservation-price">
+							<div class="reservation-total">
+								<span>Total estimado</span>
+								<strong>
+									${{ totalPrice | number:'1.0-0' }}
+								</strong>
+							</div>
+
+							<small>
+								${{ package.price | number:'1.0-0' }} por persona
+							</small>
+						</div>
+
+						<button class="reserve-btn" (click)="openReservationWizard()">
+							Continuar reserva
+						</button>
+					</div>
 
 					<div class="cancel-card">
 						<div class="cancel-header">
@@ -138,3 +171,6 @@
 		<!-- /sheet-body -->
 	</div>
 </div>
+
+<app-reservation-wizard *ngIf="wizardOpen" (closed)="closeReservationWizard()">
+</app-reservation-wizard>

@@ -40,9 +40,16 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 	animating = false;
 	private scrollY = 0;
 
+	// Modal de reserva
+	wizardOpen = false;
+
+	// Número de pasajeros
+	travelers = 1;
+
 	ngOnChanges(): void {
 		if (this.isOpen) {
 			this.visible = true;
+			this.travelers = 1;
 			setTimeout(() => (this.animating = true), 10);
 			this.blockScroll();
 		} else {
@@ -128,5 +135,36 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 		if ((event.target as HTMLElement).classList.contains('sheet-overlay')) {
 			this.close();
 		}
+	}
+
+	// Lógica para aumentar/disminuir número de pasajeros
+	increaseTravelers(): void {
+		if (!this.package) return;
+
+		if (this.travelers < this.package.spotsAvailable) {
+			this.travelers++;
+		}
+	}
+
+	decreaseTravelers(): void {
+		if (this.travelers > 1) {
+			this.travelers--;
+		}
+	}
+
+	get totalPrice(): number {
+		if (!this.package) return 0;
+
+		return this.travelers * this.package.price;
+	}
+
+	// Lógica para abrir el modal de reserva
+	closeReservationWizard(): void {
+		this.wizardOpen = false;
+	}
+
+	openReservationWizard(): void {
+		this.wizardOpen = true;
+		this.close();
 	}
 }
