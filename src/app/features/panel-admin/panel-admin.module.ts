@@ -26,6 +26,8 @@ import { OrganizationProfileComponent } from './pages/packages/pages/organizatio
 import { FormPackageCreationComponent } from './pages/packages/components/form-package-creation/form-package-creation.component';
 import { MediaUploadModalComponent } from './pages/gallery-admin/components/media-upload-modal/media-upload-modal.component';
 import { GalleryAdminComponent } from './pages/gallery-admin/gallery-admin.component';
+import { FormReservationsCreationComponent } from './pages/reservations/components/form-reservations-creation/form-reservations-creation.component';
+import { ReservationDetailSheetComponent } from './pages/reservations/components/reservation-detail-sheet/reservation-detail-sheet.component';
 
 @NgModule({
 	declarations: [
@@ -51,6 +53,8 @@ import { GalleryAdminComponent } from './pages/gallery-admin/gallery-admin.compo
 		FormPackageCreationComponent,
 		MediaUploadModalComponent,
 		GalleryAdminComponent,
+		FormReservationsCreationComponent,
+		ReservationDetailSheetComponent,
 	],
 	imports: [
 		CommonModule,
