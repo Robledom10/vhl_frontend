@@ -7,15 +7,16 @@ import { Viaje, ContactoEmergencia } from '../../../../models/operaciones.models
 interface Usuario { id: number; firstName: string; lastName: string; }
 
 @Component({
-  selector: 'app-contactos-emergencia',
-  templateUrl: './contactos-emergencia.component.html',
-  styleUrl: './contactos-emergencia.component.css',
+  selector: 'app-emergency-contacts',
+  templateUrl: './emergency-contacts.component.html',
+  styleUrl: './emergency-contacts.component.css',
 })
 export class ContactosEmergenciaComponent implements OnInit {
   showForm = false;
   enviando = false;
   showToast = false;
   toastMsg = '';
+  toastType: 'success' | 'error' = 'success';
   editando: ContactoEmergencia | null = null;
 
   viajes: Viaje[] = [];
@@ -23,11 +24,12 @@ export class ContactosEmergenciaComponent implements OnInit {
   contactos: ContactoEmergencia[] = [];
   usuarios: Usuario[] = [];
   usuarioMap: Record<number, string> = {};
+  paqueteTituloMap: Record<number, string> = {};
 
   relaciones = ['Padre/Madre', 'Esposo/a', 'Hijo/a', 'Hermano/a', 'Amigo/a', 'Otro'];
 
   contactoForm = this.fb.group({
-    idViajero:      ['', Validators.required],
+    nombreViajero:  ['', Validators.required],
     nombreContacto: ['', [Validators.required, Validators.minLength(3)]],
     relacion:       ['', Validators.required],
     telefono:       ['', [Validators.required, Validators.pattern(/^\+?[\d\s\-]{7,20}$/)]],
@@ -52,6 +54,7 @@ export class ContactosEmergenciaComponent implements OnInit {
     this.svc.getViajes().subscribe({
       next: (viajes) => {
         this.viajes = viajes;
+        this.svc.getPaqueteTituloMap(viajes).subscribe(m => { this.paqueteTituloMap = m; });
         if (viajes.length > 0) {
           this.idViajeSeleccionado = viajes[0].id;
           this.cargarContactos();
@@ -85,6 +88,7 @@ export class ContactosEmergenciaComponent implements OnInit {
   abrir(contacto: ContactoEmergencia): void {
     this.editando = contacto;
     this.contactoForm.patchValue({
+      nombreViajero:  contacto.nombreViajero || '',
       nombreContacto: contacto.nombre,
       relacion:       contacto.parentesco,
       telefono:       contacto.telefono,
@@ -101,13 +105,14 @@ export class ContactosEmergenciaComponent implements OnInit {
 
     const v = this.contactoForm.value;
     const idViaje = this.idViajeSeleccionado || 1;
-    const idViajero = this.editando ? this.editando.idViajero : Number(v.idViajero);
+    const idViajero = this.editando ? this.editando.idViajero : 1;
     const body = {
-      idViaje:    idViaje,
-      nombre:     v.nombreContacto || '',
-      parentesco: v.relacion || '',
-      telefono:   v.telefono || '',
-      correo:     v.correo || undefined,
+      idViaje:       idViaje,
+      nombre:        v.nombreContacto || '',
+      parentesco:    v.relacion || '',
+      telefono:      v.telefono || '',
+      correo:        v.correo || undefined,
+      nombreViajero: v.nombreViajero || '',
     };
 
     const request$ = this.editando
@@ -128,13 +133,24 @@ export class ContactosEmergenciaComponent implements OnInit {
       },
       error: (err) => {
         this.enviando = false;
-        this.mostrarToast(err?.error?.mensaje || 'Error al guardar');
+        this.mostrarToast(err?.error?.mensaje || 'Error al guardar', 'error');
       }
     });
   }
 
-  mostrarToast(msg: string): void {
-    this.toastMsg = msg; this.showToast = true;
-    setTimeout(() => { this.showToast = false; }, 3000);
+  eliminar(c: ContactoEmergencia): void {
+    if (!confirm(`¿Eliminar el contacto "${c.nombre}"?`)) return;
+    this.svc.eliminarContacto(c.idViajero, c.id).subscribe({
+      next: () => {
+        this.contactos = this.contactos.filter(x => x.id !== c.id);
+        this.mostrarToast('Contacto eliminado');
+      },
+      error: () => this.mostrarToast('Error al eliminar el contacto', 'error')
+    });
+  }
+
+  mostrarToast(msg: string, type: 'success' | 'error' = 'success'): void {
+    this.toastMsg = msg; this.toastType = type; this.showToast = true;
+    setTimeout(() => { this.showToast = false; }, 3500);
   }
 }

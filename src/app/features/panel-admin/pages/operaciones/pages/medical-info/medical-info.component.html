@@ -16,7 +16,7 @@
     <select (change)="onViajeChange($event)" style="height:52px; border-radius:25px; border:1.5px solid #e8e8e8; padding:0 22px; font-family:'Outfit',sans-serif; font-size:15px; outline:none; background:white; width:100%;">
       <option value="">Seleccionar viaje...</option>
       <option *ngFor="let v of viajes" [value]="v.id" [selected]="v.id === idViajeSeleccionado">
-        Viaje #{{ v.id }} &mdash; Paquete {{ v.idPaquete }} ({{ v.fechaSalida }})
+        {{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} &mdash; Viaje #{{ v.id }} &middot; {{ v.fechaSalida | date:'dd/MM/yyyy' }}
       </option>
     </select>
   </div>
@@ -40,7 +40,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let r of registros">
-          <td>{{ getNombreViajero(r.idViajero) }}</td>
+          <td>{{ r.nombreViajero || getNombreViajero(r.idViajero) }}</td>
           <td><span class="badge-sg">{{ r.tipoSangre }}</span></td>
           <td>
             <span class="tag-condicion" [class.con-alerta]="r.alergias && r.alergias.toLowerCase() !== 'ninguna' && r.alergias !== ''">{{ r.alergias || '&mdash;' }}</span>
@@ -52,6 +52,7 @@
           <td>
             <div class="actions">
               <button class="edit" (click)="abrir(r)">Editar</button>
+              <button class="del" (click)="eliminar(r)">Eliminar</button>
             </div>
           </td>
         </tr>
@@ -72,13 +73,10 @@
 
     <form [formGroup]="medForm" (ngSubmit)="guardar()">
       <div class="form-grid">
-        <div class="form-group span-2" *ngIf="!editando">
-          <label>Viajero *</label>
-          <select formControlName="idViajero">
-            <option value="">Seleccionar viajero...</option>
-            <option *ngFor="let u of usuarios" [value]="u.id">{{ u.firstName }} {{ u.lastName }}</option>
-          </select>
-          <span class="error" *ngIf="medForm.get('idViajero')?.invalid && medForm.get('idViajero')?.touched">Selecciona un viajero</span>
+        <div class="form-group span-2">
+          <label>Nombre del viajero *</label>
+          <input type="text" formControlName="nombreViajero" placeholder="Ej: Juan Pérez" autocomplete="off">
+          <span class="error" *ngIf="medForm.get('nombreViajero')?.invalid && medForm.get('nombreViajero')?.touched">Campo requerido</span>
         </div>
 
         <div class="form-group">
@@ -121,8 +119,9 @@
     </form>
   </div>
 
-  <div class="toast-success" *ngIf="showToast">
-    <i class="fa-solid fa-circle-check"></i> {{ toastMsg }}
+  <div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
+    <i class="toast-icon" [class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
+    <span class="toast-msg">{{ toastMsg }}</span>
   </div>
 
 </div>

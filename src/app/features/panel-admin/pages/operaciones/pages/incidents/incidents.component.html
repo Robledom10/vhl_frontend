@@ -16,7 +16,7 @@
     <select (change)="onViajeChange($event)" style="height:52px; border-radius:25px; border:1.5px solid #e8e8e8; padding:0 22px; font-family:'Outfit',sans-serif; font-size:15px; outline:none; background:white; width:100%;">
       <option value="">Seleccionar viaje...</option>
       <option *ngFor="let v of viajes" [value]="v.id" [selected]="v.id === idViajeSeleccionado">
-        Viaje #{{ v.id }} &mdash; Paquete {{ v.idPaquete }} ({{ v.fechaSalida }})
+        {{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} &mdash; Viaje #{{ v.id }} &middot; {{ v.fechaSalida | date:'dd/MM/yyyy' }}
       </option>
     </select>
   </div>
@@ -36,7 +36,7 @@
     <div class="incidente-card" *ngFor="let inc of incidentes">
       <div class="inc-header">
         <span class="inc-tipo">{{ inc.tipo }}</span>
-        <span class="inc-estado" [class]="inc.estado" (click)="cambiarEstado(inc)" title="Clic para cambiar estado">
+        <span class="inc-estado" [class]="inc.estado">
           {{ getEstadoLabel(inc.estado) }}
         </span>
       </div>
@@ -47,6 +47,11 @@
         <span><i class="fa-solid fa-user"></i> {{ inc.reportadoPor }}</span>
         <span *ngIf="inc.severidad"><i class="fa-solid fa-exclamation"></i> {{ inc.severidad }}</span>
       </div>
+      <div class="inc-actions">
+        <button class="btn-inc-estado" (click)="cambiarEstado(inc)">Cambiar estado</button>
+        <button class="btn-inc-editar" (click)="editarIncidente(inc)">Editar</button>
+        <button class="btn-inc-eliminar" (click)="eliminar(inc)">Eliminar</button>
+      </div>
     </div>
   </div>
 
@@ -54,17 +59,18 @@
   <div class="modal-backdrop" *ngIf="showForm" (click)="cerrar()"></div>
   <div class="modal-panel" *ngIf="showForm">
     <div class="modal-header">
-      <h3>Registrar nuevo incidente</h3>
+      <h3>{{ editandoId ? 'Editar incidente' : 'Registrar nuevo incidente' }}</h3>
       <button class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
     </div>
 
     <form [formGroup]="incidenteForm" (ngSubmit)="guardar()">
       <div class="form-grid">
-        <div class="form-group">
+
+        <div class="form-group span-2">
           <label>Viaje *</label>
           <select formControlName="idViaje">
-            <option value="">Seleccionar...</option>
-            <option *ngFor="let v of viajes" [value]="v.id">Viaje #{{ v.id }} &mdash; Paquete {{ v.idPaquete }}</option>
+            <option value="">Seleccionar viaje...</option>
+            <option *ngFor="let v of viajes" [value]="v.id">{{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} &mdash; Viaje #{{ v.id }} &middot; {{ v.fechaSalida | date:'dd/MM/yyyy' }}</option>
           </select>
           <span class="error" *ngIf="incidenteForm.get('idViaje')?.invalid && incidenteForm.get('idViaje')?.touched">Campo requerido</span>
         </div>
@@ -72,7 +78,7 @@
         <div class="form-group">
           <label>Tipo de incidente *</label>
           <select formControlName="tipo">
-            <option value="">Seleccionar...</option>
+            <option value="">Seleccionar tipo...</option>
             <option *ngFor="let t of tiposIncidente" [value]="t">{{ t }}</option>
           </select>
           <span class="error" *ngIf="incidenteForm.get('tipo')?.invalid && incidenteForm.get('tipo')?.touched">Campo requerido</span>
@@ -81,21 +87,16 @@
         <div class="form-group">
           <label>Severidad *</label>
           <select formControlName="severidad">
-            <option value="">Seleccionar...</option>
+            <option value="">Seleccionar severidad...</option>
             <option *ngFor="let s of severidades" [value]="s">{{ s }}</option>
           </select>
           <span class="error" *ngIf="incidenteForm.get('severidad')?.invalid && incidenteForm.get('severidad')?.touched">Campo requerido</span>
         </div>
 
-        <div class="form-group">
+        <div class="form-group span-2">
           <label>Reportado por *</label>
           <input type="text" formControlName="reportadoPor" placeholder="Ej: Guia Juan Perez">
           <span class="error" *ngIf="incidenteForm.get('reportadoPor')?.invalid && incidenteForm.get('reportadoPor')?.touched">Campo requerido</span>
-        </div>
-
-        <div class="form-group span-2">
-          <label>ID del viajero (opcional)</label>
-          <input type="number" formControlName="idViajero" placeholder="Ej: 1" min="1">
         </div>
 
         <div class="form-group span-2">
@@ -103,19 +104,21 @@
           <textarea formControlName="descripcion" placeholder="Describe el incidente con el mayor detalle posible..." rows="4"></textarea>
           <span class="error" *ngIf="incidenteForm.get('descripcion')?.invalid && incidenteForm.get('descripcion')?.touched">Descripcion requerida (min. 10 caracteres)</span>
         </div>
+
       </div>
 
       <div class="modal-actions">
         <button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
         <button type="submit" class="btn-guardar" [disabled]="enviando">
-          {{ enviando ? 'Guardando...' : 'Registrar incidente' }}
+          {{ enviando ? 'Guardando...' : (editandoId ? 'Guardar cambios' : 'Registrar incidente') }}
         </button>
       </div>
     </form>
   </div>
 
-  <div class="toast-success" *ngIf="showToast">
-    <i class="fa-solid fa-circle-check"></i> {{ toastMsg }}
+  <div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
+    <i class="toast-icon" [class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
+    <span class="toast-msg">{{ toastMsg }}</span>
   </div>
 
 </div>

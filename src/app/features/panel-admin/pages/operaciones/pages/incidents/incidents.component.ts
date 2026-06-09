@@ -4,19 +4,22 @@ import { OperacionesService } from '../../../../../../core/services/operaciones.
 import { Viaje, Incidente } from '../../../../models/operaciones.models';
 
 @Component({
-  selector: 'app-incidentes',
-  templateUrl: './incidentes.component.html',
-  styleUrl: './incidentes.component.css',
+  selector: 'app-incidents',
+  templateUrl: './incidents.component.html',
+  styleUrl: './incidents.component.css',
 })
 export class IncidentesComponent implements OnInit {
   showForm = false;
+  editandoId: number | null = null;
   enviando = false;
   showToast = false;
   toastMsg = '';
+  toastType: 'success' | 'error' = 'success';
 
   viajes: Viaje[] = [];
   idViajeSeleccionado: number | null = null;
   incidentes: Incidente[] = [];
+  paqueteTituloMap: Record<number, string> = {};
 
   tiposIncidente = [
     'Accidente leve', 'Accidente grave', 'Perdida de equipaje',
@@ -41,6 +44,7 @@ export class IncidentesComponent implements OnInit {
     this.svc.getViajes().subscribe({
       next: (viajes) => {
         this.viajes = viajes;
+        this.svc.getPaqueteTituloMap(viajes).subscribe(m => { this.paqueteTituloMap = m; });
         if (viajes.length > 0) {
           this.idViajeSeleccionado = viajes[0].id;
           this.cargarIncidentes();
@@ -66,10 +70,25 @@ export class IncidentesComponent implements OnInit {
   }
 
   abrir(): void {
+    this.editandoId = null;
     this.incidenteForm.reset({ idViaje: this.idViajeSeleccionado?.toString() || '' });
     this.showForm = true;
   }
-  cerrar(): void { this.showForm = false; }
+
+  editarIncidente(inc: Incidente): void {
+    this.editandoId = inc.id;
+    this.incidenteForm.patchValue({
+      idViaje:      inc.idViaje.toString(),
+      tipo:         inc.tipo,
+      descripcion:  inc.descripcion,
+      severidad:    inc.severidad,
+      reportadoPor: inc.reportadoPor,
+      idViajero:    inc.idViajero ? inc.idViajero.toString() : '',
+    });
+    this.showForm = true;
+  }
+
+  cerrar(): void { this.showForm = false; this.editandoId = null; }
 
   guardar(): void {
     if (this.incidenteForm.invalid) { this.incidenteForm.markAllAsTouched(); return; }
@@ -85,16 +104,27 @@ export class IncidentesComponent implements OnInit {
       idViajero:   v.idViajero ? Number(v.idViajero) : null,
     };
 
-    this.svc.registrarIncidente(idViaje, body).subscribe({
+    const request$ = this.editandoId
+      ? this.svc.actualizarIncidente(this.editandoId, body)
+      : this.svc.registrarIncidente(idViaje, body);
+    const mensajeOk = this.editandoId ? 'Incidente actualizado correctamente' : 'Incidente registrado correctamente';
+
+    request$.subscribe({
       next: (result) => {
-        this.incidentes.unshift(result);
+        if (this.editandoId) {
+          const idx = this.incidentes.findIndex(i => i.id === this.editandoId);
+          if (idx !== -1) this.incidentes[idx] = result;
+        } else {
+          this.incidentes.unshift(result);
+        }
         this.enviando = false;
         this.showForm = false;
-        this.mostrarToast('Incidente registrado correctamente');
+        this.editandoId = null;
+        this.mostrarToast(mensajeOk);
       },
       error: (err) => {
         this.enviando = false;
-        this.mostrarToast(err?.error?.mensaje || 'Error al registrar incidente');
+        this.mostrarToast(err?.error?.mensaje || 'Error al guardar incidente', 'error');
       }
     });
   }
@@ -113,14 +143,25 @@ export class IncidentesComponent implements OnInit {
         this.mostrarToast('Estado actualizado');
       },
       error: (err) => {
-        this.mostrarToast(err?.error?.mensaje || 'Error al actualizar estado');
+        this.mostrarToast(err?.error?.mensaje || 'Error al actualizar estado', 'error');
       }
     });
   }
 
-  mostrarToast(msg: string): void {
-    this.toastMsg = msg; this.showToast = true;
-    setTimeout(() => { this.showToast = false; }, 3000);
+  eliminar(inc: Incidente): void {
+    if (!confirm(`¿Eliminar el incidente "${inc.tipo}"?`)) return;
+    this.svc.eliminarIncidente(inc.id).subscribe({
+      next: () => {
+        this.incidentes = this.incidentes.filter(i => i.id !== inc.id);
+        this.mostrarToast('Incidente eliminado');
+      },
+      error: () => this.mostrarToast('Error al eliminar el incidente', 'error')
+    });
+  }
+
+  mostrarToast(msg: string, type: 'success' | 'error' = 'success'): void {
+    this.toastMsg = msg; this.toastType = type; this.showToast = true;
+    setTimeout(() => { this.showToast = false; }, 3500);
   }
 
   getEstadoLabel(estado: string): string {

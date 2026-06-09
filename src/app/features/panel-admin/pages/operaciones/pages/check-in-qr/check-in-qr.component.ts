@@ -17,6 +17,7 @@ export class CheckInQrComponent implements OnInit {
   viajes: Viaje[] = [];
   idViajeSeleccionado: number | null = null;
   checkinsRealizados: CheckIn[] = [];
+  paqueteTituloMap: Record<number, string> = {};
 
   constructor(private svc: OperacionesService) {}
 
@@ -24,6 +25,7 @@ export class CheckInQrComponent implements OnInit {
     this.svc.getViajes().subscribe({
       next: (viajes) => {
         this.viajes = viajes;
+        this.svc.getPaqueteTituloMap(viajes).subscribe(m => { this.paqueteTituloMap = m; });
         if (viajes.length > 0) {
           this.idViajeSeleccionado = viajes[0].id;
           this.cargarHistorial();

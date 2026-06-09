@@ -16,7 +16,7 @@
     <select (change)="onViajeChange($event)" style="height:52px; border-radius:25px; border:1.5px solid #e8e8e8; padding:0 22px; font-family:'Outfit',sans-serif; font-size:15px; outline:none; background:white; width:100%;">
       <option value="">Seleccionar viaje...</option>
       <option *ngFor="let v of viajes" [value]="v.id" [selected]="v.id === idViajeSeleccionado">
-        Viaje #{{ v.id }} &mdash; Paquete {{ v.idPaquete }} ({{ v.fechaSalida }})
+        {{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} &mdash; Viaje #{{ v.id }} &middot; {{ v.fechaSalida | date:'dd/MM/yyyy' }}
       </option>
     </select>
   </div>
@@ -34,7 +34,7 @@
         </div>
         <div>
           <p class="viajero-nombre">{{ c.nombre }}</p>
-          <p class="viajero-sub">{{ getNombreViajero(c.idViajero) }} &mdash; {{ c.parentesco }}</p>
+          <p class="viajero-sub">{{ c.nombreViajero || getNombreViajero(c.idViajero) }} &mdash; {{ c.parentesco }}</p>
         </div>
       </div>
 
@@ -57,7 +57,10 @@
         </div>
       </div>
 
-      <button class="btn-editar" (click)="abrir(c)">Editar</button>
+      <div class="card-actions">
+        <button class="btn-editar-sm" (click)="abrir(c)">Editar</button>
+        <button class="btn-eliminar-sm" (click)="eliminar(c)">Eliminar</button>
+      </div>
     </div>
 
     <div *ngIf="contactos.length === 0" style="padding: 2rem; color: var(--color-texto-secundario); text-align: center; grid-column: 1/-1;">
@@ -75,13 +78,10 @@
 
     <form [formGroup]="contactoForm" (ngSubmit)="guardar()">
       <div class="form-grid">
-        <div class="form-group span-2" *ngIf="!editando">
-          <label>Viajero *</label>
-          <select formControlName="idViajero">
-            <option value="">Seleccionar viajero...</option>
-            <option *ngFor="let u of usuarios" [value]="u.id">{{ u.firstName }} {{ u.lastName }}</option>
-          </select>
-          <span class="error" *ngIf="contactoForm.get('idViajero')?.invalid && contactoForm.get('idViajero')?.touched">Selecciona un viajero</span>
+        <div class="form-group span-2">
+          <label>Nombre del viajero *</label>
+          <input type="text" formControlName="nombreViajero" placeholder="Ej: Juan Pérez" autocomplete="off">
+          <span class="error" *ngIf="contactoForm.get('nombreViajero')?.invalid && contactoForm.get('nombreViajero')?.touched">Campo requerido</span>
         </div>
 
         <div class="form-group span-2">
@@ -92,10 +92,7 @@
 
         <div class="form-group">
           <label>Relacion *</label>
-          <select formControlName="relacion">
-            <option value="">Seleccionar...</option>
-            <option *ngFor="let r of relaciones" [value]="r">{{ r }}</option>
-          </select>
+          <input type="text" formControlName="relacion" placeholder="Ej: Padre, Madre, Amigo/a">
           <span class="error" *ngIf="contactoForm.get('relacion')?.invalid && contactoForm.get('relacion')?.touched">Campo requerido</span>
         </div>
 
@@ -121,8 +118,9 @@
     </form>
   </div>
 
-  <div class="toast-success" *ngIf="showToast">
-    <i class="fa-solid fa-circle-check"></i> {{ toastMsg }}
+  <div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
+    <i class="toast-icon" [class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
+    <span class="toast-msg">{{ toastMsg }}</span>
   </div>
 
 </div>

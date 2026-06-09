@@ -16,7 +16,7 @@
     <select (change)="onViajeChange($event)" style="height:52px; border-radius:25px; border:1.5px solid #e8e8e8; padding:0 22px; font-family:'Outfit',sans-serif; font-size:15px; outline:none; background:white; width:100%;">
       <option value="">Seleccionar viaje...</option>
       <option *ngFor="let v of viajes" [value]="v.id" [selected]="v.id === idViajeSeleccionado">
-        Viaje #{{ v.id }} &mdash; Paquete {{ v.idPaquete }} ({{ v.fechaSalida }})
+        {{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} &mdash; Viaje #{{ v.id }} &middot; {{ v.fechaSalida | date:'dd/MM/yyyy' }}
       </option>
     </select>
   </div>
@@ -65,7 +65,7 @@
           <label>Viaje *</label>
           <select formControlName="idViaje">
             <option value="">Seleccionar...</option>
-            <option *ngFor="let v of viajes" [value]="v.id">Viaje #{{ v.id }} &mdash; Paquete {{ v.idPaquete }}</option>
+            <option *ngFor="let v of viajes" [value]="v.id">{{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} — Viaje #{{ v.id }}</option>
           </select>
           <span class="error" *ngIf="comForm.get('idViaje')?.invalid && comForm.get('idViaje')?.touched">Campo requerido</span>
         </div>
@@ -99,8 +99,9 @@
     </form>
   </div>
 
-  <div class="toast-success" *ngIf="showToast">
-    <i class="fa-solid fa-circle-check"></i> {{ toastMsg }}
+  <div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
+    <i class="toast-icon" [class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
+    <span class="toast-msg">{{ toastMsg }}</span>
   </div>
 
 </div>

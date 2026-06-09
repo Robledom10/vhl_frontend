@@ -7,15 +7,16 @@ import { Viaje, InformacionMedica } from '../../../../models/operaciones.models'
 interface Usuario { id: number; firstName: string; lastName: string; }
 
 @Component({
-  selector: 'app-info-medica',
-  templateUrl: './info-medica.component.html',
-  styleUrl: './info-medica.component.css',
+  selector: 'app-medical-info',
+  templateUrl: './medical-info.component.html',
+  styleUrl: './medical-info.component.css',
 })
 export class InfoMedicaComponent implements OnInit {
   showForm = false;
   enviando = false;
   showToast = false;
   toastMsg = '';
+  toastType: 'success' | 'error' = 'success';
   editando: InformacionMedica | null = null;
 
   viajes: Viaje[] = [];
@@ -23,11 +24,12 @@ export class InfoMedicaComponent implements OnInit {
   registros: InformacionMedica[] = [];
   usuarios: Usuario[] = [];
   usuarioMap: Record<number, string> = {};
+  paqueteTituloMap: Record<number, string> = {};
 
   gruposSanguineos = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
   medForm = this.fb.group({
-    idViajero:      ['', Validators.required],
+    nombreViajero:  ['', Validators.required],
     tipoSangre:     ['', Validators.required],
     alergias:       [''],
     medicamentos:   [''],
@@ -53,6 +55,7 @@ export class InfoMedicaComponent implements OnInit {
     this.svc.getViajes().subscribe({
       next: (viajes) => {
         this.viajes = viajes;
+        this.svc.getPaqueteTituloMap(viajes).subscribe(m => { this.paqueteTituloMap = m; });
         if (viajes.length > 0) {
           this.idViajeSeleccionado = viajes[0].id;
           this.cargarRegistros();
@@ -90,7 +93,7 @@ export class InfoMedicaComponent implements OnInit {
   abrir(registro: InformacionMedica): void {
     this.editando = registro;
     this.medForm.patchValue({
-      idViajero:      registro.idViajero.toString(),
+      nombreViajero:  registro.nombreViajero || this.getNombreViajero(registro.idViajero),
       tipoSangre:     registro.tipoSangre,
       alergias:       registro.alergias,
       medicamentos:   registro.medicamentos,
@@ -107,8 +110,13 @@ export class InfoMedicaComponent implements OnInit {
     this.enviando = true;
 
     const v = this.medForm.value;
-    const idViaje = this.idViajeSeleccionado || 1;
-    const idViajero = this.editando ? this.editando.idViajero : Number(v.idViajero);
+    const idViaje = this.idViajeSeleccionado;
+    if (!idViaje) {
+      this.enviando = false;
+      this.mostrarToast('Selecciona un viaje primero', 'error');
+      return;
+    }
+    const idViajero = this.editando ? this.editando.idViajero : 1;
     const body = {
       idViaje:            idViaje,
       tipoSangre:         v.tipoSangre || '',
@@ -116,6 +124,7 @@ export class InfoMedicaComponent implements OnInit {
       medicamentos:       v.medicamentos || '',
       condicionesMedicas: v.condiciones || '',
       telefonoMedico:     v.telefonoMedico || undefined,
+      nombreViajero:      v.nombreViajero || '',
     };
 
     const request$ = this.editando
@@ -123,26 +132,39 @@ export class InfoMedicaComponent implements OnInit {
       : this.svc.registrarInformacionMedica(idViajero, body);
 
     request$.subscribe({
-      next: (result) => {
-        if (this.editando) {
-          const idx = this.registros.findIndex(r => r.id === this.editando!.id);
-          if (idx !== -1) this.registros[idx] = result;
-        } else {
-          this.registros.push(result);
-        }
+      next: () => {
         this.enviando = false;
         this.showForm = false;
+        this.editando = null;
         this.mostrarToast('Informacion medica guardada correctamente');
+        this.cargarRegistros();
       },
       error: (err) => {
         this.enviando = false;
-        this.mostrarToast(err?.error?.mensaje || 'Error al guardar');
+        const campos = err?.error?.campos;
+        const detalle = campos && Object.keys(campos).length > 0
+          ? ': ' + Object.values(campos).join(', ') : '';
+        this.mostrarToast(
+          (err?.error?.mensaje || err?.error?.message || 'Error al guardar') + detalle,
+          'error'
+        );
       }
     });
   }
 
-  mostrarToast(msg: string): void {
-    this.toastMsg = msg; this.showToast = true;
-    setTimeout(() => { this.showToast = false; }, 3000);
+  eliminar(r: InformacionMedica): void {
+    if (!confirm(`¿Eliminar el registro médico de ${this.getNombreViajero(r.idViajero)}?`)) return;
+    this.svc.eliminarInformacionMedica(r.idViajero, r.id).subscribe({
+      next: () => {
+        this.mostrarToast('Registro médico eliminado');
+        this.cargarRegistros();
+      },
+      error: () => { this.mostrarToast('Error al eliminar', 'error'); }
+    });
+  }
+
+  mostrarToast(msg: string, type: 'success' | 'error' = 'success'): void {
+    this.toastMsg = msg; this.toastType = type; this.showToast = true;
+    setTimeout(() => { this.showToast = false; }, 3500);
   }
 }

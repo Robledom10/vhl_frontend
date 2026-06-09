@@ -4,19 +4,21 @@ import { OperacionesService } from '../../../../../../core/services/operaciones.
 import { Viaje, Notificacion } from '../../../../models/operaciones.models';
 
 @Component({
-  selector: 'app-comunicaciones',
-  templateUrl: './comunicaciones.component.html',
-  styleUrl: './comunicaciones.component.css',
+  selector: 'app-communications',
+  templateUrl: './communications.component.html',
+  styleUrl: './communications.component.css',
 })
 export class ComunicacionesComponent implements OnInit {
   showForm = false;
   enviando = false;
   showToast = false;
   toastMsg = '';
+  toastType: 'success' | 'error' = 'success';
 
   viajes: Viaje[] = [];
   idViajeSeleccionado: number | null = null;
   comunicaciones: Notificacion[] = [];
+  paqueteTituloMap: Record<number, string> = {};
 
   canales = ['EMAIL', 'SMS', 'PUSH', 'WHATSAPP'];
 
@@ -33,6 +35,7 @@ export class ComunicacionesComponent implements OnInit {
     this.svc.getViajes().subscribe({
       next: (viajes) => {
         this.viajes = viajes;
+        this.svc.getPaqueteTituloMap(viajes).subscribe(m => { this.paqueteTituloMap = m; });
         if (viajes.length > 0) {
           this.idViajeSeleccionado = viajes[0].id;
           this.cargarNotificaciones();
@@ -85,13 +88,13 @@ export class ComunicacionesComponent implements OnInit {
       },
       error: (err) => {
         this.enviando = false;
-        this.mostrarToast(err?.error?.mensaje || 'Error al enviar comunicacion');
+        this.mostrarToast(err?.error?.mensaje || 'Error al enviar comunicacion', 'error');
       }
     });
   }
 
-  mostrarToast(msg: string): void {
-    this.toastMsg = msg; this.showToast = true;
-    setTimeout(() => { this.showToast = false; }, 3000);
+  mostrarToast(msg: string, type: 'success' | 'error' = 'success'): void {
+    this.toastMsg = msg; this.toastType = type; this.showToast = true;
+    setTimeout(() => { this.showToast = false; }, 3500);
   }
 }

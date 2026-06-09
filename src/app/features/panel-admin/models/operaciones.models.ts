@@ -37,6 +37,7 @@ export interface Alojamiento {
   id: number;
   idViaje: number;
   idViajero: number;
+  nombreViajero?: string;
   hotel: string;
   habitacion: string;
   direccion: string;
@@ -57,6 +58,7 @@ export interface InformacionMedica {
   telefonoMedico: string;
   fechaRegistro: string;
   mensaje?: string;
+  nombreViajero?: string;
 }
 
 export interface ContactoEmergencia {
@@ -69,6 +71,7 @@ export interface ContactoEmergencia {
   correo: string;
   fechaRegistro: string;
   mensaje?: string;
+  nombreViajero?: string;
 }
 
 export interface Incidente {

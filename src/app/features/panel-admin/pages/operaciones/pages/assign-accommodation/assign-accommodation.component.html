@@ -1,0 +1,180 @@
+<div class="operaciones-container">
+
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Asignar <span>Alojamiento</span></h2>
+      <p class="page-subtitle">Gestiona el alojamiento asignado a cada viajero por viaje</p>
+    </div>
+    <button class="btn-nuevo" (click)="abrirNuevo()">+ Asignar alojamiento</button>
+  </div>
+
+  <div class="section-title">
+    <i class="fa-solid fa-bed"></i>
+    <h3>Viajes y estado de alojamiento</h3>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Paquete</th>
+          <th>Viajero</th>
+          <th>Hotel</th>
+          <th>Habitacion</th>
+          <th>Direccion</th>
+          <th>Estado</th>
+          <th>Accion</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let viaje of viajes" [class.fila-sin-viaje]="!viaje.tieneViaje">
+          <td>
+            <div class="paquete-nombre">{{ viaje.titulo }}</div>
+            <small class="viaje-id" *ngIf="viaje.tieneViaje">Viaje #{{ viaje.id }}</small>
+          </td>
+          <td>{{ viaje.tieneViaje ? (viaje.viajeroNombre || '—') : '—' }}</td>
+          <td>{{ viaje.tieneViaje ? (viaje.hotel || '—') : '—' }}</td>
+          <td>{{ viaje.tieneViaje ? (viaje.habitacion || '—') : '—' }}</td>
+          <td>{{ viaje.tieneViaje ? (viaje.direccion || '—') : '—' }}</td>
+          <td>
+            <span *ngIf="viaje.tieneViaje" class="estado-dot" [class.ok]="viaje.alojamientoAsignado" [class.pendiente]="!viaje.alojamientoAsignado">
+              {{ viaje.alojamientoAsignado ? 'Asignado' : 'Pendiente' }}
+            </span>
+            <span *ngIf="!viaje.tieneViaje" class="estado-dot disabled">Sin viaje</span>
+          </td>
+          <td>
+            <div class="actions" *ngIf="viaje.tieneViaje">
+              <button class="ver" *ngIf="viaje.alojamientoAsignado" (click)="verDetalle(viaje)">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+              <button [class]="viaje.alojamientoAsignado ? 'edit' : 'assign'" (click)="seleccionarViaje(viaje)">
+                {{ viaje.alojamientoAsignado ? 'Editar' : 'Asignar' }}
+              </button>
+              <button class="del" *ngIf="viaje.alojamientoAsignado" (click)="eliminar(viaje)">
+                Eliminar
+              </button>
+            </div>
+            <span *ngIf="!viaje.tieneViaje" class="sin-viaje-label">Sin viaje creado</span>
+          </td>
+        </tr>
+        <tr *ngIf="viajes.length === 0">
+          <td colspan="7" class="empty">No hay paquetes disponibles.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODAL DETALLE -->
+  <div class="modal-backdrop" *ngIf="showDetalle" (click)="cerrarDetalle()"></div>
+  <div class="modal-panel detalle-panel" *ngIf="showDetalle && viajeDetalle">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-eye" style="color:var(--color-primario);margin-right:10px;"></i>Detalle de alojamiento</h3>
+      <button class="btn-cerrar" (click)="cerrarDetalle()">&#x2715;</button>
+    </div>
+    <div class="detalle-paquete">
+      <span class="detalle-titulo">{{ viajeDetalle.titulo }}</span>
+      <span class="detalle-viaje-id">Viaje #{{ viajeDetalle.id }}</span>
+    </div>
+    <div class="detalle-grid">
+      <div class="detalle-item">
+        <span class="detalle-label"><i class="fa-solid fa-user"></i> Viajero</span>
+        <span class="detalle-valor">{{ viajeDetalle.viajeroNombre || '—' }}</span>
+      </div>
+      <div class="detalle-item">
+        <span class="detalle-label"><i class="fa-solid fa-hotel"></i> Hotel / Hospedaje</span>
+        <span class="detalle-valor">{{ viajeDetalle.hotel || '—' }}</span>
+      </div>
+      <div class="detalle-item">
+        <span class="detalle-label"><i class="fa-solid fa-door-open"></i> Habitacion</span>
+        <span class="detalle-valor">{{ viajeDetalle.habitacion || '—' }}</span>
+      </div>
+      <div class="detalle-item">
+        <span class="detalle-label"><i class="fa-solid fa-location-dot"></i> Direccion</span>
+        <span class="detalle-valor">{{ viajeDetalle.direccion || '—' }}</span>
+      </div>
+      <div class="detalle-item">
+        <span class="detalle-label"><i class="fa-solid fa-right-to-bracket"></i> Check-in</span>
+        <span class="detalle-valor">{{ viajeDetalle.alojamientoFechaIngreso | date:'dd/MM/yyyy' }}</span>
+      </div>
+      <div class="detalle-item">
+        <span class="detalle-label"><i class="fa-solid fa-right-from-bracket"></i> Check-out</span>
+        <span class="detalle-valor">{{ viajeDetalle.alojamientoFechaSalida | date:'dd/MM/yyyy' }}</span>
+      </div>
+    </div>
+    <div class="detalle-actions">
+      <button class="btn-cerrar-detalle" (click)="cerrarDetalle()">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- FORMULARIO MODAL -->
+  <div class="modal-backdrop" *ngIf="showForm" (click)="cerrarForm()"></div>
+  <div class="modal-panel" *ngIf="showForm">
+    <div class="modal-header">
+      <h3>Asignar alojamiento<span *ngIf="viajeSeleccionado"> &mdash; {{ viajeSeleccionado.titulo }}</span></h3>
+      <button class="btn-cerrar" (click)="cerrarForm()">&#x2715;</button>
+    </div>
+
+    <form [formGroup]="alojamientoForm" (ngSubmit)="guardar()">
+      <div class="form-grid">
+        <div class="form-group span-2" *ngIf="!viajeSeleccionado">
+          <label>Viaje *</label>
+          <select formControlName="idViaje">
+            <option value="">Seleccionar viaje...</option>
+            <ng-container *ngFor="let v of viajes">
+              <option *ngIf="v.tieneViaje" [value]="v.id">{{ v.nombre }}</option>
+              <option *ngIf="!v.tieneViaje" disabled>{{ v.titulo }} — (Sin viaje creado)</option>
+            </ng-container>
+          </select>
+        </div>
+
+        <div class="form-group span-2">
+          <label>Nombre del viajero</label>
+          <input type="text" formControlName="nombreViajero" placeholder="Ej: Juan Pérez" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+          <label>Hotel / Hospedaje *</label>
+          <input type="text" formControlName="nombreHotel" placeholder="Ej: Hotel Caribe Royal">
+          <span class="error" *ngIf="alojamientoForm.get('nombreHotel')?.invalid && alojamientoForm.get('nombreHotel')?.touched">Campo requerido (min. 3 caracteres)</span>
+        </div>
+
+        <div class="form-group">
+          <label>Tipo de habitacion *</label>
+          <input type="text" formControlName="habitacion" placeholder="Ej: Doble, Suite, Individual">
+          <span class="error" *ngIf="alojamientoForm.get('habitacion')?.invalid && alojamientoForm.get('habitacion')?.touched">Campo requerido</span>
+        </div>
+
+        <div class="form-group">
+          <label>Direccion *</label>
+          <input type="text" formControlName="direccion" placeholder="Ej: Cra. 1 # 17-21, Santa Marta">
+          <span class="error" *ngIf="alojamientoForm.get('direccion')?.invalid && alojamientoForm.get('direccion')?.touched">Campo requerido</span>
+        </div>
+
+        <div class="form-group">
+          <label>Check-in *</label>
+          <input type="date" formControlName="checkIn">
+          <span class="error" *ngIf="alojamientoForm.get('checkIn')?.invalid && alojamientoForm.get('checkIn')?.touched">Fecha requerida</span>
+        </div>
+
+        <div class="form-group">
+          <label>Check-out *</label>
+          <input type="date" formControlName="checkOut">
+          <span class="error" *ngIf="alojamientoForm.get('checkOut')?.invalid && alojamientoForm.get('checkOut')?.touched">Fecha requerida</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancelar" (click)="cerrarForm()">Cancelar</button>
+        <button type="submit" class="btn-guardar" [disabled]="enviando">
+          {{ enviando ? 'Guardando...' : 'Guardar asignacion' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
+    <i class="toast-icon" [class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
+    <span class="toast-msg">{{ toastMsg }}</span>
+  </div>
+
+</div>

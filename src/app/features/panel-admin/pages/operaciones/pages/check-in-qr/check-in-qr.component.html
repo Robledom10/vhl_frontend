@@ -13,7 +13,7 @@
     <select (change)="onViajeChange($event)" style="height:52px; border-radius:25px; border:1.5px solid #e8e8e8; padding:0 22px; font-family:'Outfit',sans-serif; font-size:15px; outline:none; background:white; width:100%;">
       <option value="">Seleccionar viaje...</option>
       <option *ngFor="let v of viajes" [value]="v.id" [selected]="v.id === idViajeSeleccionado">
-        Viaje #{{ v.id }} &mdash; Paquete {{ v.idPaquete }} ({{ v.fechaSalida }})
+        {{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} &mdash; Viaje #{{ v.id }} &middot; {{ v.fechaSalida | date:'dd/MM/yyyy' }}
       </option>
     </select>
   </div>
