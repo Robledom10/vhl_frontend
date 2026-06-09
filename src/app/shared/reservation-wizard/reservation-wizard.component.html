@@ -12,7 +12,8 @@
 				<div class="steps-wrapper">
 					<div class="step-item">
 						<div class="step" [class.active]="currentStep >= 1">
-							<span>1</span>
+							<i class="fa-solid fa-check" *ngIf="currentStep > 1"></i>
+							<span *ngIf="currentStep <= 1">1</span>
 						</div>
 						<p [class.active]="currentStep === 1">
 							Titular
@@ -23,7 +24,8 @@
 
 					<div class="step-item">
 						<div class="step" [class.active]="currentStep >= 2">
-							<span>2</span>
+							<i class="fa-solid fa-check" *ngIf="currentStep > 2"></i>
+							<span *ngIf="currentStep <= 2">2</span>
 						</div>
 						<p [class.active]="currentStep === 2">
 							Viajeros
@@ -34,7 +36,8 @@
 
 					<div class="step-item">
 						<div class="step" [class.active]="currentStep >= 3">
-							<span>3</span>
+							<i class="fa-solid fa-check" *ngIf="currentStep > 3"></i>
+							<span *ngIf="currentStep <= 3">3</span>
 						</div>
 						<p [class.active]="currentStep === 3">
 							Reserva
@@ -45,7 +48,8 @@
 
 					<div class="step-item">
 						<div class="step" [class.active]="currentStep >= 4">
-							<span>4</span>
+							<i class="fa-solid fa-check" *ngIf="currentStep > 4"></i>
+							<span *ngIf="currentStep <= 4">4</span>
 						</div>
 						<p [class.active]="currentStep === 4">
 							Resumen

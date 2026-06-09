@@ -456,13 +456,13 @@
 }
 
 .qty-btn {
-	width: 55px;
-	height: 55px;
+	width: 30px;
+	height: 30px;
 	border-radius: 50%;
 	border: none;
 	background: var(--color-primario);
 	color: white;
-	font-size: 18px;
+	font-size: 12px;
 	cursor: pointer;
 	display: flex;
 	align-items: center;
@@ -489,7 +489,7 @@
 }
 
 .qty-number {
-	font-size: 40px;
+	font-size: 30px;
 	font-weight: 700;
 	color: var(--color-primario);
 	line-height: 1;
@@ -524,7 +524,7 @@
 }
 
 .reservation-total strong {
-	font-size: 32px;
+	font-size: 25px;
 	font-weight: 700;
 	color: var(--color-primario);
 }
@@ -540,9 +540,9 @@
 	color: #fff;
 	border: none;
 	border-radius: 28px;
-	padding: 20px 14px;
+	padding: 14px 14px;
 	font-size: 25px;
-	font-weight: 600;
+	font-weight: 500;
 	font-family: "Outfit", sans-serif;
 	cursor: pointer;
 	width: 100%;

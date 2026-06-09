@@ -1,5 +1,5 @@
 /* ==========================
-   OVERLAY
+	OVERLAY
 ========================== */
 
 .modal-overlay {
@@ -15,7 +15,7 @@
 }
 
 .modal-container {
-	width: 900px;
+	width: 750px;
 	max-width: 95vw;
 	max-height: 90vh;
 	background: var(--color-fondo);
@@ -44,7 +44,7 @@
 }
 
 /* ==========================
-   CLOSE
+	CLOSE
 ========================== */
 
 .close-btn {
@@ -70,7 +70,7 @@
 }
 
 /* ==========================
-   TITULO
+	TITULO
 ========================== */
 
 .modal-title {
@@ -95,58 +95,69 @@
 }
 
 /* ==========================
-   STEPPER
+	STEPPER
 ========================== */
 
 .steps-wrapper {
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	justify-content: center;
-	margin-bottom: 35px;
+	margin-bottom: 48px;
 }
 
 .step-item {
+	width: 90px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 10px;
+	text-align: center;
 }
 
 .step {
-	width: 45px;
-	height: 45px;
+	width: 35px;
+	height: 35px;
 	border-radius: 50%;
-	background: #e8edf3;
-	color: #7c8b9a;
+	border: 2px solid #d8d8d8;
+	background: #fff;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-weight: 700;
-	transition: .3s;
+	font-family: "Outfit", sans-serif;
+	font-size: var(--inputs);
+	font-weight: 600;
+	color: #b2b2b2;
+	transition: 0.25s ease;
 }
 
 .step.active {
-	background: var(--color-primario);
-	color: white;
+	border-color: var(--color-primario);
+	background: rgba(63, 162, 219, 0.08);
+	color: var(--color-primario);
+}
+
+.step.active i{
+	font-size: 14px;
 }
 
 .step-item p {
-	margin: 0;
-	font-size: 14px;
-	color: var(--color-texto-secundario);
+	margin-top: 12px;
+	font-size: 12px;
+	line-height: 1.4;
+	font-family: "Outfit", sans-serif;
+	color: #b0b0b0;
 }
 
 .step-item p.active {
 	color: var(--color-primario);
-	font-weight: 600;
+	font-weight: 500;
 }
 
 .line {
-	width: 80px;
-	height: 3px;
-	background: #e8edf3;
-	margin: 0 15px;
-	border-radius: 99px;
+	width: 70px;
+	height: 2px;
+	background: #e6e6e6;
+	margin-top: 22px;
+	transition: 0.25s ease;
 }
 
 .line.active {
