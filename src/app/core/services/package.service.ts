@@ -3,12 +3,14 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SolicitudPaqueteTuristico, RespuestaPaqueteTuristico, RespuestaImagenPaquete, PageResponse } from '../../features/panel-admin/models/package.model';
 import { environment } from '../../../environments/environment';
+import { AuthService } from './auth.service';
+import { RespuestaComentarioPaquete, SolicitudComentarioPaquete } from '../../shared/package-detail-sheet/models/comments.model';
 
 @Injectable({ providedIn: 'root' })
 export class PackageService {
 	private apiUrl = `${environment.apiUrl}/paquetes`;
 
-	constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient, private authService: AuthService) { }
 
 	createPackage(request: SolicitudPaqueteTuristico): Observable<RespuestaPaqueteTuristico> {
 		return this.http.post<RespuestaPaqueteTuristico>(this.apiUrl, request);
@@ -54,5 +56,37 @@ export class PackageService {
 		const formData = new FormData();
 		formData.append('file', file);
 		return this.http.post<RespuestaImagenPaquete>(`${this.apiUrl}/imagenes`, formData);
+	}
+
+	// =========================
+	// COMENTARIOS
+	// =========================
+
+	getComments(packageId: number) {
+		return this.http.get<RespuestaComentarioPaquete[]>(
+			`${this.apiUrl}/${packageId}/comentarios`
+		);
+	}
+
+	createComment(
+		packageId: number,
+		request: SolicitudComentarioPaquete
+	) {
+
+		const user = this.authService.getUser();
+
+		if (!user) {
+			throw new Error('Usuario no autenticado');
+		}
+
+		return this.http.post<RespuestaComentarioPaquete>(
+			`${this.apiUrl}/${packageId}/comentarios`,
+			request,
+			{
+				headers: {
+					'X-User-Email': user.email
+				}
+			}
+		);
 	}
 }

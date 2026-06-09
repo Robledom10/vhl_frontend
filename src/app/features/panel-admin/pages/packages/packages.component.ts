@@ -184,6 +184,7 @@ export class PackagesComponent implements OnInit {
 
 	private mapToPackageDetail(p: RespuestaPaqueteTuristico): PackageDetail {
 		return {
+			id: p.id,
 			title: p.titulo,
 			subtitle: p.descripcion || '',
 			spotsAvailable: p.cupo,
