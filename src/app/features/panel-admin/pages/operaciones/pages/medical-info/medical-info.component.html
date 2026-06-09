@@ -1,0 +1,142 @@
+<div class="operaciones-container">
+
+	<div class="page-header">
+		<div>
+			<h2 class="page-title">Informacion <span>Medica</span></h2>
+			<p class="page-subtitle">Consulta y actualiza la informacion medica de cada viajero</p>
+		</div>
+		<button class="btn-nuevo" (click)="abrirNuevo()">
+			Nuevo registro
+		</button>
+	</div>
+
+	<!-- SELECTOR DE VIAJE -->
+	<div class="form-group" style="max-width: 420px; margin-bottom: 8px;">
+		<label style="font-size:13px; font-weight:500; color:var(--color-texto-secundario); padding-left:6px;">Filtrar
+			por viaje</label>
+		<select (change)="onViajeChange($event)"
+			style="height:52px; border-radius:25px; border:1.5px solid #e8e8e8; padding:0 22px; font-family:'Outfit',sans-serif; font-size:15px; outline:none; background:white; width:100%;">
+			<option value="">Seleccionar viaje...</option>
+			<option *ngFor="let v of viajes" [value]="v.id" [selected]="v.id === idViajeSeleccionado">
+				{{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} &mdash; Viaje #{{ v.id }} &middot; {{
+				v.fechaSalida | date:'dd/MM/yyyy' }}
+			</option>
+		</select>
+	</div>
+
+	<div class="section-title">
+		<i class="fa-solid fa-heart-pulse"></i>
+		<h3>Registros medicos de viajeros</h3>
+	</div>
+
+	<div class="table-container">
+		<table>
+			<thead>
+				<tr>
+					<th>Viajero</th>
+					<th>Tipo de sangre</th>
+					<th>Alergias</th>
+					<th>Medicamentos</th>
+					<th>Condiciones</th>
+					<th>Accion</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let r of registros">
+					<td>{{ r.nombreViajero || getNombreViajero(r.idViajero) }}</td>
+					<td><span class="badge-sg">{{ r.tipoSangre }}</span></td>
+					<td>
+						<span class="tag-condicion"
+							[class.con-alerta]="r.alergias && r.alergias.toLowerCase() !== 'ninguna' && r.alergias !== ''">{{
+							r.alergias || '&mdash;' }}</span>
+					</td>
+					<td>{{ r.medicamentos || '&mdash;' }}</td>
+					<td>
+						<span class="tag-condicion"
+							[class.con-alerta]="r.condicionesMedicas && r.condicionesMedicas.toLowerCase() !== 'ninguna' && r.condicionesMedicas !== ''">{{
+							r.condicionesMedicas || '&mdash;' }}</span>
+					</td>
+					<td>
+						<div class="actions">
+							<button class="edit" (click)="abrir(r)">Editar</button>
+							<button class="del" (click)="eliminar(r)">Eliminar</button>
+						</div>
+					</td>
+				</tr>
+				<tr *ngIf="registros.length === 0">
+					<td colspan="6" class="empty">No hay registros medicos para este viaje.</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- MODAL -->
+	<div class="modal-backdrop" *ngIf="showForm" (click)="cerrar()"></div>
+	<div class="modal-panel" *ngIf="showForm">
+		<div class="modal-header">
+			<h3>{{ editando ? 'Editar info medica &mdash; ' + getNombreViajero(editando.idViajero) : 'Nuevo registro
+				medico' }}</h3>
+			<button class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
+		</div>
+
+		<form [formGroup]="medForm" (ngSubmit)="guardar()">
+			<div class="form-grid">
+				<div class="form-group span-2">
+					<label>Nombre del viajero *</label>
+					<input type="text" formControlName="nombreViajero" placeholder="Ej: Juan Pérez" autocomplete="off">
+					<span class="error"
+						*ngIf="medForm.get('nombreViajero')?.invalid && medForm.get('nombreViajero')?.touched">Campo
+						requerido</span>
+				</div>
+
+				<div class="form-group">
+					<label>Tipo de sangre *</label>
+					<select formControlName="tipoSangre">
+						<option value="">Seleccionar...</option>
+						<option *ngFor="let g of gruposSanguineos" [value]="g">{{ g }}</option>
+					</select>
+					<span class="error"
+						*ngIf="medForm.get('tipoSangre')?.invalid && medForm.get('tipoSangre')?.touched">Campo
+						requerido</span>
+				</div>
+
+				<div class="form-group">
+					<label>Telefono medico</label>
+					<input type="text" formControlName="telefonoMedico" placeholder="+57 300 000 0000">
+					<span class="error"
+						*ngIf="medForm.get('telefonoMedico')?.invalid && medForm.get('telefonoMedico')?.touched">Formato
+						invalido</span>
+				</div>
+
+				<div class="form-group span-2">
+					<label>Alergias</label>
+					<input type="text" formControlName="alergias" placeholder='Ej: Polen, mariscos o "Ninguna"'>
+				</div>
+
+				<div class="form-group span-2">
+					<label>Medicamentos</label>
+					<input type="text" formControlName="medicamentos" placeholder='Ej: Metformina o "Ninguno"'>
+				</div>
+
+				<div class="form-group span-2">
+					<label>Condiciones medicas</label>
+					<input type="text" formControlName="condiciones" placeholder='Ej: Diabetes tipo 2 o "Ninguna"'>
+				</div>
+			</div>
+
+			<div class="modal-actions">
+				<button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
+				<button type="submit" class="btn-guardar" [disabled]="enviando">
+					{{ enviando ? 'Guardando...' : 'Guardar cambios' }}
+				</button>
+			</div>
+		</form>
+	</div>
+
+	<div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
+		<i class="toast-icon"
+			[class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
+		<span class="toast-msg">{{ toastMsg }}</span>
+	</div>
+
+</div>

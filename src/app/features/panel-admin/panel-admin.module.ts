@@ -24,9 +24,16 @@ import { FormPackageCreationComponent } from './pages/packages/components/form-p
 import { MediaUploadModalComponent } from './pages/gallery-admin/components/media-upload-modal/media-upload-modal.component';
 import { GalleryAdminComponent } from './pages/gallery-admin/gallery-admin.component';
 import { FormProviderComponent } from './pages/packages/pages/proveedor/components/form-provider/form-provider.component';
-import { TravelOperationComponent } from './pages/travel-operation/travel-operation.component';
 import { FormReservationsCreationComponent } from './pages/reservations/components/form-reservations-creation/form-reservations-creation.component';
 import { ReservationDetailSheetComponent } from './pages/reservations/components/reservation-detail-sheet/reservation-detail-sheet.component';
+import { DashboardOperativoComponent } from './pages/operaciones/pages/operations-dashboard/operations-dashboard.component';
+import { AsignarTransporteComponent } from './pages/operaciones/pages/assign-transport/assign-transport.component';
+import { CheckInQrComponent } from './pages/operaciones/pages/check-in-qr/check-in-qr.component';
+import { AsignarAlojamientoComponent } from './pages/operaciones/pages/assign-accommodation/assign-accommodation.component';
+import { InfoMedicaComponent } from './pages/operaciones/pages/medical-info/medical-info.component';
+import { ContactosEmergenciaComponent } from './pages/operaciones/pages/emergency-contacts/emergency-contacts.component';
+import { IncidentesComponent } from './pages/operaciones/pages/incidents/incidents.component';
+import { ComunicacionesComponent } from './pages/operaciones/pages/communications/communications.component';
 
 @NgModule({
 	declarations: [
@@ -50,9 +57,16 @@ import { ReservationDetailSheetComponent } from './pages/reservations/components
 		MediaUploadModalComponent,
 		GalleryAdminComponent,
 		FormProviderComponent,
-		TravelOperationComponent,
 		FormReservationsCreationComponent,
 		ReservationDetailSheetComponent,
+		DashboardOperativoComponent,
+		AsignarTransporteComponent,
+		CheckInQrComponent,
+		AsignarAlojamientoComponent,
+		InfoMedicaComponent,
+		ContactosEmergenciaComponent,
+		IncidentesComponent,
+		ComunicacionesComponent,
 	],
 	imports: [
 		CommonModule,
