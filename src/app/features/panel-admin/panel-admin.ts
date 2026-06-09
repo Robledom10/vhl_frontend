@@ -6,6 +6,4 @@ import { Component } from '@angular/core';
 	templateUrl: './panel-admin.html',
 	styleUrl: './panel-admin.css',
 })
-export class PanelAdmin {
-
-}
+export class PanelAdmin { }

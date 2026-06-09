@@ -20,11 +20,8 @@ export class SearchFilterComponent {
 	// recibir fecha del calendario
 	onDateSelected(date: string) {
 		this.fechaSalidaISO = date;
-
 		const [year, month, day] = date.split('-');
-
 		this.fechaSalida = `${day}/${month}/${year}`;
-
 		this.showCalendar = false;
 	}
 }

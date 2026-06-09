@@ -55,20 +55,12 @@ export class NavbarPanelAdminComponent {
 					route: '/panel-admin/packages',
 				},
 				{
-					label: 'Perfil organización',
-					route: '/panel-admin/packages-organization-profile',
-				},
-				{
 					label: 'Planes de precio',
 					route: '/panel-admin/packages-price-plans',
 				},
 				{
 					label: 'Proveedores',
 					route: '/panel-admin/packages-providers',
-				},
-				{
-					label: 'Seguros',
-					route: '/panel-admin/packages-seguros',
 				},
 			],
 		},
@@ -99,9 +91,9 @@ export class NavbarPanelAdminComponent {
 			badge: 7,
 		},
 		{
-			icon: 'fa-solid fa-tags',
+			icon: 'fa-solid fa-plane-departure',
 			label: 'Ofertas',
-			route: '/panel-admin/offers',
+			route: '/panel-admin/travel-operation',
 		},
 	];
 }

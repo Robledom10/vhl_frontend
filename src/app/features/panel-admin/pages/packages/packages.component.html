@@ -5,17 +5,50 @@
 
 		<!-- BUSCADOR -->
 		<div class="search-box">
-			<input type="text" placeholder="Buscar paquete..." />
-
-			<button>
+			<input type="text" placeholder="Buscar por paquete o destino..." [(ngModel)]="busqueda"
+				(ngModelChange)="autoApplyFilters()" (keyup.enter)="buscar()" />
+			<button (click)="buscar()">
 				<i class="fa-solid fa-magnifying-glass"></i>
 			</button>
 		</div>
 
-		<!-- FILTRO -->
-		<button class="filter-btn">
-			<i class="fa-solid fa-sliders"></i>
-			<span>Filtrar</span>
+		<!-- FILTRO ESTADO -->
+		<div class="filter-wrapper">
+			<button class="filter-btn" (click)="toggleFilters()">
+				<div class="filter-content">
+					<i class="fa-solid fa-sliders"></i>
+					<span>{{ estadoFiltro }}</span>
+				</div>
+				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="showFilters"></i>
+			</button>
+
+			<div class="dropdown" *ngIf="showFilters">
+				<div class="dropdown-item" (click)="selectEstado('Activos')">Activos</div>
+				<div class="dropdown-item" (click)="selectEstado('Inactivos')">Inactivos</div>
+				<div class="dropdown-item" (click)="selectEstado('Todos')">Todos</div>
+			</div>
+		</div>
+
+		<!-- FILTRO FECHA -->
+		<div class="filter-wrapper calendar-filter">
+			<button class="filter-btn" type="button" (click)="toggleFilterCalendar($event)">
+				<div class="filter-content">
+					<i class="fa-regular fa-calendar"></i>
+					<span>{{ fechaSalidaFiltro ? formattedFilterDate : 'Fecha' }}</span>
+				</div>
+				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="showFilterCalendar"></i>
+			</button>
+
+			<app-custom-calendar *ngIf="showFilterCalendar" [isOpen]="showFilterCalendar"
+				[selectedDate]="fechaSalidaFiltro" (dateSelected)="onFilterDateSelected($event)"
+				(closed)="showFilterCalendar = false">
+			</app-custom-calendar>
+		</div>
+
+		<!-- LIMPIAR -->
+		<button class="clear-filter" type="button" (click)="clearFilters()"
+			*ngIf="busqueda || fechaSalidaFiltro || estadoFiltro !== 'Activos'">
+			Limpiar
 		</button>
 
 		<!-- AGREGAR -->
@@ -25,8 +58,13 @@
 		</button>
 	</div>
 
+	<!-- CARGANDO -->
+	<div *ngIf="cargando" class="loading">
+		<p>Cargando paquetes...</p>
+	</div>
+
 	<!-- TABLA -->
-	<div class="table-container">
+	<div class="table-container" *ngIf="!cargando">
 		<table>
 			<thead>
 				<tr>
@@ -73,9 +111,17 @@
 							<button class="view" (click)="openDetail(item); $event.stopPropagation()">
 								<i class="fa-regular fa-eye"></i>
 							</button>
-							<button class="edit">Editar</button>
-							<button class="delete" (click)="openDeleteModal(item)">Eliminar</button>
+							<button class="edit" (click)="openEditModal(item); $event.stopPropagation()">Editar</button>
+							<button class="delete"
+								(click)="openDeleteModal(item); $event.stopPropagation()">Eliminar</button>
 						</div>
+					</td>
+				</tr>
+
+				<!-- SIN RESULTADOS -->
+				<tr *ngIf="packages.length === 0">
+					<td colspan="9" style="text-align:center; padding: 2rem;">
+						No se encontraron paquetes.
 					</td>
 				</tr>
 			</tbody>
@@ -86,16 +132,17 @@
 <app-package-detail-sheet [isOpen]="sheetOpen" [package]="selectedPackageDetail"
 	(closed)="closeDetail()"></app-package-detail-sheet>
 
-<app-confirm-modal [isOpen]="showDeleteModal" title="Eliminar paquete"
-	message="Esta acción eliminará toda la información del paquete." confirmText="Eliminar" cancelText="Cancelar"
+<app-confirm-modal [isOpen]="showDeleteModal"
+	[title]="isSelectedInactive ? 'Eliminar permanentemente' : 'Eliminar paquete'"
+	[message]="isSelectedInactive ? 'Esta acción eliminará el paquete de forma permanente y no se podrá recuperar.' : 'Esta acción dejará el paquete como inactivo.'"
+	[confirmText]="isSelectedInactive ? 'Eliminar definitivamente' : 'Eliminar'" cancelText="Cancelar"
 	icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b" iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b"
 	(confirmed)="confirmDelete()" (closed)="closeDeleteModal()">
-
 </app-confirm-modal>
 
-<app-toast-notification [show]="showToast" title="Paquete eliminado con éxito"
-	[message]="'El paquete ' + selectedPackage?.name + ' fue eliminado correctamente.'">
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
 </app-toast-notification>
 
-<app-form-package-creation [isOpen]="showCreateModal" (closed)="closeCreateModal()">
+<app-form-package-creation [isOpen]="showCreateModal" [mode]="editingPackage ? 'edit' : 'create'"
+	[editPackage]="editingPackage" (saved)="handlePackageSaved($event)" (closed)="closeCreateModal()">
 </app-form-package-creation>

@@ -1,1 +1,98 @@
-<p>proveedor works!</p>
+<div class="users-container">
+
+	<!-- TOP BAR -->
+	<div class="top-bar">
+
+		<!-- SEARCH -->
+		<div class="search-box">
+			<input type="text" placeholder="Buscar proveedor..." [(ngModel)]="search" />
+
+			<button>
+				<i class="fa-solid fa-magnifying-glass"></i>
+			</button>
+		</div>
+
+		<!-- FILTER -->
+		<div class="filter-wrapper">
+			<button class="filter-btn" (click)="toggleDropdown()">
+				<div class="filter-content">
+					<i class="fa-solid fa-sliders"></i>
+					<span>{{ selectedType }}</span>
+				</div>
+
+				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="dropdownOpen"></i>
+			</button>
+
+			<div class="dropdown" *ngIf="dropdownOpen">
+				<div class="dropdown-item" *ngFor="let type of types" (click)="selectType(type)">
+					{{ type }}
+				</div>
+			</div>
+		</div>
+
+		<!-- ADD -->
+		<button class="add-btn" (click)="openCreateModal()">
+			<i class="fa-solid fa-plus"></i>
+			<span>Agregar proveedor</span>
+		</button>
+	</div>
+
+	<!-- TABLE -->
+	<div class="table-container">
+		<table>
+			<thead>
+				<tr>
+					<th>Nombre</th>
+					<th>Tipo</th>
+					<th>Correo</th>
+					<th>Teléfono</th>
+					<th>Estado</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr *ngFor="let proveedor of filteredProviders" [class.row-inactive]="!proveedor.activo">
+					<td>
+						{{ proveedor.nombre }}
+					</td>
+					<td>
+						{{ proveedor.tipoProveedor }}
+					</td>
+					<td>
+						{{ proveedor.correo || '-' }}
+					</td>
+					<td>
+						{{ proveedor.telefono || '-' }}
+					</td>
+					<td>
+						<span class="status" [class.active]="proveedor.activo" [class.inactive]="!proveedor.activo">
+							{{ proveedor.activo ? 'Activo' : 'Inactivo' }}
+						</span>
+					</td>
+					<td>
+						<div class="actions">
+
+							<button class="view" (click)="openViewModal(proveedor)">
+								<i class="fa-regular fa-eye"></i>
+							</button>
+
+							<button class="edit" (click)="openEditModal(proveedor)" [disabled]="!proveedor.activo">
+								Editar
+							</button>
+
+							<button class="delete" [class.activate]="!proveedor.activo"
+								(click)="deleteProvider(proveedor)">
+								{{ proveedor.activo ? 'Desactivar' : 'Activar' }}
+							</button>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<app-form-provider [isOpen]="showModal" [mode]="modalMode" [provider]="selectedProvider" (closed)="showModal = false"
+	(saved)="loadProviders()">
+</app-form-provider>

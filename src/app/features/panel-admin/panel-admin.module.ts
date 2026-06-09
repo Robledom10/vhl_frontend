@@ -10,7 +10,6 @@ import { ReservationsComponent } from './pages/reservations/reservations.compone
 import { UsersRolesComponent } from './pages/users-roles/users-roles.component';
 import { CommentsComponent } from './pages/comments/comments.component';
 import { MessagesComponent } from './pages/messages/messages.component';
-import { OffersComponent } from './pages/offers/offers.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -21,11 +20,11 @@ import { ViewUserModalComponent } from './pages/users-roles/components/view-user
 import { CreateUserModalComponent } from './pages/users-roles/components/create-user-modal/create-user-modal.component';
 import { ProveedorComponent } from './pages/packages/pages/proveedor/proveedor.component';
 import { PricingPlanComponent } from './pages/packages/pages/pricing-plan/pricing-plan.component';
-import { SegurosComponent } from './pages/packages/pages/seguros/seguros.component';
-import { OrganizationProfileComponent } from './pages/packages/pages/organization-profile/organization-profile.component';
 import { FormPackageCreationComponent } from './pages/packages/components/form-package-creation/form-package-creation.component';
 import { MediaUploadModalComponent } from './pages/gallery-admin/components/media-upload-modal/media-upload-modal.component';
 import { GalleryAdminComponent } from './pages/gallery-admin/gallery-admin.component';
+import { FormProviderComponent } from './pages/packages/pages/proveedor/components/form-provider/form-provider.component';
+import { TravelOperationComponent } from './pages/travel-operation/travel-operation.component';
 import { FormReservationsCreationComponent } from './pages/reservations/components/form-reservations-creation/form-reservations-creation.component';
 import { ReservationDetailSheetComponent } from './pages/reservations/components/reservation-detail-sheet/reservation-detail-sheet.component';
 
@@ -39,7 +38,6 @@ import { ReservationDetailSheetComponent } from './pages/reservations/components
 		UsersRolesComponent,
 		CommentsComponent,
 		MessagesComponent,
-		OffersComponent,
 		ProfileComponent,
 		ConfirmModalComponent,
 		ToastNotificationComponent,
@@ -48,11 +46,11 @@ import { ReservationDetailSheetComponent } from './pages/reservations/components
 		CreateUserModalComponent,
 		ProveedorComponent,
 		PricingPlanComponent,
-		SegurosComponent,
-		OrganizationProfileComponent,
 		FormPackageCreationComponent,
 		MediaUploadModalComponent,
 		GalleryAdminComponent,
+		FormProviderComponent,
+		TravelOperationComponent,
 		FormReservationsCreationComponent,
 		ReservationDetailSheetComponent,
 	],

@@ -1,4 +1,7 @@
+import { RespuestaPaqueteTuristico } from '../../../models/package.model';
+
 export interface AdminPackage {
+	id: number;
 	name: string;
 	location: string;
 	duration: string;
@@ -7,4 +10,5 @@ export interface AdminPackage {
 	capacity: number;
 	status: string;
 	imageUrl: string;
+	source: RespuestaPaqueteTuristico;
 }
