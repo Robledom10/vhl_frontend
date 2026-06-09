@@ -5,6 +5,7 @@
 
 				<!-- STEPS -->
 
+
 				<div class="steps-wrapper">
 
 					<!-- STEP 1 -->
@@ -526,29 +527,30 @@
 					</div>
 				</form>
 
-				<!-- BUTTONS -->
-				<div class="buttons">
+			</div>
+		</div>
 
-					<button type="button" class="cancel" (click)="closeModal()">
-						Cancelar
-					</button>
+		<!-- BUTTONS fuera del scroll para que siempre sean visibles -->
+		<div class="buttons">
 
-					<div class="right-buttons">
-						<button type="button" class="prev" *ngIf="currentStep > 1" (click)="previousStep()">
-							Anterior
-						</button>
+			<button type="button" class="cancel" (click)="closeModal()">
+				Cancelar
+			</button>
 
-						<button type="button" class="next" *ngIf="currentStep < 4" (click)="nextStep()">
-							Siguiente
-						</button>
+			<div class="right-buttons">
+				<button type="button" class="prev" *ngIf="currentStep > 1" (click)="previousStep()">
+					Anterior
+				</button>
 
-						<button type="button" class="save" *ngIf="currentStep === 4" (click)="submitForm()"
-							[disabled]="enviando">
-							<i class="fa-solid fa-spinner" *ngIf="enviando"></i>
-							{{ enviando ? 'Generando...' : mode === 'edit' ? 'Actualizar paquete' : 'Crear paquete' }}
-						</button>
-					</div>
-				</div>
+				<button type="button" class="next" *ngIf="currentStep < 4" (click)="nextStep()">
+					Siguiente
+				</button>
+
+				<button type="button" class="save" *ngIf="currentStep === 4" (click)="submitForm()"
+					[disabled]="enviando">
+					<i class="fa-solid fa-spinner" *ngIf="enviando"></i>
+					{{ enviando ? 'Generando...' : mode === 'edit' ? 'Actualizar paquete' : 'Crear paquete' }}
+				</button>
 			</div>
 		</div>
 	</div>

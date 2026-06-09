@@ -27,6 +27,8 @@
 	border-radius: 54px;
 	overflow: hidden;
 	position: relative;
+	display: flex;
+	flex-direction: column;
 }
 
 /* =========================================================
@@ -34,7 +36,8 @@
 ========================================================= */
 
 .modal-scroll {
-	max-height: 92vh;
+	flex: 1;
+	min-height: 0;
 	overflow-y: auto;
 	overflow-x: hidden;
 	scrollbar-gutter: stable;
@@ -64,7 +67,7 @@
 ========================================================= */
 
 .modal-content {
-	padding: 45px 40px 45px 45px;
+	padding: 45px 40px 30px 45px;
 }
 
 /* =========================================================
@@ -784,7 +787,10 @@ select:valid {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	margin-top: 50px;
+	flex-shrink: 0;
+	padding: 20px 45px 28px 45px;
+	border-top: 1px solid #ececec;
+	background: #fff;
 }
 
 .right-buttons {

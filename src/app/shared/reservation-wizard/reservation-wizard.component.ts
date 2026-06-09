@@ -12,6 +12,16 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 	currentStep = 1;
 	private scrollY = 0;
 
+	emergencyContacts = [
+		{
+			fullName: '',
+			relationship: '',
+			document: '',
+			phone: '',
+			alternatePhone: ''
+		}
+	];
+
 	private blockScroll(): void {
 
 		this.scrollY = window.scrollY;
@@ -63,6 +73,24 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 	previousStep(): void {
 		if (this.currentStep > 1) {
 			this.currentStep--;
+		}
+	}
+
+	// Contactos de emergencia
+
+	addEmergencyContact(): void {
+		this.emergencyContacts.push({
+			fullName: '',
+			relationship: '',
+			document: '',
+			phone: '',
+			alternatePhone: ''
+		});
+	}
+
+	removeEmergencyContact(index: number): void {
+		if (this.emergencyContacts.length > 1) {
+			this.emergencyContacts.splice(index, 1);
 		}
 	}
 }
