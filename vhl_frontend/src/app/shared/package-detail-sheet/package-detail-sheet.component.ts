@@ -18,8 +18,6 @@ export interface PackageDetail {
 	destinations: string;
 	duration: string;
 	departurePlace: string;
-	date: string;
-	accommodation: string;
 	transport: string;
 	mainImage: string;
 	galleryImages?: string[];
@@ -133,16 +131,6 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 				label: 'Salida desde',
 				value: this.package.departurePlace,
 				icon: 'fa-solid fa-route',
-			},
-			{
-				label: 'Fecha',
-				value: this.package.date,
-				icon: 'fa-regular fa-calendar',
-			},
-			{
-				label: 'Alojamiento',
-				value: this.package.accommodation,
-				icon: 'fa-solid fa-bed',
 			},
 			{
 				label: 'Transporte',
