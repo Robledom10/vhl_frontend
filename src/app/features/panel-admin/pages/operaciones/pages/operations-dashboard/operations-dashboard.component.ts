@@ -50,11 +50,13 @@ export class DashboardOperativoComponent implements OnInit {
 
   viajeForm = this.fb.group({
     idPaquete: ['', Validators.required],
+    fechaSalida: ['', Validators.required],
+    fechaRegreso: [''],
   });
 
   editViajeForm = this.fb.group({
-    fechaSalida:  ['', Validators.required],
-    fechaRegreso: ['', Validators.required],
+    fechaSalida: ['', Validators.required],
+    fechaRegreso: [{ value: '', disabled: true }],
   });
 
   get totalViajeros(): number {
@@ -82,7 +84,7 @@ export class DashboardOperativoComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private authSvc: AuthService,
-  ) {}
+  ) { }
 
   ir(ruta: string): void {
     this.router.navigate(['/panel-admin', ruta]);
@@ -97,7 +99,7 @@ export class DashboardOperativoComponent implements OnInit {
 
     forkJoin({
       paquetes: this.svc.getAllPaquetes().pipe(catchError(() => of([]))),
-      viajes:   this.svc.getViajes().pipe(catchError(() => of([]))),
+      viajes: this.svc.getViajes().pipe(catchError(() => of([]))),
     }).subscribe({
       next: ({ paquetes, viajes }) => {
         this.paquetes = paquetes;
@@ -134,10 +136,10 @@ export class DashboardOperativoComponent implements OnInit {
                 idViaje: v.id,
                 fechaSalida: v.fechaSalida,
                 estado: v.estado,
-                viajerosRegistrados:  d?.viajerosRegistrados ?? 0,
+                viajerosRegistrados: d?.viajerosRegistrados ?? 0,
                 transportesAsignados: d?.transportesAsignados ?? 0,
                 alojamientosAsignados: d?.alojamientosAsignados ?? 0,
-                incidentes:           d?.incidentesRegistrados ?? 0,
+                incidentes: d?.incidentesRegistrados ?? 0,
               };
             });
 
@@ -172,8 +174,40 @@ export class DashboardOperativoComponent implements OnInit {
   // --- Nuevo viaje ---
 
   abrirNuevoViaje(): void {
+
     this.viajeForm.reset();
+
+    this.viajeForm
+      .get('fechaSalida')
+      ?.valueChanges
+      .subscribe((fecha) => {
+
+        const pkg =
+          this.paquetes.find(
+            p =>
+              p.id === Number(
+                this.viajeForm.value.idPaquete
+              )
+          );
+
+        if (!fecha || !pkg) return;
+
+        this.viajeForm.patchValue({
+
+          fechaRegreso:
+            this.calcularFechaRegreso(
+              fecha,
+              pkg.duracionDias
+            )
+
+        }, {
+          emitEvent: false
+        });
+
+      });
+
     this.showViajeForm = true;
+
   }
 
   cerrarViajeForm(): void {
@@ -181,49 +215,89 @@ export class DashboardOperativoComponent implements OnInit {
   }
 
   guardarViaje(): void {
-    if (this.viajeForm.invalid) { this.viajeForm.markAllAsTouched(); return; }
 
-    const idUsuario = this.authSvc.getUser()?.id;
-    if (!idUsuario) {
-      this.mostrarToast('No se pudo obtener el usuario activo', 'error');
+    if (this.viajeForm.invalid) {
+      this.viajeForm.markAllAsTouched();
       return;
     }
+
+    const idUsuario =
+      this.authSvc.getUser()?.id;
+
+    if (!idUsuario) {
+      this.mostrarToast(
+        'No se pudo obtener el usuario activo',
+        'error'
+      );
+      return;
+    }
+
+    const v = this.viajeForm.value;
+
+    const pkg =
+      this.paquetes.find(
+        p => p.id === Number(v.idPaquete)
+      );
+
+    if (!pkg) {
+      this.mostrarToast(
+        'Paquete inválido',
+        'error'
+      );
+      return;
+    }
+
+    const fechaSalida =
+      v.fechaSalida || '';
+
+    const fechaRegreso =
+      this.calcularFechaRegreso(
+        fechaSalida,
+        pkg.duracionDias || 1
+      );
 
     this.enviandoViaje = true;
-    const v = this.viajeForm.value;
-    const pkg = this.paquetes.find(p => p.id === Number(v.idPaquete));
-
-    if (!pkg?.fechaInicio) {
-      this.enviandoViaje = false;
-      this.mostrarToast('El paquete seleccionado no tiene fecha de inicio', 'error');
-      return;
-    }
-
-    const fechaSalida = pkg.fechaInicio;
-    const fin = new Date(pkg.fechaInicio);
-    fin.setDate(fin.getDate() + (pkg.duracionDias || 1));
-    const mm = String(fin.getMonth() + 1).padStart(2, '0');
-    const dd = String(fin.getDate()).padStart(2, '0');
-    const fechaRegreso = `${fin.getFullYear()}-${mm}-${dd}`;
 
     this.svc.crearViaje({
       idUsuario,
-      idPaquete:    Number(v.idPaquete),
+      idPaquete: Number(v.idPaquete),
       fechaSalida,
-      fechaRegreso,
-    }).subscribe({
-      next: () => {
-        this.enviandoViaje = false;
-        this.showViajeForm = false;
-        this.mostrarToast('Viaje creado correctamente');
-        this.cargar();
-      },
-      error: (err) => {
-        this.enviandoViaje = false;
-        const msg = err?.error?.mensaje || err?.error?.message || 'Error al crear el viaje';
-        this.mostrarToast(msg, 'error');
-      }
-    });
+      fechaRegreso
+    })
+      .subscribe({
+
+        next: () => {
+
+          this.enviandoViaje = false;
+
+          this.showViajeForm = false;
+
+          this.mostrarToast(
+            'Viaje creado correctamente'
+          );
+
+          this.cargar();
+
+        },
+
+        error: (err) => {
+
+          this.enviandoViaje = false;
+
+          const msg =
+            err?.error?.mensaje ||
+            err?.error?.message ||
+            'Error al crear viaje';
+
+          this.mostrarToast(
+            msg,
+            'error'
+          );
+
+        }
+
+      });
+
   }
 
   mostrarToast(msg: string, type: 'success' | 'error' = 'success'): void {
@@ -243,16 +317,71 @@ export class DashboardOperativoComponent implements OnInit {
     this.viajeDetalle = null;
   }
 
+  private calcularFechaRegreso(
+    fechaSalida: string,
+    duracionDias: number
+  ): string {
+
+    if (!fechaSalida) return '';
+
+    const fecha = new Date(fechaSalida);
+
+    fecha.setDate(
+      fecha.getDate() + (duracionDias || 1)
+    );
+
+    const yyyy = fecha.getFullYear();
+    const mm = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dd = String(fecha.getDate()).padStart(2, '0');
+    const hh = String(fecha.getHours()).padStart(2, '0');
+    const min = String(fecha.getMinutes()).padStart(2, '0');
+
+    return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
+  }
+
   // --- Editar viaje ---
 
   editarViaje(fila: FilaDashboard): void {
+
     if (!fila.idViaje) return;
+
     this.editandoViajeId = fila.idViaje;
-    const toLocal = (iso: string) => iso ? iso.substring(0, 16) : '';
+
+    const paquete =
+      this.paquetes.find(
+        p => p.id === fila.idPaquete
+      );
+
+    const fechaSalida =
+      fila.fechaSalida?.substring(0, 16) || '';
+
     this.editViajeForm.patchValue({
-      fechaSalida:  toLocal(fila.fechaSalida || ''),
-      fechaRegreso: toLocal(''),
+      fechaSalida,
+      fechaRegreso: this.calcularFechaRegreso(
+        fechaSalida,
+        paquete?.duracionDias || 1
+      )
     });
+
+    this.editViajeForm
+      .get('fechaSalida')
+      ?.valueChanges
+      .subscribe((valor) => {
+
+        if (!valor) return;
+
+        this.editViajeForm.patchValue({
+          fechaRegreso:
+            this.calcularFechaRegreso(
+              valor,
+              paquete?.duracionDias || 1
+            )
+        }, {
+          emitEvent: false
+        });
+
+      });
+
     this.showEditViaje = true;
   }
 
@@ -271,13 +400,13 @@ export class DashboardOperativoComponent implements OnInit {
 
     const fila = this.filas.find(f => f.idViaje === this.editandoViajeId);
     const toISO = (s: string) => s.length === 16 ? s + ':00' : s;
-    const v = this.editViajeForm.value;
+    const v = this.editViajeForm.getRawValue();
 
     this.enviandoEdicion = true;
     this.svc.actualizarViaje(this.editandoViajeId, {
       idUsuario,
       idPaquete: fila?.idPaquete,
-      fechaSalida:  toISO(v.fechaSalida || ''),
+      fechaSalida: toISO(v.fechaSalida || ''),
       fechaRegreso: toISO(v.fechaRegreso || ''),
     }).subscribe({
       next: () => {
@@ -336,8 +465,8 @@ export class DashboardOperativoComponent implements OnInit {
     if (!estado) return 'Sin viaje';
     const map: Record<string, string> = {
       'programado': 'Programado',
-      'activo':     'Activo',
-      'en-curso':   'En curso',
+      'activo': 'Activo',
+      'en-curso': 'En curso',
       'finalizado': 'Finalizado',
     };
     return map[estado] || estado;
@@ -347,8 +476,8 @@ export class DashboardOperativoComponent implements OnInit {
     if (!fila.tieneViaje) return 'sin-viaje';
     const map: Record<string, string> = {
       'programado': 'activo',
-      'activo':     'activo',
-      'en-curso':   'en-curso',
+      'activo': 'activo',
+      'en-curso': 'en-curso',
       'finalizado': 'finalizado',
     };
     return map[fila.estado || ''] || 'activo';
