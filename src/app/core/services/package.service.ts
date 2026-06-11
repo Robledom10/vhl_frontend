@@ -89,4 +89,23 @@ export class PackageService {
 			}
 		);
 	}
+
+	updateComment(
+		packageId: number,
+		commentId: number,
+		request: SolicitudComentarioPaquete
+	) {
+
+		const user = this.authService.getUser();
+
+		return this.http.put(
+			`${this.apiUrl}/${packageId}/comentarios/${commentId}`,
+			request,
+			{
+				headers: {
+					'X-User-Email': user!.email
+				}
+			}
+		);
+	}
 }

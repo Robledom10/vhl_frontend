@@ -55,6 +55,9 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 	travelers = 1;
 
 	comments: RespuestaComentarioPaquete[] = [];
+	editingCommentId: number | null = null;
+	editedComment = '';
+	editedRating = 5;
 
 	constructor(
 		private packageService: PackageService,
@@ -255,5 +258,50 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 
 	get isLogged(): boolean {
 		return this.authService.isAuthenticated();
+	}
+
+	canEdit(comment: RespuestaComentarioPaquete): boolean {
+
+		const user = this.authService.getUser();
+
+		if (!user) {
+			return false;
+		}
+
+		return user.email === comment.autor;
+	}
+
+	startEdit(comment: RespuestaComentarioPaquete): void {
+
+		this.editingCommentId = comment.id;
+		this.editedComment = comment.comentario;
+		this.editedRating = comment.puntaje;
+	}
+
+	saveEdit(commentId: number): void {
+
+		if (!this.package?.id) {
+			return;
+		}
+
+		this.packageService.updateComment(
+			this.package.id,
+			commentId,
+			{
+				comentario: this.editedComment,
+				puntaje: this.editedRating
+			}
+		).subscribe({
+
+			next: () => {
+
+				this.editingCommentId = null;
+				this.loadComments();
+			},
+
+			error: err => {
+				console.error(err);
+			}
+		});
 	}
 }

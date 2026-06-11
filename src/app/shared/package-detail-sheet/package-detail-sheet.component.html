@@ -50,8 +50,7 @@
 								<span>Lo que dicen nuestros clientes</span>
 							</div>
 						</div>
-						<!-- FORMULARIO COMENTARIO -->
-
+						<!-- FORMULARIO NUEVO COMENTARIO -->
 						<div class="comment-form" *ngIf="isLogged">
 
 							<h4>Comparte tu experiencia</h4>
@@ -65,7 +64,6 @@
 										[class.active]="star <= selectedRating" (click)="selectedRating = star">
 									</i>
 								</div>
-
 							</div>
 
 							<textarea rows="4" [(ngModel)]="newComment"
@@ -75,12 +73,20 @@
 								<i class="fa-regular fa-paper-plane"></i>
 								Publicar comentario
 							</button>
-
 						</div>
 
+						<!-- MENSAJE CUANDO NO HA INICIADO SESIÓN -->
 						<div class="login-message" *ngIf="!isLogged">
+							<div class="login-icon">
+								<i class="fa-solid fa-user-lock"></i>
+							</div>
 
-							Inicia sesión para publicar comentarios.
+							<h4>¿Quieres compartir tu experiencia?</h4>
+
+							<p>
+								Inicia sesión para calificar este viaje y publicar comentarios
+								que ayuden a otros viajeros.
+							</p>
 						</div>
 
 						<!-- <div class="rating-summary">
@@ -99,8 +105,8 @@
 							</div>
 						</div> -->
 
+						<!-- LISTA DE COMENTARIOS -->
 						<div class="review-item" *ngFor="let comment of comments">
-
 							<div class="review-top">
 
 								<img [src]="'https://ui-avatars.com/api/?name=' + comment.autor + '&background=3fa2db&color=fff&size=120'"
@@ -113,21 +119,67 @@
 										{{ comment.fechaCreacion | date:'dd/MM/yyyy' }}
 									</span>
 								</div>
-
 							</div>
 
 							<div class="review-stars">
-
 								<i *ngFor="let star of [1,2,3,4,5]" [class.fa-solid]="star <= comment.puntaje"
 									[class.fa-regular]="star > comment.puntaje" class="fa-star">
 								</i>
-
 							</div>
 
-							<p>
-								{{ comment.comentario }}
-							</p>
+							<!-- BOTÓN EDITAR -->
+							<div class="comment-actions" *ngIf="canEdit(comment)">
+								<button class="edit-comment-btn" (click)="startEdit(comment)">
+									<i class="fa-regular fa-pen-to-square"></i>
+									Editar
+								</button>
+							</div>
 
+							<!-- MODO NORMAL -->
+							<div *ngIf="editingCommentId !== comment.id">
+								<p>{{ comment.comentario }}</p>
+							</div>
+
+							<!-- MODO EDICIÓN -->
+							<div *ngIf="editingCommentId === comment.id" class="edit-comment-card">
+								<div class="edit-header">
+									<div class="edit-icon">
+										<i class="fa-regular fa-pen-to-square"></i>
+									</div>
+
+									<div>
+										<h4>Editar comentario</h4>
+										<span>Actualiza tu opinión sobre este viaje</span>
+									</div>
+								</div>
+
+								<div class="edit-field">
+									<label>Comentario</label>
+
+									<textarea rows="4" [(ngModel)]="editedComment"
+										placeholder="Actualiza tu comentario..."></textarea>
+								</div>
+
+								<div class="edit-field">
+									<label>Calificación</label>
+
+									<div class="stars-input">
+										<i *ngFor="let star of [1,2,3,4,5]" class="fa-solid fa-star"
+											[class.active]="star <= editedRating" (click)="editedRating = star">
+										</i>
+									</div>
+								</div>
+
+								<div class="edit-buttons">
+									<button class="cancel-btn" (click)="editingCommentId = null">
+										Cancelar
+									</button>
+
+									<button class="save-btn" (click)="saveEdit(comment.id)">
+										Guardar cambios
+									</button>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
