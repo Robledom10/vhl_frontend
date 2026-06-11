@@ -40,3 +40,15 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Environment files
+.env
+
+# Carpetas de microservicios (no pertenecen a este repo)
+api-gateway/
+auth-service/
+chatbot-service/
+operation-service/
+reservation-service/
+tourist-catalog-service/
+vhl_frontend/
