@@ -304,7 +304,9 @@ tbody img {
 }
 
 @keyframes spin {
-	to { transform: rotate(360deg); }
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 @media (max-width: 720px) {

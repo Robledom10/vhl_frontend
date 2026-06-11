@@ -10,7 +10,6 @@ import { ReservationsComponent } from './pages/reservations/reservations.compone
 import { UsersRolesComponent } from './pages/users-roles/users-roles.component';
 import { CommentsComponent } from './pages/comments/comments.component';
 import { MessagesComponent } from './pages/messages/messages.component';
-import { OffersComponent } from './pages/offers/offers.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -21,19 +20,20 @@ import { ViewUserModalComponent } from './pages/users-roles/components/view-user
 import { CreateUserModalComponent } from './pages/users-roles/components/create-user-modal/create-user-modal.component';
 import { ProveedorComponent } from './pages/packages/pages/proveedor/proveedor.component';
 import { PricingPlanComponent } from './pages/packages/pages/pricing-plan/pricing-plan.component';
-import { SegurosComponent } from './pages/packages/pages/seguros/seguros.component';
-import { OrganizationProfileComponent } from './pages/packages/pages/organization-profile/organization-profile.component';
 import { FormPackageCreationComponent } from './pages/packages/components/form-package-creation/form-package-creation.component';
 import { MediaUploadModalComponent } from './pages/gallery-admin/components/media-upload-modal/media-upload-modal.component';
 import { GalleryAdminComponent } from './pages/gallery-admin/gallery-admin.component';
-import { DashboardOperativoComponent } from './pages/operaciones/pages/dashboard-operativo/dashboard-operativo.component';
-import { AsignarTransporteComponent } from './pages/operaciones/pages/asignar-transporte/asignar-transporte.component';
+import { FormProviderComponent } from './pages/packages/pages/proveedor/components/form-provider/form-provider.component';
+import { FormReservationsCreationComponent } from './pages/reservations/components/form-reservations-creation/form-reservations-creation.component';
+import { ReservationDetailSheetComponent } from './pages/reservations/components/reservation-detail-sheet/reservation-detail-sheet.component';
+import { DashboardOperativoComponent } from './pages/operaciones/pages/operations-dashboard/operations-dashboard.component';
+import { AsignarTransporteComponent } from './pages/operaciones/pages/assign-transport/assign-transport.component';
 import { CheckInQrComponent } from './pages/operaciones/pages/check-in-qr/check-in-qr.component';
-import { AsignarAlojamientoComponent } from './pages/operaciones/pages/asignar-alojamiento/asignar-alojamiento.component';
-import { InfoMedicaComponent } from './pages/operaciones/pages/info-medica/info-medica.component';
-import { ContactosEmergenciaComponent } from './pages/operaciones/pages/contactos-emergencia/contactos-emergencia.component';
-import { IncidentesComponent } from './pages/operaciones/pages/incidentes/incidentes.component';
-import { ComunicacionesComponent } from './pages/operaciones/pages/comunicaciones/comunicaciones.component';
+import { AsignarAlojamientoComponent } from './pages/operaciones/pages/assign-accommodation/assign-accommodation.component';
+import { InfoMedicaComponent } from './pages/operaciones/pages/medical-info/medical-info.component';
+import { IncidentesComponent } from './pages/operaciones/pages/incidents/incidents.component';
+import { ComunicacionesComponent } from './pages/operaciones/pages/communications/communications.component';
+import { AsignarRestauranteComponent } from './pages/operaciones/pages/assign-restaurant/assign-restaurant.component';
 
 @NgModule({
 	declarations: [
@@ -45,7 +45,6 @@ import { ComunicacionesComponent } from './pages/operaciones/pages/comunicacione
 		UsersRolesComponent,
 		CommentsComponent,
 		MessagesComponent,
-		OffersComponent,
 		ProfileComponent,
 		ConfirmModalComponent,
 		ToastNotificationComponent,
@@ -54,19 +53,20 @@ import { ComunicacionesComponent } from './pages/operaciones/pages/comunicacione
 		CreateUserModalComponent,
 		ProveedorComponent,
 		PricingPlanComponent,
-		SegurosComponent,
-		OrganizationProfileComponent,
 		FormPackageCreationComponent,
 		MediaUploadModalComponent,
 		GalleryAdminComponent,
+		FormProviderComponent,
+		FormReservationsCreationComponent,
+		ReservationDetailSheetComponent,
 		DashboardOperativoComponent,
 		AsignarTransporteComponent,
 		CheckInQrComponent,
 		AsignarAlojamientoComponent,
 		InfoMedicaComponent,
-		ContactosEmergenciaComponent,
 		IncidentesComponent,
 		ComunicacionesComponent,
+		AsignarRestauranteComponent,
 	],
 	imports: [
 		CommonModule,

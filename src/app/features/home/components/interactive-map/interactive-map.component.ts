@@ -7,6 +7,7 @@ interface Destination {
   name: string;
   label: string;
   image: string;
+  staticImages: string[];
   description: string;
   lat: number;
   lng: number;
@@ -35,11 +36,13 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
     {
       id: 'quindio',
       name: 'Hernando Lopera',
-      label: 'Calraca, Quindio',
-      image:
-        'https://res.cloudinary.com/dqcviyp18/image/upload/v1780001558/image_g9cu67.png',
-      description:
-        'El corazón del Eje Cafetero. Valle del Cocora, palmas de cera, fincas cafeteras y el encanto de sus pueblos patrimonio.',
+      label: 'Calarca, Quindío',
+      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780082818/logo_mejorado_qh8dck.png',
+      staticImages: [
+        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780082818/logo_mejorado_qh8dck.png',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780084272/hl_mejorada_ymwkxn.jpg',
+      ],
+      description: 'El corazón del Eje Cafetero. Valle del Cocora, palmas de cera, fincas cafeteras y el encanto de sus pueblos patrimonio.',
       lat: 4.5318,
       lng: -75.6442,
       placeId: 'ChIJx8bT4x7Koo8R7x4X0sJfR5M',
@@ -47,15 +50,16 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       thumbnail: '',
       photosLoaded: false,
     },
-
     {
       id: 'santamarta',
       name: 'Santa Marta',
       label: 'Magdalena, Colombia',
-      image:
+      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/El_Rodadero%2C_Santa_Marta.jpg/640px-El_Rodadero%2C_Santa_Marta.jpg',
+      staticImages: [
         'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/El_Rodadero%2C_Santa_Marta.jpg/640px-El_Rodadero%2C_Santa_Marta.jpg',
-      description:
-        'La ciudad más antigua de Colombia. Playas paradisíacas, la Sierra Nevada y el Parque Tayrona.',
+        // Agrega aquí más URLs de Santa Marta
+      ],
+      description: 'La ciudad más antigua de Colombia. Playas paradisíacas, la Sierra Nevada y el Parque Tayrona.',
       lat: 11.2408,
       lng: -74.211,
       placeId: 'ChIJRcbVhzJa-o4Rz5GJkFDZ1uE',
@@ -67,10 +71,12 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'cartagena',
       name: 'Cartagena',
       label: 'Bolívar, Colombia',
-      image:
+      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Cartagena_de_Indias_-_Centro_Historico.jpg/640px-Cartagena_de_Indias_-_Centro_Historico.jpg',
+      staticImages: [
         'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Cartagena_de_Indias_-_Centro_Historico.jpg/640px-Cartagena_de_Indias_-_Centro_Historico.jpg',
-      description:
-        'Ciudad amurallada Patrimonio de la Humanidad. Historia colonial, islas del Rosario y playas del Caribe.',
+        // Agrega aquí más URLs de Cartagena
+      ],
+      description: 'Ciudad amurallada Patrimonio de la Humanidad. Historia colonial, islas del Rosario y playas del Caribe.',
       lat: 10.391,
       lng: -75.4794,
       placeId: 'ChIJp9r1aNIm-Y4RVWBS3g8Xv6A',
@@ -82,10 +88,14 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'barranquilla',
       name: 'Barranquilla',
       label: 'Atlántico, Colombia',
-      image:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Barranquilla_panoramica.jpg/640px-Barranquilla_panoramica.jpg',
-      description:
-        'La capital de la alegría. Sede del famoso Carnaval declarado Patrimonio Inmaterial de la Humanidad.',
+      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780080999/D%C3%ADa5-12_ayipp0.jpg',
+      staticImages: [
+        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780080999/D%C3%ADa5-12_ayipp0.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780080999/D%C3%ADa5-12_ayipp0.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780080999/D%C3%ADa5-12_ayipp0.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780080999/D%C3%ADa5-12_ayipp0.jpg',
+      ],
+      description: 'La capital de la alegría. Sede del famoso Carnaval declarado Patrimonio Inmaterial de la Humanidad.',
       lat: 10.9685,
       lng: -74.7813,
       placeId: 'ChIJR1fBKzR6-Y4RAoGRzMsU2bE',
@@ -97,10 +107,12 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'medellin',
       name: 'Medellín',
       label: 'Antioquia, Colombia',
-      image:
+      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Medellin_Vista_Parcial.jpg/640px-Medellin_Vista_Parcial.jpg',
+      staticImages: [
         'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Medellin_Vista_Parcial.jpg/640px-Medellin_Vista_Parcial.jpg',
-      description:
-        'La ciudad de la eterna primavera. Innovación, cultura, flores y la calidez de su gente paisa.',
+        // Agrega aquí más URLs de Medellín
+      ],
+      description: 'La ciudad de la eterna primavera. Innovación, cultura, flores y la calidez de su gente paisa.',
       lat: 6.2442,
       lng: -75.5812,
       placeId: 'ChIJaUjKMaKRRI8R9VsEUJM2fLI',
@@ -110,7 +122,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
     },
   ];
 
-  constructor(private ngZone: NgZone) { }
+  constructor(private ngZone: NgZone) {}
 
   ngOnInit(): void {
     this.loadGoogleMaps();
@@ -145,11 +157,10 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       mapTypeControl: false,
       fullscreenControl: false,
     });
-
     this.addMarkersToMap();
   }
 
-  // ─── Marcadores con imagen estática ────────────────────────────────────────
+  // ─── Marcadores ────────────────────────────────────────────────────────────
 
   addMarkersToMap(): void {
     this.destinations.forEach((dest) => {
@@ -218,9 +229,15 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
     this.isDropdownOpen = false;
     this.activePhotoIndex = 0;
 
-    // ✅ Garantizar thumbnail e imagen de galería inmediatamente con la imagen estática
+    // Thumbnail inmediato desde la primera imagen
     if (!dest.thumbnail) dest.thumbnail = dest.image;
-    if (dest.photos.length === 0) dest.photos = [dest.image];
+
+    // Carga las imágenes estáticas propias de inmediato (sin esperar Places)
+    if (dest.photos.length === 0) {
+      dest.photos = dest.staticImages?.length > 0
+        ? [...dest.staticImages]
+        : [dest.image];
+    }
 
     if (this.map) {
       this.map.panTo({ lat: dest.lat, lng: dest.lng });
@@ -229,6 +246,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
 
     this.highlightMarker(dest);
 
+    // Intenta enriquecer con Places en segundo plano
     if (!dest.photosLoaded) {
       this.isLoadingPhotos = true;
       await this.loadDestinationPhotos(dest);
@@ -236,7 +254,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ─── Places API: enriquece solo si responde; si falla usa imagen estática ──
+  // ─── Places API ────────────────────────────────────────────────────────────
 
   private async loadDestinationPhotos(dest: Destination): Promise<void> {
     try {
@@ -245,31 +263,28 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
         fields: ['photos', 'displayName', 'editorialSummary'],
       });
 
-      const photos: string[] = [];
+      const placesPhotos: string[] = [];
       if (place.photos?.length > 0) {
         place.photos.slice(0, 6).forEach((p: any) => {
-          photos.push(p.getURI({ maxWidth: 800, maxHeight: 500 }));
+          placesPhotos.push(p.getURI({ maxWidth: 800, maxHeight: 500 }));
         });
       }
 
       this.ngZone.run(() => {
-        // ✅ Solo reemplaza si Places devolvió fotos reales
-        if (photos.length > 0) {
-          dest.photos = photos;
-          dest.thumbnail = place.photos[0].getURI({
-            maxWidth: 120,
-            maxHeight: 120,
-          });
+        if (placesPhotos.length > 0) {
+          // Mezcla: tus imágenes propias primero, luego las de Places
+          const own = dest.staticImages?.length > 0 ? dest.staticImages : [];
+          dest.photos = [...own, ...placesPhotos];
+          dest.thumbnail = place.photos[0].getURI({ maxWidth: 120, maxHeight: 120 });
           const imgEl = this.markerBubbles.get(dest.id);
           if (imgEl) imgEl.src = dest.thumbnail;
         }
-        // Si Places no devuelve fotos, dest.photos conserva [dest.image] del paso anterior
+        // Si Places no responde, dest.photos ya tiene staticImages — no tocar nada
 
         if (place.editorialSummary) dest.description = place.editorialSummary;
         dest.photosLoaded = true;
       });
     } catch {
-      // ✅ Places bloqueado o sin respuesta: dest.photos ya tiene la imagen estática, no tocar nada
       this.ngZone.run(() => {
         dest.photosLoaded = true;
       });
@@ -290,7 +305,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ─── Controles ─────────────────────────────────────────────────────────────
+  // ─── Controles UI ──────────────────────────────────────────────────────────
 
   toggleDropdown(): void {
     this.isDropdownOpen = !this.isDropdownOpen;

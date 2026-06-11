@@ -5,7 +5,8 @@
 
 		<!-- BUSCADOR -->
 		<div class="search-box">
-			<input type="text" placeholder="Buscar por paquete o destino..." [(ngModel)]="busqueda" (ngModelChange)="autoApplyFilters()" (keyup.enter)="buscar()" />
+			<input type="text" placeholder="Buscar por paquete o destino..." [(ngModel)]="busqueda"
+				(ngModelChange)="autoApplyFilters()" (keyup.enter)="buscar()" />
 			<button (click)="buscar()">
 				<i class="fa-solid fa-magnifying-glass"></i>
 			</button>
@@ -28,27 +29,9 @@
 			</div>
 		</div>
 
-		<!-- FILTRO FECHA -->
-		<div class="filter-wrapper calendar-filter">
-			<button class="filter-btn" type="button" (click)="toggleFilterCalendar($event)">
-				<div class="filter-content">
-					<i class="fa-regular fa-calendar"></i>
-					<span>{{ fechaSalidaFiltro ? formattedFilterDate : 'Fecha' }}</span>
-				</div>
-				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="showFilterCalendar"></i>
-			</button>
-
-			<app-custom-calendar
-				*ngIf="showFilterCalendar"
-				[isOpen]="showFilterCalendar"
-				[selectedDate]="fechaSalidaFiltro"
-				(dateSelected)="onFilterDateSelected($event)"
-				(closed)="showFilterCalendar = false">
-			</app-custom-calendar>
-		</div>
-
 		<!-- LIMPIAR -->
-		<button class="clear-filter" type="button" (click)="clearFilters()" *ngIf="busqueda || fechaSalidaFiltro || estadoFiltro !== 'Activos'">
+		<button class="clear-filter" type="button" (click)="clearFilters()"
+			*ngIf="busqueda || estadoFiltro !== 'Activos'">
 			Limpiar
 		</button>
 
@@ -73,7 +56,6 @@
 					<th>Paquete</th>
 					<th>Destino (s)</th>
 					<th>Duración</th>
-					<th>Fecha</th>
 					<th>Precio</th>
 					<th>Cupos</th>
 					<th>Estado</th>
@@ -94,8 +76,6 @@
 
 					<td>{{ item.duration }}</td>
 
-					<td>{{ item.date }}</td>
-
 					<td>{{ item.price | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
 
 					<td>{{ item.capacity }}</td>
@@ -113,7 +93,8 @@
 								<i class="fa-regular fa-eye"></i>
 							</button>
 							<button class="edit" (click)="openEditModal(item); $event.stopPropagation()">Editar</button>
-							<button class="delete" (click)="openDeleteModal(item); $event.stopPropagation()">Eliminar</button>
+							<button class="delete"
+								(click)="openDeleteModal(item); $event.stopPropagation()">Eliminar</button>
 						</div>
 					</td>
 				</tr>
@@ -135,23 +116,14 @@
 <app-confirm-modal [isOpen]="showDeleteModal"
 	[title]="isSelectedInactive ? 'Eliminar permanentemente' : 'Eliminar paquete'"
 	[message]="isSelectedInactive ? 'Esta acción eliminará el paquete de forma permanente y no se podrá recuperar.' : 'Esta acción dejará el paquete como inactivo.'"
-	[confirmText]="isSelectedInactive ? 'Eliminar definitivamente' : 'Eliminar'"
-	cancelText="Cancelar"
+	[confirmText]="isSelectedInactive ? 'Eliminar definitivamente' : 'Eliminar'" cancelText="Cancelar"
 	icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b" iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b"
 	(confirmed)="confirmDelete()" (closed)="closeDeleteModal()">
 </app-confirm-modal>
 
-<app-toast-notification
-	[show]="showToast"
-	[title]="toastTitle"
-	[message]="toastMessage"
-	[type]="toastType">
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
 </app-toast-notification>
 
-<app-form-package-creation
-	[isOpen]="showCreateModal"
-	[mode]="editingPackage ? 'edit' : 'create'"
-	[editPackage]="editingPackage"
-	(saved)="handlePackageSaved($event)"
-	(closed)="closeCreateModal()">
+<app-form-package-creation [isOpen]="showCreateModal" [mode]="editingPackage ? 'edit' : 'create'"
+	[editPackage]="editingPackage" (saved)="handlePackageSaved($event)" (closed)="closeCreateModal()">
 </app-form-package-creation>

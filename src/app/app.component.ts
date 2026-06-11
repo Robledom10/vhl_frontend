@@ -16,14 +16,27 @@ export class AppComponent {
 		private router: Router
 	) { }
 
-	ngOnInit() {
-		this.googleService.init((credential) => {
-			this.authService.googleLogin(credential)
-				.subscribe({
-					next: () => this.router.navigate(['/home']),
-					error: err => console.error(err)
-				});
-		});
+	ngOnInit(): void {
+
+		this.googleService.init(
+			(credential: string) => {
+				this.authService
+					.googleLogin(credential)
+					.subscribe({
+						next: () => {
+							this.router.navigate(
+								['/home']
+							);
+						},
+						error: (err) => {
+							console.error(
+								'Google Login Error',
+								err
+							);
+						}
+					});
+			}
+		);
 	}
 
 	get showChatbot(): boolean {

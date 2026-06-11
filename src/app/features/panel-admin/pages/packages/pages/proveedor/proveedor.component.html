@@ -1,1 +1,143 @@
-<p>proveedor works!</p>
+<div class="users-container">
+
+	<!-- TOP BAR -->
+	<div class="top-bar">
+
+		<!-- SEARCH -->
+		<div class="search-box">
+			<input type="text" placeholder="Buscar proveedor..." [(ngModel)]="search" />
+			<button>
+				<i class="fa-solid fa-magnifying-glass"></i>
+			</button>
+		</div>
+
+		<!-- FILTER -->
+		<div class="filter-wrapper">
+			<button class="filter-btn" (click)="toggleDropdown()">
+				<div class="filter-content">
+					<i class="fa-solid fa-sliders"></i>
+					<span>{{ selectedType }}</span>
+				</div>
+				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="dropdownOpen"></i>
+			</button>
+
+			<div class="dropdown" *ngIf="dropdownOpen">
+				<div class="dropdown-item" *ngFor="let type of types" (click)="selectType(type)">
+					<i [class]="typeIcon(type)" class="type-icon-sm"></i> {{ type }}
+				</div>
+			</div>
+		</div>
+
+		<!-- ADD -->
+		<button class="add-btn" (click)="openCreateModal()">
+			<i class="fa-solid fa-plus"></i>
+			<span>Agregar proveedor</span>
+		</button>
+	</div>
+
+	<!-- TABLE -->
+	<div class="table-container">
+		<table>
+			<thead>
+				<tr>
+					<th>Nombre</th>
+					<th>Tipo</th>
+					<th>Contacto</th>
+					<th>Detalle</th>
+					<th>Estado</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr *ngFor="let proveedor of filteredProviders" [class.row-inactive]="!proveedor.activo">
+
+					<!-- NOMBRE -->
+					<td class="td-nombre">
+						<div class="proveedor-nombre">{{ proveedor.nombre }}</div>
+					</td>
+
+					<!-- TIPO BADGE -->
+					<td>
+						<span class="tipo-badge" [ngClass]="'tipo-' + proveedor.tipoProveedor.toLowerCase().replace('í','i')">
+							<i [class]="typeIcon(proveedor.tipoProveedor)"></i>
+							{{ proveedor.tipoProveedor }}
+						</span>
+					</td>
+
+					<!-- CONTACTO -->
+					<td class="td-contacto">
+						<div *ngIf="proveedor.correo" class="contacto-row">
+							<i class="fa-regular fa-envelope"></i> {{ proveedor.correo }}
+						</div>
+						<div *ngIf="proveedor.telefono" class="contacto-row">
+							<i class="fa-solid fa-phone"></i> {{ proveedor.telefono }}
+						</div>
+						<span *ngIf="!proveedor.correo && !proveedor.telefono" class="sin-dato">—</span>
+					</td>
+
+					<!-- DETALLE POR TIPO -->
+					<td class="td-detalle">
+						<!-- Transporte -->
+						<ng-container *ngIf="proveedor.tipoProveedor === 'Transporte'">
+							<div *ngIf="proveedor.tipoVehiculo" class="detalle-row"><i class="fa-solid fa-bus"></i> {{ proveedor.tipoVehiculo }}</div>
+							<div *ngIf="proveedor.placa" class="detalle-row"><i class="fa-solid fa-id-card"></i> {{ proveedor.placa }}</div>
+							<div *ngIf="proveedor.conductor" class="detalle-row"><i class="fa-solid fa-user-tie"></i> {{ proveedor.conductor }}</div>
+							<div *ngIf="proveedor.capacidad" class="detalle-row"><i class="fa-solid fa-users"></i> {{ proveedor.capacidad }} personas</div>
+						</ng-container>
+
+						<!-- Hotel -->
+						<ng-container *ngIf="proveedor.tipoProveedor === 'Hotel'">
+							<div *ngIf="proveedor.direccion" class="detalle-row"><i class="fa-solid fa-location-dot"></i> {{ proveedor.direccion }}</div>
+							<div *ngIf="proveedor.notas" class="detalle-row notas-row"><i class="fa-solid fa-note-sticky"></i> {{ proveedor.notas }}</div>
+						</ng-container>
+
+						<!-- Guía -->
+						<ng-container *ngIf="proveedor.tipoProveedor === 'Guía'">
+							<div *ngIf="proveedor.especialidad" class="detalle-row"><i class="fa-solid fa-star"></i> {{ proveedor.especialidad }}</div>
+							<div *ngIf="proveedor.idioma" class="detalle-row"><i class="fa-solid fa-language"></i> {{ proveedor.idioma }}</div>
+						</ng-container>
+
+						<!-- Restaurante -->
+						<ng-container *ngIf="proveedor.tipoProveedor === 'Restaurante'">
+							<div *ngIf="proveedor.tipoComida" class="detalle-row"><i class="fa-solid fa-utensils"></i> {{ proveedor.tipoComida }}</div>
+							<div *ngIf="proveedor.direccion" class="detalle-row"><i class="fa-solid fa-location-dot"></i> {{ proveedor.direccion }}</div>
+						</ng-container>
+
+						<span *ngIf="!tieneDetalle(proveedor)" class="sin-dato">Sin información extra</span>
+					</td>
+
+					<!-- ESTADO -->
+					<td>
+						<span class="status" [class.active]="proveedor.activo" [class.inactive]="!proveedor.activo">
+							{{ proveedor.activo ? 'Activo' : 'Inactivo' }}
+						</span>
+					</td>
+
+					<!-- ACCIONES -->
+					<td>
+						<div class="actions">
+							<button class="view" (click)="openViewModal(proveedor)" title="Ver detalle">
+								<i class="fa-regular fa-eye"></i>
+							</button>
+							<button class="edit" (click)="openEditModal(proveedor)" [disabled]="!proveedor.activo">
+								Editar
+							</button>
+							<button class="delete" [class.activate]="!proveedor.activo" (click)="deleteProvider(proveedor)">
+								{{ proveedor.activo ? 'Desactivar' : 'Activar' }}
+							</button>
+						</div>
+					</td>
+				</tr>
+
+				<tr *ngIf="filteredProviders.length === 0">
+					<td colspan="6" class="empty-row">No se encontraron proveedores.</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<app-form-provider [isOpen]="showModal" [mode]="modalMode" [provider]="selectedProvider"
+	(closed)="showModal = false" (saved)="loadProviders()">
+</app-form-provider>

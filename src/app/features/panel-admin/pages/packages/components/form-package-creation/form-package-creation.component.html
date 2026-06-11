@@ -185,67 +185,6 @@
 							</span>
 						</div>
 
-						<div class="form-group calendar-field">
-							<input type="text" placeholder=" " readonly
-								[value]="packageForm.get('startDate')?.value || ''" (click)="toggleCalendar($event)">
-
-							<label>Fecha de salida</label>
-							<i class="fa-regular fa-calendar calendar-icon"></i>
-
-							<app-custom-calendar *ngIf="showCalendar" [isOpen]="showCalendar"
-								[selectedDate]="packageForm.get('startDate')?.value || ''" [disablePastDates]="true"
-								(dateSelected)="onDateSelected($event)" (closed)="showCalendar = false">
-							</app-custom-calendar>
-
-							<span
-								*ngIf="packageForm.get('startDate')?.invalid && packageForm.get('startDate')?.touched">
-								La fecha es obligatoria
-							</span>
-						</div>
-
-						<div class="form-group time-field">
-							<input type="text" placeholder=" " readonly
-								[value]="packageForm.get('departureTime')?.value || ''"
-								(click)="toggleTimePicker($event)" />
-
-							<label>Hora de salida</label>
-
-							<i class="fa-regular fa-clock time-icon"></i>
-
-							<div class="time-picker" *ngIf="showTimePicker">
-
-								<!-- HORAS -->
-								<div class="time-column">
-									<button type="button" *ngFor="let hour of hours" (click)="selectHour(hour)"
-										[class.active]="selectedHour === hour">
-										{{ hour }}
-									</button>
-								</div>
-
-								<div class="separator">:</div>
-
-								<!-- MINUTOS -->
-								<div class="time-column">
-									<button type="button" *ngFor="let minute of minutes" (click)="selectMinute(minute)"
-										[class.active]="selectedMinute === minute">
-										{{ minute }}
-									</button>
-								</div>
-
-								<!-- AM PM -->
-								<div class="period-column">
-									<button type="button" *ngFor="let period of periods" (click)="selectPeriod(period)"
-										[class.active]="selectedPeriod === period">
-										{{ period }}
-									</button>
-								</div>
-							</div>
-
-							<span
-								*ngIf="packageForm.get('departureTime')?.invalid&& packageForm.get('departureTime')?.touched">
-								La hora es obligatoria
-							</span>
-						</div>
 
 						<div class="form-group">
 							<input type="text" placeholder=" " formControlName="departurePlace">
@@ -317,28 +256,6 @@
 
 							<span *ngIf="packageForm.get('price')?.errors?.['min']">
 								El precio mínimo es 1000
-							</span>
-						</div>
-
-						<div class="form-group">
-							<input type="text" placeholder=" " formControlName="hotel"
-								[class.ng-invalid]="packageForm.get('hotel')?.invalid && packageForm.get('hotel')?.touched">
-
-							<label>Hotel</label>
-
-							<span *ngIf="packageForm.get('hotel')?.invalid && packageForm.get('hotel')?.touched">
-								El hotel es obligatorio
-							</span>
-						</div>
-
-						<div class="form-group">
-							<input type="text" placeholder=" " formControlName="roomType"
-								[class.ng-invalid]="packageForm.get('roomType')?.invalid && packageForm.get('roomType')?.touched">
-
-							<label>Tipo de habitación</label>
-
-							<span *ngIf="packageForm.get('roomType')?.invalid && packageForm.get('roomType')?.touched">
-								El tipo de habitación es obligatorio
 							</span>
 						</div>
 
@@ -436,8 +353,8 @@
 								<div class="itinerary-item" *ngFor="let item of itinerary.controls; let i = index">
 									<span class="day-badge">Día {{ i + 1 }}</span>
 									<div class="form-group itinerary-input">
-										<input type="text" placeholder="Actividad del día {{ i + 1 }}" [formControlName]="i"
-											[class.ng-invalid]="item.invalid && item.touched">
+										<input type="text" placeholder="Actividad del día {{ i + 1 }}"
+											[formControlName]="i" [class.ng-invalid]="item.invalid && item.touched">
 										<span class="field-error" *ngIf="item.invalid && item.touched">
 											El día es obligatorio
 										</span>
@@ -546,7 +463,8 @@
 					Siguiente
 				</button>
 
-				<button type="button" class="save" *ngIf="currentStep === 4" (click)="submitForm()" [disabled]="enviando">
+				<button type="button" class="save" *ngIf="currentStep === 4" (click)="submitForm()"
+					[disabled]="enviando">
 					<i class="fa-solid fa-spinner" *ngIf="enviando"></i>
 					{{ enviando ? 'Generando...' : mode === 'edit' ? 'Actualizar paquete' : 'Crear paquete' }}
 				</button>

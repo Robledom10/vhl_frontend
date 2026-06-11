@@ -3,81 +3,118 @@
   <div class="page-header">
     <div>
       <h2 class="page-title">Check-in <span>por QR</span></h2>
-      <p class="page-subtitle">Escanea o ingresa el código QR para registrar la asistencia del viajero</p>
+      <p class="page-subtitle">Registra la asistencia de los viajeros usando el código de su reserva</p>
     </div>
   </div>
 
-  <div class="checkin-layout">
-    <!-- PANEL SCANNER -->
-    <div class="scanner-panel">
-      <div class="qr-placeholder">
-        <i class="fa-solid fa-qrcode"></i>
-        <p>Cámara no disponible en esta versión.<br>Ingresa el código manualmente.</p>
-      </div>
+  <!-- SELECTOR DE VIAJE -->
+  <div class="filtro-viaje">
+    <label>Viaje activo</label>
+    <select (change)="onViajeChange($event)">
+      <option value="">Seleccionar viaje...</option>
+      <option *ngFor="let v of viajes" [value]="v.id" [selected]="v.id === idViajeSeleccionado">
+        {{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} &mdash; Viaje #{{ v.id }} &middot; {{ v.fechaSalida | date:'dd/MM/yyyy' }}
+      </option>
+    </select>
+  </div>
 
-      <div class="manual-input-group">
-        <label>Código de reserva</label>
-        <div class="input-row">
-          <input
-            type="text"
-            [(ngModel)]="codigoManual"
-            placeholder="Ej: VHL-20260609-001"
-            (keyup.enter)="validar()"
-          />
-          <button class="btn-validar" (click)="validar()" [disabled]="escaneando || !codigoManual.trim()">
-            <i class="fa-solid fa-magnifying-glass" *ngIf="!escaneando"></i>
-            <i class="fa-solid fa-spinner spinning" *ngIf="escaneando"></i>
-            {{ escaneando ? 'Validando...' : 'Validar' }}
-          </button>
-        </div>
-        <button class="btn-limpiar" *ngIf="codigoManual || resultado" (click)="limpiar()">
-          <i class="fa-solid fa-rotate-left"></i> Limpiar
-        </button>
+  <!-- STATS -->
+  <div class="stats-row" *ngIf="idViajeSeleccionado">
+    <div class="stat-card">
+      <div class="stat-icon total-icon"><i class="fa-solid fa-users"></i></div>
+      <div class="stat-info">
+        <span class="stat-val">{{ reservas.length }}</span>
+        <span class="stat-lbl">Total reservas</span>
       </div>
-
-      <!-- RESULTADO VALIDACION -->
-      <div class="resultado-box valido" *ngIf="resultado?.valido">
-        <div class="resultado-header">
-          <i class="fa-solid fa-circle-check"></i>
-          <span>{{ resultado!.mensaje }}</span>
-        </div>
-        <div class="viajero-info" *ngIf="resultado?.viajero">
-          <div class="info-row"><span class="info-label">Nombre</span><span>{{ resultado!.viajero!.nombre }}</span></div>
-          <div class="info-row"><span class="info-label">Documento</span><span>{{ resultado!.viajero!.documento }}</span></div>
-          <div class="info-row"><span class="info-label">Viaje</span><span>{{ resultado!.viajero!.viaje }}</span></div>
-          <div class="info-row"><span class="info-label">Fecha</span><span>{{ resultado!.viajero!.fecha }}</span></div>
-          <div class="info-row"><span class="info-label">Asiento</span><span>{{ resultado!.viajero!.asiento }}</span></div>
-        </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon ok-icon"><i class="fa-solid fa-circle-check"></i></div>
+      <div class="stat-info">
+        <span class="stat-val">{{ totalCheckIn }}</span>
+        <span class="stat-lbl">Check-in realizado</span>
       </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon pend-icon"><i class="fa-solid fa-clock"></i></div>
+      <div class="stat-info">
+        <span class="stat-val">{{ totalPendientes }}</span>
+        <span class="stat-lbl">Pendientes</span>
+      </div>
+    </div>
+  </div>
 
-      <div class="resultado-box invalido" *ngIf="resultado && !resultado.valido">
-        <i class="fa-solid fa-circle-xmark"></i>
-        <span>{{ resultado!.mensaje }}</span>
+  <!-- TABLA DE RESERVAS -->
+  <div class="reservas-panel" *ngIf="idViajeSeleccionado">
+    <div class="panel-header">
+      <div class="panel-title">
+        <i class="fa-solid fa-ticket"></i>
+        <h3>Reservas del viaje</h3>
       </div>
     </div>
 
-    <!-- HISTORIAL CHECK-INS -->
-    <div class="historial-panel">
-      <div class="section-title">
-        <i class="fa-solid fa-clipboard-check"></i>
-        <h3>Registros de hoy</h3>
-        <span class="badge-num">{{ checkinsRealizados.length }}</span>
-      </div>
-
-      <div class="empty-historial" *ngIf="checkinsRealizados.length === 0">
-        <i class="fa-solid fa-inbox"></i>
-        <p>No hay check-ins registrados aún.</p>
-      </div>
-
-      <div class="checkin-item" *ngFor="let c of checkinsRealizados">
-        <div class="checkin-avatar"><i class="fa-solid fa-user"></i></div>
-        <div class="checkin-data">
-          <span class="checkin-nombre">{{ c.nombre }}</span>
-          <span class="checkin-sub">{{ c.documento }} · {{ c.viaje }}</span>
-        </div>
-        <span class="checkin-hora">{{ c.hora }}</span>
-      </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Viajero</th>
+            <th>Código de reserva</th>
+            <th>Pasajeros</th>
+            <th>Estado reserva</th>
+            <th>Check-in</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of reservas">
+            <td>
+              <div class="td-viajero">
+                <div class="avatar-sm"><i class="fa-solid fa-user"></i></div>
+                <div class="viajero-data">
+                  <span class="viajero-nombre">
+                    <ng-container *ngIf="r.viajeros && r.viajeros.length > 0; else soloId">
+                      {{ r.viajeros[0].nombre }} {{ r.viajeros[0].apellido }}
+                    </ng-container>
+                    <ng-template #soloId>Usuario #{{ r.idUsuario }}</ng-template>
+                  </span>
+                  <span class="viajero-email" *ngIf="r.viajeros && r.viajeros.length > 0">
+                    {{ r.viajeros[0].email }}
+                  </span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="codigo-reserva">
+                <i class="fa-solid fa-qrcode"></i> {{ r.numeroReserva }}
+              </span>
+            </td>
+            <td class="text-center">{{ r.cantidadPasajeros }}</td>
+            <td>
+              <span class="badge-estado" [ngClass]="r.estado.toLowerCase()">{{ r.estado }}</span>
+            </td>
+            <td>
+              <span class="badge-checkin ok" *ngIf="yaHizoCheckIn(r)">
+                <i class="fa-solid fa-circle-check"></i> Registrado
+              </span>
+              <button class="btn-checkin" *ngIf="!yaHizoCheckIn(r)"
+                (click)="registrarCheckIn(r)"
+                [disabled]="procesando[r.id]">
+                <i class="fa-solid fa-spinner spinning" *ngIf="procesando[r.id]"></i>
+                <i class="fa-solid fa-qrcode" *ngIf="!procesando[r.id]"></i>
+                {{ procesando[r.id] ? 'Registrando...' : 'Check-in' }}
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="reservas.length === 0">
+            <td colspan="5" class="empty">No hay reservas para este viaje.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
+    <i class="toast-icon" [class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
+    <span class="toast-msg">{{ toastMsg }}</span>
   </div>
 
 </div>

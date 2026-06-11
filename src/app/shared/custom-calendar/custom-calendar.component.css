@@ -50,10 +50,10 @@
 	position: absolute;
 	top: calc(100% + 10px);
 	left: 0;
-	width: 320px;
+	width: 272px;
 	background: white;
-	border-radius: 22px;
-	padding: 20px;
+	border-radius: 18px;
+	padding: 16px;
 	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 	z-index: 999;
 	box-sizing: border-box;
@@ -65,18 +65,18 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	margin-bottom: 18px;
+	margin-bottom: 12px;
 	width: 100%;
 }
 
 .cal-header button {
 	background: none;
 	border: none;
-	font-size: 14px;
+	font-size: 13px;
 	color: var(--color-primario);
 	cursor: pointer;
-	width: 32px;
-	height: 32px;
+	width: 28px;
+	height: 28px;
 	border-radius: 50%;
 	display: flex;
 	align-items: center;
@@ -114,7 +114,7 @@
 
 .month-year-btn {
 	font-weight: 600;
-	font-size: 16px;
+	font-size: 14px;
 	cursor: pointer;
 	color: var(--color-texto-principal);
 	transition: 0.2s ease;
@@ -162,7 +162,7 @@
 .cal-grid {
 	display: grid;
 	grid-template-columns: repeat(7, 1fr);
-	gap: 8px;
+	gap: 4px;
 	text-align: center;
 	width: 100%;
 }
@@ -172,22 +172,22 @@
 }
 
 .cal-days-header span {
-	font-size: 12px;
+	font-size: 11px;
 	font-weight: 600;
 	color: var(--color-texto-secundario);
-	padding-bottom: 6px;
+	padding-bottom: 4px;
 }
 
 /* CELDAS */
 
 .cal-grid span {
-	width: 30px;
-	height: 30px;
+	width: 26px;
+	height: 26px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	border-radius: 50%;
-	font-size: 14px;
+	font-size: 12px;
 	cursor: pointer;
 	transition: all 0.2s ease;
 	margin: auto;

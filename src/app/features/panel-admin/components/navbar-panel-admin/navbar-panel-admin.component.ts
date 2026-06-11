@@ -55,20 +55,12 @@ export class NavbarPanelAdminComponent {
 					route: '/panel-admin/packages',
 				},
 				{
-					label: 'Perfil organización',
-					route: '/panel-admin/packages-organization-profile',
-				},
-				{
 					label: 'Planes de precio',
 					route: '/panel-admin/packages-price-plans',
 				},
 				{
 					label: 'Proveedores',
 					route: '/panel-admin/packages-providers',
-				},
-				{
-					label: 'Seguros',
-					route: '/panel-admin/packages-seguros',
 				},
 			],
 		},
@@ -99,11 +91,6 @@ export class NavbarPanelAdminComponent {
 			badge: 7,
 		},
 		{
-			icon: 'fa-solid fa-tags',
-			label: 'Ofertas',
-			route: '/panel-admin/offers',
-		},
-		{
 			icon: 'fa-solid fa-route',
 			label: 'Operaciones',
 			open: false,
@@ -129,16 +116,16 @@ export class NavbarPanelAdminComponent {
 					route: '/panel-admin/operaciones-info-medica',
 				},
 				{
-					label: 'Contactos de emergencia',
-					route: '/panel-admin/operaciones-contactos',
-				},
-				{
 					label: 'Incidentes',
 					route: '/panel-admin/operaciones-incidentes',
 				},
 				{
 					label: 'Comunicaciones',
 					route: '/panel-admin/operaciones-comunicaciones',
+				},
+				{
+					label: 'Restaurantes',
+					route: '/panel-admin/operaciones-restaurantes',
 				},
 			],
 		},

@@ -1,0 +1,409 @@
+/* ==========================
+	OVERLAY
+========================== */
+
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(18, 56, 98, 0.45);
+	backdrop-filter: blur(4px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 2000;
+	font-family: "Outfit", sans-serif;
+}
+
+.modal-container {
+	width: 750px;
+	max-width: 95vw;
+	max-height: 90vh;
+	background: var(--color-fondo);
+	border-radius: 30px;
+	position: relative;
+	overflow: hidden;
+	box-shadow: 0 10px 40px rgba(0, 0, 0, .15);
+}
+
+.modal-scroll {
+	max-height: 90vh;
+	overflow-y: auto;
+}
+
+.modal-scroll::-webkit-scrollbar {
+	width: 4px;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb {
+	background: #b5e5ff;
+	border-radius: 99px;
+}
+
+.modal-content {
+	padding: 35px;
+}
+
+/* ==========================
+	CLOSE
+========================== */
+
+.close-btn {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	border: 1px solid var(--bordes);
+	background: var(--color-fondo);
+	cursor: pointer;
+	font-size: 24px;
+	color: var(--color-primario-oscuro);
+	z-index: 10;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.close-btn:hover {
+	background: #b5e5ff;
+}
+
+/* ==========================
+	TITULO
+========================== */
+
+.modal-title {
+	text-align: center;
+	font-size: 30px;
+	font-weight: 500;
+	margin: 0;
+	color: var(--color-texto-principal);
+}
+
+.modal-title span {
+	color: var(--color-primario);
+	font-weight: 700;
+}
+
+.divider {
+	width: 100%;
+	height: 2px;
+	background: var(--bordes);
+	margin: 25px 0 35px;
+	border-radius: 99px;
+}
+
+/* ==========================
+	STEPPER
+========================== */
+
+.steps-wrapper {
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	margin-bottom: 48px;
+}
+
+.step-item {
+	width: 90px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+}
+
+.step {
+	width: 35px;
+	height: 35px;
+	border-radius: 50%;
+	border: 2px solid #d8d8d8;
+	background: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: "Outfit", sans-serif;
+	font-size: var(--inputs);
+	font-weight: 600;
+	color: #b2b2b2;
+	transition: 0.25s ease;
+}
+
+.step.active {
+	border-color: var(--color-primario);
+	background: rgba(63, 162, 219, 0.08);
+	color: var(--color-primario);
+}
+
+.step.active i {
+	font-size: 14px;
+}
+
+.step-item p {
+	margin-top: 12px;
+	font-size: 12px;
+	line-height: 1.4;
+	font-family: "Outfit", sans-serif;
+	color: #b0b0b0;
+}
+
+.step-item p.active {
+	color: var(--color-primario);
+	font-weight: 500;
+}
+
+.line {
+	width: 70px;
+	height: 2px;
+	background: #e6e6e6;
+	margin-top: 22px;
+	transition: 0.25s ease;
+}
+
+.line.active {
+	background: var(--color-primario);
+}
+
+/* ==========================
+   CONTENIDO
+========================== */
+
+.step-content {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+/* ==========================
+   INPUTS
+========================== */
+
+.form-group {
+	position: relative;
+}
+
+.form-group input,
+.form-group textarea {
+	width: 100%;
+	padding: 12px 16px;
+	border: 1px solid #d6dce3;
+	border-radius: 25px;
+	font-size: 15px;
+	font-family: "Outfit", sans-serif;
+	background: white;
+	outline: none;
+	transition: .2s;
+	box-sizing: border-box;
+}
+
+.form-group textarea {
+	min-height: 120px;
+	resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+	border-color: var(--color-primario);
+}
+
+.form-group label {
+	position: absolute;
+	left: 16px;
+	top: 13px;
+	background: white;
+	padding: 0 5px;
+	color: #7c8b9a;
+	font-size: 14px;
+	transition: .2s;
+	pointer-events: none;
+}
+
+.form-group input:focus+label,
+.form-group input:not(:placeholder-shown)+label,
+.form-group textarea:focus+label,
+.form-group textarea:not(:placeholder-shown)+label {
+	top: -8px;
+	font-size: 12px;
+	color: var(--color-primario);
+}
+
+/* ==========================
+   ACOMPAÑANTES
+========================== */
+
+.traveler-card {
+	border: 1px solid #e6e6e6;
+	border-radius: 24px;
+	padding: 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.traveler-card h3 {
+	margin: 0;
+	font-size: 20px;
+	font-weight: 600;
+	color: var(--color-primario);
+}
+
+/* Contactos de emergencia */
+
+.emergency-card {
+	border: 1px solid #e6e6e6;
+	border-radius: 24px;
+	padding: 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	background: white;
+}
+
+.card-header {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	margin-bottom: 10px;
+}
+
+.header-left i {
+	width: 45px;
+	height: 45px;
+	border-radius: 50%;
+	background: #fff4d6;
+	color: #ffbe0b;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 18px;
+}
+
+.card-header h3 {
+	margin: 0;
+	font-size: 20px;
+	font-weight: 600;
+	color: var(--color-texto-principal);
+}
+
+.header-left {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
+
+.card-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.add-contact-btn {
+	width: 100%;
+	border: 2px dashed var(--color-primario);
+	background: rgba(63, 162, 219, 0.08);
+	color: var(--color-primario);
+	padding: 14px;
+	border-radius: 24px;
+	cursor: pointer;
+	font-family: "Outfit", sans-serif;
+	font-size: 15px;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	transition: 0.2s;
+}
+
+.add-contact-btn:hover {
+	background: rgba(63, 162, 219, 0.15);
+}
+
+.delete-contact-btn {
+	width: 36px;
+	height: 36px;
+	border: none;
+	border-radius: 50%;
+	background: #fee2e2;
+	color: #dc2626;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: 0.2s;
+}
+
+.delete-contact-btn:hover {
+	background: #fecaca;
+}
+
+/* ==========================
+   RESUMEN
+========================== */
+
+.summary-card {
+	border: 1px solid #e6e6e6;
+	border-radius: 24px;
+	padding: 25px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.summary-card h3 {
+	margin: 0;
+	color: var(--color-texto-principal);
+}
+
+.summary-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.summary-row span {
+	color: var(--color-texto-secundario);
+}
+
+.summary-row strong {
+	color: var(--color-primario);
+	font-size: 18px;
+}
+
+/* ==========================
+	BOTONES
+========================== */
+
+.actions {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.btn-secondary {
+	background: var(--color-fondo);
+	border: 1px solid var(--color-primario);
+	color: var(--color-primario);
+	padding: 10px 20px;
+	border-radius: 28px;
+	cursor: pointer;
+	font-family: "Outfit", sans-serif;
+	font-size: 16px;
+	font-weight: 500;
+}
+
+.btn-primary {
+	background: var(--color-primario);
+	color: var(--color-fondo);
+	border: none;
+	padding: 10px 20px;
+	border-radius: 28px;
+	cursor: pointer;
+	font-family: "Outfit", sans-serif;
+	font-weight: 500;
+	font-size: 16px;
+}
+
+.btn-primary:hover {
+	opacity: .9;
+}

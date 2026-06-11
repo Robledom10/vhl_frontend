@@ -1,47 +1,57 @@
 <div class="map-wrapper">
 
-  <!-- ─── Header / Selector de destinos ─────────────────────────────── -->
+  <!-- ─── Header ─────────────────────────────────────────────────── -->
   <div class="route-header">
     <div class="route-meta">
       <span class="route-tag">Destinos Top</span>
       <span class="route-stops">Descubre los destinos favoritos para tu próxima aventura</span>
     </div>
 
-    <!-- Dropdown trigger -->
     <div class="dropdown-container" (clickOutside)="closeDropdown()">
       <button class="destination-trigger" (click)="toggleDropdown()" [class.open]="isDropdownOpen">
         <span class="trigger-inner">
-          <span class="trigger-emoji" *ngIf="selectedDestination">{{ selectedDestination.image }}</span>
-          <span class="trigger-emoji default-icon" *ngIf="!selectedDestination"><i class="fa-solid fa-bus-simple"></i></span>
-          <span class="trigger-text">
-            {{ selectedDestination ? selectedDestination.name : 'Selecciona un destino' }}
+          <!-- Imagen real cuando hay destino seleccionado -->
+          <img
+            *ngIf="selectedDestination"
+            [src]="selectedDestination.thumbnail || selectedDestination.image"
+            [alt]="selectedDestination.name"
+            class="trigger-thumb"
+          />
+          <!-- Ícono genérico si no hay selección -->
+          <span class="trigger-icon-placeholder" *ngIf="!selectedDestination">
+            <i class="fa-solid fa-bus-simple"></i>
           </span>
-          <span class="trigger-sub" *ngIf="selectedDestination">{{ selectedDestination.label }}</span>
+          <span class="trigger-texts">
+            <span class="trigger-text">
+              {{ selectedDestination ? selectedDestination.name : 'Selecciona un destino' }}
+            </span>
+            <span class="trigger-sub" *ngIf="selectedDestination">{{ selectedDestination.label }}</span>
+          </span>
         </span>
         <svg class="chevron" [class.rotated]="isDropdownOpen" width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
 
-      <!-- Dropdown panel -->
+      <!-- Panel dropdown -->
       <div class="dropdown-panel" *ngIf="isDropdownOpen">
         <div class="panel-label">Paradas del recorrido</div>
+
         <button
           class="dest-item"
           *ngFor="let dest of destinations; let i = index"
           (click)="selectDestination(dest)"
           [class.active]="selectedDestination?.id === dest.id"
         >
-          <div class="dest-index">{{ i + 1 }}</div>
           <div class="dest-thumb-wrap">
             <img
-              *ngIf="dest.thumbnail"
-              [src]="dest.thumbnail"
+              *ngIf="dest.thumbnail || dest.image"
+              [src]="dest.thumbnail || dest.image"
               [alt]="dest.name"
               class="dest-thumb"
             />
-            <div class="dest-thumb-placeholder" *ngIf="!dest.thumbnail">
-              <span>{{ dest.image }}</span>
+            <div class="dest-thumb-placeholder" *ngIf="!dest.thumbnail && !dest.image">
+              <span>📍</span>
             </div>
           </div>
           <div class="dest-info">
@@ -49,7 +59,7 @@
             <span class="dest-label">{{ dest.label }}</span>
           </div>
           <svg *ngIf="selectedDestination?.id === dest.id" class="check-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8l3.5 3.5L13 5" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3 8l3.5 3.5L13 5" stroke="var(--color-primario)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
 
@@ -64,14 +74,14 @@
     </div>
   </div>
 
-  <!-- ─── Mapa ───────────────────────────────────────────────────────── -->
+  <!-- ─── Mapa + Panel ────────────────────────────────────────────── -->
   <div class="map-and-panel">
     <div id="travel-map" class="travel-map"></div>
 
-    <!-- Panel de detalle flotante -->
+    <!-- Panel detalle -->
     <div class="detail-panel" *ngIf="selectedDestination" [class.loading]="isLoadingPhotos">
 
-      <!-- Galería de fotos -->
+      <!-- Galería -->
       <div class="photo-gallery" *ngIf="!isLoadingPhotos">
         <div class="photo-track" *ngIf="selectedDestination.photos.length > 0">
           <img
@@ -98,12 +108,13 @@
             ></span>
           </div>
         </div>
+
         <div class="no-photo-placeholder" *ngIf="selectedDestination.photos.length === 0">
-          <span class="placeholder-emoji">{{ selectedDestination.image }}</span>
+          <span class="placeholder-emoji">📍</span>
         </div>
       </div>
 
-      <!-- Skeleton loader -->
+      <!-- Skeleton -->
       <div class="photo-skeleton" *ngIf="isLoadingPhotos">
         <div class="skeleton-shimmer"></div>
       </div>
@@ -111,15 +122,25 @@
       <!-- Info -->
       <div class="detail-body">
         <div class="detail-top">
-          <span class="detail-emoji">{{ selectedDestination.image }}</span>
+          <!-- Miniatura cuadrada en lugar del emoji/link -->
+          <img
+            *ngIf="selectedDestination.thumbnail || selectedDestination.image"
+            [src]="selectedDestination.thumbnail || selectedDestination.image"
+            [alt]="selectedDestination.name"
+            class="detail-dest-thumb"
+          />
+          <div class="detail-dest-placeholder" *ngIf="!selectedDestination.thumbnail && !selectedDestination.image">
+            📍
+          </div>
           <div>
             <h3 class="detail-name">{{ selectedDestination.name }}</h3>
             <span class="detail-city">{{ selectedDestination.label }}</span>
           </div>
         </div>
+        <div class="detail-divider"></div>
         <p class="detail-desc">{{ selectedDestination.description }}</p>
       </div>
-    </div>
 
+    </div>
   </div>
 </div>

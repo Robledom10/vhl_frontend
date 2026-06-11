@@ -1,1 +1,188 @@
-<p>reservations works!</p>
+<div class="reservations-container">
+
+	<!-- HEADER -->
+	<div class="top-bar">
+
+		<!-- BUSCADOR -->
+		<div class="search-box">
+			<input type="text" placeholder="Buscar reserva..." [(ngModel)]="searchTerm" (input)="applyFilters()" />
+			<button>
+				<i class="fa-solid fa-magnifying-glass"></i>
+			</button>
+		</div>
+
+		<!-- FILTROS -->
+		<div class="filter-group">
+			<div class="filter-dropdown" [class.open]="openFilter === 'destino'">
+				<button class="filter-btn" (click)="toggleFilter('destino')">
+					<i class="fa-solid fa-filter"></i>
+					<span>{{ activeFilters.destino || 'Destino' }}</span>
+					<i class="fa-solid fa-chevron-down chevron"></i>
+				</button>
+				<div class="dropdown-menu">
+					<button (click)="setFilter('destino', null)">Todos</button>
+					<button *ngFor="let d of destinoOptions" (click)="setFilter('destino', d)">{{ d }}</button>
+				</div>
+			</div>
+
+			<div class="filter-dropdown" [class.open]="openFilter === 'personas'">
+				<button class="filter-btn" (click)="toggleFilter('personas')">
+					<i class="fa-solid fa-filter"></i>
+					<span>{{ activeFilters.personas || 'Personas' }}</span>
+					<i class="fa-solid fa-chevron-down chevron"></i>
+				</button>
+				<div class="dropdown-menu">
+					<button (click)="setFilter('personas', null)">Todos</button>
+					<button *ngFor="let p of personasOptions" (click)="setFilter('personas', p)">{{ p }}</button>
+				</div>
+			</div>
+
+			<div class="filter-dropdown" [class.open]="openFilter === 'fecha'">
+				<button class="filter-btn" (click)="toggleFilter('fecha')">
+					<i class="fa-solid fa-filter"></i>
+					<span>Fecha</span>
+					<i class="fa-solid fa-chevron-down chevron"></i>
+				</button>
+				<div class="dropdown-menu dropdown-date">
+					<label>Desde</label>
+					<input type="date" [(ngModel)]="dateFrom" (change)="applyFilters()" />
+					<label>Hasta</label>
+					<input type="date" [(ngModel)]="dateTo" (change)="applyFilters()" />
+				</div>
+			</div>
+
+			<div class="filter-dropdown" [class.open]="openFilter === 'estado'">
+				<button class="filter-btn" (click)="toggleFilter('estado')">
+					<i class="fa-solid fa-filter"></i>
+					<span>{{ activeFilters.estado || 'Estado' }}</span>
+					<i class="fa-solid fa-chevron-down chevron"></i>
+				</button>
+				<div class="dropdown-menu">
+					<button (click)="setFilter('estado', null)">Todos</button>
+					<button (click)="setFilter('estado', 'Confirmada')">Confirmada</button>
+					<button (click)="setFilter('estado', 'Pendiente')">Pendiente</button>
+					<button (click)="setFilter('estado', 'Cancelada')">Cancelada</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- AGREGAR -->
+		<button class="add-btn" (click)="openCreateModal()">
+			<i class="fa-solid fa-plus"></i>
+			<span>Agregar</span>
+		</button>
+	</div>
+
+	<!-- TABLA -->
+	<div class="table-container">
+		<table>
+			<thead>
+				<tr>
+					<th></th>
+					<th>Cliente</th>
+					<th>Destino</th>
+					<th>Personas</th>
+					<th>Fecha viaje</th>
+					<th>Estado</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr *ngFor="let item of filteredReservations"
+					[class.row-cancelled]="item.estado === 'Cancelada'">
+
+					<td>
+						<img [src]="item.clienteImagen" [alt]="item.clienteNombre" />
+					</td>
+
+					<td>{{ item.clienteNombre }}</td>
+					<td>{{ item.destino }}</td>
+					<td>{{ item.personas }}</td>
+					<td>{{ item.fechaViaje }}</td>
+
+					<td>
+						<span class="status"
+							[class.confirmada]="item.estado === 'Confirmada'"
+							[class.pendiente]="item.estado === 'Pendiente'"
+							[class.cancelada]="item.estado === 'Cancelada'">
+							{{ item.estado }}
+						</span>
+					</td>
+
+					<td>
+						<div class="actions">
+							<button class="view" (click)="openDetail(item); $event.stopPropagation()">
+								<i class="fa-regular fa-eye"></i>
+							</button>
+
+							<button class="confirm"
+								*ngIf="item.estado === 'Pendiente'"
+								(click)="confirmarReserva(item)">
+								Confirmar
+							</button>
+							<button class="confirm disabled"
+								*ngIf="item.estado !== 'Pendiente'" disabled>
+								Confirmar
+							</button>
+
+							<button class="cancel"
+								*ngIf="item.estado !== 'Cancelada'"
+								(click)="openCancelModal(item)">
+								Cancelar
+							</button>
+							<button class="reactivate"
+								*ngIf="item.estado === 'Cancelada'"
+								(click)="reactivarReserva(item)">
+								Reactivar
+							</button>
+						</div>
+					</td>
+				</tr>
+
+				<tr *ngIf="filteredReservations.length === 0">
+					<td colspan="7" class="empty-state">
+						<i class="fa-regular fa-calendar-xmark"></i>
+						<span>No se encontraron reservas</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<!-- MODAL CONFIRMAR CANCELACIÓN -->
+<app-confirm-modal
+	[isOpen]="showCancelModal"
+	title="Cancelar reserva"
+	message="Esta acción cancelará la reserva del cliente. Podrá reactivarla más adelante."
+	confirmText="Cancelar reserva"
+	cancelText="Volver"
+	icon="fa-solid fa-triangle-exclamation"
+	confirmColor="#ff3b3b"
+	iconBg="rgba(255, 59, 59, 0.12)"
+	iconColor="#ff3b3b"
+	(confirmed)="confirmCancel()"
+	(closed)="closeCancelModal()">
+</app-confirm-modal>
+
+<!-- TOAST -->
+<app-toast-notification
+	[show]="showToast"
+	[title]="toastTitle"
+	[message]="toastMessage">
+</app-toast-notification>
+
+<!-- MODAL CREAR RESERVA -->
+<app-form-reservation-creation
+	[isOpen]="showCreateModal"
+	(closed)="closeCreateModal()"
+	(reservationCreated)="onReservationCreated($event)">
+</app-form-reservation-creation>
+
+<!-- DETALLE RESERVA -->
+<app-reservation-detail-sheet
+	[isOpen]="sheetOpen"
+	[reservation]="selectedReservationDetail"
+	(closed)="closeDetail()">
+</app-reservation-detail-sheet>

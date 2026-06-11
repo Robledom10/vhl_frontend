@@ -16,8 +16,6 @@ export class FormPackageCreationComponent implements OnInit, OnChanges {
   @Output() saved = new EventEmitter<{ action: 'created' | 'updated'; name: string }>();
 
   currentStep = 1;
-  showCalendar = false;
-  showTimePicker = false;
   enviando = false;
   showSuccessBanner = false;
   successMessage = '';
@@ -41,14 +39,6 @@ export class FormPackageCreationComponent implements OnInit, OnChanges {
   showPolicyInput = false;
   showRequirementInput = false;
 
-  // HORA
-  hours: string[] = [];
-  minutes: string[] = [];
-  periods = ['AM', 'PM'];
-  selectedHour = '';
-  selectedMinute = '';
-  selectedPeriod = 'AM';
-
   constructor(
     private fb: FormBuilder,
     private packageService: PackageService,
@@ -64,16 +54,12 @@ export class FormPackageCreationComponent implements OnInit, OnChanges {
 
     // STEP 2
     duration: ['', [Validators.required, Validators.min(1)]],
-    startDate: ['', Validators.required],
-    departureTime: ['', Validators.required],
     departurePlace: ['', [Validators.required, Validators.minLength(3)]],
     transportType: this.fb.control<string[]>([], Validators.required),
     availableSlots: ['', [Validators.required, Validators.min(1)]],
 
     // STEP 3
     price: ['', [Validators.required, Validators.min(10000)]],
-    hotel: ['', [Validators.required, Validators.minLength(3)]],
-    roomType: ['', [Validators.required, Validators.minLength(3)]],
 
     included: this.fb.array([
       this.fb.control('Transporte terrestre ida y regreso'),
@@ -105,8 +91,6 @@ export class FormPackageCreationComponent implements OnInit, OnChanges {
   });
 
   ngOnInit() {
-    this.hours = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
-    this.minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
     this.updateFileValidators();
     this.packageForm.get('duration')?.valueChanges.subscribe(value => {
       const days = Number(value);
@@ -166,14 +150,10 @@ export class FormPackageCreationComponent implements OnInit, OnChanges {
       destinations: pkg.destinos?.join(', ') || pkg.destino || '',
       shortDescription: pkg.descripcion || '',
       duration: String(pkg.duracionDias || ''),
-      startDate: pkg.fechaInicio,
-      departureTime: this.formatTimeForForm(pkg.horaSalida || ''),
       departurePlace: pkg.lugarSalida || '',
       transportType: pkg.tiposTransporte || [pkg.tipoTransporte || 'Bus de turismo'],
       availableSlots: String(pkg.cupo || ''),
       price: String(pkg.precio || ''),
-      hotel: pkg.alojamiento || '',
-      roomType: pkg.tipoHabitacion || '',
     });
 
     const includedArray = this.fb.array(pkg.incluye?.map(item => this.fb.control(item)) || [], Validators.required);
@@ -213,8 +193,8 @@ export class FormPackageCreationComponent implements OnInit, OnChanges {
     let controlsToValidate: string[] = [];
     switch (this.currentStep) {
       case 1: controlsToValidate = ['name', 'destinations', 'shortDescription', 'coverImage', 'galleryImages']; break;
-      case 2: controlsToValidate = ['duration', 'startDate', 'departureTime', 'departurePlace', 'transportType', 'availableSlots']; break;
-      case 3: controlsToValidate = ['price', 'hotel', 'roomType']; break;
+      case 2: controlsToValidate = ['duration', 'departurePlace', 'transportType', 'availableSlots']; break;
+      case 3: controlsToValidate = ['price']; break;
     }
     controlsToValidate.forEach(c => this.packageForm.get(c)?.markAsTouched());
     if (controlsToValidate.some(c => this.packageForm.get(c)?.invalid)) return;
@@ -306,11 +286,7 @@ export class FormPackageCreationComponent implements OnInit, OnChanges {
         duracionDias: Number(formValue.duration || 1),
         precio: Number(formValue.price || 0),
         cupo: Number(formValue.availableSlots || 1),
-        fechaInicio: formValue.startDate || '',
         lugarSalida: formValue.departurePlace?.trim() || '',
-        horaSalida: this.formatTimeTo24(formValue.departureTime || ''),
-        alojamiento: formValue.hotel?.trim() || '',
-        tipoHabitacion: formValue.roomType?.trim() || '',
         tipoTransporte: tiposTransporte?.[0] || 'Bus de turismo',
         tiposTransporte: tiposTransporte,
         fotoVerticalUrl: this.fotoVerticalUrl,
@@ -445,14 +421,6 @@ export class FormPackageCreationComponent implements OnInit, OnChanges {
   }
   removeRequirement(index: number) { this.requirements.removeAt(index); }
 
-  // CALENDARIO
-  toggleCalendar(event: Event) { event.stopPropagation(); this.showCalendar = !this.showCalendar; }
-  onDateSelected(date: string) {
-    this.packageForm.get('startDate')?.setValue(date);
-    this.packageForm.get('startDate')?.markAsTouched();
-    this.showCalendar = false;
-  }
-
   // TRANSPORTE
   onTransportChange(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -464,50 +432,4 @@ export class FormPackageCreationComponent implements OnInit, OnChanges {
     this.packageForm.get('transportType')?.markAsTouched();
   }
 
-  // HORA
-  toggleTimePicker(event: Event) { event.stopPropagation(); this.showTimePicker = !this.showTimePicker; }
-  selectHour(hour: string) { this.selectedHour = hour; this.updateTime(); }
-  selectMinute(minute: string) { this.selectedMinute = minute; this.updateTime(); }
-  selectPeriod(period: string) { this.selectedPeriod = period; this.updateTime(); }
-  updateTime() {
-    if (this.selectedHour && this.selectedMinute && this.selectedPeriod) {
-      const formattedTime = `${this.selectedHour}:${this.selectedMinute} ${this.selectedPeriod}`;
-      this.packageForm.get('departureTime')?.setValue(formattedTime);
-      this.packageForm.get('departureTime')?.markAsTouched();
-      this.showTimePicker = false;
-    }
-  }
-
-  private formatTimeTo24(time: string): string {
-    if (!time) return '';
-    const match = time.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
-    if (!match) return time;
-
-    let [_, hour, minute, period] = match;
-    let hourNum = Number(hour);
-    if (period.toUpperCase() === 'PM' && hourNum < 12) {
-      hourNum += 12;
-    }
-    if (period.toUpperCase() === 'AM' && hourNum === 12) {
-      hourNum = 0;
-    }
-    return `${hourNum.toString().padStart(2, '0')}:${minute}:00`;
-  }
-
-  private formatTimeForForm(time: string): string {
-    const match = time.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
-    if (!match) return time;
-
-    let hourNum = Number(match[1]);
-    const minute = match[2];
-    const period = hourNum >= 12 ? 'PM' : 'AM';
-
-    if (hourNum === 0) {
-      hourNum = 12;
-    } else if (hourNum > 12) {
-      hourNum -= 12;
-    }
-
-    return `${hourNum.toString().padStart(2, '0')}:${minute} ${period}`;
-  }
 }

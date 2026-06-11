@@ -1,4 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { PackageService } from '../../core/services/package.service';
+import { RespuestaComentarioPaquete } from './models/comments.model';
+import { AuthService } from '../../core/services/auth.service';
 
 export interface InfoRow {
 	label: string;
@@ -7,6 +10,7 @@ export interface InfoRow {
 }
 
 export interface PackageDetail {
+	id: number;
 	title: string;
 	subtitle: string;
 	spotsAvailable: number;
@@ -19,7 +23,7 @@ export interface PackageDetail {
 	transport: string;
 	mainImage: string;
 	galleryImages?: string[];
-	itinerary: { day: string; desc: string }[];
+	itinerary: { day: string; desc: string; }[];
 	includes: string[];
 	notIncludes: string[];
 	cancellation: string[];
@@ -41,12 +45,41 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 	private scrollY = 0;
 	private closeTimer: ReturnType<typeof setTimeout> | null = null;
 
+	selectedRating = 5;
+	newComment = '';
+
+	// Modal de reserva
+	wizardOpen = false;
+
+	// Número de pasajeros
+	travelers = 1;
+
+	comments: RespuestaComentarioPaquete[] = [];
+
+	constructor(
+		private packageService: PackageService,
+		private authService: AuthService
+	) { }
+
 	ngOnChanges(changes: SimpleChanges): void {
 		if (!changes['isOpen']) return;
 		if (this.isOpen) {
-			if (this.closeTimer) { clearTimeout(this.closeTimer); this.closeTimer = null; }
+			if (this.closeTimer) {
+				clearTimeout(this.closeTimer);
+				this.closeTimer = null;
+			}
+
+			if (this.package?.id) {
+				this.loadComments();
+			}
+
 			this.visible = true;
-			setTimeout(() => (this.animating = true), 10);
+			this.travelers = 1;
+
+			setTimeout(() => {
+				this.animating = true;
+			}, 10);
+
 			this.blockScroll();
 		} else {
 			this.animating = false;
@@ -131,5 +164,96 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 		if ((event.target as HTMLElement).classList.contains('sheet-overlay')) {
 			this.close();
 		}
+	}
+
+	// Lógica para aumentar/disminuir número de pasajeros
+	increaseTravelers(): void {
+		if (!this.package) return;
+
+		if (this.travelers < this.package.spotsAvailable) {
+			this.travelers++;
+		}
+	}
+
+	decreaseTravelers(): void {
+		if (this.travelers > 1) {
+			this.travelers--;
+		}
+	}
+
+	get totalPrice(): number {
+		if (!this.package) return 0;
+
+		return this.travelers * this.package.price;
+	}
+
+	// Lógica para abrir el modal de reserva
+	closeReservationWizard(): void {
+		this.wizardOpen = false;
+	}
+
+	openReservationWizard(): void {
+		this.wizardOpen = true;
+		this.close();
+	}
+
+	// Comentarios y valoraciones
+
+	loadComments(): void {
+
+		if (!this.package?.id) {
+			return;
+		}
+
+		this.packageService
+			.getComments(this.package.id)
+			.subscribe({
+				next: comments => {
+					this.comments = comments;
+				},
+				error: error => {
+					console.error(error);
+				}
+			});
+	}
+
+	submitComment(): void {
+
+		if (!this.package?.id) {
+			return;
+		}
+
+		if (!this.newComment.trim()) {
+			return;
+		}
+
+		const request = {
+			comentario: this.newComment,
+			puntaje: this.selectedRating
+		};
+
+		this.packageService
+			.createComment(
+				this.package.id,
+				request
+			)
+			.subscribe({
+
+				next: () => {
+
+					this.newComment = '';
+					this.selectedRating = 5;
+
+					this.loadComments();
+				},
+
+				error: error => {
+					console.error(error);
+				}
+			});
+	}
+
+	get isLogged(): boolean {
+		return this.authService.isAuthenticated();
 	}
 }
