@@ -105,16 +105,7 @@ export class DashboardOperativoComponent implements OnInit {
         this.paquetes = paquetes;
 
         if (viajes.length === 0) {
-          this.filas = paquetes.map(p => ({
-            idPaquete: p.id,
-            paqueteTitulo: p.titulo,
-            paqueteDestino: p.destino,
-            tieneViaje: false,
-            viajerosRegistrados: 0,
-            transportesAsignados: 0,
-            alojamientosAsignados: 0,
-            incidentes: 0,
-          }));
+          this.filas = [];
           this.cargando = false;
           return;
         }
@@ -143,21 +134,7 @@ export class DashboardOperativoComponent implements OnInit {
               };
             });
 
-            const idPaquetesConViaje = new Set(viajes.map(v => v.idPaquete));
-            const sinViaje: FilaDashboard[] = paquetes
-              .filter(p => !idPaquetesConViaje.has(p.id))
-              .map(p => ({
-                idPaquete: p.id,
-                paqueteTitulo: p.titulo,
-                paqueteDestino: p.destino,
-                tieneViaje: false,
-                viajerosRegistrados: 0,
-                transportesAsignados: 0,
-                alojamientosAsignados: 0,
-                incidentes: 0,
-              }));
-
-            this.filas = [...viajeFilas, ...sinViaje];
+            this.filas = viajeFilas;
             this.cargando = false;
           },
           error: () => { this.cargando = false; }
