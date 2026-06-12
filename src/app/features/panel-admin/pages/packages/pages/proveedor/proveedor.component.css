@@ -273,8 +273,6 @@ tbody td:last-child {
 
 .tipo-hotel       { background: rgba(59,130,246,0.12); color: #2563eb; }
 .tipo-transporte  { background: rgba(249,115,22,0.12); color: #ea580c; }
-.tipo-guia        { background: rgba(34,197,94,0.12);  color: #16a34a; }
-.tipo-restaurante { background: rgba(239,68,68,0.12);  color: #dc2626; }
 
 .type-icon-sm { width: 16px; text-align: center; }
 

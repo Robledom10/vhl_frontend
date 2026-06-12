@@ -29,8 +29,6 @@
 						<option value="" disabled selected></option>
 						<option value="Hotel">Hotel</option>
 						<option value="Transporte">Transporte</option>
-						<option value="Restaurante">Restaurante</option>
-						<option value="Guía">Guía</option>
 					</select>
 					<label>Tipo de proveedor</label>
 					<span *ngIf="providerForm.get('tipoProveedor')?.errors?.['required'] && providerForm.get('tipoProveedor')?.touched">
@@ -56,7 +54,7 @@
 					<label>Teléfono</label>
 					<span *ngIf="providerForm.get('telefono')?.touched">
 						<ng-container *ngIf="providerForm.get('telefono')?.errors?.['required']">El teléfono es obligatorio</ng-container>
-						<ng-container *ngIf="providerForm.get('telefono')?.errors?.['pattern']">Solo números (7–15 dígitos)</ng-container>
+						<ng-container *ngIf="providerForm.get('telefono')?.errors?.['pattern']">Solo números (7-15 dígitos)</ng-container>
 					</span>
 				</div>
 
@@ -109,48 +107,7 @@
 					</div>
 				</ng-container>
 
-				<!-- ===== CAMPOS GUÍA ===== -->
-				<ng-container *ngIf="esGuia">
-					<div class="section-label">
-						<i class="fa-solid fa-person-hiking"></i> Datos del guía
-					</div>
-					<div class="form-row">
-						<div class="form-group">
-							<input type="text" placeholder=" " formControlName="especialidad">
-							<label>Especialidad</label>
-						</div>
-						<div class="form-group">
-							<input type="text" placeholder=" " formControlName="idioma">
-							<label>Idioma(s)</label>
-						</div>
-					</div>
-					<div class="form-group">
-						<input type="text" placeholder=" " formControlName="notas">
-						<label>Notas</label>
-					</div>
-				</ng-container>
 
-				<!-- ===== CAMPOS RESTAURANTE ===== -->
-				<ng-container *ngIf="esRestaurante">
-					<div class="section-label">
-						<i class="fa-solid fa-utensils"></i> Datos del restaurante
-					</div>
-					<div class="form-group">
-						<input type="text" placeholder=" " formControlName="direccion">
-						<label>Dirección</label>
-					</div>
-					<div class="form-group">
-						<select formControlName="tipoComida">
-							<option value="" disabled selected></option>
-							<option *ngFor="let t of tiposComida" [value]="t">{{ t }}</option>
-						</select>
-						<label>Tipo de comida</label>
-					</div>
-					<div class="form-group">
-						<input type="text" placeholder=" " formControlName="notas">
-						<label>Notas / Información adicional</label>
-					</div>
-				</ng-container>
 
 			</form>
 

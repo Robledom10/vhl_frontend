@@ -18,7 +18,6 @@ export class FormProviderComponent implements OnChanges {
 	loading = false;
 	errorMsg = '';
 
-	tiposComida = ['Internacional', 'Colombiana', 'Italiana', 'Mariscos', 'Parrilla', 'Vegetariana', 'Rápida', 'Otro'];
 	tiposVehiculo = ['Bus', 'Avión', 'Van', 'Minibus', 'Lancha', 'Otro'];
 
 	constructor(
@@ -37,13 +36,7 @@ export class FormProviderComponent implements OnChanges {
 		conductor:         [''],
 		telefonoConductor: [''],
 		capacidad:         [null as number | null],
-		// Hotel / Restaurante
 		direccion:         [''],
-		// Guía
-		especialidad:      [''],
-		idioma:            [''],
-		// Restaurante
-		tipoComida:        [''],
 		// General
 		notas:             [''],
 	});
@@ -54,8 +47,6 @@ export class FormProviderComponent implements OnChanges {
 
 	get esTransporte(): boolean { return this.tipo === 'Transporte'; }
 	get esHotel(): boolean { return this.tipo === 'Hotel'; }
-	get esGuia(): boolean { return this.tipo === 'Guía'; }
-	get esRestaurante(): boolean { return this.tipo === 'Restaurante'; }
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes['provider'] && this.provider) {
@@ -70,9 +61,6 @@ export class FormProviderComponent implements OnChanges {
 				telefonoConductor: this.provider.telefonoConductor ?? '',
 				capacidad:         this.provider.capacidad ?? null,
 				direccion:         this.provider.direccion ?? '',
-				especialidad:      this.provider.especialidad ?? '',
-				idioma:            this.provider.idioma ?? '',
-				tipoComida:        this.provider.tipoComida ?? '',
 				notas:             this.provider.notas ?? '',
 			});
 		}
@@ -110,9 +98,6 @@ export class FormProviderComponent implements OnChanges {
 			telefonoConductor: v.telefonoConductor || undefined,
 			capacidad:         v.capacidad || undefined,
 			direccion:         v.direccion || undefined,
-			especialidad:      v.especialidad || undefined,
-			idioma:            v.idioma || undefined,
-			tipoComida:        v.tipoComida || undefined,
 			notas:             v.notas || undefined,
 		};
 

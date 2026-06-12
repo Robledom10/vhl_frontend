@@ -9,9 +9,6 @@ export interface SolicitudProveedor {
 	telefonoConductor?: string;
 	capacidad?: number;
 	direccion?: string;
-	especialidad?: string;
-	idioma?: string;
-	tipoComida?: string;
 	notas?: string;
 }
 
@@ -28,8 +25,5 @@ export interface RespuestaProveedor {
 	telefonoConductor?: string;
 	capacidad?: number;
 	direccion?: string;
-	especialidad?: string;
-	idioma?: string;
-	tipoComida?: string;
 	notas?: string;
 }

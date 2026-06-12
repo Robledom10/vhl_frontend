@@ -27,8 +27,6 @@ export class ProveedorComponent implements OnInit {
 		'Todos',
 		'Hotel',
 		'Transporte',
-		'Restaurante',
-		'Guía'
 	];
 
 	constructor(
@@ -62,6 +60,7 @@ export class ProveedorComponent implements OnInit {
 	get filteredProviders() {
 
 		return this.providers.filter(provider => {
+			const allowedType = this.types.includes(provider.tipoProveedor);
 
 			const matchesSearch =
 				provider.nombre
@@ -74,7 +73,7 @@ export class ProveedorComponent implements OnInit {
 
 			const matchesType = this.selectedType === 'Todos' || provider.tipoProveedor === this.selectedType;
 
-			return matchesSearch && matchesType;
+			return allowedType && matchesSearch && matchesType;
 		});
 	}
 
@@ -104,8 +103,6 @@ export class ProveedorComponent implements OnInit {
 		const map: Record<string, string> = {
 			'Hotel': 'fa-solid fa-hotel',
 			'Transporte': 'fa-solid fa-bus',
-			'Guía': 'fa-solid fa-person-hiking',
-			'Restaurante': 'fa-solid fa-utensils',
 			'Todos': 'fa-solid fa-list',
 		};
 		return map[tipo] || 'fa-solid fa-box';
