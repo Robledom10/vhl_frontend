@@ -55,49 +55,49 @@ export interface RespuestaImagenPaquete {
 }
 
 export interface SolicitudProveedor {
-  nombre: string;
-  tipoProveedor: string;
-  correo: string;
-  telefono: string;
-  // Transporte
-  tipoVehiculo?: string;
-  placa?: string;
-  conductor?: string;
-  telefonoConductor?: string;
-  capacidad?: number;
-  // Hotel / Restaurante
-  direccion?: string;
-  // Guía
-  especialidad?: string;
-  idioma?: string;
-  // Restaurante
-  tipoComida?: string;
-  // General
-  notas?: string;
+	nombre: string;
+	tipoProveedor: string;
+	correo: string;
+	telefono: string;
+	// Transporte
+	tipoVehiculo?: string;
+	placa?: string;
+	conductor?: string;
+	telefonoConductor?: string;
+	capacidad?: number;
+	// Hotel / Restaurante
+	direccion?: string;
+	// Guía
+	especialidad?: string;
+	idioma?: string;
+	// Restaurante
+	tipoComida?: string;
+	// General
+	notas?: string;
 }
 
 export interface RespuestaProveedor {
-  id: number;
-  nombre: string;
-  tipoProveedor: string;
-  correo: string;
-  telefono: string;
-  activo: boolean;
-  // Transporte
-  tipoVehiculo?: string;
-  placa?: string;
-  conductor?: string;
-  telefonoConductor?: string;
-  capacidad?: number;
-  // Hotel / Restaurante
-  direccion?: string;
-  // Guía
-  especialidad?: string;
-  idioma?: string;
-  // Restaurante
-  tipoComida?: string;
-  // General
-  notas?: string;
+	id: number;
+	nombre: string;
+	tipoProveedor: string;
+	correo: string;
+	telefono: string;
+	activo: boolean;
+	// Transporte
+	tipoVehiculo?: string;
+	placa?: string;
+	conductor?: string;
+	telefonoConductor?: string;
+	capacidad?: number;
+	// Hotel / Restaurante
+	direccion?: string;
+	// Guía
+	especialidad?: string;
+	idioma?: string;
+	// Restaurante
+	tipoComida?: string;
+	// General
+	notas?: string;
 }
 
 export interface PageResponse<T> {

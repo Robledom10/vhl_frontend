@@ -26,19 +26,19 @@ export class FormProviderComponent implements OnChanges {
 	) { }
 
 	providerForm = this.fb.group({
-		nombre:            ['', [Validators.required, Validators.minLength(3), Validators.maxLength(80)]],
-		tipoProveedor:     ['', Validators.required],
-		correo:            ['', [Validators.required, Validators.email]],
-		telefono:          ['', [Validators.required, Validators.pattern(/^[+\d\s\-]{7,20}$/)]],
+		nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(80)]],
+		tipoProveedor: ['', Validators.required],
+		correo: ['', [Validators.required, Validators.email]],
+		telefono: ['', [Validators.required, Validators.pattern(/^[+\d\s\-]{7,20}$/)]],
 		// Transporte
-		tipoVehiculo:      [''],
-		placa:             [''],
-		conductor:         [''],
+		tipoVehiculo: [''],
+		placa: [''],
+		conductor: [''],
 		telefonoConductor: [''],
-		capacidad:         [null as number | null],
-		direccion:         [''],
+		capacidad: [null as number | null],
+		direccion: [''],
 		// General
-		notas:             [''],
+		notas: [''],
 	});
 
 	get tipo(): string {
@@ -51,17 +51,17 @@ export class FormProviderComponent implements OnChanges {
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes['provider'] && this.provider) {
 			this.providerForm.patchValue({
-				nombre:            this.provider.nombre,
-				tipoProveedor:     this.provider.tipoProveedor,
-				correo:            this.provider.correo ?? '',
-				telefono:          this.provider.telefono ?? '',
-				tipoVehiculo:      this.provider.tipoVehiculo ?? '',
-				placa:             this.provider.placa ?? '',
-				conductor:         this.provider.conductor ?? '',
+				nombre: this.provider.nombre,
+				tipoProveedor: this.provider.tipoProveedor,
+				correo: this.provider.correo ?? '',
+				telefono: this.provider.telefono ?? '',
+				tipoVehiculo: this.provider.tipoVehiculo ?? '',
+				placa: this.provider.placa ?? '',
+				conductor: this.provider.conductor ?? '',
 				telefonoConductor: this.provider.telefonoConductor ?? '',
-				capacidad:         this.provider.capacidad ?? null,
-				direccion:         this.provider.direccion ?? '',
-				notas:             this.provider.notas ?? '',
+				capacidad: this.provider.capacidad ?? null,
+				direccion: this.provider.direccion ?? '',
+				notas: this.provider.notas ?? '',
 			});
 		}
 
@@ -88,17 +88,17 @@ export class FormProviderComponent implements OnChanges {
 
 		const v = this.providerForm.value;
 		const request: SolicitudProveedor = {
-			nombre:            v.nombre ?? '',
-			tipoProveedor:     v.tipoProveedor ?? '',
-			correo:            v.correo ?? '',
-			telefono:          v.telefono ?? '',
-			tipoVehiculo:      v.tipoVehiculo || undefined,
-			placa:             v.placa || undefined,
-			conductor:         v.conductor || undefined,
+			nombre: v.nombre ?? '',
+			tipoProveedor: v.tipoProveedor ?? '',
+			correo: v.correo ?? '',
+			telefono: v.telefono ?? '',
+			tipoVehiculo: v.tipoVehiculo || undefined,
+			placa: v.placa || undefined,
+			conductor: v.conductor || undefined,
 			telefonoConductor: v.telefonoConductor || undefined,
-			capacidad:         v.capacidad || undefined,
-			direccion:         v.direccion || undefined,
-			notas:             v.notas || undefined,
+			capacidad: v.capacidad || undefined,
+			direccion: v.direccion || undefined,
+			notas: v.notas || undefined,
 		};
 
 		this.loading = true;
