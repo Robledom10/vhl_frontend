@@ -33,11 +33,11 @@ export class InfoMedicaComponent implements OnInit {
 	gruposSanguineos = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
 	medForm = this.fb.group({
-		nombreViajero:  ['', Validators.required],
-		tipoSangre:     ['', Validators.required],
-		alergias:       [''],
-		medicamentos:   [''],
-		condiciones:    [''],
+		nombreViajero: ['', Validators.required],
+		tipoSangre: ['', Validators.required],
+		alergias: [''],
+		medicamentos: [''],
+		condiciones: [''],
 		telefonoMedico: ['', Validators.pattern(/^\+?[\d\s\-]{7,20}$/)],
 	});
 
@@ -48,18 +48,18 @@ export class InfoMedicaComponent implements OnInit {
 	contactos: ContactoEmergencia[] = [];
 
 	contactoForm = this.fb.group({
-		nombreViajero:  ['', Validators.required],
+		nombreViajero: ['', Validators.required],
 		nombreContacto: ['', [Validators.required, Validators.minLength(3)]],
-		relacion:       ['', Validators.required],
-		telefono:       ['', [Validators.required, Validators.pattern(/^\+?[\d\s\-]{7,20}$/)]],
-		correo:         ['', Validators.email],
+		relacion: ['', Validators.required],
+		telefono: ['', [Validators.required, Validators.pattern(/^\+?[\d\s\-]{7,20}$/)]],
+		correo: ['', Validators.email],
 	});
 
 	constructor(
 		private fb: FormBuilder,
 		private svc: OperacionesService,
 		private authSvc: AuthService,
-	) {}
+	) { }
 
 	ngOnInit(): void {
 		this.authSvc.getAllUsers().subscribe({
@@ -67,7 +67,7 @@ export class InfoMedicaComponent implements OnInit {
 				this.usuarios = users.map(u => ({ id: u.id, firstName: u.firstName, lastName: u.lastName }));
 				this.usuarioMap = Object.fromEntries(this.usuarios.map(u => [u.id, `${u.firstName} ${u.lastName}`]));
 			},
-			error: () => {},
+			error: () => { },
 		});
 
 		this.svc.getViajes().subscribe({
@@ -79,7 +79,7 @@ export class InfoMedicaComponent implements OnInit {
 					this.cargarTodo();
 				}
 			},
-			error: () => {},
+			error: () => { },
 		});
 	}
 
@@ -98,7 +98,7 @@ export class InfoMedicaComponent implements OnInit {
 	cargarTodo(): void {
 		if (!this.idViajeSeleccionado) return;
 		forkJoin({
-			medicos:   this.svc.getInformacionMedica(this.idViajeSeleccionado).pipe(catchError(() => of([]))),
+			medicos: this.svc.getInformacionMedica(this.idViajeSeleccionado).pipe(catchError(() => of([]))),
 			contactos: this.svc.getContactos(this.idViajeSeleccionado).pipe(catchError(() => of([]))),
 		}).subscribe(({ medicos, contactos }) => {
 			this.registros = medicos as InformacionMedica[];
@@ -112,11 +112,11 @@ export class InfoMedicaComponent implements OnInit {
 	abrirMedico(r: InformacionMedica): void {
 		this.editandoMedico = r;
 		this.medForm.patchValue({
-			nombreViajero:  r.nombreViajero || this.getNombreViajero(r.idViajero),
-			tipoSangre:     r.tipoSangre,
-			alergias:       r.alergias,
-			medicamentos:   r.medicamentos,
-			condiciones:    r.condicionesMedicas,
+			nombreViajero: r.nombreViajero || this.getNombreViajero(r.idViajero),
+			tipoSangre: r.tipoSangre,
+			alergias: r.alergias,
+			medicamentos: r.medicamentos,
+			condiciones: r.condicionesMedicas,
 			telefonoMedico: r.telefonoMedico,
 		});
 		this.showFormMedico = true;
@@ -130,13 +130,13 @@ export class InfoMedicaComponent implements OnInit {
 		this.enviandoMedico = true;
 		const v = this.medForm.value;
 		const body = {
-			idViaje:           this.idViajeSeleccionado,
-			tipoSangre:        v.tipoSangre      || '',
-			alergias:          v.alergias         || '',
-			medicamentos:      v.medicamentos     || '',
-			condicionesMedicas: v.condiciones     || '',
-			telefonoMedico:    v.telefonoMedico   || undefined,
-			nombreViajero:     v.nombreViajero    || '',
+			idViaje: this.idViajeSeleccionado,
+			tipoSangre: v.tipoSangre || '',
+			alergias: v.alergias || '',
+			medicamentos: v.medicamentos || '',
+			condicionesMedicas: v.condiciones || '',
+			telefonoMedico: v.telefonoMedico || undefined,
+			nombreViajero: v.nombreViajero || '',
 		};
 		const idViajero = this.editandoMedico ? this.editandoMedico.idViajero : 1;
 		const req$ = this.editandoMedico
@@ -170,11 +170,11 @@ export class InfoMedicaComponent implements OnInit {
 	abrirContacto(c: ContactoEmergencia): void {
 		this.editandoContacto = c;
 		this.contactoForm.patchValue({
-			nombreViajero:  c.nombreViajero || '',
+			nombreViajero: c.nombreViajero || '',
 			nombreContacto: c.nombre,
-			relacion:       c.parentesco,
-			telefono:       c.telefono,
-			correo:         c.correo,
+			relacion: c.parentesco,
+			telefono: c.telefono,
+			correo: c.correo,
 		});
 		this.showFormContacto = true;
 	}
@@ -188,11 +188,11 @@ export class InfoMedicaComponent implements OnInit {
 		const v = this.contactoForm.value;
 		const idViajero = this.editandoContacto ? this.editandoContacto.idViajero : 1;
 		const body = {
-			idViaje:      this.idViajeSeleccionado,
-			nombre:       v.nombreContacto || '',
-			parentesco:   v.relacion       || '',
-			telefono:     v.telefono       || '',
-			correo:       v.correo         || undefined,
+			idViaje: this.idViajeSeleccionado,
+			nombre: v.nombreContacto || '',
+			parentesco: v.relacion || '',
+			telefono: v.telefono || '',
+			correo: v.correo || undefined,
 			nombreViajero: v.nombreViajero || '',
 		};
 		const req$ = this.editandoContacto

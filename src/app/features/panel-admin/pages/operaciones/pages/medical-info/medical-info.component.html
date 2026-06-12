@@ -1,286 +1,307 @@
 <div class="operaciones-container">
 
-  <!-- HEADER -->
-  <div class="page-header">
-    <div>
-      <h2 class="page-title">Información <span>Médica</span> y Emergencia</h2>
-      <p class="page-subtitle">Gestiona la información médica y los contactos de emergencia de cada viajero</p>
-    </div>
-  </div>
+	<!-- HEADER -->
+	<div class="page-header">
+		<div>
+			<h2 class="page-title">Información <span>Médica</span> y Emergencia</h2>
+			<p class="page-subtitle">Gestiona la información médica y los contactos de emergencia de cada viajero</p>
+		</div>
+	</div>
 
-  <!-- FILTRO VIAJE -->
-  <div class="filtro-viaje">
-    <label>Filtrar por viaje</label>
-    <select (change)="onViajeChange($event)">
-      <option value="">Seleccionar viaje...</option>
-      <option *ngFor="let v of viajes" [value]="v.id" [selected]="v.id === idViajeSeleccionado">
-        {{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} &mdash; Viaje #{{ v.id }} &middot; {{ v.fechaSalida | date:'dd/MM/yyyy' }}
-      </option>
-    </select>
-  </div>
+	<!-- FILTRO VIAJE -->
+	<div class="filtro-viaje">
+		<label>Filtrar por viaje</label>
+		<select (change)="onViajeChange($event)">
+			<option value="">Seleccionar viaje...</option>
+			<option *ngFor="let v of viajes" [value]="v.id" [selected]="v.id === idViajeSeleccionado">
+				{{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} &mdash; Viaje #{{ v.id }} &middot; {{
+				v.fechaSalida | date:'dd/MM/yyyy' }}
+			</option>
+		</select>
+	</div>
 
-  <!-- ═══════════════════════════════════════════════════════════════ -->
-  <!-- SECCIÓN 1: INFORMACIÓN MÉDICA                                   -->
-  <!-- ═══════════════════════════════════════════════════════════════ -->
-  <div class="section-block">
-    <div class="section-header">
-      <div class="section-title">
-        <div class="section-icon med-icon"><i class="fa-solid fa-heart-pulse"></i></div>
-        <div>
-          <h3>Información médica</h3>
-          <p>Tipo de sangre, alergias, medicamentos y condiciones</p>
-        </div>
-      </div>
-      <button class="btn-agregar" (click)="abrirNuevoMedico()">
-        <i class="fa-solid fa-plus"></i> Nuevo registro
-      </button>
-    </div>
+	<!-- ═══════════════════════════════════════════════════════════════ -->
+	<!-- SECCIÓN 1: INFORMACIÓN MÉDICA                                   -->
+	<!-- ═══════════════════════════════════════════════════════════════ -->
+	<div class="section-block">
+		<div class="section-header">
+			<div class="section-title">
+				<div class="section-icon med-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+				<div>
+					<h3>Información médica</h3>
+					<p>Tipo de sangre, alergias, medicamentos y condiciones</p>
+				</div>
+			</div>
+			<button class="btn-agregar" (click)="abrirNuevoMedico()">
+				<i class="fa-solid fa-plus"></i> Nuevo registro
+			</button>
+		</div>
 
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Viajero</th>
-            <th>Tipo de sangre</th>
-            <th>Alergias</th>
-            <th>Medicamentos</th>
-            <th>Condiciones</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let r of registros">
-            <td class="td-viajero">
-              <div class="avatar-sm"><i class="fa-solid fa-user"></i></div>
-              {{ r.nombreViajero || getNombreViajero(r.idViajero) }}
-            </td>
-            <td><span class="badge-sg">{{ r.tipoSangre }}</span></td>
-            <td>
-              <span class="tag-condicion" [class.con-alerta]="r.alergias && r.alergias.toLowerCase() !== 'ninguna' && r.alergias !== ''">
-                {{ r.alergias || '—' }}
-              </span>
-            </td>
-            <td>{{ r.medicamentos || '—' }}</td>
-            <td>
-              <span class="tag-condicion" [class.con-alerta]="r.condicionesMedicas && r.condicionesMedicas.toLowerCase() !== 'ninguna' && r.condicionesMedicas !== ''">
-                {{ r.condicionesMedicas || '—' }}
-              </span>
-            </td>
-            <td>
-              <div class="actions">
-                <button class="edit" (click)="abrirMedico(r)">Editar</button>
-                <button class="del" (click)="eliminarMedico(r)">Eliminar</button>
-              </div>
-            </td>
-          </tr>
-          <tr *ngIf="registros.length === 0">
-            <td colspan="6" class="empty">No hay registros médicos para este viaje.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+		<div class="table-container">
+			<table>
+				<thead>
+					<tr>
+						<th>Viajero</th>
+						<th>Tipo de sangre</th>
+						<th>Alergias</th>
+						<th>Medicamentos</th>
+						<th>Condiciones</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let r of registros">
+						<td class="td-viajero">
+							<div class="avatar-sm"><i class="fa-solid fa-user"></i></div>
+							{{ r.nombreViajero || getNombreViajero(r.idViajero) }}
+						</td>
+						<td><span class="badge-sg">{{ r.tipoSangre }}</span></td>
+						<td>
+							<span class="tag-condicion"
+								[class.con-alerta]="r.alergias && r.alergias.toLowerCase() !== 'ninguna' && r.alergias !== ''">
+								{{ r.alergias || '—' }}
+							</span>
+						</td>
+						<td>{{ r.medicamentos || '—' }}</td>
+						<td>
+							<span class="tag-condicion"
+								[class.con-alerta]="r.condicionesMedicas && r.condicionesMedicas.toLowerCase() !== 'ninguna' && r.condicionesMedicas !== ''">
+								{{ r.condicionesMedicas || '—' }}
+							</span>
+						</td>
+						<td>
+							<div class="actions">
+								<button class="edit" (click)="abrirMedico(r)">Editar</button>
+								<button class="del" (click)="eliminarMedico(r)">Eliminar</button>
+							</div>
+						</td>
+					</tr>
+					<tr *ngIf="registros.length === 0">
+						<td colspan="6" class="empty">No hay registros médicos para este viaje.</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 
-  <!-- DIVISOR -->
-  <div class="seccion-divider"></div>
+	<!-- DIVISOR -->
+	<div class="seccion-divider"></div>
 
-  <!-- ═══════════════════════════════════════════════════════════════ -->
-  <!-- SECCIÓN 2: CONTACTOS DE EMERGENCIA                              -->
-  <!-- ═══════════════════════════════════════════════════════════════ -->
-  <div class="section-block">
-    <div class="section-header">
-      <div class="section-title">
-        <div class="section-icon contact-icon"><i class="fa-solid fa-phone-volume"></i></div>
-        <div>
-          <h3>Contactos de emergencia</h3>
-          <p>Personas de contacto en caso de emergencia durante el viaje</p>
-        </div>
-      </div>
-      <button class="btn-agregar btn-agregar-contact" (click)="abrirNuevoContacto()">
-        <i class="fa-solid fa-plus"></i> Nuevo contacto
-      </button>
-    </div>
+	<!-- ═══════════════════════════════════════════════════════════════ -->
+	<!-- SECCIÓN 2: CONTACTOS DE EMERGENCIA                              -->
+	<!-- ═══════════════════════════════════════════════════════════════ -->
+	<div class="section-block">
+		<div class="section-header">
+			<div class="section-title">
+				<div class="section-icon contact-icon"><i class="fa-solid fa-phone-volume"></i></div>
+				<div>
+					<h3>Contactos de emergencia</h3>
+					<p>Personas de contacto en caso de emergencia durante el viaje</p>
+				</div>
+			</div>
+			<button class="btn-agregar btn-agregar-contact" (click)="abrirNuevoContacto()">
+				<i class="fa-solid fa-plus"></i> Nuevo contacto
+			</button>
+		</div>
 
-    <div class="contactos-grid">
-      <div class="contacto-card" *ngFor="let c of contactos">
+		<div class="contactos-grid">
+			<div class="contacto-card" *ngFor="let c of contactos">
 
-        <!-- Cabecera: avatar + viajero + parentesco -->
-        <div class="cc-top">
-          <div class="cc-avatar"><i class="fa-solid fa-user"></i></div>
-          <div class="cc-viajero">
-            <span class="cc-viajero-nombre">{{ c.nombre }}</span>
-            <span class="cc-viajero-sub">{{ c.nombreViajero || getNombreViajero(c.idViajero) }} &mdash; {{ c.parentesco }}</span>
-          </div>
-        </div>
+				<!-- Cabecera: avatar + viajero + parentesco -->
+				<div class="cc-top">
+					<div class="cc-avatar"><i class="fa-solid fa-user"></i></div>
+					<div class="cc-viajero">
+						<span class="cc-viajero-nombre">{{ c.nombre }}</span>
+						<span class="cc-viajero-sub">{{ c.nombreViajero || getNombreViajero(c.idViajero) }} &mdash; {{
+							c.parentesco }}</span>
+					</div>
+				</div>
 
-        <div class="cc-divider"></div>
+				<div class="cc-divider"></div>
 
-        <!-- Filas de detalle -->
-        <div class="cc-body">
-          <div class="cc-row">
-            <div class="cc-row-left">
-              <i class="fa-solid fa-user"></i>
-              <span class="cc-row-label">Contacto</span>
-            </div>
-            <span class="cc-row-value">{{ c.nombre }}</span>
-          </div>
-          <div class="cc-row">
-            <div class="cc-row-left">
-              <i class="fa-solid fa-heart"></i>
-              <span class="cc-row-label">Relacion</span>
-            </div>
-            <span class="tag-relacion">{{ c.parentesco }}</span>
-          </div>
-          <div class="cc-row">
-            <div class="cc-row-left">
-              <i class="fa-solid fa-phone"></i>
-              <span class="cc-row-label">Telefono</span>
-            </div>
-            <span class="cc-row-value">{{ c.telefono }}</span>
-          </div>
-          <div class="cc-row" *ngIf="c.correo">
-            <div class="cc-row-left">
-              <i class="fa-solid fa-envelope"></i>
-              <span class="cc-row-label">Correo</span>
-            </div>
-            <span class="cc-row-value">{{ c.correo }}</span>
-          </div>
-        </div>
+				<!-- Filas de detalle -->
+				<div class="cc-body">
+					<div class="cc-row">
+						<div class="cc-row-left">
+							<i class="fa-solid fa-user"></i>
+							<span class="cc-row-label">Contacto</span>
+						</div>
+						<span class="cc-row-value">{{ c.nombre }}</span>
+					</div>
+					<div class="cc-row">
+						<div class="cc-row-left">
+							<i class="fa-solid fa-heart"></i>
+							<span class="cc-row-label">Relacion</span>
+						</div>
+						<span class="tag-relacion">{{ c.parentesco }}</span>
+					</div>
+					<div class="cc-row">
+						<div class="cc-row-left">
+							<i class="fa-solid fa-phone"></i>
+							<span class="cc-row-label">Telefono</span>
+						</div>
+						<span class="cc-row-value">{{ c.telefono }}</span>
+					</div>
+					<div class="cc-row" *ngIf="c.correo">
+						<div class="cc-row-left">
+							<i class="fa-solid fa-envelope"></i>
+							<span class="cc-row-label">Correo</span>
+						</div>
+						<span class="cc-row-value">{{ c.correo }}</span>
+					</div>
+				</div>
 
-        <!-- Acciones -->
-        <div class="cc-actions">
-          <button class="btn-edit-card" (click)="abrirContacto(c)">Editar</button>
-          <button class="btn-del-card" (click)="eliminarContacto(c)">Eliminar</button>
-        </div>
-      </div>
+				<!-- Acciones -->
+				<div class="cc-actions">
+					<button class="btn-edit-card" (click)="abrirContacto(c)">Editar</button>
+					<button class="btn-del-card" (click)="eliminarContacto(c)">Eliminar</button>
+				</div>
+			</div>
 
-      <div class="contactos-empty" *ngIf="contactos.length === 0">
-        <i class="fa-solid fa-phone-slash"></i>
-        <p>No hay contactos de emergencia para este viaje.</p>
-      </div>
-    </div>
-  </div>
+			<div class="contactos-empty" *ngIf="contactos.length === 0">
+				<i class="fa-solid fa-phone-slash"></i>
+				<p>No hay contactos de emergencia para este viaje.</p>
+			</div>
+		</div>
+	</div>
 
-  <!-- ═══════════════════════════════════════════════════════════════ -->
-  <!-- MODAL: INFO MÉDICA                                              -->
-  <!-- ═══════════════════════════════════════════════════════════════ -->
-  <div class="modal-backdrop" *ngIf="showFormMedico" (click)="cerrarMedico()"></div>
-  <div class="modal-panel" *ngIf="showFormMedico">
-    <div class="modal-header">
-      <div class="modal-title-wrap">
-        <div class="modal-icon-wrap med-icon-sm"><i class="fa-solid fa-heart-pulse"></i></div>
-        <h3>{{ editandoMedico ? 'Editar registro médico' : 'Nuevo registro médico' }}</h3>
-      </div>
-      <button class="btn-cerrar" (click)="cerrarMedico()">&#x2715;</button>
-    </div>
+	<!-- ═══════════════════════════════════════════════════════════════ -->
+	<!-- MODAL: INFO MÉDICA                                              -->
+	<!-- ═══════════════════════════════════════════════════════════════ -->
+	<div class="modal-backdrop" *ngIf="showFormMedico" (click)="cerrarMedico()"></div>
+	<div class="modal-panel" *ngIf="showFormMedico">
+		<div class="modal-header">
+			<div class="modal-title-wrap">
+				<div class="modal-icon-wrap med-icon-sm"><i class="fa-solid fa-heart-pulse"></i></div>
+				<h3>{{ editandoMedico ? 'Editar registro médico' : 'Nuevo registro médico' }}</h3>
+			</div>
+			<button class="btn-cerrar" (click)="cerrarMedico()">&#x2715;</button>
+		</div>
 
-    <form [formGroup]="medForm" (ngSubmit)="guardarMedico()">
-      <div class="form-grid">
-        <div class="form-group span-2">
-          <label>Nombre del viajero *</label>
-          <input type="text" formControlName="nombreViajero" placeholder="Ej: Juan Pérez" autocomplete="off">
-          <span class="error" *ngIf="medForm.get('nombreViajero')?.invalid && medForm.get('nombreViajero')?.touched">Campo requerido</span>
-        </div>
+		<form [formGroup]="medForm" (ngSubmit)="guardarMedico()">
+			<div class="form-grid">
+				<div class="form-group span-2">
+					<label>Nombre del viajero *</label>
+					<input type="text" formControlName="nombreViajero" placeholder="Ej: Juan Pérez" autocomplete="off">
+					<span class="error"
+						*ngIf="medForm.get('nombreViajero')?.invalid && medForm.get('nombreViajero')?.touched">Campo
+						requerido</span>
+				</div>
 
-        <div class="form-group">
-          <label>Tipo de sangre *</label>
-          <select formControlName="tipoSangre">
-            <option value="">Seleccionar...</option>
-            <option *ngFor="let g of gruposSanguineos" [value]="g">{{ g }}</option>
-          </select>
-          <span class="error" *ngIf="medForm.get('tipoSangre')?.invalid && medForm.get('tipoSangre')?.touched">Campo requerido</span>
-        </div>
+				<div class="form-group">
+					<label>Tipo de sangre *</label>
+					<select formControlName="tipoSangre">
+						<option value="">Seleccionar...</option>
+						<option *ngFor="let g of gruposSanguineos" [value]="g">{{ g }}</option>
+					</select>
+					<span class="error"
+						*ngIf="medForm.get('tipoSangre')?.invalid && medForm.get('tipoSangre')?.touched">Campo
+						requerido</span>
+				</div>
 
-        <div class="form-group">
-          <label>Teléfono médico</label>
-          <input type="text" formControlName="telefonoMedico" placeholder="+57 300 000 0000">
-          <span class="error" *ngIf="medForm.get('telefonoMedico')?.invalid && medForm.get('telefonoMedico')?.touched">Formato inválido</span>
-        </div>
+				<div class="form-group">
+					<label>Teléfono médico</label>
+					<input type="text" formControlName="telefonoMedico" placeholder="+57 300 000 0000">
+					<span class="error"
+						*ngIf="medForm.get('telefonoMedico')?.invalid && medForm.get('telefonoMedico')?.touched">Formato
+						inválido</span>
+				</div>
 
-        <div class="form-group span-2">
-          <label>Alergias</label>
-          <input type="text" formControlName="alergias" placeholder='Ej: Polen, mariscos o "Ninguna"'>
-        </div>
+				<div class="form-group span-2">
+					<label>Alergias</label>
+					<input type="text" formControlName="alergias" placeholder='Ej: Polen, mariscos o "Ninguna"'>
+				</div>
 
-        <div class="form-group span-2">
-          <label>Medicamentos</label>
-          <input type="text" formControlName="medicamentos" placeholder='Ej: Metformina o "Ninguno"'>
-        </div>
+				<div class="form-group span-2">
+					<label>Medicamentos</label>
+					<input type="text" formControlName="medicamentos" placeholder='Ej: Metformina o "Ninguno"'>
+				</div>
 
-        <div class="form-group span-2">
-          <label>Condiciones médicas</label>
-          <input type="text" formControlName="condiciones" placeholder='Ej: Diabetes tipo 2 o "Ninguna"'>
-        </div>
-      </div>
+				<div class="form-group span-2">
+					<label>Condiciones médicas</label>
+					<input type="text" formControlName="condiciones" placeholder='Ej: Diabetes tipo 2 o "Ninguna"'>
+				</div>
+			</div>
 
-      <div class="modal-actions">
-        <button type="button" class="btn-cancelar" (click)="cerrarMedico()">Cancelar</button>
-        <button type="submit" class="btn-guardar" [disabled]="enviandoMedico">
-          {{ enviandoMedico ? 'Guardando...' : 'Guardar registro' }}
-        </button>
-      </div>
-    </form>
-  </div>
+			<div class="modal-actions">
+				<button type="button" class="btn-cancelar" (click)="cerrarMedico()">Cancelar</button>
+				<button type="submit" class="btn-guardar" [disabled]="enviandoMedico">
+					{{ enviandoMedico ? 'Guardando...' : 'Guardar registro' }}
+				</button>
+			</div>
+		</form>
+	</div>
 
-  <!-- ═══════════════════════════════════════════════════════════════ -->
-  <!-- MODAL: CONTACTO DE EMERGENCIA                                   -->
-  <!-- ═══════════════════════════════════════════════════════════════ -->
-  <div class="modal-backdrop" *ngIf="showFormContacto" (click)="cerrarContacto()"></div>
-  <div class="modal-panel" *ngIf="showFormContacto">
-    <div class="modal-header">
-      <div class="modal-title-wrap">
-        <div class="modal-icon-wrap contact-icon-sm"><i class="fa-solid fa-phone-volume"></i></div>
-        <h3>{{ editandoContacto ? 'Editar contacto de emergencia' : 'Nuevo contacto de emergencia' }}</h3>
-      </div>
-      <button class="btn-cerrar" (click)="cerrarContacto()">&#x2715;</button>
-    </div>
+	<!-- ═══════════════════════════════════════════════════════════════ -->
+	<!-- MODAL: CONTACTO DE EMERGENCIA                                   -->
+	<!-- ═══════════════════════════════════════════════════════════════ -->
+	<div class="modal-backdrop" *ngIf="showFormContacto" (click)="cerrarContacto()"></div>
+	<div class="modal-panel" *ngIf="showFormContacto">
+		<div class="modal-header">
+			<div class="modal-title-wrap">
+				<div class="modal-icon-wrap contact-icon-sm"><i class="fa-solid fa-phone-volume"></i></div>
+				<h3>{{ editandoContacto ? 'Editar contacto de emergencia' : 'Nuevo contacto de emergencia' }}</h3>
+			</div>
+			<button class="btn-cerrar" (click)="cerrarContacto()">&#x2715;</button>
+		</div>
 
-    <form [formGroup]="contactoForm" (ngSubmit)="guardarContacto()">
-      <div class="form-grid">
-        <div class="form-group span-2">
-          <label>Nombre del viajero *</label>
-          <input type="text" formControlName="nombreViajero" placeholder="Ej: Juan Pérez" autocomplete="off">
-          <span class="error" *ngIf="contactoForm.get('nombreViajero')?.invalid && contactoForm.get('nombreViajero')?.touched">Campo requerido</span>
-        </div>
+		<form [formGroup]="contactoForm" (ngSubmit)="guardarContacto()">
+			<div class="form-grid">
+				<div class="form-group span-2">
+					<label>Nombre del viajero *</label>
+					<input type="text" formControlName="nombreViajero" placeholder="Ej: Juan Pérez" autocomplete="off">
+					<span class="error"
+						*ngIf="contactoForm.get('nombreViajero')?.invalid && contactoForm.get('nombreViajero')?.touched">Campo
+						requerido</span>
+				</div>
 
-        <div class="form-group span-2">
-          <label>Nombre del contacto *</label>
-          <input type="text" formControlName="nombreContacto" placeholder="Nombre completo del contacto">
-          <span class="error" *ngIf="contactoForm.get('nombreContacto')?.invalid && contactoForm.get('nombreContacto')?.touched">Campo requerido (mín. 3 caracteres)</span>
-        </div>
+				<div class="form-group span-2">
+					<label>Nombre del contacto *</label>
+					<input type="text" formControlName="nombreContacto" placeholder="Nombre completo del contacto">
+					<span class="error"
+						*ngIf="contactoForm.get('nombreContacto')?.invalid && contactoForm.get('nombreContacto')?.touched">Campo
+						requerido (mín. 3 caracteres)</span>
+				</div>
 
-        <div class="form-group">
-          <label>Relación *</label>
-          <input type="text" formControlName="relacion" placeholder="Ej: Madre, Esposo/a, Amigo/a">
-          <span class="error" *ngIf="contactoForm.get('relacion')?.invalid && contactoForm.get('relacion')?.touched">Campo requerido</span>
-        </div>
+				<div class="form-group">
+					<label>Relación *</label>
+					<input type="text" formControlName="relacion" placeholder="Ej: Madre, Esposo/a, Amigo/a">
+					<span class="error"
+						*ngIf="contactoForm.get('relacion')?.invalid && contactoForm.get('relacion')?.touched">Campo
+						requerido</span>
+				</div>
 
-        <div class="form-group">
-          <label>Teléfono principal *</label>
-          <input type="text" formControlName="telefono" placeholder="+57 300 000 0000">
-          <span class="error" *ngIf="contactoForm.get('telefono')?.invalid && contactoForm.get('telefono')?.touched">Teléfono inválido</span>
-        </div>
+				<div class="form-group">
+					<label>Teléfono principal *</label>
+					<input type="text" formControlName="telefono" placeholder="+57 300 000 0000">
+					<span class="error"
+						*ngIf="contactoForm.get('telefono')?.invalid && contactoForm.get('telefono')?.touched">Teléfono
+						inválido</span>
+				</div>
 
-        <div class="form-group span-2">
-          <label>Correo electrónico (opcional)</label>
-          <input type="email" formControlName="correo" placeholder="contacto@email.com">
-          <span class="error" *ngIf="contactoForm.get('correo')?.invalid && contactoForm.get('correo')?.touched">Correo inválido</span>
-        </div>
-      </div>
+				<div class="form-group span-2">
+					<label>Correo electrónico (opcional)</label>
+					<input type="email" formControlName="correo" placeholder="contacto@email.com">
+					<span class="error"
+						*ngIf="contactoForm.get('correo')?.invalid && contactoForm.get('correo')?.touched">Correo
+						inválido</span>
+				</div>
+			</div>
 
-      <div class="modal-actions">
-        <button type="button" class="btn-cancelar" (click)="cerrarContacto()">Cancelar</button>
-        <button type="submit" class="btn-guardar btn-guardar-contact" [disabled]="enviandoContacto">
-          {{ enviandoContacto ? 'Guardando...' : 'Guardar contacto' }}
-        </button>
-      </div>
-    </form>
-  </div>
+			<div class="modal-actions">
+				<button type="button" class="btn-cancelar" (click)="cerrarContacto()">Cancelar</button>
+				<button type="submit" class="btn-guardar btn-guardar-contact" [disabled]="enviandoContacto">
+					{{ enviandoContacto ? 'Guardando...' : 'Guardar contacto' }}
+				</button>
+			</div>
+		</form>
+	</div>
 
-  <!-- TOAST -->
-  <div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
-    <i class="toast-icon" [class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
-    <span class="toast-msg">{{ toastMsg }}</span>
-  </div>
+	<!-- TOAST -->
+	<div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
+		<i class="toast-icon"
+			[class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
+		<span class="toast-msg">{{ toastMsg }}</span>
+	</div>
 
 </div>
