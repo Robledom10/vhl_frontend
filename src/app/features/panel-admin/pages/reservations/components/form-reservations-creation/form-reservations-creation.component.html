@@ -3,15 +3,16 @@
 
 		<!-- STEPPER -->
 		<div class="stepper">
-			<div class="step" *ngFor="let s of steps; let i = index" [class.active]="currentStep === i + 1"
-				[class.done]="currentStep > i + 1">
-				<div class="step-circle">
-					<i class="fa-solid fa-check" *ngIf="currentStep > i + 1"></i>
-					<span *ngIf="currentStep <= i + 1">{{ i + 1 }}</span>
+			<ng-container *ngFor="let s of steps; let i = index">
+				<div class="st" [class.active]="currentStep === i + 1" [class.done]="currentStep > i + 1">
+					<div class="sc">
+						<ng-container *ngIf="currentStep > i + 1">✓</ng-container>
+						<ng-container *ngIf="currentStep <= i + 1">{{ i + 1 }}</ng-container>
+					</div>
+					<span class="step-label">{{ s }}</span>
 				</div>
-				<span class="step-label">{{ s }}</span>
-				<div class="step-line" *ngIf="i < steps.length - 1" [class.filled]="currentStep > i + 1"></div>
-			</div>
+				<div class="sl" *ngIf="i < steps.length - 1" [class.filled]="currentStep > i + 1"></div>
+			</ng-container>
 		</div>
 
 		<!-- CONTENIDO -->
@@ -21,102 +22,84 @@
 			</div>
 			<div class="divider"></div>
 
-			<!-- ══════════════════════════════════════
-				PASO 1 — Datos del cliente
-			══════════════════════════════════════ -->
+			<!-- PASO 1 — Datos del cliente -->
 			<div class="step-content" *ngIf="currentStep === 1" @fadeStep>
-
 				<div class="fields-grid">
 
 					<div class="field-group full">
-						<label>Nombre completo <span class="req">*</span></label>
-						<div class="input-wrap">
-							<i class="fa-regular fa-user"></i>
-							<input type="text" placeholder="Ej: Juan Pérez García"
-								[(ngModel)]="form.clienteNombre"
-								[class.error]="submitted && !form.clienteNombre" />
-						</div>
+						<input type="text" id="clienteNombre" placeholder=" "
+							[(ngModel)]="form.clienteNombre"
+							[class.ng-invalid]="submitted && !form.clienteNombre"
+							[class.ng-touched]="submitted && !form.clienteNombre">
+						<label for="clienteNombre">Nombre completo <span class="req">*</span></label>
 					</div>
 
 					<div class="field-group half">
-						<label>Tipo de documento <span class="req">*</span></label>
-						<div class="input-wrap select">
-							<i class="fa-regular fa-id-card"></i>
-							<select [(ngModel)]="form.tipoDocumento"
-								[class.error]="submitted && !form.tipoDocumento">
-								<option value="">Seleccionar</option>
-								<option value="CC">Cédula de ciudadanía</option>
-								<option value="CE">Cédula extranjería</option>
-								<option value="PA">Pasaporte</option>
-								<option value="TI">Tarjeta de identidad</option>
-							</select>
-							<i class="fa-solid fa-chevron-down arr"></i>
-						</div>
+						<select id="tipoDocumento"
+							[(ngModel)]="form.tipoDocumento"
+							[class.ng-invalid]="submitted && !form.tipoDocumento"
+							[class.ng-touched]="submitted && !form.tipoDocumento">
+							<option value="" disabled selected></option>
+							<option value="CC">Cédula de ciudadanía</option>
+							<option value="CE">Cédula extranjería</option>
+							<option value="PA">Pasaporte</option>
+							<option value="TI">Tarjeta de identidad</option>
+						</select>
+						<label for="tipoDocumento">Tipo de documento <span class="req">*</span></label>
 					</div>
 
 					<div class="field-group half">
-						<label>Número de documento <span class="req">*</span></label>
-						<div class="input-wrap">
-							<i class="fa-solid fa-hashtag"></i>
-							<input type="text" placeholder="Ej: 1234567890"
-								[(ngModel)]="form.documento"
-								[class.error]="submitted && !form.documento" />
-						</div>
+						<input type="text" id="documento" placeholder=" "
+							[(ngModel)]="form.documento"
+							[class.ng-invalid]="submitted && !form.documento"
+							[class.ng-touched]="submitted && !form.documento">
+						<label for="documento">Número de documento <span class="req">*</span></label>
 					</div>
 
 					<div class="field-group half">
-						<label>Correo electrónico <span class="req">*</span></label>
-						<div class="input-wrap">
-							<i class="fa-regular fa-envelope"></i>
-							<input type="email" placeholder="correo@ejemplo.com"
-								[(ngModel)]="form.clienteEmail"
-								[class.error]="submitted && !form.clienteEmail" />
-						</div>
+						<input type="email" id="clienteEmail" placeholder=" "
+							[(ngModel)]="form.clienteEmail"
+							[class.ng-invalid]="submitted && !form.clienteEmail"
+							[class.ng-touched]="submitted && !form.clienteEmail">
+						<label for="clienteEmail">Correo electrónico <span class="req">*</span></label>
 					</div>
 
 					<div class="field-group half">
-						<label>Número de teléfono <span class="req">*</span></label>
-						<div class="input-wrap">
-							<i class="fa-solid fa-phone"></i>
-							<input type="tel" placeholder="300 000 0000"
-								[(ngModel)]="form.clienteTelefono"
-								[class.error]="submitted && !form.clienteTelefono" />
-						</div>
+						<input type="tel" id="clienteTelefono" placeholder=" "
+							[(ngModel)]="form.clienteTelefono"
+							[class.ng-invalid]="submitted && !form.clienteTelefono"
+							[class.ng-touched]="submitted && !form.clienteTelefono">
+						<label for="clienteTelefono">Número de teléfono <span class="req">*</span></label>
 					</div>
 
 					<div class="field-group half">
-						<label>Ciudad de residencia <span class="req">*</span></label>
-						<div class="input-wrap">
-							<i class="fa-solid fa-location-dot"></i>
-							<input type="text" placeholder="Ej: Bogotá"
-								[(ngModel)]="form.ciudadResidencia"
-								[class.error]="submitted && !form.ciudadResidencia" />
-						</div>
+						<input type="text" id="ciudadResidencia" placeholder=" "
+							[(ngModel)]="form.ciudadResidencia"
+							[class.ng-invalid]="submitted && !form.ciudadResidencia"
+							[class.ng-touched]="submitted && !form.ciudadResidencia">
+						<label for="ciudadResidencia">Ciudad de residencia <span class="req">*</span></label>
 					</div>
 
 					<div class="field-group half">
-						<label>Número de personas <span class="req">*</span></label>
-						<div class="input-wrap select">
-							<i class="fa-solid fa-people-group"></i>
-							<select [(ngModel)]="form.personas" (ngModelChange)="onPersonasChange($event)"
-								[class.error]="submitted && !form.personas">
-								<option value="">Seleccionar</option>
-								<option *ngFor="let n of [1,2,3,4,5,6,7,8,9,10]" [value]="n">{{ n }}
-									{{ n === 1 ? 'persona' : 'personas' }}</option>
-							</select>
-							<i class="fa-solid fa-chevron-down arr"></i>
-						</div>
+						<select id="personas"
+							[(ngModel)]="form.personas"
+							(ngModelChange)="onPersonasChange($event)"
+							[class.ng-invalid]="submitted && !form.personas"
+							[class.ng-touched]="submitted && !form.personas">
+							<option value="" disabled selected></option>
+							<option *ngFor="let n of [1,2,3,4,5,6,7,8,9,10]" [value]="n">
+								{{ n }} {{ n === 1 ? 'persona' : 'personas' }}
+							</option>
+						</select>
+						<label for="personas">Número de personas <span class="req">*</span></label>
 					</div>
 
 				</div>
 
 				<!-- ACOMPAÑANTES -->
-				<!-- ✅ FIX 1: +form.personas convierte number|'' a number antes de comparar -->
 				<div class="companions-section" *ngIf="+form.personas > 1" @expandDown>
 					<div class="companions-header">
-						<i class="fa-solid fa-users"></i>
 						<span>Datos de los acompañantes</span>
-						<!-- ✅ FIX 2: +form.personas evita la resta con tipo '' -->
 						<div class="companions-badge">{{ +form.personas - 1 }}</div>
 					</div>
 
@@ -125,231 +108,190 @@
 							<div class="companion-num">{{ i + 1 }}</div>
 							<span>Acompañante {{ i + 1 }}</span>
 						</div>
-
 						<div class="fields-grid">
+
 							<div class="field-group full">
-								<label>Nombre completo <span class="req">*</span></label>
-								<div class="input-wrap">
-									<i class="fa-regular fa-user"></i>
-									<input type="text" placeholder="Ej: María López"
-										[(ngModel)]="c.nombre"
-										[class.error]="submitted && !c.nombre" />
-								</div>
+								<input type="text" [id]="'ac-nombre-' + i" placeholder=" "
+									[(ngModel)]="c.nombre"
+									[class.ng-invalid]="submitted && !c.nombre"
+									[class.ng-touched]="submitted && !c.nombre">
+								<label [for]="'ac-nombre-' + i">Nombre completo <span class="req">*</span></label>
 							</div>
 
 							<div class="field-group half">
-								<label>Fecha de nacimiento <span class="req">*</span></label>
-								<div class="input-wrap">
-									<i class="fa-regular fa-calendar"></i>
-									<input type="date" [(ngModel)]="c.fechaNacimiento"
-										[class.error]="submitted && !c.fechaNacimiento" />
-								</div>
+								<input type="date" [id]="'ac-fecha-' + i"
+									[(ngModel)]="c.fechaNacimiento"
+									[class.ng-invalid]="submitted && !c.fechaNacimiento"
+									[class.ng-touched]="submitted && !c.fechaNacimiento">
+								<label [for]="'ac-fecha-' + i">Fecha de nacimiento <span class="req">*</span></label>
 							</div>
 
 							<div class="field-group half">
-								<label>Tipo de documento <span class="req">*</span></label>
-								<div class="input-wrap select">
-									<i class="fa-regular fa-id-card"></i>
-									<select [(ngModel)]="c.tipoDocumento"
-										[class.error]="submitted && !c.tipoDocumento">
-										<option value="">Seleccionar</option>
-										<option value="CC">Cédula de ciudadanía</option>
-										<option value="CE">Cédula extranjería</option>
-										<option value="PA">Pasaporte</option>
-										<option value="TI">Tarjeta de identidad</option>
-										<option value="RC">Registro civil</option>
-									</select>
-									<i class="fa-solid fa-chevron-down arr"></i>
-								</div>
+								<select [id]="'ac-tipo-' + i"
+									[(ngModel)]="c.tipoDocumento"
+									[class.ng-invalid]="submitted && !c.tipoDocumento"
+									[class.ng-touched]="submitted && !c.tipoDocumento">
+									<option value="" disabled selected></option>
+									<option value="CC">Cédula de ciudadanía</option>
+									<option value="CE">Cédula extranjería</option>
+									<option value="PA">Pasaporte</option>
+									<option value="TI">Tarjeta de identidad</option>
+									<option value="RC">Registro civil</option>
+								</select>
+								<label [for]="'ac-tipo-' + i">Tipo de documento <span class="req">*</span></label>
 							</div>
 
 							<div class="field-group full">
-								<label>Número de documento <span class="req">*</span></label>
-								<div class="input-wrap">
-									<i class="fa-solid fa-hashtag"></i>
-									<input type="text" placeholder="Número de documento"
-										[(ngModel)]="c.documento"
-										[class.error]="submitted && !c.documento" />
-								</div>
+								<input type="text" [id]="'ac-doc-' + i" placeholder=" "
+									[(ngModel)]="c.documento"
+									[class.ng-invalid]="submitted && !c.documento"
+									[class.ng-touched]="submitted && !c.documento">
+								<label [for]="'ac-doc-' + i">Número de documento <span class="req">*</span></label>
 							</div>
+
 						</div>
 					</div>
 				</div>
-
 			</div>
 
-			<!-- ══════════════════════════════════════
-				PASO 2 — Datos del viaje
-			══════════════════════════════════════ -->
+			<!-- PASO 2 — Datos del viaje -->
 			<div class="step-content" *ngIf="currentStep === 2" @fadeStep>
 				<div class="fields-grid">
 
 					<div class="field-group full">
-						<label>Paquete seleccionado <span class="req">*</span></label>
-						<div class="input-wrap select">
-							<i class="fa-solid fa-suitcase-rolling"></i>
-							<select [(ngModel)]="form.paqueteNombre"
-								(ngModelChange)="onPaqueteChange($event)"
-								[class.error]="submitted && !form.paqueteNombre">
-								<option value="">Seleccionar paquete</option>
-								<option *ngFor="let p of paquetesDisponibles" [value]="p.nombre">{{ p.nombre }}</option>
-							</select>
-							<i class="fa-solid fa-chevron-down arr"></i>
-						</div>
+						<select id="paqueteNombre"
+							[(ngModel)]="form.paqueteNombre"
+							(ngModelChange)="onPaqueteChange($event)"
+							[class.ng-invalid]="submitted && !form.paqueteNombre"
+							[class.ng-touched]="submitted && !form.paqueteNombre">
+							<option value="" disabled selected></option>
+							<option *ngFor="let p of paquetesDisponibles" [value]="p.nombre">{{ p.nombre }}</option>
+						</select>
+						<label for="paqueteNombre">Paquete seleccionado <span class="req">*</span></label>
 					</div>
 
 					<div class="field-group full">
-						<label>Destino</label>
-						<div class="input-wrap readonly">
-							<i class="fa-solid fa-map-location-dot"></i>
-							<input type="text" [value]="form.destino || ''" placeholder="Se completa con el paquete" readonly />
-						</div>
+						<input type="text" id="destino" placeholder=" " class="readonly-field"
+							[value]="form.destino || ''" readonly>
+						<label for="destino">Destino</label>
 					</div>
 
 					<div class="field-group half">
-						<label>Fecha de salida <span class="req">*</span></label>
-						<div class="input-wrap">
-							<i class="fa-regular fa-calendar-days"></i>
-							<input type="date" [(ngModel)]="form.fechaSalida"
-								(ngModelChange)="calcDuracion()"
-								[class.error]="submitted && !form.fechaSalida" />
-						</div>
+						<input type="date" id="fechaSalida"
+							[(ngModel)]="form.fechaSalida"
+							(ngModelChange)="calcDuracion()"
+							[class.ng-invalid]="submitted && !form.fechaSalida"
+							[class.ng-touched]="submitted && !form.fechaSalida">
+						<label for="fechaSalida">Fecha de salida <span class="req">*</span></label>
 					</div>
 
 					<div class="field-group half">
-						<label>Fecha de regreso <span class="req">*</span></label>
-						<div class="input-wrap">
-							<i class="fa-regular fa-calendar-check"></i>
-							<input type="date" [(ngModel)]="form.fechaRegreso"
-								(ngModelChange)="calcDuracion()"
-								[class.error]="submitted && !form.fechaRegreso" />
-						</div>
+						<input type="date" id="fechaRegreso"
+							[(ngModel)]="form.fechaRegreso"
+							(ngModelChange)="calcDuracion()"
+							[class.ng-invalid]="submitted && !form.fechaRegreso"
+							[class.ng-touched]="submitted && !form.fechaRegreso">
+						<label for="fechaRegreso">Fecha de regreso <span class="req">*</span></label>
 					</div>
 
 					<div class="field-group half">
-						<label>Duración del viaje</label>
-						<div class="input-wrap readonly">
-							<i class="fa-regular fa-clock"></i>
-							<input type="text" [value]="form.duracion || ''" placeholder="Calculado automáticamente" readonly />
-						</div>
+						<input type="text" id="duracion" placeholder=" " class="readonly-field"
+							[value]="form.duracion || ''" readonly>
+						<label for="duracion">Duración del viaje</label>
 					</div>
 
 					<div class="field-group half">
-						<label>Tipo de habitación <span class="req">*</span></label>
-						<div class="input-wrap select">
-							<i class="fa-solid fa-bed"></i>
-							<select [(ngModel)]="form.tipoHabitacion"
-								[class.error]="submitted && !form.tipoHabitacion">
-								<option value="">Seleccionar</option>
-								<option value="Individual">Individual</option>
-								<option value="Doble">Doble</option>
-								<option value="Triple">Triple</option>
-								<option value="Familiar">Familiar</option>
-								<option value="Suite">Suite</option>
-							</select>
-							<i class="fa-solid fa-chevron-down arr"></i>
-						</div>
+						<select id="tipoHabitacion"
+							[(ngModel)]="form.tipoHabitacion"
+							[class.ng-invalid]="submitted && !form.tipoHabitacion"
+							[class.ng-touched]="submitted && !form.tipoHabitacion">
+							<option value="" disabled selected></option>
+							<option value="Individual">Individual</option>
+							<option value="Doble">Doble</option>
+							<option value="Triple">Triple</option>
+							<option value="Familiar">Familiar</option>
+							<option value="Suite">Suite</option>
+						</select>
+						<label for="tipoHabitacion">Tipo de habitación <span class="req">*</span></label>
 					</div>
 
 					<div class="field-group half">
-						<label>Solicitudes especiales</label>
-						<div class="input-wrap select">
-							<i class="fa-solid fa-star"></i>
-							<select [(ngModel)]="form.solicitudEspecial">
-								<option value="">Ninguna</option>
-								<option value="Alimentación vegana">Alimentación vegana</option>
-								<option value="Alimentación vegetariana">Alimentación vegetariana</option>
-								<option value="Sin gluten">Sin gluten</option>
-								<option value="Silla de ruedas">Silla de ruedas</option>
-								<option value="Cama extra">Cama extra</option>
-								<option value="Cuna para bebé">Cuna para bebé</option>
-							</select>
-							<i class="fa-solid fa-chevron-down arr"></i>
-						</div>
+						<select id="solicitudEspecial" [(ngModel)]="form.solicitudEspecial">
+							<option value="">Ninguna</option>
+							<option value="Alimentación vegana">Alimentación vegana</option>
+							<option value="Alimentación vegetariana">Alimentación vegetariana</option>
+							<option value="Sin gluten">Sin gluten</option>
+							<option value="Silla de ruedas">Silla de ruedas</option>
+							<option value="Cama extra">Cama extra</option>
+							<option value="Cuna para bebé">Cuna para bebé</option>
+						</select>
+						<label for="solicitudEspecial">Solicitudes especiales</label>
 					</div>
 
 					<div class="field-group full">
-						<label>Notas adicionales</label>
-						<div class="input-wrap textarea">
-							<i class="fa-regular fa-note-sticky"></i>
-							<textarea rows="3" placeholder="Alguna información adicional relevante..."
-								[(ngModel)]="form.notas"></textarea>
-						</div>
+						<textarea id="notas" placeholder=" " rows="3" [(ngModel)]="form.notas"></textarea>
+						<label for="notas">Notas adicionales</label>
 					</div>
 
 				</div>
 			</div>
 
-			<!-- ══════════════════════════════════════
-				PASO 3 — Pago y confirmación
-			══════════════════════════════════════ -->
+			<!-- PASO 3 — Pago y confirmación -->
 			<div class="step-content" *ngIf="currentStep === 3" @fadeStep>
 				<div class="fields-grid">
 
 					<div class="field-group half">
-						<label>Método de pago <span class="req">*</span></label>
-						<div class="input-wrap select">
-							<i class="fa-solid fa-credit-card"></i>
-							<select [(ngModel)]="form.metodoPago"
-								[class.error]="submitted && !form.metodoPago">
-								<option value="">Seleccionar</option>
-								<option value="Efectivo">Efectivo</option>
-								<option value="Transferencia">Transferencia bancaria</option>
-								<option value="Tarjeta crédito">Tarjeta de crédito</option>
-								<option value="Tarjeta débito">Tarjeta de débito</option>
-								<option value="PSE">PSE</option>
-								<option value="Nequi">Nequi</option>
-								<option value="Daviplata">Daviplata</option>
-							</select>
-							<i class="fa-solid fa-chevron-down arr"></i>
-						</div>
+						<select id="metodoPago"
+							[(ngModel)]="form.metodoPago"
+							[class.ng-invalid]="submitted && !form.metodoPago"
+							[class.ng-touched]="submitted && !form.metodoPago">
+							<option value="" disabled selected></option>
+							<option value="Efectivo">Efectivo</option>
+							<option value="Transferencia">Transferencia bancaria</option>
+							<option value="Tarjeta crédito">Tarjeta de crédito</option>
+							<option value="Tarjeta débito">Tarjeta de débito</option>
+							<option value="PSE">PSE</option>
+							<option value="Nequi">Nequi</option>
+							<option value="Daviplata">Daviplata</option>
+						</select>
+						<label for="metodoPago">Método de pago <span class="req">*</span></label>
 					</div>
 
 					<div class="field-group half">
-						<label>Estado de pago <span class="req">*</span></label>
-						<div class="input-wrap select">
-							<i class="fa-solid fa-receipt"></i>
-							<select [(ngModel)]="form.estadoPago"
-								[class.error]="submitted && !form.estadoPago">
-								<option value="">Seleccionar</option>
-								<option value="Pendiente">Pendiente</option>
-								<option value="Anticipo">Anticipo pagado</option>
-								<option value="Completo">Pago completo</option>
-							</select>
-							<i class="fa-solid fa-chevron-down arr"></i>
-						</div>
+						<select id="estadoPago"
+							[(ngModel)]="form.estadoPago"
+							[class.ng-invalid]="submitted && !form.estadoPago"
+							[class.ng-touched]="submitted && !form.estadoPago">
+							<option value="" disabled selected></option>
+							<option value="Pendiente">Pendiente</option>
+							<option value="Anticipo">Anticipo pagado</option>
+							<option value="Completo">Pago completo</option>
+						</select>
+						<label for="estadoPago">Estado de pago <span class="req">*</span></label>
 					</div>
 
 					<div class="field-group half">
-						<label>Monto a pagar <span class="req">*</span></label>
-						<div class="input-wrap">
-							<i class="fa-solid fa-dollar-sign"></i>
-							<input type="number" placeholder="0" [(ngModel)]="form.total"
-								[class.error]="submitted && !form.total" />
-						</div>
+						<input type="number" id="total" placeholder=" "
+							[(ngModel)]="form.total"
+							[class.ng-invalid]="submitted && !form.total"
+							[class.ng-touched]="submitted && !form.total">
+						<label for="total">Monto a pagar <span class="req">*</span></label>
 					</div>
 
 					<div class="field-group half">
-						<label>Comprobante de pago</label>
-						<div class="input-wrap file-wrap">
-							<i class="fa-solid fa-paperclip"></i>
-							<input type="text" [value]="form.comprobante ? form.comprobante : ''"
-								placeholder="Adjuntar comprobante (opcional)" readonly
-								(click)="fileInput.click()" />
-							<input #fileInput type="file" accept="image/*,.pdf" style="display:none"
-								(change)="onFileChange($event)" />
-							<button class="file-btn" (click)="fileInput.click(); $event.stopPropagation()">
-								<i class="fa-solid fa-upload"></i>
-							</button>
-						</div>
+						<input type="text" id="comprobante" placeholder=" " class="readonly-field"
+							[value]="form.comprobante || ''"
+							(click)="fileInput.click()" readonly>
+						<label for="comprobante">Comprobante de pago</label>
+						<input #fileInput type="file" accept="image/*,.pdf" style="display:none"
+							(change)="onFileChange($event)">
 					</div>
 
 				</div>
 
-				<!-- RESUMEN DE RESERVA -->
+				<!-- RESUMEN -->
 				<div class="summary-card">
 					<div class="summary-title">
-						<i class="fa-solid fa-clipboard-list"></i>
 						<span>Resumen de la reserva</span>
 					</div>
 					<div class="summary-grid">
@@ -370,7 +312,7 @@
 							<span class="s-value">{{ form.personas || '—' }}</span>
 						</div>
 						<div class="summary-item">
-							<span class="s-label">Fecha salida</span>
+							<span class="s-label">Fecha de salida</span>
 							<span class="s-value">{{ form.fechaSalida || '—' }}</span>
 						</div>
 						<div class="summary-item">
@@ -389,25 +331,23 @@
 				<!-- CONFIRMACIONES -->
 				<div class="confirmations">
 					<div class="confirm-title">
-						<i class="fa-solid fa-shield-check"></i>
 						<span>Confirmación</span>
 					</div>
-					<label class="check-item" [class.checked]="form.aceptaTerminos">
+					<label class="check-item">
 						<div class="custom-check" [class.active]="form.aceptaTerminos"
 							(click)="form.aceptaTerminos = !form.aceptaTerminos">
-							<i class="fa-solid fa-check" *ngIf="form.aceptaTerminos"></i>
+							<ng-container *ngIf="form.aceptaTerminos">✓</ng-container>
 						</div>
 						<span>Acepto los <a href="#" (click)="$event.preventDefault()">términos y condiciones</a> del servicio</span>
 					</label>
-					<label class="check-item" [class.checked]="form.aceptaPolitica">
+					<label class="check-item">
 						<div class="custom-check" [class.active]="form.aceptaPolitica"
 							(click)="form.aceptaPolitica = !form.aceptaPolitica">
-							<i class="fa-solid fa-check" *ngIf="form.aceptaPolitica"></i>
+							<ng-container *ngIf="form.aceptaPolitica">✓</ng-container>
 						</div>
 						<span>Acepto la <a href="#" (click)="$event.preventDefault()">política de cancelación</a></span>
 					</label>
 					<p class="check-error" *ngIf="submitted && (!form.aceptaTerminos || !form.aceptaPolitica)">
-						<i class="fa-solid fa-circle-exclamation"></i>
 						Debes aceptar ambas condiciones para continuar.
 					</p>
 				</div>
@@ -415,21 +355,18 @@
 
 		</div>
 
-		<!-- FOOTER BOTONES -->
+		<!-- FOOTER -->
 		<div class="modal-footer">
 			<button class="btn-cancel" (click)="cancel()">Cancelar</button>
-
 			<div class="footer-right">
 				<button class="btn-prev" *ngIf="currentStep > 1" (click)="prevStep()">
-					<i class="fa-solid fa-arrow-left"></i> Anterior
+					← Anterior
 				</button>
-
 				<button class="btn-next" *ngIf="currentStep < 3" (click)="nextStep()">
-					Siguiente <i class="fa-solid fa-arrow-right"></i>
+					Siguiente →
 				</button>
-
 				<button class="btn-confirm" *ngIf="currentStep === 3" (click)="confirm()">
-					<i class="fa-solid fa-check"></i> Confirmar
+					✓ Confirmar
 				</button>
 			</div>
 		</div>
