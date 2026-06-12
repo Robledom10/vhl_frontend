@@ -422,6 +422,92 @@
 	}
 }
 
+.edit-review-btn {
+	margin-left: auto;
+	width: 36px;
+	height: 36px;
+	border: none;
+	border-radius: 50%;
+	background: rgba(63, 162, 219, 0.12);
+	color: var(--color-primario);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: .2s;
+}
+
+.edit-review-btn:hover {
+	transform: translateY(-1px);
+	background: rgba(63, 162, 219, 0.2);
+}
+
+.edit-comment-form {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.edit-stars {
+	justify-content: flex-start;
+}
+
+.edit-comment-form textarea {
+	width: 100%;
+	border: 1px solid #dce7f2;
+	border-radius: 18px;
+	padding: 12px;
+	resize: vertical;
+	min-height: 90px;
+	font-family: inherit;
+	font-size: .95rem;
+	color: #4b5563;
+	outline: none;
+}
+
+.edit-comment-form textarea:focus {
+	border-color: #3fa2db;
+	box-shadow: 0 0 0 4px rgba(63, 162, 219, 0.15);
+}
+
+.edit-comment-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+}
+
+.cancel-edit-btn,
+.save-edit-btn {
+	height: 38px;
+	border: none;
+	border-radius: 18px;
+	padding: 0 18px;
+	font-family: "Outfit", sans-serif;
+	font-weight: 500;
+	cursor: pointer;
+	transition: .2s;
+}
+
+.cancel-edit-btn {
+	background: #eef2f7;
+	color: #4b5563;
+}
+
+.save-edit-btn {
+	background: var(--color-primario);
+	color: white;
+}
+
+.save-edit-btn:disabled {
+	opacity: .55;
+	cursor: not-allowed;
+}
+
+.cancel-edit-btn:hover,
+.save-edit-btn:not(:disabled):hover {
+	transform: translateY(-1px);
+}
+
 /* ===========================
    FORMULARIO COMENTARIO
 =========================== */

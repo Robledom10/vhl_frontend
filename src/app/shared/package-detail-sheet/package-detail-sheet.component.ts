@@ -45,6 +45,10 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 
 	selectedRating = 5;
 	newComment = '';
+	editingCommentId: number | null = null;
+	editCommentText = '';
+	editRating = 5;
+	savingEdit = false;
 
 	// Modal de reserva
 	wizardOpen = false;
@@ -241,7 +245,100 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 			});
 	}
 
+	startEditComment(comment: RespuestaComentarioPaquete): void {
+		this.editingCommentId = comment.id;
+		this.editCommentText = comment.comentario;
+		this.editRating = comment.puntaje;
+	}
+
+	cancelEditComment(): void {
+		this.editingCommentId = null;
+		this.editCommentText = '';
+		this.editRating = 5;
+	}
+
+	saveEditComment(comment: RespuestaComentarioPaquete): void {
+		if (!this.package?.id || !this.editCommentText.trim()) {
+			return;
+		}
+
+		this.savingEdit = true;
+
+		this.packageService
+			.updateComment(
+				this.package.id,
+				comment.id,
+				{
+					comentario: this.editCommentText,
+					puntaje: this.editRating
+				}
+			)
+			.subscribe({
+				next: updatedComment => {
+					this.comments = this.comments.map(item =>
+						item.id === updatedComment.id ? updatedComment : item
+					);
+					this.savingEdit = false;
+					this.cancelEditComment();
+				},
+				error: error => {
+					this.savingEdit = false;
+					console.error(error);
+				}
+			});
+	}
+
+	canEditComment(comment: RespuestaComentarioPaquete): boolean {
+		const userName = this.currentUserName;
+
+		return !!userName && this.normalizeUserName(comment.autor) === this.normalizeUserName(userName);
+	}
+
 	get isLogged(): boolean {
 		return this.authService.isAuthenticated();
+	}
+
+	private get currentUserName(): string {
+		const user = this.authService.getUser();
+		const tokenUser = this.getTokenUser();
+		const fullName = [user?.firstName, user?.lastName]
+			.filter(Boolean)
+			.join(' ')
+			.trim();
+		const tokenFullName = [tokenUser?.firstName, tokenUser?.lastName]
+			.filter(Boolean)
+			.join(' ')
+			.trim();
+
+		return fullName || user?.name || tokenFullName || tokenUser?.name || user?.email || tokenUser?.email || '';
+	}
+
+	private normalizeUserName(value: string): string {
+		return value.trim().replace(/\s+/g, ' ').toLowerCase();
+	}
+
+	private getTokenUser(): { firstName?: string; lastName?: string; name?: string; email?: string } | null {
+		const token = this.authService.getToken();
+
+		if (!token) {
+			return null;
+		}
+
+		try {
+			const payload = token.split('.')[1];
+			const normalizedPayload = payload.replace(/-/g, '+').replace(/_/g, '/');
+			const decodedPayload = decodeURIComponent(
+				atob(normalizedPayload)
+					.split('')
+					.map(char => `%${('00' + char.charCodeAt(0).toString(16)).slice(-2)}`)
+					.join('')
+			);
+
+			return JSON.parse(decodedPayload);
+		} catch (error) {
+			console.error('Error leyendo datos del token:', error);
+
+			return null;
+		}
 	}
 }

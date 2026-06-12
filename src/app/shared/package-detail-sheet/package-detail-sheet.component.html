@@ -114,19 +114,44 @@
 									</span>
 								</div>
 
-							</div>
-
-							<div class="review-stars">
-
-								<i *ngFor="let star of [1,2,3,4,5]" [class.fa-solid]="star <= comment.puntaje"
-									[class.fa-regular]="star > comment.puntaje" class="fa-star">
-								</i>
+								<button class="edit-review-btn" *ngIf="canEditComment(comment) && editingCommentId !== comment.id"
+									(click)="startEditComment(comment)" title="Editar comentario">
+									<i class="fa-regular fa-pen-to-square"></i>
+								</button>
 
 							</div>
 
-							<p>
-								{{ comment.comentario }}
-							</p>
+							<div class="edit-comment-form" *ngIf="editingCommentId === comment.id; else commentView">
+								<div class="stars-input edit-stars">
+									<i class="fa-solid fa-star" *ngFor="let star of [1,2,3,4,5]"
+										[class.active]="star <= editRating" (click)="editRating = star">
+									</i>
+								</div>
+
+								<textarea rows="3" [(ngModel)]="editCommentText"></textarea>
+
+								<div class="edit-comment-actions">
+									<button class="cancel-edit-btn" type="button" (click)="cancelEditComment()">Cancelar</button>
+									<button class="save-edit-btn" type="button" (click)="saveEditComment(comment)"
+										[disabled]="savingEdit || !editCommentText.trim()">
+										{{ savingEdit ? 'Guardando...' : 'Guardar' }}
+									</button>
+								</div>
+							</div>
+
+							<ng-template #commentView>
+								<div class="review-stars">
+
+									<i *ngFor="let star of [1,2,3,4,5]" [class.fa-solid]="star <= comment.puntaje"
+										[class.fa-regular]="star > comment.puntaje" class="fa-star">
+									</i>
+
+								</div>
+
+								<p>
+									{{ comment.comentario }}
+								</p>
+							</ng-template>
 
 						</div>
 					</div>

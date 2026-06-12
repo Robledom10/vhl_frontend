@@ -98,4 +98,11 @@ export class PackageService {
 			request
 		);
 	}
+
+	updateComment(packageId: number, commentId: number, request: SolicitudComentarioPaquete) {
+		return this.http.put<RespuestaComentarioPaquete>(
+			`${this.apiUrl}/${packageId}/comentarios/${commentId}`,
+			request
+		);
+	}
 }
