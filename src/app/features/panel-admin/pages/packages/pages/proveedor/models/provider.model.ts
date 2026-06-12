@@ -3,6 +3,13 @@ export interface SolicitudProveedor {
 	tipoProveedor: string;
 	correo?: string;
 	telefono?: string;
+	tipoVehiculo?: string;
+	placa?: string;
+	conductor?: string;
+	telefonoConductor?: string;
+	capacidad?: number;
+	direccion?: string;
+	notas?: string;
 }
 
 export interface RespuestaProveedor {
@@ -12,4 +19,11 @@ export interface RespuestaProveedor {
 	correo?: string;
 	telefono?: string;
 	activo: boolean;
+	tipoVehiculo?: string;
+	placa?: string;
+	conductor?: string;
+	telefonoConductor?: string;
+	capacidad?: number;
+	direccion?: string;
+	notas?: string;
 }

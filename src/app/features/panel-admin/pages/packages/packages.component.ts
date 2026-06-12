@@ -12,8 +12,7 @@ import { RespuestaPaqueteTuristico, PageResponse } from '../../models/package.mo
 export class PackagesComponent implements OnInit {
 
 	showCreateModal = false;
-	showFilters = true;
-	showFilterCalendar = false;
+	showFilters = false;
 	sheetOpen = false;
 	selectedPackageDetail: PackageDetail | null = null;
 	showDeleteModal = false;
@@ -27,7 +26,6 @@ export class PackagesComponent implements OnInit {
 	busqueda = '';
 	destinoFiltro = '';
 	duracionFiltro: number | null = null;
-	fechaSalidaFiltro = '';
 	estadoFiltro = 'Activos';
 	cargando = false;
 	private filterChangeTimer: ReturnType<typeof setTimeout> | null = null;
@@ -89,7 +87,6 @@ export class PackagesComponent implements OnInit {
 			busqueda: this.busqueda || undefined,
 			destino: this.destinoFiltro || undefined,
 			duracionDias: this.duracionFiltro || undefined,
-			fechaInicio: this.fechaSalidaFiltro || undefined,
 			activo: this.estadoFiltro === 'Activos' ? true : this.estadoFiltro === 'Inactivos' ? false : undefined,
 		}).subscribe({
 			next: (page: PageResponse<RespuestaPaqueteTuristico>) => {
@@ -104,7 +101,6 @@ export class PackagesComponent implements OnInit {
 	}
 
 	buscar(): void {
-		this.showFilterCalendar = false;
 		this.cargarPaquetes();
 	}
 
@@ -114,7 +110,6 @@ export class PackagesComponent implements OnInit {
 		}
 
 		this.filterChangeTimer = setTimeout(() => {
-			this.showFilterCalendar = false;
 			this.cargarPaquetes();
 		}, delay);
 	}
@@ -138,28 +133,8 @@ export class PackagesComponent implements OnInit {
 		this.busqueda = '';
 		this.destinoFiltro = '';
 		this.duracionFiltro = null;
-		this.fechaSalidaFiltro = '';
-		this.showFilterCalendar = false;
 		this.estadoFiltro = 'Activos';
 		this.cargarPaquetes();
-	}
-
-	toggleFilterCalendar(event: Event): void {
-		event.stopPropagation();
-		this.showFilterCalendar = !this.showFilterCalendar;
-	}
-
-	onFilterDateSelected(date: string): void {
-		this.fechaSalidaFiltro = date;
-		this.showFilterCalendar = false;
-		this.autoApplyFilters(0);
-	}
-
-	get formattedFilterDate(): string {
-		if (!this.fechaSalidaFiltro) return 'dd / mm / aaaa';
-
-		const [year, month, day] = this.fechaSalidaFiltro.split('-');
-		return `${day}/${month}/${year}`;
 	}
 
 	private mapToAdminPackage(p: RespuestaPaqueteTuristico): AdminPackage {
@@ -168,7 +143,6 @@ export class PackagesComponent implements OnInit {
 			name: p.titulo,
 			location: p.destino,
 			duration: `${p.duracionDias} días`,
-			date: p.fechaInicio,
 			price: p.precio,
 			capacity: p.cupo,
 			status: p.activo ? 'activo' : 'inactivo',
@@ -184,6 +158,7 @@ export class PackagesComponent implements OnInit {
 
 	private mapToPackageDetail(p: RespuestaPaqueteTuristico): PackageDetail {
 		return {
+			id: p.id,
 			title: p.titulo,
 			subtitle: p.descripcion || '',
 			spotsAvailable: p.cupo,
@@ -191,8 +166,6 @@ export class PackagesComponent implements OnInit {
 			destinations: p.destino,
 			duration: `${p.duracionDias} días`,
 			departurePlace: p.lugarSalida,
-			date: p.fechaInicio,
-			accommodation: p.alojamiento,
 			transport: p.tipoTransporte,
 			mainImage: p.fotoVerticalUrl || p.fotoHorizontalUrl,
 			galleryImages: p.fotoHorizontalUrl ? [p.fotoHorizontalUrl] : [],

@@ -27,8 +27,6 @@ export class ProveedorComponent implements OnInit {
 		'Todos',
 		'Hotel',
 		'Transporte',
-		'Restaurante',
-		'Guía'
 	];
 
 	constructor(
@@ -62,6 +60,7 @@ export class ProveedorComponent implements OnInit {
 	get filteredProviders() {
 
 		return this.providers.filter(provider => {
+			const allowedType = this.types.includes(provider.tipoProveedor);
 
 			const matchesSearch =
 				provider.nombre
@@ -74,7 +73,7 @@ export class ProveedorComponent implements OnInit {
 
 			const matchesType = this.selectedType === 'Todos' || provider.tipoProveedor === this.selectedType;
 
-			return matchesSearch && matchesType;
+			return allowedType && matchesSearch && matchesType;
 		});
 	}
 
@@ -98,6 +97,15 @@ export class ProveedorComponent implements OnInit {
 		this.modalMode = 'view';
 		this.selectedProvider = provider;
 		this.showModal = true;
+	}
+
+	typeIcon(tipo: string): string {
+		const map: Record<string, string> = {
+			'Hotel': 'fa-solid fa-hotel',
+			'Transporte': 'fa-solid fa-bus',
+			'Todos': 'fa-solid fa-list',
+		};
+		return map[tipo] || 'fa-solid fa-box';
 	}
 
 	deleteProvider(

@@ -135,7 +135,7 @@
 	color: var(--color-primario);
 }
 
-.step.active i{
+.step.active i {
 	font-size: 14px;
 }
 
@@ -245,6 +245,96 @@
 	font-size: 20px;
 	font-weight: 600;
 	color: var(--color-primario);
+}
+
+/* Contactos de emergencia */
+
+.emergency-card {
+	border: 1px solid #e6e6e6;
+	border-radius: 24px;
+	padding: 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	background: white;
+}
+
+.card-header {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	margin-bottom: 10px;
+}
+
+.header-left i {
+	width: 45px;
+	height: 45px;
+	border-radius: 50%;
+	background: #fff4d6;
+	color: #ffbe0b;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 18px;
+}
+
+.card-header h3 {
+	margin: 0;
+	font-size: 20px;
+	font-weight: 600;
+	color: var(--color-texto-principal);
+}
+
+.header-left {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
+
+.card-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.add-contact-btn {
+	width: 100%;
+	border: 2px dashed var(--color-primario);
+	background: rgba(63, 162, 219, 0.08);
+	color: var(--color-primario);
+	padding: 14px;
+	border-radius: 24px;
+	cursor: pointer;
+	font-family: "Outfit", sans-serif;
+	font-size: 15px;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	transition: 0.2s;
+}
+
+.add-contact-btn:hover {
+	background: rgba(63, 162, 219, 0.15);
+}
+
+.delete-contact-btn {
+	width: 36px;
+	height: 36px;
+	border: none;
+	border-radius: 50%;
+	background: #fee2e2;
+	color: #dc2626;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: 0.2s;
+}
+
+.delete-contact-btn:hover {
+	background: #fecaca;
 }
 
 /* ==========================

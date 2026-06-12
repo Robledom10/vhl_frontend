@@ -16,6 +16,9 @@ export class FormProviderComponent implements OnChanges {
 	@Output() closed = new EventEmitter<void>();
 	@Output() saved = new EventEmitter<void>();
 	loading = false;
+	errorMsg = '';
+
+	tiposVehiculo = ['Bus', 'Avión', 'Van', 'Minibus', 'Lancha', 'Otro'];
 
 	constructor(
 		private fb: FormBuilder,
@@ -26,30 +29,43 @@ export class FormProviderComponent implements OnChanges {
 		nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(80)]],
 		tipoProveedor: ['', Validators.required],
 		correo: ['', [Validators.required, Validators.email]],
-		telefono: ['', [Validators.required, Validators.pattern(/^[0-9]{7,15}$/)]]
+		telefono: ['', [Validators.required, Validators.pattern(/^[+\d\s\-]{7,20}$/)]],
+		// Transporte
+		tipoVehiculo: [''],
+		placa: [''],
+		conductor: [''],
+		telefonoConductor: [''],
+		capacidad: [null as number | null],
+		direccion: [''],
+		// General
+		notas: [''],
 	});
 
-	ngOnChanges(
-		changes: SimpleChanges
-	): void {
+	get tipo(): string {
+		return this.providerForm.get('tipoProveedor')?.value || '';
+	}
 
-		if (
-			changes['provider'] &&
-			this.provider
-		) {
+	get esTransporte(): boolean { return this.tipo === 'Transporte'; }
+	get esHotel(): boolean { return this.tipo === 'Hotel'; }
 
+	ngOnChanges(changes: SimpleChanges): void {
+		if (changes['provider'] && this.provider) {
 			this.providerForm.patchValue({
 				nombre: this.provider.nombre,
 				tipoProveedor: this.provider.tipoProveedor,
 				correo: this.provider.correo ?? '',
-				telefono: this.provider.telefono ?? ''
+				telefono: this.provider.telefono ?? '',
+				tipoVehiculo: this.provider.tipoVehiculo ?? '',
+				placa: this.provider.placa ?? '',
+				conductor: this.provider.conductor ?? '',
+				telefonoConductor: this.provider.telefonoConductor ?? '',
+				capacidad: this.provider.capacidad ?? null,
+				direccion: this.provider.direccion ?? '',
+				notas: this.provider.notas ?? '',
 			});
 		}
 
-		if (
-			changes['mode'] &&
-			this.mode === 'create'
-		) {
+		if (changes['mode'] && this.mode === 'create') {
 			this.providerForm.reset();
 		}
 
@@ -70,53 +86,51 @@ export class FormProviderComponent implements OnChanges {
 			return;
 		}
 
+		const v = this.providerForm.value;
 		const request: SolicitudProveedor = {
-			nombre: this.providerForm.value.nombre ?? '',
-			tipoProveedor: this.providerForm.value.tipoProveedor ?? '',
-			correo: this.providerForm.value.correo ?? '',
-			telefono: this.providerForm.value.telefono ?? ''
+			nombre: v.nombre ?? '',
+			tipoProveedor: v.tipoProveedor ?? '',
+			correo: v.correo ?? '',
+			telefono: v.telefono ?? '',
+			tipoVehiculo: v.tipoVehiculo || undefined,
+			placa: v.placa || undefined,
+			conductor: v.conductor || undefined,
+			telefonoConductor: v.telefonoConductor || undefined,
+			capacidad: v.capacidad || undefined,
+			direccion: v.direccion || undefined,
+			notas: v.notas || undefined,
 		};
 
 		this.loading = true;
+		this.errorMsg = '';
 
 		if (this.mode === 'create') {
-
-			this.providerService
-				.createProvider(request)
-				.subscribe({
-					next: () => {
-						this.loading = false;
-						this.saved.emit();
-						this.closeModal();
-					},
-
-					error: (error) => {
-						this.loading = false;
-						console.error(error);
-					}
-				});
-
+			this.providerService.createProvider(request).subscribe({
+				next: () => {
+					this.loading = false;
+					this.saved.emit();
+					this.closeModal();
+				},
+				error: (error) => {
+					this.loading = false;
+					this.errorMsg = error?.error?.mensaje || error?.error?.message || 'Error al crear el proveedor. Intenta de nuevo.';
+				}
+			});
 			return;
 		}
 
 		if (this.mode === 'edit' && this.provider) {
-			this.providerService
-				.updateProvider(
-					this.provider.id,
-					request
-				)
-				.subscribe({
-					next: () => {
-						this.loading = false;
-						this.saved.emit();
-						this.closeModal();
-					},
-
-					error: (error) => {
-						this.loading = false;
-						console.error(error);
-					}
-				});
+			this.providerService.updateProvider(this.provider.id, request).subscribe({
+				next: () => {
+					this.loading = false;
+					this.saved.emit();
+					this.closeModal();
+				},
+				error: (error) => {
+					this.loading = false;
+					this.errorMsg = error?.error?.mensaje || error?.error?.message || 'Error al actualizar el proveedor. Intenta de nuevo.';
+				}
+			});
 		}
 	}
 }

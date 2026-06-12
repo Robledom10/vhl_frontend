@@ -29,25 +29,9 @@
 			</div>
 		</div>
 
-		<!-- FILTRO FECHA -->
-		<div class="filter-wrapper calendar-filter">
-			<button class="filter-btn" type="button" (click)="toggleFilterCalendar($event)">
-				<div class="filter-content">
-					<i class="fa-regular fa-calendar"></i>
-					<span>{{ fechaSalidaFiltro ? formattedFilterDate : 'Fecha' }}</span>
-				</div>
-				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="showFilterCalendar"></i>
-			</button>
-
-			<app-custom-calendar *ngIf="showFilterCalendar" [isOpen]="showFilterCalendar"
-				[selectedDate]="fechaSalidaFiltro" (dateSelected)="onFilterDateSelected($event)"
-				(closed)="showFilterCalendar = false">
-			</app-custom-calendar>
-		</div>
-
 		<!-- LIMPIAR -->
 		<button class="clear-filter" type="button" (click)="clearFilters()"
-			*ngIf="busqueda || fechaSalidaFiltro || estadoFiltro !== 'Activos'">
+			*ngIf="busqueda || estadoFiltro !== 'Activos'">
 			Limpiar
 		</button>
 
@@ -72,7 +56,6 @@
 					<th>Paquete</th>
 					<th>Destino (s)</th>
 					<th>Duración</th>
-					<th>Fecha</th>
 					<th>Precio</th>
 					<th>Cupos</th>
 					<th>Estado</th>
@@ -92,8 +75,6 @@
 					<td>{{ item.location }}</td>
 
 					<td>{{ item.duration }}</td>
-
-					<td>{{ item.date }}</td>
 
 					<td>{{ item.price | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
 

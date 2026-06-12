@@ -55,8 +55,9 @@ export class NavbarPanelAdminComponent {
 					route: '/panel-admin/packages',
 				},
 				{
-					label: 'Planes de precio',
-					route: '/panel-admin/packages-price-plans',
+					icon: 'fa-regular fa-thumbs-up',
+					label: 'Comentarios',
+					route: '/panel-admin/comments',
 				},
 				{
 					label: 'Proveedores',
@@ -75,25 +76,48 @@ export class NavbarPanelAdminComponent {
 			route: '/panel-admin/users-roles',
 		},
 		{
-			icon: 'fa-regular fa-thumbs-up',
-			label: 'Comentarios',
-			route: '/panel-admin/comments',
-		},
-		{
 			icon: 'fa-regular fa-image',
 			label: 'Galería',
 			route: '/panel-admin/gallery-admin',
 		},
 		{
-			icon: 'fa-regular fa-message',
-			label: 'Mensajes',
-			route: '/panel-admin/messages',
-			badge: 7,
-		},
-		{
-			icon: 'fa-solid fa-plane-departure',
-			label: 'Ofertas',
-			route: '/panel-admin/travel-operation',
+			icon: 'fa-solid fa-route',
+			label: 'Operaciones',
+			open: false,
+			children: [
+				{
+					label: 'Dashboard operativo',
+					route: '/panel-admin/operaciones-dashboard',
+				},
+				{
+					label: 'Asignar transporte',
+					route: '/panel-admin/operaciones-transporte',
+				},
+				{
+					label: 'Check-in por QR',
+					route: '/panel-admin/operaciones-check-in',
+				},
+				{
+					label: 'Asignar alojamiento',
+					route: '/panel-admin/operaciones-alojamiento',
+				},
+				{
+					label: 'Información médica',
+					route: '/panel-admin/operaciones-info-medica',
+				},
+				{
+					label: 'Incidentes',
+					route: '/panel-admin/operaciones-incidentes',
+				},
+				{
+					label: 'Comunicaciones',
+					route: '/panel-admin/operaciones-comunicaciones',
+				},
+				{
+					label: 'Restaurantes',
+					route: '/panel-admin/operaciones-restaurantes',
+				},
+			],
 		},
 	];
 }

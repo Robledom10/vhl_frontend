@@ -1,0 +1,348 @@
+<div class="operaciones-container">
+
+	<div class="page-header">
+		<div>
+			<h2 class="page-title">Dashboard <span>Operativo</span></h2>
+			<p class="page-subtitle">Resumen del estado operativo de todos los
+				paquetes turísticos</p>
+		</div>
+		<div class="header-actions">
+			<button class="btn-nuevo-viaje" (click)="abrirNuevoViaje()">
+				<i class="fa-solid fa-plus"></i> Nuevo viaje
+			</button>
+		</div>
+	</div>
+
+	<!-- KPI CARDS -->
+	<div class="kpi-grid">
+		<div class="kpi-card kpi-clickable" (click)="ir('operaciones-check-in')" title="Ver check-ins">
+			<div class="kpi-icon blue">
+				<i class="fa-solid fa-users"></i>
+			</div>
+			<div class="kpi-info">
+				<span class="kpi-value">{{ totalViajeros }}</span>
+				<span class="kpi-label">Viajeros totales</span>
+			</div>
+			<i class="fa-solid fa-arrow-right kpi-arrow"></i>
+		</div>
+
+		<div class="kpi-card kpi-clickable" (click)="ir('operaciones-transporte')" title="Gestionar transporte">
+			<div class="kpi-icon green">
+				<i class="fa-solid fa-bus-simple"></i>
+			</div>
+			<div class="kpi-info">
+				<span class="kpi-value">{{ transportesAsignados }}/{{ totalViajesActivos
+					}}</span>
+				<span class="kpi-label">Transportes asignados</span>
+			</div>
+			<i class="fa-solid fa-arrow-right kpi-arrow"></i>
+		</div>
+
+		<div class="kpi-card kpi-clickable" (click)="ir('operaciones-alojamiento')" title="Gestionar alojamiento">
+			<div class="kpi-icon teal">
+				<i class="fa-solid fa-bed"></i>
+			</div>
+			<div class="kpi-info">
+				<span class="kpi-value">{{ alojamientosAsignados }}/{{
+					totalViajesActivos }}</span>
+				<span class="kpi-label">Alojamientos asignados</span>
+			</div>
+			<i class="fa-solid fa-arrow-right kpi-arrow"></i>
+		</div>
+
+		<div class="kpi-card kpi-clickable" (click)="ir('operaciones-incidentes')" title="Ver incidentes">
+			<div class="kpi-icon red">
+				<i class="fa-solid fa-triangle-exclamation"></i>
+			</div>
+			<div class="kpi-info">
+				<span class="kpi-value">{{ totalIncidentes }}</span>
+				<span class="kpi-label">Incidentes registrados</span>
+			</div>
+			<i class="fa-solid fa-arrow-right kpi-arrow"></i>
+		</div>
+	</div>
+
+	<!-- TABLA PAQUETES + VIAJES -->
+	<div class="section-title">
+		<i class="fa-solid fa-route"></i>
+		<h3>Paquetes turísticos y seguimiento operativo</h3>
+	</div>
+
+	<div class="table-container">
+		<table>
+			<thead>
+				<tr>
+					<th>Paquete</th>
+					<th>Destino</th>
+					<th>Fecha salida</th>
+					<th>Viajeros</th>
+					<th>Transporte</th>
+					<th>Alojamiento</th>
+					<th>Incidentes</th>
+					<th>Estado</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let fila of filas" [class.fila-sin-viaje]="!fila.tieneViaje">
+					<td>
+						<div class="paquete-nombre">{{ fila.paqueteTitulo }}</div>
+						<small *ngIf="fila.idViaje" class="viaje-id">Viaje #{{ fila.idViaje
+							}}</small>
+					</td>
+					<td>{{ fila.paqueteDestino || '—' }}</td>
+					<td>{{ fila.fechaSalida ? (fila.fechaSalida | date:'dd/MM/yyyy') : '—'
+						}}</td>
+					<td>
+						<span *ngIf="fila.tieneViaje" class="badge-num link-cell"
+							(click)="ir('operaciones-check-in')">{{ fila.viajerosRegistrados
+							}}</span>
+						<span *ngIf="!fila.tieneViaje" class="badge-num disabled">—</span>
+					</td>
+					<td>
+						<span *ngIf="fila.tieneViaje" class="estado-dot link-cell"
+							[class.ok]="fila.transportesAsignados > 0"
+							[class.pendiente]="fila.transportesAsignados === 0" (click)="ir('operaciones-transporte')">
+							{{ fila.transportesAsignados > 0 ? 'Asignado' : 'Pendiente' }}
+						</span>
+						<span *ngIf="!fila.tieneViaje" class="estado-dot disabled">—</span>
+					</td>
+					<td>
+						<span *ngIf="fila.tieneViaje" class="estado-dot link-cell"
+							[class.ok]="fila.alojamientosAsignados > 0"
+							[class.pendiente]="fila.alojamientosAsignados === 0"
+							(click)="ir('operaciones-alojamiento')">
+							{{ fila.alojamientosAsignados > 0 ? 'Asignado' : 'Pendiente' }}
+						</span>
+						<span *ngIf="!fila.tieneViaje" class="estado-dot disabled">—</span>
+					</td>
+					<td>
+						<span *ngIf="fila.tieneViaje" class="incidente-badge link-cell"
+							[class.con-incidentes]="fila.incidentes > 0" (click)="ir('operaciones-incidentes')">{{
+							fila.incidentes
+							}}</span>
+						<span *ngIf="!fila.tieneViaje" class="incidente-badge disabled">—</span>
+					</td>
+					<td>
+						<span class="status" [class]="getEstadoClass(fila)">{{
+							getEstadoLabel(fila.estado) }}</span>
+					</td>
+					<td>
+						<div class="actions" *ngIf="fila.tieneViaje; else sinAcciones">
+							<button class="ver" (click)="verDetalleViaje(fila)" title="Ver detalle"><i
+									class="fa-solid fa-eye"></i></button>
+							<button class="edit" (click)="editarViaje(fila)" title="Editar"><i
+									class="fa-solid fa-pen"></i></button>
+							<button class="del" (click)="eliminarViajeRow(fila)" title="Eliminar"><i
+									class="fa-solid fa-trash"></i></button>
+						</div>
+						<ng-template #sinAcciones><span class="badge-num disabled">—</span></ng-template>
+					</td>
+				</tr>
+				<tr *ngIf="filas.length === 0 && !cargando">
+					<td colspan="9" class="empty">No hay viajes registrados.</td>
+				</tr>
+				<tr *ngIf="cargando">
+					<td colspan="9" class="empty">Cargando...</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- MODAL NUEVO VIAJE -->
+	<div class="modal-backdrop" *ngIf="showViajeForm" (click)="cerrarViajeForm()"></div>
+	<div class="modal-panel" *ngIf="showViajeForm">
+		<div class="modal-header">
+			<h3>Crear nuevo viaje</h3>
+			<button class="btn-cerrar" (click)="cerrarViajeForm()">&#x2715;</button>
+		</div>
+
+		<form [formGroup]="viajeForm" (ngSubmit)="guardarViaje()">
+			<div class="form-grid">
+				<div class="form-group span-2">
+					<label>Paquete turístico *</label>
+					<select formControlName="idPaquete">
+						<option value>Seleccionar paquete...</option>
+						<option *ngFor="let p of paquetes" [value]="p.id">{{ p.titulo }} —
+							{{ p.destino }}</option>
+					</select>
+					<div class="form-group">
+
+						<label>Fecha de inicio *</label>
+
+						<input type="datetime-local" formControlName="fechaSalida">
+
+						<span class="error" *ngIf="
+      viajeForm.get('fechaSalida')?.invalid &&
+      viajeForm.get('fechaSalida')?.touched">
+
+							Selecciona una fecha
+
+						</span>
+
+					</div>
+
+					<div class="form-group">
+
+						<label>Fecha final</label>
+
+						<input type="datetime-local" formControlName="fechaRegreso" readonly>
+
+						<small class="auto-date-msg">
+							Se calcula automáticamente según la duración del paquete
+						</small>
+
+					</div>
+					<span class="error"
+						*ngIf="viajeForm.get('idPaquete')?.invalid && viajeForm.get('idPaquete')?.touched">Selecciona
+						un paquete</span>
+				</div>
+			</div>
+
+			<div class="modal-actions">
+				<button type="button" class="btn-cancelar" (click)="cerrarViajeForm()">Cancelar</button>
+				<button type="submit" class="btn-guardar" [disabled]="enviandoViaje">
+					{{ enviandoViaje ? 'Creando...' : 'Crear viaje' }}
+				</button>
+			</div>
+		</form>
+	</div>
+
+	<!-- MODAL DETALLE VIAJE -->
+	<div class="modal-backdrop" *ngIf="showDetalle" (click)="cerrarDetalle()"></div>
+	<div class="modal-panel detalle-panel" *ngIf="showDetalle && viajeDetalle">
+		<div class="modal-header">
+			<h3><i class="fa-solid fa-route" style="color:var(--color-primario);margin-right:10px;"></i>Detalle del
+				viaje</h3>
+			<button class="btn-cerrar" (click)="cerrarDetalle()">&#x2715;</button>
+		</div>
+		<div class="detalle-paquete">
+			<span class="detalle-titulo">{{ viajeDetalle.paqueteTitulo }}</span>
+			<span class="detalle-viaje-id">Viaje #{{ viajeDetalle.idViaje }}</span>
+		</div>
+		<div class="detalle-grid">
+			<div class="detalle-item">
+				<span class="detalle-label"><i class="fa-solid fa-map-location-dot"></i>
+					Destino</span>
+				<span class="detalle-valor">{{ viajeDetalle.paqueteDestino || '—'
+					}}</span>
+			</div>
+			<div class="detalle-item">
+				<span class="detalle-label"><i class="fa-solid fa-circle-dot"></i>
+					Estado</span>
+				<span class="detalle-valor">{{ getEstadoLabel(viajeDetalle.estado)
+					}}</span>
+			</div>
+			<div class="detalle-item span-2">
+				<span class="detalle-label"><i class="fa-solid fa-calendar-days"></i>
+					Fecha de salida</span>
+				<span class="detalle-valor">{{ viajeDetalle.fechaSalida ?
+					(viajeDetalle.fechaSalida | date:'dd/MM/yyyy HH:mm') : '—' }}</span>
+			</div>
+			<div class="detalle-item">
+				<span class="detalle-label"><i class="fa-solid fa-users"></i> Viajeros
+					registrados</span>
+				<span class="detalle-valor">{{ viajeDetalle.viajerosRegistrados
+					}}</span>
+			</div>
+			<div class="detalle-item">
+				<span class="detalle-label"><i class="fa-solid fa-bus-simple"></i>
+					Transportes asignados</span>
+				<span class="detalle-valor">{{ viajeDetalle.transportesAsignados
+					}}</span>
+			</div>
+			<div class="detalle-item">
+				<span class="detalle-label"><i class="fa-solid fa-bed"></i> Alojamientos
+					asignados</span>
+				<span class="detalle-valor">{{ viajeDetalle.alojamientosAsignados
+					}}</span>
+			</div>
+			<div class="detalle-item">
+				<span class="detalle-label"><i class="fa-solid fa-triangle-exclamation"></i> Incidentes</span>
+				<span class="detalle-valor">{{ viajeDetalle.incidentes }}</span>
+			</div>
+		</div>
+		<div class="detalle-actions">
+			<button class="btn-cerrar-detalle" (click)="cerrarDetalle()">Cerrar</button>
+		</div>
+	</div>
+
+	<!-- MODAL EDITAR VIAJE -->
+	<div class="modal-backdrop" *ngIf="showEditViaje" (click)="cerrarEditViaje()"></div>
+	<div class="modal-panel" *ngIf="showEditViaje">
+		<div class="modal-header">
+			<h3>Editar viaje #{{ editandoViajeId }}</h3>
+			<button class="btn-cerrar" (click)="cerrarEditViaje()">&#x2715;</button>
+		</div>
+
+		<form [formGroup]="editViajeForm" (ngSubmit)="actualizarViaje()">
+			<div class="form-grid">
+				<div class="form-group">
+
+					<label>Fecha de salida *</label>
+
+					<input type="datetime-local" formControlName="fechaSalida">
+
+					<span class="error" *ngIf="
+      editViajeForm.get('fechaSalida')?.invalid &&
+      editViajeForm.get('fechaSalida')?.touched">
+
+						Fecha requerida
+
+					</span>
+
+				</div>
+
+				<div class="form-group">
+
+					<label>Fecha final</label>
+
+					<input type="datetime-local" formControlName="fechaRegreso" readonly>
+
+					<small class="auto-date-msg">
+						Se calcula automáticamente según la duración del paquete
+					</small>
+
+				</div>
+			</div>
+
+			<div class="modal-actions">
+				<button type="button" class="btn-cancelar" (click)="cerrarEditViaje()">Cancelar</button>
+				<button type="submit" class="btn-guardar" [disabled]="enviandoEdicion">
+					{{ enviandoEdicion ? 'Guardando...' : 'Guardar cambios' }}
+				</button>
+			</div>
+		</form>
+	</div>
+
+	<!-- MODAL CONFIRMAR ELIMINAR -->
+	<div class="modal-backdrop" *ngIf="showConfirmDelete" (click)="cancelarEliminar()"></div>
+	<div class="modal-panel confirm-panel" *ngIf="showConfirmDelete">
+		<div class="confirm-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+		<h3 class="confirm-title">¿Eliminar viaje?</h3>
+		<p class="confirm-body">
+			Estás a punto de eliminar el <strong>Viaje #{{
+				viajePendienteEliminar?.idViaje }}</strong>
+			del paquete <strong>{{ viajePendienteEliminar?.paqueteTitulo }}</strong>.
+			Esta acción eliminará también el transporte, alojamiento e incidentes
+			asociados
+			y no se puede deshacer.
+		</p>
+		<div class="confirm-actions">
+			<button class="btn-cancelar" (click)="cancelarEliminar()">Cancelar</button>
+			<button class="btn-eliminar-confirm" (click)="confirmarEliminar()" [disabled]="eliminando">
+				<i class="fa-solid fa-trash" *ngIf="!eliminando"></i>
+				<i class="fa-solid fa-spinner spinning" *ngIf="eliminando"></i>
+				{{ eliminando ? 'Eliminando...' : 'Sí, eliminar' }}
+			</button>
+		</div>
+	</div>
+
+	<!-- TOAST -->
+	<div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
+		<i class="toast-icon"
+			[class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
+		<span class="toast-msg">{{ toastMsg }}</span>
+	</div>
+
+</div>

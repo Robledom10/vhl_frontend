@@ -38,4 +38,8 @@ export class AppComponent {
 			}
 		);
 	}
+
+	get showChatbot(): boolean {
+		return !this.router.url.includes('panel-admin');
+	}
 }

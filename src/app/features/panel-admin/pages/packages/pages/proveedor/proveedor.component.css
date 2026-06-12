@@ -255,3 +255,60 @@ tbody td:last-child {
 	background: rgba(45, 206, 137, 0.12);
 	color: #22a06b;
 }
+
+/* =========================
+	TIPO BADGE
+========================= */
+
+.tipo-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 5px 12px;
+	border-radius: 999px;
+	font-size: 13px;
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.tipo-hotel       { background: rgba(59,130,246,0.12); color: #2563eb; }
+.tipo-transporte  { background: rgba(249,115,22,0.12); color: #ea580c; }
+
+.type-icon-sm { width: 16px; text-align: center; }
+
+/* =========================
+	CONTACTO CELDAS
+========================= */
+
+.td-contacto {
+	text-align: left !important;
+}
+
+.proveedor-nombre {
+	font-weight: 500;
+	color: var(--color-texto-principal);
+}
+
+.contacto-row {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 13px;
+	color: var(--color-texto-secundario);
+	line-height: 1.8;
+}
+
+.contacto-row i {
+	color: var(--color-primario);
+	width: 14px;
+	text-align: center;
+	font-size: 12px;
+}
+
+.sin-dato { color: #9ca3af; font-size: 13px; }
+
+.empty-row {
+	text-align: center !important;
+	color: var(--color-texto-secundario);
+	padding: 40px !important;
+}

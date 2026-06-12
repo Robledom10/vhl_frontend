@@ -11,11 +11,7 @@ export interface SolicitudPaqueteTuristico {
 	duracionDias: number;
 	precio: number;
 	cupo: number;
-	fechaInicio: string;
 	lugarSalida: string;
-	horaSalida: string;
-	alojamiento: string;
-	tipoHabitacion: string;
 	tipoTransporte: string;
 	tiposTransporte?: string[];
 	fotoVerticalUrl: string;
@@ -36,11 +32,7 @@ export interface RespuestaPaqueteTuristico {
 	duracionDias: number;
 	precio: number;
 	cupo: number;
-	fechaInicio: string;
 	lugarSalida: string;
-	horaSalida: string;
-	alojamiento: string;
-	tipoHabitacion: string;
 	tipoTransporte: string;
 	tiposTransporte?: string[];
 	fotoVerticalUrl: string;
@@ -60,6 +52,52 @@ export interface RespuestaPaqueteTuristico {
 
 export interface RespuestaImagenPaquete {
 	url: string;
+}
+
+export interface SolicitudProveedor {
+	nombre: string;
+	tipoProveedor: string;
+	correo: string;
+	telefono: string;
+	// Transporte
+	tipoVehiculo?: string;
+	placa?: string;
+	conductor?: string;
+	telefonoConductor?: string;
+	capacidad?: number;
+	// Hotel / Restaurante
+	direccion?: string;
+	// Guía
+	especialidad?: string;
+	idioma?: string;
+	// Restaurante
+	tipoComida?: string;
+	// General
+	notas?: string;
+}
+
+export interface RespuestaProveedor {
+	id: number;
+	nombre: string;
+	tipoProveedor: string;
+	correo: string;
+	telefono: string;
+	activo: boolean;
+	// Transporte
+	tipoVehiculo?: string;
+	placa?: string;
+	conductor?: string;
+	telefonoConductor?: string;
+	capacidad?: number;
+	// Hotel / Restaurante
+	direccion?: string;
+	// Guía
+	especialidad?: string;
+	idioma?: string;
+	// Restaurante
+	tipoComida?: string;
+	// General
+	notas?: string;
 }
 
 export interface PageResponse<T> {

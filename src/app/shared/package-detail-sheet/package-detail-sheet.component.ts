@@ -1,4 +1,7 @@
-import { Component, Input, Output, EventEmitter, OnChanges, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { PackageService } from '../../core/services/package.service';
+import { RespuestaComentarioPaquete } from './models/comments.model';
+import { AuthService } from '../../core/services/auth.service';
 
 export interface InfoRow {
 	label: string;
@@ -7,6 +10,7 @@ export interface InfoRow {
 }
 
 export interface PackageDetail {
+	id: number;
 	title: string;
 	subtitle: string;
 	spotsAvailable: number;
@@ -14,12 +18,10 @@ export interface PackageDetail {
 	destinations: string;
 	duration: string;
 	departurePlace: string;
-	date: string;
-	accommodation: string;
 	transport: string;
 	mainImage: string;
 	galleryImages?: string[];
-	itinerary: { day: string; desc: string }[];
+	itinerary: { day: string; desc: string; }[];
 	includes: string[];
 	notIncludes: string[];
 	cancellation: string[];
@@ -39,6 +41,14 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 	visible = false;
 	animating = false;
 	private scrollY = 0;
+	private closeTimer: ReturnType<typeof setTimeout> | null = null;
+
+	selectedRating = 5;
+	newComment = '';
+	editingCommentId: number | null = null;
+	editCommentText = '';
+	editRating = 5;
+	savingEdit = false;
 
 	// Modal de reserva
 	wizardOpen = false;
@@ -46,15 +56,36 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 	// Número de pasajeros
 	travelers = 1;
 
-	ngOnChanges(): void {
+	comments: RespuestaComentarioPaquete[] = [];
+
+	constructor(
+		private packageService: PackageService,
+		private authService: AuthService
+	) { }
+
+	ngOnChanges(changes: SimpleChanges): void {
+		if (!changes['isOpen']) return;
 		if (this.isOpen) {
+			if (this.closeTimer) {
+				clearTimeout(this.closeTimer);
+				this.closeTimer = null;
+			}
+
+			if (this.package?.id) {
+				this.loadComments();
+			}
+
 			this.visible = true;
 			this.travelers = 1;
-			setTimeout(() => (this.animating = true), 10);
+
+			setTimeout(() => {
+				this.animating = true;
+			}, 10);
+
 			this.blockScroll();
 		} else {
 			this.animating = false;
-			setTimeout(() => (this.visible = false), 420);
+			this.closeTimer = setTimeout(() => { this.visible = false; this.closeTimer = null; }, 420);
 			this.restoreScroll();
 		}
 	}
@@ -104,16 +135,6 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 				label: 'Salida desde',
 				value: this.package.departurePlace,
 				icon: 'fa-solid fa-route',
-			},
-			{
-				label: 'Fecha',
-				value: this.package.date,
-				icon: 'fa-regular fa-calendar',
-			},
-			{
-				label: 'Alojamiento',
-				value: this.package.accommodation,
-				icon: 'fa-solid fa-bed',
 			},
 			{
 				label: 'Transporte',
@@ -166,5 +187,158 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 	openReservationWizard(): void {
 		this.wizardOpen = true;
 		this.close();
+	}
+
+	// Comentarios y valoraciones
+
+	loadComments(): void {
+
+		if (!this.package?.id) {
+			return;
+		}
+
+		this.packageService
+			.getComments(this.package.id)
+			.subscribe({
+				next: comments => {
+					this.comments = comments;
+				},
+				error: error => {
+					console.error(error);
+				}
+			});
+	}
+
+	submitComment(): void {
+
+		if (!this.package?.id) {
+			return;
+		}
+
+		if (!this.newComment.trim()) {
+			return;
+		}
+
+		const request = {
+			comentario: this.newComment,
+			puntaje: this.selectedRating
+		};
+
+		this.packageService
+			.createComment(
+				this.package.id,
+				request
+			)
+			.subscribe({
+
+				next: () => {
+
+					this.newComment = '';
+					this.selectedRating = 5;
+
+					this.loadComments();
+				},
+
+				error: error => {
+					console.error(error);
+				}
+			});
+	}
+
+	startEditComment(comment: RespuestaComentarioPaquete): void {
+		this.editingCommentId = comment.id;
+		this.editCommentText = comment.comentario;
+		this.editRating = comment.puntaje;
+	}
+
+	cancelEditComment(): void {
+		this.editingCommentId = null;
+		this.editCommentText = '';
+		this.editRating = 5;
+	}
+
+	saveEditComment(comment: RespuestaComentarioPaquete): void {
+		if (!this.package?.id || !this.editCommentText.trim()) {
+			return;
+		}
+
+		this.savingEdit = true;
+
+		this.packageService
+			.updateComment(
+				this.package.id,
+				comment.id,
+				{
+					comentario: this.editCommentText,
+					puntaje: this.editRating
+				}
+			)
+			.subscribe({
+				next: updatedComment => {
+					this.comments = this.comments.map(item =>
+						item.id === updatedComment.id ? updatedComment : item
+					);
+					this.savingEdit = false;
+					this.cancelEditComment();
+				},
+				error: error => {
+					this.savingEdit = false;
+					console.error(error);
+				}
+			});
+	}
+
+	canEditComment(comment: RespuestaComentarioPaquete): boolean {
+		const userName = this.currentUserName;
+
+		return !!userName && this.normalizeUserName(comment.autor) === this.normalizeUserName(userName);
+	}
+
+	get isLogged(): boolean {
+		return this.authService.isAuthenticated();
+	}
+
+	private get currentUserName(): string {
+		const user = this.authService.getUser();
+		const tokenUser = this.getTokenUser();
+		const fullName = [user?.firstName, user?.lastName]
+			.filter(Boolean)
+			.join(' ')
+			.trim();
+		const tokenFullName = [tokenUser?.firstName, tokenUser?.lastName]
+			.filter(Boolean)
+			.join(' ')
+			.trim();
+
+		return fullName || user?.name || tokenFullName || tokenUser?.name || user?.email || tokenUser?.email || '';
+	}
+
+	private normalizeUserName(value: string): string {
+		return value.trim().replace(/\s+/g, ' ').toLowerCase();
+	}
+
+	private getTokenUser(): { firstName?: string; lastName?: string; name?: string; email?: string } | null {
+		const token = this.authService.getToken();
+
+		if (!token) {
+			return null;
+		}
+
+		try {
+			const payload = token.split('.')[1];
+			const normalizedPayload = payload.replace(/-/g, '+').replace(/_/g, '/');
+			const decodedPayload = decodeURIComponent(
+				atob(normalizedPayload)
+					.split('')
+					.map(char => `%${('00' + char.charCodeAt(0).toString(16)).slice(-2)}`)
+					.join('')
+			);
+
+			return JSON.parse(decodedPayload);
+		} catch (error) {
+			console.error('Error leyendo datos del token:', error);
+
+			return null;
+		}
 	}
 }

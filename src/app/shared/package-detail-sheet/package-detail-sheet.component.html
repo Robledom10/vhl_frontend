@@ -29,6 +29,7 @@
 						</div>
 					</div>
 
+					<!-- GALERÍA -->
 					<div class="gallery" *ngIf="galleryImages.length > 0">
 						<div class="gallery-img-wrap" *ngFor="let img of galleryImages; let i = index">
 							<img [src]="img" [alt]="'Foto ' + (i + 1)"
@@ -36,6 +37,124 @@
 						</div>
 					</div>
 
+					<!-- COMENTARIOS -->
+					<div class="reviews-card">
+
+						<div class="reviews-header">
+							<div class="reviews-icon-circle">
+								<i class="fa-solid fa-star"></i>
+							</div>
+
+							<div>
+								<h3>Opiniones de viajeros</h3>
+								<span>Lo que dicen nuestros clientes</span>
+							</div>
+						</div>
+						<!-- FORMULARIO COMENTARIO -->
+
+						<div class="comment-form" *ngIf="isLogged">
+
+							<h4>Comparte tu experiencia</h4>
+
+							<div class="rating-selector">
+
+								<span>Calificación:</span>
+
+								<div class="stars-input">
+									<i class="fa-solid fa-star" *ngFor="let star of [1,2,3,4,5]"
+										[class.active]="star <= selectedRating" (click)="selectedRating = star">
+									</i>
+								</div>
+
+							</div>
+
+							<textarea rows="4" [(ngModel)]="newComment"
+								placeholder="Cuéntanos cómo fue tu experiencia en este viaje..."></textarea>
+
+							<button class="comment-btn" (click)="submitComment()">
+								<i class="fa-regular fa-paper-plane"></i>
+								Publicar comentario
+							</button>
+
+						</div>
+
+						<div class="login-message" *ngIf="!isLogged">
+
+							Inicia sesión para publicar comentarios.
+						</div>
+
+						<!-- <div class="rating-summary">
+							<div class="rating-number">4.9</div>
+
+							<div class="rating-info">
+								<div class="stars">
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+								</div>
+
+								<span>Basado en 125 opiniones</span>
+							</div>
+						</div> -->
+
+						<div class="review-item" *ngFor="let comment of comments">
+
+							<div class="review-top">
+
+								<img [src]="'https://ui-avatars.com/api/?name=' + comment.autor + '&background=3fa2db&color=fff&size=120'"
+									alt="usuario">
+
+								<div>
+									<h4>{{ comment.autor }}</h4>
+
+									<span>
+										{{ comment.fechaCreacion | date:'dd/MM/yyyy' }}
+									</span>
+								</div>
+
+								<button class="edit-review-btn" *ngIf="canEditComment(comment) && editingCommentId !== comment.id"
+									(click)="startEditComment(comment)" title="Editar comentario">
+									<i class="fa-regular fa-pen-to-square"></i>
+								</button>
+
+							</div>
+
+							<div class="edit-comment-form" *ngIf="editingCommentId === comment.id; else commentView">
+								<div class="stars-input edit-stars">
+									<i class="fa-solid fa-star" *ngFor="let star of [1,2,3,4,5]"
+										[class.active]="star <= editRating" (click)="editRating = star">
+									</i>
+								</div>
+
+								<textarea rows="3" [(ngModel)]="editCommentText"></textarea>
+
+								<div class="edit-comment-actions">
+									<button class="cancel-edit-btn" type="button" (click)="cancelEditComment()">Cancelar</button>
+									<button class="save-edit-btn" type="button" (click)="saveEditComment(comment)"
+										[disabled]="savingEdit || !editCommentText.trim()">
+										{{ savingEdit ? 'Guardando...' : 'Guardar' }}
+									</button>
+								</div>
+							</div>
+
+							<ng-template #commentView>
+								<div class="review-stars">
+
+									<i *ngFor="let star of [1,2,3,4,5]" [class.fa-solid]="star <= comment.puntaje"
+										[class.fa-regular]="star > comment.puntaje" class="fa-star">
+									</i>
+
+								</div>
+
+								<p>
+									{{ comment.comentario }}
+								</p>
+							</ng-template>
+
+						</div>
+					</div>
 				</div>
 				<!-- /main-image-wrap (columna izquierda) -->
 

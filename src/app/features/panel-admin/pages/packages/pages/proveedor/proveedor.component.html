@@ -6,7 +6,6 @@
 		<!-- SEARCH -->
 		<div class="search-box">
 			<input type="text" placeholder="Buscar proveedor..." [(ngModel)]="search" />
-
 			<button>
 				<i class="fa-solid fa-magnifying-glass"></i>
 			</button>
@@ -19,13 +18,12 @@
 					<i class="fa-solid fa-sliders"></i>
 					<span>{{ selectedType }}</span>
 				</div>
-
 				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="dropdownOpen"></i>
 			</button>
 
 			<div class="dropdown" *ngIf="dropdownOpen">
 				<div class="dropdown-item" *ngFor="let type of types" (click)="selectType(type)">
-					{{ type }}
+					<i [class]="typeIcon(type)" class="type-icon-sm"></i> {{ type }}
 				</div>
 			</div>
 		</div>
@@ -44,8 +42,7 @@
 				<tr>
 					<th>Nombre</th>
 					<th>Tipo</th>
-					<th>Correo</th>
-					<th>Teléfono</th>
+					<th>Contacto</th>
 					<th>Estado</th>
 					<th>Acciones</th>
 				</tr>
@@ -53,46 +50,62 @@
 
 			<tbody>
 				<tr *ngFor="let proveedor of filteredProviders" [class.row-inactive]="!proveedor.activo">
-					<td>
-						{{ proveedor.nombre }}
+
+					<!-- NOMBRE -->
+					<td class="td-nombre">
+						<div class="proveedor-nombre">{{ proveedor.nombre }}</div>
 					</td>
+
+					<!-- TIPO BADGE -->
 					<td>
-						{{ proveedor.tipoProveedor }}
+						<span class="tipo-badge" [ngClass]="'tipo-' + proveedor.tipoProveedor.toLowerCase().replace('í','i')">
+							<i [class]="typeIcon(proveedor.tipoProveedor)"></i>
+							{{ proveedor.tipoProveedor }}
+						</span>
 					</td>
-					<td>
-						{{ proveedor.correo || '-' }}
+
+					<!-- CONTACTO -->
+					<td class="td-contacto">
+						<div *ngIf="proveedor.correo" class="contacto-row">
+							<i class="fa-regular fa-envelope"></i> {{ proveedor.correo }}
+						</div>
+						<div *ngIf="proveedor.telefono" class="contacto-row">
+							<i class="fa-solid fa-phone"></i> {{ proveedor.telefono }}
+						</div>
+						<span *ngIf="!proveedor.correo && !proveedor.telefono" class="sin-dato">—</span>
 					</td>
-					<td>
-						{{ proveedor.telefono || '-' }}
-					</td>
+
+					<!-- ESTADO -->
 					<td>
 						<span class="status" [class.active]="proveedor.activo" [class.inactive]="!proveedor.activo">
 							{{ proveedor.activo ? 'Activo' : 'Inactivo' }}
 						</span>
 					</td>
+
+					<!-- ACCIONES -->
 					<td>
 						<div class="actions">
-
-							<button class="view" (click)="openViewModal(proveedor)">
+							<button class="view" (click)="openViewModal(proveedor)" title="Ver proveedor">
 								<i class="fa-regular fa-eye"></i>
 							</button>
-
 							<button class="edit" (click)="openEditModal(proveedor)" [disabled]="!proveedor.activo">
 								Editar
 							</button>
-
-							<button class="delete" [class.activate]="!proveedor.activo"
-								(click)="deleteProvider(proveedor)">
+							<button class="delete" [class.activate]="!proveedor.activo" (click)="deleteProvider(proveedor)">
 								{{ proveedor.activo ? 'Desactivar' : 'Activar' }}
 							</button>
 						</div>
 					</td>
+				</tr>
+
+				<tr *ngIf="filteredProviders.length === 0">
+					<td colspan="5" class="empty-row">No se encontraron proveedores.</td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
 </div>
 
-<app-form-provider [isOpen]="showModal" [mode]="modalMode" [provider]="selectedProvider" (closed)="showModal = false"
-	(saved)="loadProviders()">
+<app-form-provider [isOpen]="showModal" [mode]="modalMode" [provider]="selectedProvider"
+	(closed)="showModal = false" (saved)="loadProviders()">
 </app-form-provider>

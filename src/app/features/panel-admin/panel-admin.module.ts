@@ -8,8 +8,7 @@ import { ControlPanelComponent } from './pages/control-panel/control-panel.compo
 import { PackagesComponent } from './pages/packages/packages.component';
 import { ReservationsComponent } from './pages/reservations/reservations.component';
 import { UsersRolesComponent } from './pages/users-roles/users-roles.component';
-import { CommentsComponent } from './pages/comments/comments.component';
-import { MessagesComponent } from './pages/messages/messages.component';
+import { CommentsComponent } from './pages/packages/pages/comments/comments.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,14 +18,20 @@ import { EditUserRoleModalComponent } from './pages/users-roles/components/edit-
 import { ViewUserModalComponent } from './pages/users-roles/components/view-user-modal/view-user-modal.component';
 import { CreateUserModalComponent } from './pages/users-roles/components/create-user-modal/create-user-modal.component';
 import { ProveedorComponent } from './pages/packages/pages/proveedor/proveedor.component';
-import { PricingPlanComponent } from './pages/packages/pages/pricing-plan/pricing-plan.component';
 import { FormPackageCreationComponent } from './pages/packages/components/form-package-creation/form-package-creation.component';
 import { MediaUploadModalComponent } from './pages/gallery-admin/components/media-upload-modal/media-upload-modal.component';
 import { GalleryAdminComponent } from './pages/gallery-admin/gallery-admin.component';
 import { FormProviderComponent } from './pages/packages/pages/proveedor/components/form-provider/form-provider.component';
-import { TravelOperationComponent } from './pages/travel-operation/travel-operation.component';
 import { FormReservationsCreationComponent } from './pages/reservations/components/form-reservations-creation/form-reservations-creation.component';
 import { ReservationDetailSheetComponent } from './pages/reservations/components/reservation-detail-sheet/reservation-detail-sheet.component';
+import { DashboardOperativoComponent } from './pages/operaciones/pages/operations-dashboard/operations-dashboard.component';
+import { AsignarTransporteComponent } from './pages/operaciones/pages/assign-transport/assign-transport.component';
+import { CheckInQrComponent } from './pages/operaciones/pages/check-in-qr/check-in-qr.component';
+import { AsignarAlojamientoComponent } from './pages/operaciones/pages/assign-accommodation/assign-accommodation.component';
+import { InfoMedicaComponent } from './pages/operaciones/pages/medical-info/medical-info.component';
+import { IncidentesComponent } from './pages/operaciones/pages/incidents/incidents.component';
+import { ComunicacionesComponent } from './pages/operaciones/pages/communications/communications.component';
+import { AsignarRestauranteComponent } from './pages/operaciones/pages/assign-restaurant/assign-restaurant.component';
 
 @NgModule({
 	declarations: [
@@ -37,7 +42,6 @@ import { ReservationDetailSheetComponent } from './pages/reservations/components
 		ReservationsComponent,
 		UsersRolesComponent,
 		CommentsComponent,
-		MessagesComponent,
 		ProfileComponent,
 		ConfirmModalComponent,
 		ToastNotificationComponent,
@@ -45,14 +49,20 @@ import { ReservationDetailSheetComponent } from './pages/reservations/components
 		ViewUserModalComponent,
 		CreateUserModalComponent,
 		ProveedorComponent,
-		PricingPlanComponent,
 		FormPackageCreationComponent,
 		MediaUploadModalComponent,
 		GalleryAdminComponent,
 		FormProviderComponent,
-		TravelOperationComponent,
 		FormReservationsCreationComponent,
 		ReservationDetailSheetComponent,
+		DashboardOperativoComponent,
+		AsignarTransporteComponent,
+		CheckInQrComponent,
+		AsignarAlojamientoComponent,
+		InfoMedicaComponent,
+		IncidentesComponent,
+		ComunicacionesComponent,
+		AsignarRestauranteComponent,
 	],
 	imports: [
 		CommonModule,

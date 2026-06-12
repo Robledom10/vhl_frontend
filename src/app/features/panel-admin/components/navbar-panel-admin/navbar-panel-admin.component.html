@@ -10,6 +10,7 @@
 	</div>
 
 	<!-- MENU ADMIN -->
+	<div class="nav-menu">
 	<div *ngFor="let item of adminMenu">
 
 		<!-- ITEM NORMAL -->
@@ -22,10 +23,6 @@
 					{{ item.label }}
 				</span>
 			</div>
-
-			<span class="badge" *ngIf="item.badge">
-				{{ item.badge }}
-			</span>
 		</a>
 
 		<!-- ITEM DESPLEGABLE -->
