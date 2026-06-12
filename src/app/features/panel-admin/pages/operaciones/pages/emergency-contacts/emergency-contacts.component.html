@@ -77,8 +77,10 @@
 	<div class="modal-backdrop" *ngIf="showForm" (click)="cerrar()"></div>
 	<div class="modal-panel" *ngIf="showForm">
 		<div class="modal-header">
-			<h3>{{ editando ? 'Editar contacto &mdash; ' + getNombreViajero(editando.idViajero) : 'Nuevo contacto de
-				emergencia' }}</h3>
+			<h3>
+				{{editando ? 'Editar contacto &mdash; ' +
+				getNombreViajero(editando.idViajero) : 'Nuevo contacto de emergencia'}}
+			</h3>
 			<button class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
 		</div>
 
@@ -120,8 +122,9 @@
 					<label>Correo electronico (opcional)</label>
 					<input type="email" formControlName="correo" placeholder="contacto@email.com">
 					<span class="error"
-						*ngIf="contactoForm.get('correo')?.invalid && contactoForm.get('correo')?.touched">Correo
-						invalido</span>
+						*ngIf="contactoForm.get('correo')?.invalid && contactoForm.get('correo')?.touched">
+						Correo invalido
+					</span>
 				</div>
 			</div>
 
