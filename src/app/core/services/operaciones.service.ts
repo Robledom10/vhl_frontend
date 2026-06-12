@@ -7,7 +7,7 @@ import { Viaje, Transporte, CheckIn, Alojamiento, InformacionMedica, ContactoEme
 
 @Injectable({ providedIn: 'root' })
 export class OperacionesService {
-	private base = `${environment.operacionesUrl}/api/v1/operaciones`;
+	private base = `${environment.apiUrl}/v1/operaciones`;
 
 	constructor(private http: HttpClient) { }
 
