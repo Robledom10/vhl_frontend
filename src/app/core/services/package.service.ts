@@ -10,14 +10,13 @@ import {
 	RespuestaProveedor,
 } from '../../features/panel-admin/models/package.model';
 import { environment } from '../../../environments/environment';
-import { AuthService } from './auth.service';
 import { RespuestaComentarioPaquete, SolicitudComentarioPaquete } from '../../shared/package-detail-sheet/models/comments.model';
 
 @Injectable({ providedIn: 'root' })
 export class PackageService {
 	private apiUrl = `${environment.apiUrl}/paquetes`;
 
-	constructor(private http: HttpClient, private authService: AuthService) { }
+	constructor(private http: HttpClient) { }
 
 	createPackage(request: SolicitudPaqueteTuristico): Observable<RespuestaPaqueteTuristico> {
 		return this.http.post<RespuestaPaqueteTuristico>(this.apiUrl, request);
@@ -94,14 +93,9 @@ export class PackageService {
 	}
 
 	createComment(packageId: number, request: SolicitudComentarioPaquete) {
-		const user = this.authService.getUser();
-		if (!user) {
-			throw new Error('Usuario no autenticado');
-		}
 		return this.http.post<RespuestaComentarioPaquete>(
 			`${this.apiUrl}/${packageId}/comentarios`,
-			request,
-			{ headers: { 'X-User-Email': user.email } }
+			request
 		);
 	}
 }
