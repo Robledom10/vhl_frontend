@@ -279,10 +279,10 @@ tbody td:last-child {
 .type-icon-sm { width: 16px; text-align: center; }
 
 /* =========================
-	CONTACTO / DETALLE CELDAS
+	CONTACTO CELDAS
 ========================= */
 
-.td-contacto, .td-detalle {
+.td-contacto {
 	text-align: left !important;
 }
 
@@ -291,7 +291,7 @@ tbody td:last-child {
 	color: var(--color-texto-principal);
 }
 
-.contacto-row, .detalle-row {
+.contacto-row {
 	display: flex;
 	align-items: center;
 	gap: 6px;
@@ -300,18 +300,11 @@ tbody td:last-child {
 	line-height: 1.8;
 }
 
-.contacto-row i, .detalle-row i {
+.contacto-row i {
 	color: var(--color-primario);
 	width: 14px;
 	text-align: center;
 	font-size: 12px;
-}
-
-.notas-row {
-	max-width: 200px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 }
 
 .sin-dato { color: #9ca3af; font-size: 13px; }

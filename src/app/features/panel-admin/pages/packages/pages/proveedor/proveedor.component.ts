@@ -111,11 +111,6 @@ export class ProveedorComponent implements OnInit {
 		return map[tipo] || 'fa-solid fa-box';
 	}
 
-	tieneDetalle(p: RespuestaProveedor): boolean {
-		return !!(p.tipoVehiculo || p.placa || p.conductor || p.capacidad ||
-			p.direccion || p.especialidad || p.idioma || p.tipoComida || p.notas);
-	}
-
 	deleteProvider(
 		provider: RespuestaProveedor
 	) {
