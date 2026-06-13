@@ -39,6 +39,9 @@ export class ReservationDetailSheetComponent {
       'Confirmada': 'estado-confirmada',
       'Pendiente':  'estado-pendiente',
       'Cancelada':  'estado-cancelada',
+      'Pasada':     'estado-pasada',
+      'Completada': 'estado-completada',
+      'Bloqueada':  'estado-bloqueada',
     }[this.reservation.estado] ?? '';
   }
 
