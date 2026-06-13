@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { MediaResponse, MediaService } from '../../../../core/services/media.service';
 
 @Component({
@@ -39,7 +39,7 @@ export class GalleryAdminComponent implements OnInit {
 		return Number(b.key) - Number(a.key);
 	};
 
-	constructor(private mediaService: MediaService) { }
+	constructor(private mediaService: MediaService, private elementRef: ElementRef) { }
 
 	ngOnInit(): void {
 		this.loadMedia();
@@ -162,20 +162,28 @@ export class GalleryAdminComponent implements OnInit {
 		document.body.style.overflow = 'hidden';
 	}
 
-	toggleExcursionDropdown() {
-		this.excursionDropdownOpen = !this.excursionDropdownOpen;
+	toggleExcursionDropdown(): void {
+		const newState = !this.excursionDropdownOpen;
+		this.closeAllDropdowns();
+		this.excursionDropdownOpen = newState;
 	}
 
-	toggleYearDropdown() {
-		this.yearDropdownOpen = !this.yearDropdownOpen;
+	toggleYearDropdown(): void {
+		const newState = !this.yearDropdownOpen;
+		this.closeAllDropdowns();
+		this.yearDropdownOpen = newState;
 	}
 
-	toggleActivityropdown() {
-		this.activityDropdownOpen = !this.activityDropdownOpen;
+	toggleActivityropdown(): void {
+		const newState = !this.activityDropdownOpen;
+		this.closeAllDropdowns();
+		this.activityDropdownOpen = newState;
 	}
 
-	toggleTypeDropdown() {
-		this.typeDropdownOpen = !this.typeDropdownOpen;
+	toggleTypeDropdown(): void {
+		const newState = !this.typeDropdownOpen;
+		this.closeAllDropdowns();
+		this.typeDropdownOpen = newState;
 	}
 
 	selectYear(year: string) {
@@ -239,5 +247,24 @@ export class GalleryAdminComponent implements OnInit {
 				console.error(err);
 			},
 		});
+	}
+
+	closeAllDropdowns(): void {
+		this.yearDropdownOpen = false;
+		this.activityDropdownOpen = false;
+		this.excursionDropdownOpen = false;
+		this.typeDropdownOpen = false;
+	}
+
+	@HostListener('document:click', ['$event'])
+	onDocumentClick(event: MouseEvent): void {
+
+		const target = event.target as HTMLElement;
+
+		const clickedFilter = target.closest('.filter-wrapper');
+
+		if (!clickedFilter) {
+			this.closeAllDropdowns();
+		}
 	}
 }

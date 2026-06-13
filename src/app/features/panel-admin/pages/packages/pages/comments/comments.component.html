@@ -1,1 +1,113 @@
-<p>comments works!</p>
+<div class="comments-page">
+	<div class="top-bar">
+
+		<!-- SEARCH -->
+		<div class="search-box">
+			<input type="text" placeholder="Buscar comentario..." />
+			<button>
+				<i class="fa-solid fa-magnifying-glass"></i>
+			</button>
+		</div>
+
+		<!-- PAQUETE -->
+		<div class="filter-wrapper rating-filter">
+			<button class="filter-btn" (click)="togglePackageFilter()">
+				<div class="filter-content">
+					<i class="fa-solid fa-filter"></i>
+					<span>{{ selectedPackage || 'Paquete' }}</span>
+				</div>
+
+				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="showPackageFilter"></i>
+			</button>
+
+			<div class="dropdown" *ngIf="showPackageFilter">
+				<div class="dropdown-item" (click)="selectPackage('Todos')">
+					Todos
+				</div>
+
+				<div class="dropdown-item" (click)="selectPackage('Cartagena')">
+					Cartagena
+				</div>
+
+				<div class="dropdown-item" (click)="selectPackage('Santa Marta')">
+					Santa Marta
+				</div>
+
+				<div class="dropdown-item" (click)="selectPackage('San Andrés')">
+					San Andrés
+				</div>
+			</div>
+		</div>
+
+		<!-- CALIFICACIÓN -->
+		<div class="filter-wrapper rating-filter">
+			<button class="filter-btn" (click)="toggleRatingFilter()">
+				<div class="filter-content">
+					<i class="fa-solid fa-filter"></i>
+					<span>{{ selectedRating || 'Calificación' }}</span>
+				</div>
+
+				<i class="fa-solid fa-chevron-down arrow" [class.rotate]="showRatingFilter"></i>
+			</button>
+
+			<div class="dropdown" *ngIf="showRatingFilter">
+				<div class="dropdown-item" (click)="selectRating('Todas')">
+					Todas
+				</div>
+
+				<div class="dropdown-item" (click)="selectRating('5 estrellas')">
+					5 estrellas
+				</div>
+
+				<div class="dropdown-item" (click)="selectRating('4 estrellas')">
+					4 estrellas
+				</div>
+
+				<div class="dropdown-item" (click)="selectRating('3 estrellas')">
+					3 estrellas
+				</div>
+
+				<div class="dropdown-item" (click)="selectRating('2 estrellas')">
+					2 estrellas
+				</div>
+
+				<div class="dropdown-item" (click)="selectRating('1 estrellas')">
+					1 estrellas
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- GRID -->
+	<div class="comments-grid">
+		<div class="comment-card" *ngFor="let comment of comments">
+			<div class="comment-header">
+				<label class="custom-check">
+					<input type="checkbox" [(ngModel)]="comment.selected">
+
+					<span class="checkmark">
+						<i class="fa-solid fa-check"></i>
+					</span>
+				</label>
+
+				<img [src]="'https://ui-avatars.com/api/?name=' + comment.autor + '&background=3fa2db&color=fff&size=120'"
+					alt="usuario">
+
+				<div>
+					<h4>{{ comment.autor }}</h4>
+					<span>{{ comment.paquete }}</span>
+				</div>
+			</div>
+
+			<div class="divider"></div>
+
+			<p class="comment-text">{{ comment.comentario }}</p>
+
+			<div class="stars">
+				<i *ngFor="let star of [1,2,3,4,5]" class="fa-star" [class.fa-solid]="star <= comment.puntaje"
+					[class.fa-regular]="star > comment.puntaje">
+				</i>
+			</div>
+		</div>
+	</div>
+</div>
