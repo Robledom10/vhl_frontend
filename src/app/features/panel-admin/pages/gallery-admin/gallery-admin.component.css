@@ -3,7 +3,6 @@
 	display: flex;
 	flex-direction: column;
 	gap: 32px;
-	padding: 20px;
 	overflow-x: hidden;
 }
 
@@ -28,10 +27,9 @@
 	align-items: center;
 	background: white;
 	border: 1px solid #e5e5e5;
-	border-radius: 18px;
+	border-radius: 25px;
 	padding: 0 0 0 18px;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-	min-width: 260px;
 }
 
 .search-box input {
@@ -42,7 +40,7 @@
 	font-family: "Outfit", sans-serif;
 	color: var(--color-texto-principal);
 	background: transparent;
-	height: 50px;
+	height: 42px;
 }
 
 .search-box button {
@@ -72,7 +70,7 @@
 
 .filter-btn,
 .add-btn {
-	height: 50px;
+	height: 42px;
 	padding: 0 22px;
 	border-radius: 25px;
 	border: 1px solid var(--bordes);
@@ -118,13 +116,13 @@
 	top: 58px;
 	left: 0;
 	width: 100%;
-	min-width: 190px;
 	background: white;
 	border: 1px solid var(--bordes);
 	border-radius: 18px;
 	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 	padding: 8px;
 	z-index: 999;
+	transition: all 0.2s ease;
 }
 
 .dropdown-item {
