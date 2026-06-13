@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, HostListener } from '@angular/core';
 import { UserItem } from './models/user.model';
 import { AuthService } from '../../../../core/services/auth.service';
 
@@ -46,7 +46,7 @@ export class UsersRolesComponent {
 
 	users: UserItem[] = [];
 
-	constructor(private authService: AuthService) { }
+	constructor(private authService: AuthService, private elementRef: ElementRef) { }
 
 	ngOnInit(): void {
 		this.currentUser = this.authService.getUser();
@@ -233,5 +233,18 @@ export class UsersRolesComponent {
 	closeCreateModal(): void {
 		this.showCreateModal = false;
 		document.body.style.overflow = 'auto';
+	}
+
+	@HostListener('document:click', ['$event'])
+	onDocumentClick(event: MouseEvent): void {
+
+		const target = event.target as HTMLElement;
+
+		// Si el click fue dentro de un dropdown o botón de filtro
+		if (target.closest('.filter-wrapper')) {
+			return;
+		}
+
+		this.dropdownOpen = false;
 	}
 }

@@ -457,16 +457,17 @@
 	border: 1px solid #dce7f2;
 	border-radius: 18px;
 	padding: 12px;
-	resize: vertical;
+	resize: none;
 	min-height: 90px;
-	font-family: inherit;
+	font-family: "Outfit", sans-serif;
 	font-size: .95rem;
 	color: #4b5563;
 	outline: none;
+	transition: .3s;
 }
 
 .edit-comment-form textarea:focus {
-	border-color: #3fa2db;
+	border-color: var(--color-primario);
 	box-shadow: 0 0 0 4px rgba(63, 162, 219, 0.15);
 }
 
@@ -480,7 +481,7 @@
 .save-edit-btn {
 	height: 38px;
 	border: none;
-	border-radius: 18px;
+	border-radius: 25px;
 	padding: 0 18px;
 	font-family: "Outfit", sans-serif;
 	font-weight: 500;
@@ -564,14 +565,14 @@
 	padding: 14px;
 	resize: none;
 	min-height: 120px;
-	font-family: inherit;
+	font-family: "Outfit", sans-serif; 
 	font-size: .95rem;
 	outline: none;
 	transition: .3s;
 }
 
 .comment-form textarea:focus {
-	border-color: #3fa2db;
+	border-color: var(--color-primario);
 	box-shadow: 0 0 0 4px rgba(63, 162, 219, 0.15);
 }
 

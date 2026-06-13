@@ -24,7 +24,7 @@
 				<img [src]="pkg.imageUrl" [alt]="pkg.name" (error)="onImgError($event)" />
 
 				<!-- Badge rating -->
-				<div class="badge">★ {{ pkg.rating }}</div>
+				<div class="badge"><i class="fa-solid fa-star"></i> {{ pkg.rating }}</div>
 
 				<!-- Botón favorito -->
 				<button class="wishlist-btn" [class.liked]="isLiked(pkg.id)" (click)="toggleLike(pkg.id, $event)">
