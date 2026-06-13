@@ -4,6 +4,7 @@ import {
   Output,
   EventEmitter,
   OnChanges,
+  OnInit,
   SimpleChanges,
 } from '@angular/core';
 import {
@@ -12,7 +13,11 @@ import {
   style,
   animate,
 } from '@angular/animations';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Reservation } from '../../models/reservations.models';
+import { ReservationService } from '../../../../../../core/services/reservation.service';
+import { OperacionesService } from '../../../../../../core/services/operaciones.service';
 
 // ─── Modelos ──────────────────────────────────────────────────
 
@@ -32,6 +37,7 @@ export interface ReservationForm {
   ciudadResidencia: string;
   personas: number | '';
   acompanantes: Acompanante[];
+  idViaje: number | '';
   paqueteNombre: string;
   destino: string;
   fechaSalida: string;
@@ -48,9 +54,13 @@ export interface ReservationForm {
   aceptaPolitica: boolean;
 }
 
-export interface PaqueteOption {
-  nombre: string;
+export interface ViajeOption {
+  id: number;
+  idPaquete: number;
+  paqueteNombre: string;
   destino: string;
+  fechaSalida: string;
+  fechaRegreso: string;
   precio: number;
 }
 
@@ -94,31 +104,89 @@ const expandDown = trigger('expandDown', [
   styleUrl: './form-reservations-creation.component.css',
   animations: [slideIn, fadeStep, expandDown],
 })
-export class FormReservationsCreationComponent implements OnChanges {
+export class FormReservationsCreationComponent implements OnChanges, OnInit {
 
   @Input() isOpen = false;
   @Output() closed = new EventEmitter<void>();
   @Output() reservationCreated = new EventEmitter<Reservation>();
 
+  constructor(
+    private reservationService: ReservationService,
+    private operacionesService: OperacionesService,
+  ) {}
+
   currentStep = 1;
   steps = ['Datos del cliente', 'Datos del viaje', 'Pago y confirmación'];
   submitted = false;
+  isSaving = false;
+  saveError = '';
 
-  paquetesDisponibles: PaqueteOption[] = [
-    { nombre: 'Tour Medellín',        destino: 'Medellín',    precio: 850000  },
-    { nombre: 'Tour Cartagena',       destino: 'Cartagena',   precio: 1200000 },
-    { nombre: 'Tour San Andrés',      destino: 'San Andrés',  precio: 3200000 },
-    { nombre: 'Tour Santa Marta',     destino: 'Santa Marta', precio: 4800000 },
-    { nombre: 'Tour Parque del Café', destino: 'Quindío',     precio: 1800000 },
-    { nombre: 'Tour Piscilago',       destino: 'Piscilago',   precio: 320000  },
-  ];
+  viajesDisponibles: ViajeOption[] = [];
+  cargandoViajes = false;
+  errorViajes = false;
 
   form: ReservationForm = this.emptyForm();
+
+  ngOnInit(): void {
+    this.cargarViajes();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isOpen']?.currentValue === true) {
       this.resetForm();
     }
+  }
+
+  cargarViajes(): void {
+    this.cargandoViajes = true;
+    this.errorViajes = false;
+
+    this.operacionesService.getViajes().pipe(
+      map(viajes => viajes.filter(v => {
+        const e = (v.estado ?? '').toUpperCase();
+        return e !== 'CANCELADO' && e !== 'FINALIZADO';
+      })),
+      catchError(() => of([]))
+    ).subscribe({
+      next: (viajes) => {
+        if (viajes.length === 0) {
+          this.viajesDisponibles = [];
+          this.cargandoViajes = false;
+          return;
+        }
+        const uniqueIds = [...new Set(viajes.map(v => v.idPaquete))];
+        forkJoin(
+          uniqueIds.map(id =>
+            this.operacionesService.getPaquete(id).pipe(catchError(() => of({ titulo: `Paquete ${id}`, destino: '', precio: 0 })))
+          )
+        ).subscribe({
+          next: (paquetes) => {
+            const paqueteMap = new Map(uniqueIds.map((id, i) => [id, paquetes[i] as any]));
+            this.viajesDisponibles = viajes.map(v => {
+              const pkg = paqueteMap.get(v.idPaquete) ?? {};
+              return {
+                id: v.id,
+                idPaquete: v.idPaquete,
+                paqueteNombre: pkg.titulo ?? `Paquete ${v.idPaquete}`,
+                destino: pkg.destino ?? '',
+                fechaSalida: v.fechaSalida,
+                fechaRegreso: v.fechaRegreso,
+                precio: pkg.precio ?? 0,
+              };
+            });
+            this.cargandoViajes = false;
+          },
+          error: () => {
+            this.cargandoViajes = false;
+            this.errorViajes = true;
+          },
+        });
+      },
+      error: () => {
+        this.cargandoViajes = false;
+        this.errorViajes = true;
+      },
+    });
   }
 
   nextStep(): void {
@@ -156,6 +224,7 @@ export class FormReservationsCreationComponent implements OnChanges {
 
     if (step === 2) {
       return (
+        this.form.idViaje !== '' &&
         !!this.form.paqueteNombre &&
         !!this.form.fechaSalida &&
         !!this.form.fechaRegreso &&
@@ -193,14 +262,24 @@ export class FormReservationsCreationComponent implements OnChanges {
     }
   }
 
-  onPaqueteChange(nombrePaquete: string): void {
-    const pkg = this.paquetesDisponibles.find(p => p.nombre === nombrePaquete);
-    if (pkg) {
-      this.form.destino = pkg.destino;
-      const personas = this.form.personas ? Number(this.form.personas) : 1;
-      this.form.total = pkg.precio * personas;
-    } else {
+  onViajeChange(idViaje: number | ''): void {
+    if (!idViaje) {
+      this.form.paqueteNombre = '';
       this.form.destino = '';
+      this.form.fechaSalida = '';
+      this.form.fechaRegreso = '';
+      this.form.duracion = '';
+      this.form.total = '';
+      return;
+    }
+    const viaje = this.viajesDisponibles.find(v => v.id === Number(idViaje));
+    if (viaje) {
+      this.form.paqueteNombre = viaje.paqueteNombre;
+      this.form.destino = viaje.destino;
+      this.form.fechaSalida = viaje.fechaSalida;
+      this.form.fechaRegreso = viaje.fechaRegreso;
+      this.form.total = viaje.precio * (Number(this.form.personas) || 1);
+      this.calcDuracion();
     }
   }
 
@@ -233,33 +312,47 @@ export class FormReservationsCreationComponent implements OnChanges {
     this.submitted = true;
     if (!this.validateStep(3)) return;
 
-    const padded = (n: number) => n.toString().padStart(2, '0');
+    this.isSaving = true;
+    this.saveError = '';
 
-    const fechaViaje = this.form.fechaSalida
-      ? (() => {
-          const d = new Date(this.form.fechaSalida + 'T00:00:00');
-          return `${padded(d.getDate())} - ${padded(d.getMonth() + 1)} - ${d.getFullYear()}`;
-        })()
-      : '';
-
-    const reservation: Reservation = {
-      id:              Date.now(),
-      clienteNombre:   this.form.clienteNombre,
-      clienteImagen:   `https://ui-avatars.com/api/?name=${encodeURIComponent(this.form.clienteNombre)}&background=3fa2db&color=fff`,
-      clienteEmail:    this.form.clienteEmail,
-      clienteTelefono: this.form.clienteTelefono,
-      destino:         this.form.destino,
-      personas:        Number(this.form.personas) || 1,
-      fechaViaje,
-      fechaReserva:    new Date().toISOString().split('T')[0],
-      estado:          'Pendiente',
-      paqueteNombre:   this.form.paqueteNombre,
-      total:           Number(this.form.total) || 0,
-      notas:           this.form.notas || undefined,
+    const solicitud = {
+      clienteNombre:     this.form.clienteNombre,
+      tipoDocumento:     this.form.tipoDocumento,
+      documento:         this.form.documento,
+      clienteEmail:      this.form.clienteEmail,
+      clienteTelefono:   this.form.clienteTelefono,
+      ciudadResidencia:  this.form.ciudadResidencia,
+      personas:          Number(this.form.personas) || 1,
+      acompanantes:      this.form.acompanantes.map(a => ({
+        nombre:          a.nombre,
+        fechaNacimiento: a.fechaNacimiento,
+        tipoDocumento:   a.tipoDocumento,
+        documento:       a.documento,
+      })),
+      idViaje:           this.form.idViaje || undefined,
+      paqueteNombre:     this.form.paqueteNombre,
+      destino:           this.form.destino,
+      fechaSalida:       this.form.fechaSalida,
+      fechaRegreso:      this.form.fechaRegreso,
+      tipoHabitacion:    this.form.tipoHabitacion,
+      solicitudEspecial: this.form.solicitudEspecial || undefined,
+      notas:             this.form.notas || undefined,
+      metodoPago:        this.form.metodoPago,
+      estadoPago:        this.form.estadoPago,
+      total:             Number(this.form.total) || 0,
     };
 
-    this.reservationCreated.emit(reservation);
-    this.closed.emit();
+    this.reservationService.crear(solicitud).subscribe({
+      next: (reservation) => {
+        this.isSaving = false;
+        this.reservationCreated.emit(reservation);
+        this.closed.emit();
+      },
+      error: () => {
+        this.isSaving = false;
+        this.saveError = 'No se pudo crear la reserva. Intenta de nuevo.';
+      },
+    });
   }
 
   cancel(): void {
@@ -276,6 +369,8 @@ export class FormReservationsCreationComponent implements OnChanges {
     this.form = this.emptyForm();
     this.currentStep = 1;
     this.submitted = false;
+    this.isSaving = false;
+    this.saveError = '';
   }
 
   private emptyForm(): ReservationForm {
@@ -288,6 +383,7 @@ export class FormReservationsCreationComponent implements OnChanges {
       ciudadResidencia:  '',
       personas:          '',
       acompanantes:      [],
+      idViaje:           '',
       paqueteNombre:     '',
       destino:           '',
       fechaSalida:       '',

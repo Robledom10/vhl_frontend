@@ -140,7 +140,22 @@
 					</td>
 				</tr>
 
-				<tr *ngIf="filteredReservations.length === 0">
+				<tr *ngIf="isLoading">
+					<td colspan="7" class="empty-state">
+						<i class="fa-solid fa-circle-notch fa-spin"></i>
+						<span>Cargando reservas...</span>
+					</td>
+				</tr>
+
+				<tr *ngIf="!isLoading && loadError">
+					<td colspan="7" class="empty-state empty-state--error">
+						<i class="fa-solid fa-triangle-exclamation"></i>
+						<span>No se pudieron cargar las reservas</span>
+						<button class="retry-btn" (click)="loadReservations()">Reintentar</button>
+					</td>
+				</tr>
+
+				<tr *ngIf="!isLoading && !loadError && filteredReservations.length === 0">
 					<td colspan="7" class="empty-state">
 						<i class="fa-regular fa-calendar-xmark"></i>
 						<span>No se encontraron reservas</span>

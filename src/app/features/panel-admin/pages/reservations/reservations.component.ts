@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Reservation } from './models/reservations.models';
+import { ReservationService } from '../../../../core/services/reservation.service';
 
 @Component({
 	selector: 'app-reservations',
@@ -7,6 +8,8 @@ import { Reservation } from './models/reservations.models';
 	styleUrl: './reservations.component.css',
 })
 export class ReservationsComponent implements OnInit {
+
+	constructor(private reservationService: ReservationService) {}
 
 	// ─── Modales ──────────────────────────────────────────
 	showCreateModal = false;
@@ -17,6 +20,10 @@ export class ReservationsComponent implements OnInit {
 	showToast = false;
 	toastTitle = '';
 	toastMessage = '';
+
+	// ─── Estado de carga ──────────────────────────────────
+	isLoading = false;
+	loadError = false;
 
 	// ─── Selección ────────────────────────────────────────
 	selectedReservation: Reservation | null = null;
@@ -38,120 +45,36 @@ export class ReservationsComponent implements OnInit {
 	personasOptions: string[] = [];
 
 	// ─── Data ─────────────────────────────────────────────
-	reservations: Reservation[] = [
-		{
-			id: 1,
-			clienteNombre: 'Camila Perez',
-			clienteImagen: 'https://picsum.photos/seed/camila/200',
-			clienteEmail: 'camila@email.com',
-			clienteTelefono: '300 000 0001',
-			destino: 'Cartagena',
-			personas: 3,
-			fechaViaje: '15 - 03 - 2026',
-			fechaReserva: '2026-01-10',
-			estado: 'Confirmada',
-			paqueteNombre: 'Tour Cartagena',
-			total: 1500000,
-		},
-		{
-			id: 2,
-			clienteNombre: 'Fernando M.',
-			clienteImagen: 'https://picsum.photos/seed/fernando/200',
-			clienteEmail: 'fernando@email.com',
-			clienteTelefono: '300 000 0002',
-			destino: 'Coveñas',
-			personas: 1,
-			fechaViaje: '15 - 03 - 2026',
-			fechaReserva: '2026-01-12',
-			estado: 'Pendiente',
-			paqueteNombre: 'Tour Coveñas',
-			total: 480000,
-		},
-		{
-			id: 3,
-			clienteNombre: 'Stefani R.',
-			clienteImagen: 'https://picsum.photos/seed/stefani/200',
-			clienteEmail: 'stefani@email.com',
-			clienteTelefono: '300 000 0003',
-			destino: 'San Andres',
-			personas: 2,
-			fechaViaje: '15 - 03 - 2026',
-			fechaReserva: '2026-01-13',
-			estado: 'Pendiente',
-			paqueteNombre: 'Tour San Andrés',
-			total: 3200000,
-		},
-		{
-			id: 4,
-			clienteNombre: 'Camilo Caza',
-			clienteImagen: 'https://picsum.photos/seed/camilo/200',
-			clienteEmail: 'camilo@email.com',
-			clienteTelefono: '300 000 0004',
-			destino: 'Medellín',
-			personas: 4,
-			fechaViaje: '15 - 03 - 2026',
-			fechaReserva: '2026-01-14',
-			estado: 'Confirmada',
-			paqueteNombre: 'Tour Medellín',
-			total: 2200000,
-		},
-		{
-			id: 5,
-			clienteNombre: 'Paula J.',
-			clienteImagen: 'https://picsum.photos/seed/paula/200',
-			clienteEmail: 'paula@email.com',
-			clienteTelefono: '300 000 0005',
-			destino: 'Santa Marta',
-			personas: 6,
-			fechaViaje: '15 - 03 - 2026',
-			fechaReserva: '2026-01-15',
-			estado: 'Pendiente',
-			paqueteNombre: 'Tour Santa Marta',
-			total: 4800000,
-		},
-		{
-			id: 6,
-			clienteNombre: 'Marina C.',
-			clienteImagen: 'https://picsum.photos/seed/marina/200',
-			clienteEmail: 'marina@email.com',
-			clienteTelefono: '300 000 0006',
-			destino: 'Parque del C.',
-			personas: 4,
-			fechaViaje: '15 - 03 - 2026',
-			fechaReserva: '2026-01-16',
-			estado: 'Pendiente',
-			paqueteNombre: 'Tour Parque del Café',
-			total: 1800000,
-		},
-		{
-			id: 7,
-			clienteNombre: 'Juan Ceballo',
-			clienteImagen: 'https://picsum.photos/seed/juan/200',
-			clienteEmail: 'juan@email.com',
-			clienteTelefono: '300 000 0007',
-			destino: 'Pscilago',
-			personas: 1,
-			fechaViaje: '15 - 03 - 2026',
-			fechaReserva: '2026-01-17',
-			estado: 'Cancelada',
-			paqueteNombre: 'Tour Piscilago',
-			total: 320000,
-		},
-	];
-
+	reservations: Reservation[] = [];
 	filteredReservations: Reservation[] = [];
 
 	// ─── Lifecycle ────────────────────────────────────────
 
 	ngOnInit(): void {
-		this.buildFilterOptions();
-		this.applyFilters();
+		this.loadReservations();
 
 		document.addEventListener('click', (e) => {
 			const target = e.target as HTMLElement;
 			if (!target.closest('.filter-dropdown')) {
 				this.openFilter = null;
 			}
+		});
+	}
+
+	loadReservations(): void {
+		this.isLoading = true;
+		this.loadError = false;
+		this.reservationService.getAll().subscribe({
+			next: (data) => {
+				this.reservations = data;
+				this.isLoading = false;
+				this.buildFilterOptions();
+				this.applyFilters();
+			},
+			error: () => {
+				this.isLoading = false;
+				this.loadError = true;
+			},
 		});
 	}
 
@@ -202,21 +125,29 @@ export class ReservationsComponent implements OnInit {
 	// ─── Acciones de fila ─────────────────────────────────
 
 	confirmarReserva(reservation: Reservation): void {
-		reservation.estado = 'Confirmada';
-		this.applyFilters();
-		this.triggerToast(
-			'Reserva confirmada',
-			`La reserva de ${reservation.clienteNombre} fue confirmada exitosamente.`
-		);
+		this.reservationService.confirmar(reservation.id).subscribe({
+			next: (updated) => {
+				this.replaceReservation(updated);
+				this.triggerToast(
+					'Reserva confirmada',
+					`La reserva de ${updated.clienteNombre} fue confirmada exitosamente.`
+				);
+			},
+			error: () => this.triggerToast('Error', 'No se pudo confirmar la reserva.'),
+		});
 	}
 
 	reactivarReserva(reservation: Reservation): void {
-		reservation.estado = 'Pendiente';
-		this.applyFilters();
-		this.triggerToast(
-			'Reserva reactivada',
-			`La reserva de ${reservation.clienteNombre} fue reactivada.`
-		);
+		this.reservationService.reactivar(reservation.id).subscribe({
+			next: (updated) => {
+				this.replaceReservation(updated);
+				this.triggerToast(
+					'Reserva reactivada',
+					`La reserva de ${updated.clienteNombre} fue reactivada.`
+				);
+			},
+			error: () => this.triggerToast('Error', 'No se pudo reactivar la reserva.'),
+		});
 	}
 
 	// ─── Modal cancelar ───────────────────────────────────
@@ -232,13 +163,18 @@ export class ReservationsComponent implements OnInit {
 
 	confirmCancel(): void {
 		if (!this.selectedReservation) return;
-		this.selectedReservation.estado = 'Cancelada';
-		this.applyFilters();
-		this.showCancelModal = false;
-		this.triggerToast(
-			'Reserva cancelada',
-			`La reserva de ${this.selectedReservation.clienteNombre} fue cancelada.`
-		);
+		const nombre = this.selectedReservation.clienteNombre;
+		this.reservationService.cancelar(this.selectedReservation.id).subscribe({
+			next: (updated) => {
+				this.replaceReservation(updated);
+				this.showCancelModal = false;
+				this.triggerToast('Reserva cancelada', `La reserva de ${nombre} fue cancelada.`);
+			},
+			error: () => {
+				this.showCancelModal = false;
+				this.triggerToast('Error', 'No se pudo cancelar la reserva.');
+			},
+		});
 	}
 
 	// ─── Modal crear ──────────────────────────────────────
@@ -275,14 +211,18 @@ export class ReservationsComponent implements OnInit {
 		this.sheetOpen = false;
 	}
 
-	// ─── Toast helper ─────────────────────────────────────
+	// ─── Helpers ──────────────────────────────────────────
+
+	private replaceReservation(updated: Reservation): void {
+		const idx = this.reservations.findIndex(r => r.id === updated.id);
+		if (idx !== -1) this.reservations[idx] = updated;
+		this.applyFilters();
+	}
 
 	private triggerToast(title: string, message: string): void {
 		this.toastTitle = title;
 		this.toastMessage = message;
 		this.showToast = true;
-		setTimeout(() => {
-			this.showToast = false;
-		}, 3000);
+		setTimeout(() => { this.showToast = false; }, 3000);
 	}
 }
