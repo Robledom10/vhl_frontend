@@ -591,9 +591,22 @@
 	color: #fff;
 }
 
-.btn-confirm:hover {
+.btn-confirm:hover:not(:disabled) {
 	box-shadow: 0 10px 20px rgba(45, 206, 137, 0.25);
 	transform: translateY(-1px);
+}
+
+.btn-confirm:disabled,
+.btn-prev:disabled,
+.btn-cancel:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.save-error {
+	color: #e53e3e;
+	font-size: 13px;
+	margin-right: 12px;
 }
 
 /* =========================================================
