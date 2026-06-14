@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 
 @Component({
 	selector: 'app-reservation-wizard',
@@ -8,6 +8,7 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/cor
 export class ReservationWizardComponent implements OnInit, OnDestroy {
 
 	@Output() closed = new EventEmitter<void>();
+	@Input() travelers = 1;
 
 	currentStep = 1;
 	private scrollY = 0;
@@ -21,6 +22,18 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 			alternatePhone: ''
 		}
 	];
+
+	companions: any[] = [];
+
+	specialRequest = '';
+
+	roomType = '';
+
+	additionalNotes = '';
+
+	acceptTerms = false;
+
+	acceptCancellation = false;
 
 	private blockScroll(): void {
 
@@ -54,6 +67,16 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 
 	ngOnInit(): void {
 		this.blockScroll();
+
+		this.companions = Array.from(
+			{ length: Math.max(this.travelers - 1, 0) },
+			() => ({
+				name: '',
+				birthDate: '',
+				documentType: '',
+				documentNumber: ''
+			})
+		);
 	}
 
 	ngOnDestroy(): void {
