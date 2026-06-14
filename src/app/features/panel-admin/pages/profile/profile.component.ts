@@ -38,6 +38,27 @@ export class ProfileComponent implements OnInit {
 	departments: string[] = [];
 	cities: string[] = [];
 
+	reservations = [
+		{
+			destino: 'San Andrés',
+			personas: 2,
+			fechaViaje: '15/08/2026',
+			estado: 'Pendiente',
+		},
+		{
+			destino: 'Cartagena',
+			personas: 4,
+			fechaViaje: '20/09/2026',
+			estado: 'Confirmada',
+		},
+		{
+			destino: 'Eje Cafetero',
+			personas: 3,
+			fechaViaje: '05/10/2026',
+			estado: 'Cancelada',
+		},
+	];
+
 	ngOnInit(): void {
 		this.loadProfile();
 		this.departments = colombiaData.colombia.map((item) => item.departamento);

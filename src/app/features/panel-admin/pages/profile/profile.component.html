@@ -140,6 +140,94 @@
 	</form>
 </div>
 
+<!-- =========================
+	RESERVAS DEL USUARIO
+========================= -->
+
+<div class="reservations-content">
+
+	<div class="section-header">
+		<h2>Mis reservas</h2>
+		<p>Consulta el estado de tus viajes y adjunta documentos cuando sea necesario.</p>
+	</div>
+
+	<div class="table-container">
+
+		<table>
+
+			<thead>
+				<tr>
+					<th>Destino</th>
+					<th>Personas</th>
+					<th>Fecha viaje</th>
+					<th>Estado</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+
+			<tbody>
+
+				<tr *ngFor="let item of reservations">
+
+					<td>{{ item.destino }}</td>
+
+					<td>{{ item.personas }}</td>
+
+					<td>{{ item.fechaViaje }}</td>
+
+					<td>
+						<span class="status" [class.confirmada]="item.estado === 'Confirmada'"
+							[class.pendiente]="item.estado === 'Pendiente'"
+							[class.cancelada]="item.estado === 'Cancelada'">
+
+							{{ item.estado }}
+
+						</span>
+					</td>
+
+					<td>
+
+						<div class="actions">
+
+							<button class="view">
+								<i class="fa-regular fa-eye"></i>
+							</button>
+
+							<button class="upload" *ngIf="item.estado === 'Pendiente'">
+								<i class="fa-solid fa-file-arrow-up"></i>
+								Subir
+							</button>
+
+							<button class="upload disabled" *ngIf="item.estado !== 'Pendiente'" disabled>
+								Documento enviado
+							</button>
+
+							<button class="pay">
+								<i class="fa-solid fa-credit-card"></i>
+								Pagar
+							</button>
+
+							<button class="cancel">
+								Cancelar
+							</button>
+
+						</div>
+
+					</td>
+
+				</tr>
+
+				<tr *ngIf="reservations.length === 0">
+					<td colspan="5" class="empty-state">
+						<i class="fa-regular fa-calendar-xmark"></i>
+						<span>No tienes reservas registradas</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
 <app-confirm-modal [isOpen]="showConfirmModal" title="Guardar cambios"
 	message="¿Estás seguro de que deseas actualizar la información de tu perfil?" confirmText="Sí, guardar"
 	cancelText="Cancelar" icon="fa-solid fa-circle-question" confirmColor="var(--color-primario)"

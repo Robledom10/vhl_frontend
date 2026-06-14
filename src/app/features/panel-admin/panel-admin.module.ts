@@ -32,6 +32,7 @@ import { InfoMedicaComponent } from './pages/operaciones/pages/medical-info/medi
 import { IncidentesComponent } from './pages/operaciones/pages/incidents/incidents.component';
 import { ComunicacionesComponent } from './pages/operaciones/pages/communications/communications.component';
 import { AsignarRestauranteComponent } from './pages/operaciones/pages/assign-restaurant/assign-restaurant.component';
+import { DocumentManagementComponent } from './pages/operaciones/pages/document-management/document-management.component';
 
 @NgModule({
 	declarations: [
@@ -63,6 +64,7 @@ import { AsignarRestauranteComponent } from './pages/operaciones/pages/assign-re
 		IncidentesComponent,
 		ComunicacionesComponent,
 		AsignarRestauranteComponent,
+		DocumentManagementComponent,
 	],
 	imports: [
 		CommonModule,

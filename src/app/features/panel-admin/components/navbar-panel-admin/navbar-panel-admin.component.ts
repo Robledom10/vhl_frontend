@@ -90,6 +90,10 @@ export class NavbarPanelAdminComponent {
 					route: '/panel-admin/operaciones-dashboard',
 				},
 				{
+					label: 'Gestión Documental',
+					route: '/panel-admin/gestion-documental'
+				},
+				{
 					label: 'Asignar transporte',
 					route: '/panel-admin/operaciones-transporte',
 				},
