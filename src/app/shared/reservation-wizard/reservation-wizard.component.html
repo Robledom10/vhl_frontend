@@ -13,7 +13,7 @@
 							<i class="fa-solid fa-check" *ngIf="currentStep > 1"></i>
 							<span *ngIf="currentStep <= 1">1</span>
 						</div>
-						<p [class.active]="currentStep === 1">Titular</p>
+						<p [class.active]="currentStep === 1">Viajeros</p>
 					</div>
 
 					<div class="line" [class.active]="currentStep >= 2"></div>
@@ -23,7 +23,7 @@
 							<i class="fa-solid fa-check" *ngIf="currentStep > 2"></i>
 							<span *ngIf="currentStep <= 2">2</span>
 						</div>
-						<p [class.active]="currentStep === 2">Viajeros</p>
+						<p [class.active]="currentStep === 2">Solicitudes</p>
 					</div>
 
 					<div class="line" [class.active]="currentStep >= 3"></div>
@@ -33,7 +33,7 @@
 							<i class="fa-solid fa-check" *ngIf="currentStep > 3"></i>
 							<span *ngIf="currentStep <= 3">3</span>
 						</div>
-						<p [class.active]="currentStep === 3">Reserva</p>
+						<p [class.active]="currentStep === 3">Emergencia</p>
 					</div>
 
 					<div class="line" [class.active]="currentStep >= 4"></div>
@@ -54,41 +54,132 @@
 				<div class="divider"></div>
 
 				<div *ngIf="currentStep === 1" class="step-content">
-					<div class="form-group">
-						<input type="text" placeholder=" ">
-						<label>Nombre</label>
+
+					<!-- TITULAR -->
+
+					<div class="section-card">
+						<div class="section-title">
+							<i class="fa-solid fa-user"></i>
+							<h3>Datos del titular</h3>
+						</div>
+
+						<div class="form-grid">
+							<div class="form-group">
+								<input type="text" placeholder=" ">
+								<label>Nombre</label>
+							</div>
+
+							<div class="form-group">
+								<input type="text" placeholder=" ">
+								<label>Apellido</label>
+							</div>
+
+							<div class="form-group">
+								<select>
+									<option>Cédula de ciudadanía</option>
+									<option>Tarjeta de identidad</option>
+									<option>Cédula de extranjería</option>
+									<option>Pasaporte</option>
+								</select>
+								<label>Tipo de documento</label>
+							</div>
+
+							<div class="form-group">
+								<input type="text" placeholder=" ">
+								<label>Número de documento</label>
+							</div>
+
+							<div class="form-group">
+								<input type="email" placeholder=" ">
+								<label>Correo electrónico</label>
+							</div>
+
+							<div class="form-group">
+								<input type="text" placeholder=" ">
+								<label>Teléfono</label>
+							</div>
+
+							<div class="form-group full-width">
+								<input type="text" placeholder=" ">
+								<label>Ciudad de residencia</label>
+							</div>
+						</div>
 					</div>
 
-					<div class="form-group">
-						<input type="text" placeholder=" ">
-						<label>Apellido</label>
-					</div>
+					<!-- ACOMPAÑANTES -->
 
-					<div class="form-group">
-						<input type="text" placeholder=" ">
-						<label>Documento</label>
-					</div>
+					<div class="traveler-card" *ngFor="let traveler of companions; let i = index">
 
-					<div class="form-group">
-						<input type="text" placeholder=" ">
-						<label>Teléfono</label>
+						<div class="section-title">
+							<i class="fa-solid fa-users"></i>
+							<h3>Acompañante #{{ i + 1 }}</h3>
+						</div>
+
+						<div class="form-grid">
+							<div class="form-group">
+								<input type="text" placeholder=" ">
+								<label>Nombre completo</label>
+							</div>
+
+							<div class="form-group">
+								<input type="date">
+								<label>Fecha de nacimiento</label>
+							</div>
+
+							<div class="form-group">
+								<select>
+									<option>Cédula de ciudadanía</option>
+									<option>Tarjeta de identidad</option>
+									<option>Cédula de extranjería</option>
+									<option>Pasaporte</option>
+								</select>
+								<label>Tipo de documento</label>
+							</div>
+
+							<div class="form-group">
+								<input type="text" placeholder=" ">
+								<label>Número de documento</label>
+							</div>
+						</div>
 					</div>
 				</div>
 
 				<div *ngIf="currentStep === 2" class="step-content">
-
-					<div class="traveler-card">
-
-						<h3>Acompañante #1</h3>
-
-						<div class="form-group">
-							<input type="text" placeholder=" ">
-							<label>Nombre</label>
+					<div class="section-card">
+						<div class="section-title">
+							<i class="fa-solid fa-bed"></i>
+							<h3>Solicitudes especiales</h3>
 						</div>
 
-						<div class="form-group">
-							<input type="text" placeholder=" ">
-							<label>Documento</label>
+						<div class="form-grid">
+							<div class="form-group">
+								<select>
+									<option>Ninguna</option>
+									<option>Alimentación vegana</option>
+									<option>Alimentación vegetariana</option>
+									<option>Sin gluten</option>
+									<option>Silla de ruedas</option>
+									<option>Cama extra</option>
+									<option>Cuna para bebé</option>
+								</select>
+								<label>Solicitud especial</label>
+							</div>
+
+							<div class="form-group">
+								<select>
+									<option>Individual</option>
+									<option>Doble</option>
+									<option>Triple</option>
+									<option>Familiar</option>
+									<option>Suite</option>
+								</select>
+								<label>Tipo de habitación</label>
+							</div>
+
+							<div class="form-group full-width">
+								<textarea placeholder=" "></textarea>
+								<label>Notas adicionales</label>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -107,24 +198,26 @@
 							</button>
 						</div>
 
-						<div class="form-group">
-							<input type="text" placeholder=" " [(ngModel)]="contact.fullName">
-							<label>Nombre completo</label>
-						</div>
+						<div class="form-grid">
+							<div class="form-group">
+								<input type="text" placeholder=" " [(ngModel)]="contact.fullName">
+								<label>Nombre completo</label>
+							</div>
 
-						<div class="form-group">
-							<input type="text" placeholder=" " [(ngModel)]="contact.relationship">
-							<label>Parentesco</label>
-						</div>
+							<div class="form-group">
+								<input type="text" placeholder=" " [(ngModel)]="contact.relationship">
+								<label>Parentesco</label>
+							</div>
 
-						<div class="form-group">
-							<input type="text" placeholder=" " [(ngModel)]="contact.phone">
-							<label>Teléfono</label>
-						</div>
+							<div class="form-group">
+								<input type="text" placeholder=" " [(ngModel)]="contact.phone">
+								<label>Teléfono</label>
+							</div>
 
-						<div class="form-group">
-							<input type="email" placeholder=" " [(ngModel)]="contact.alternatePhone">
-							<label>Correo</label>
+							<div class="form-group">
+								<input type="email" placeholder=" " [(ngModel)]="contact.alternatePhone">
+								<label>Correo electrónico</label>
+							</div>
 						</div>
 					</div>
 
@@ -135,29 +228,99 @@
 				</div>
 
 				<div *ngIf="currentStep === 4">
+					<div class="section-card">
+						<div class="section-title">
+							<i class="fa-solid fa-credit-card"></i>
+							<h3>Información de pago</h3>
+						</div>
+
+						<div class="form-grid">
+							<div class="form-group">
+								<select>
+									<option value="Efectivo">Efectivo</option>
+									<option value="Transferencia">Transferencia bancaria</option>
+									<option value="Tarjeta crédito">Tarjeta de crédito</option>
+									<option value="Tarjeta débito">Tarjeta de débito</option>
+									<option value="PSE">PSE</option>
+									<option value="Nequi">Nequi</option>
+									<option value="Daviplata">Daviplata</option>
+								</select>
+								<label>Método de pago</label>
+							</div>
+
+							<div class="form-group">
+								<select>
+									<option value="Pendiente">Pendiente</option>
+									<option value="Anticipo">Anticipo pagado</option>
+									<option value="Completo">Pago completo</option>
+								</select>
+								<label>Estado del pago</label>
+							</div>
+
+							<div class="form-group full-width">
+								<input type="text" placeholder=" " value="$3.400.000">
+								<label>Monto total</label>
+							</div>
+						</div>
+					</div>
 
 					<div class="summary-card">
 
 						<h3>Resumen de la reserva</h3>
 
-						<div class="summary-row">
-							<span>Destino</span>
-							<strong>Cartagena</strong>
+						<div class="summary-grid">
+							<div class="summary-item">
+								<span>Cliente</span>
+								<strong>Juan Pérez</strong>
+							</div>
+
+							<div class="summary-item">
+								<span>Destino</span>
+								<strong>Cartagena</strong>
+							</div>
+
+							<div class="summary-item">
+								<span>Paquete</span>
+								<strong>Cartagena 5 días 4 noches</strong>
+							</div>
+
+							<div class="summary-item">
+								<span>Personas</span>
+								<strong>{{ travelers }}</strong>
+							</div>
+
+							<div class="summary-item">
+								<span>Fecha de salida</span>
+								<strong>20/07/2026</strong>
+							</div>
+
+							<div class="summary-item">
+								<span>Duración</span>
+								<strong>5 días</strong>
+							</div>
 						</div>
 
-						<div class="summary-row">
-							<span>Viajeros</span>
-							<strong>4</strong>
-						</div>
-
-						<div class="summary-row">
+						<div class="total-highlight">
 							<span>Total</span>
 							<strong>$3.400.000</strong>
 						</div>
-
 					</div>
 
+					<div class="terms-card">
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span class="custom-checkbox"></span>
+							Acepto los términos y condiciones.
+						</label>
+
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span class="custom-checkbox"></span>
+							Acepto la política de cancelación.
+						</label>
+					</div>
 				</div>
+
 				<div class="actions">
 					<button *ngIf="currentStep > 1" class="btn-secondary" (click)="previousStep()">
 						Anterior
