@@ -74,13 +74,13 @@
 						<small class="viaje-id" *ngIf="viaje.tieneViaje">Viaje #{{ viaje.id
 							}}</small>
 					</td>
-					<td>{{ viaje.tieneViaje ? (viaje.transportes[0]?.empresa || '—') : '—'
+					<td>{{ viaje.tieneViaje ? (viaje.transportes[0].empresa || '—') : '—'
 						}}</td>
-					<td>{{ viaje.tieneViaje ? (viaje.transportes[0]?.tipoTransporte || '—') :
+					<td>{{ viaje.tieneViaje ? (viaje.transportes[0].tipoTransporte || '—') :
 						'—' }}</td>
-					<td>{{ viaje.tieneViaje ? (viaje.transportes[0]?.conductor || '—') : '—'
+					<td>{{ viaje.tieneViaje ? (viaje.transportes[0].conductor || '—') : '—'
 						}}</td>
-					<td>{{ viaje.tieneViaje ? (viaje.transportes[0]?.placa || '—') : '—'
+					<td>{{ viaje.tieneViaje ? (viaje.transportes[0].placa || '—') : '—'
 						}}</td>
 					<td>
 						<span *ngIf="viaje.tieneViaje" class="estado-dot"
