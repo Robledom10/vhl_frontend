@@ -8,7 +8,7 @@ export interface Reservation {
 	personas: number;
 	fechaViaje: string;
 	fechaReserva: string;
-	estado: 'Confirmada' | 'Pendiente' | 'Cancelada';
+	estado: 'Confirmada' | 'Pendiente' | 'Cancelada' | 'Pasada' | 'Completada' | 'Bloqueada';
 	paqueteNombre: string;
 	total: number;
 	notas?: string;
