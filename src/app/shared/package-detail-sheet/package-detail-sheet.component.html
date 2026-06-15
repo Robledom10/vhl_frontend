@@ -114,7 +114,8 @@
 									</span>
 								</div>
 
-								<button class="edit-review-btn" *ngIf="canEditComment(comment) && editingCommentId !== comment.id"
+								<button class="edit-review-btn"
+									*ngIf="canEditComment(comment) && editingCommentId !== comment.id"
 									(click)="startEditComment(comment)" title="Editar comentario">
 									<i class="fa-regular fa-pen-to-square"></i>
 								</button>
@@ -131,7 +132,8 @@
 								<textarea rows="3" [(ngModel)]="editCommentText"></textarea>
 
 								<div class="edit-comment-actions">
-									<button class="cancel-edit-btn" type="button" (click)="cancelEditComment()">Cancelar</button>
+									<button class="cancel-edit-btn" type="button"
+										(click)="cancelEditComment()">Cancelar</button>
 									<button class="save-edit-btn" type="button" (click)="saveEditComment(comment)"
 										[disabled]="savingEdit || !editCommentText.trim()">
 										{{ savingEdit ? 'Guardando...' : 'Guardar' }}
@@ -291,5 +293,5 @@
 	</div>
 </div>
 
-<app-reservation-wizard *ngIf="wizardOpen" (closed)="closeReservationWizard()">
+<app-reservation-wizard *ngIf="wizardOpen" [travelers]="travelers" (closed)="closeReservationWizard()">
 </app-reservation-wizard>
