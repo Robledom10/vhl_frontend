@@ -5,7 +5,10 @@ import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Viaje, Transporte, CheckIn, Alojamiento, InformacionMedica, ContactoEmergencia, Incidente, Notificacion, Dashboard, Restaurante, ReservaApi } from '../../features/panel-admin/models/operaciones.models';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+	providedIn: 'root'
+})
+
 export class OperacionesService {
 	private base = `${environment.apiUrl}/v1/operaciones`;
 
