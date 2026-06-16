@@ -30,7 +30,7 @@ import { CheckInQrComponent } from './pages/operaciones/pages/check-in-qr/check-
 import { AsignarAlojamientoComponent } from './pages/operaciones/pages/assign-accommodation/assign-accommodation.component';
 import { InfoMedicaComponent } from './pages/operaciones/pages/medical-info/medical-info.component';
 import { ComunicacionesComponent } from './pages/operaciones/pages/communications/communications.component';
-import { DocumentManagementComponent } from './pages/operaciones/pages/document-management/document-management.component';
+import { UploadDocumentModalComponent } from './pages/profile/components/upload-document-modal/upload-document-modal.component';
 
 @NgModule({
 	declarations: [
@@ -60,7 +60,7 @@ import { DocumentManagementComponent } from './pages/operaciones/pages/document-
 		AsignarAlojamientoComponent,
 		InfoMedicaComponent,
 		ComunicacionesComponent,
-		DocumentManagementComponent,
+		UploadDocumentModalComponent,
 	],
 	imports: [
 		CommonModule,

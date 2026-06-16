@@ -1,0 +1,77 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="closed.emit()">
+	<div class="modal-container" (click)="$event.stopPropagation()">
+
+		<h2>Subir documento</h2>
+
+		<div class="divider"></div>
+
+		<!-- TIPO DOCUMENTO -->
+		<div class="form-group custom-select-group">
+			<div class="custom-select" [class.open]="dropdownOpen" [class.selected]="selectedType"
+				(click)="$event.stopPropagation(); dropdownOpen = !dropdownOpen">
+
+				<div class="custom-select-value">
+					{{ selectedTypeLabel || '' }}
+				</div>
+
+				<i class="fa-solid fa-angle-down select-icon"></i>
+
+				<div class="custom-select-dropdown" *ngIf="dropdownOpen" (click)="$event.stopPropagation()">
+
+					<div class="custom-option" [class.active]="selectedType === 'cedula'"
+						(click)="selectType('cedula', 'Cédula')">
+						Cédula
+					</div>
+
+					<div class="custom-option" [class.active]="selectedType === 'pasaporte'"
+						(click)="selectType('pasaporte', 'Pasaporte')">
+						Pasaporte
+					</div>
+
+					<div class="custom-option" [class.active]="selectedType === 'visa'"
+						(click)="selectType('visa', 'Visa')">
+						Visa
+					</div>
+
+					<div class="custom-option" [class.active]="selectedType === 'vacuna'"
+						(click)="selectType('vacuna', 'Carnet de vacuna')">
+						Carnet de vacuna
+					</div>
+				</div>
+			</div>
+
+			<label [class.active]="selectedType">
+				Tipo de documento
+			</label>
+		</div>
+
+		<!-- ARCHIVO -->
+		<div class="form-group">
+
+			<label>Archivo</label>
+			<input type="file" #fileInput (change)="onFileSelected($event)" hidden>
+
+			<div class="file-upload" (click)="fileInput.click()">
+				<i class="fa-solid fa-cloud-arrow-up"></i>
+
+				<div class="file-info">
+					<span class="file-name">
+						{{ selectedFile.name || 'Seleccionar archivo' }}
+					</span>
+
+					<small> PDF, JPG o PNG</small>
+				</div>
+			</div>
+		</div>
+
+		<div class="buttons">
+			<button class="btn-cancel" (click)="closed.emit()">
+				Cancelar
+			</button>
+
+			<button class="btn-upload" (click)="upload()">
+				Subir documento
+			</button>
+		</div>
+	</div>
+</div>

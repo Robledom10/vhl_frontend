@@ -89,8 +89,7 @@
 			</thead>
 
 			<tbody>
-				<tr *ngFor="let item of filteredReservations"
-					[class.row-cancelled]="item.estado === 'Cancelada'">
+				<tr *ngFor="let item of filteredReservations" [class.row-cancelled]="item.estado === 'Cancelada'">
 
 					<td>
 						<img [src]="item.clienteImagen" [alt]="item.clienteNombre" />
@@ -102,8 +101,7 @@
 					<td>{{ item.fechaViaje }}</td>
 
 					<td>
-						<span class="status"
-							[class.confirmada]="item.estado === 'Confirmada'"
+						<span class="status" [class.confirmada]="item.estado === 'Confirmada'"
 							[class.pendiente]="item.estado === 'Pendiente'"
 							[class.cancelada]="item.estado === 'Cancelada'">
 							{{ item.estado }}
@@ -116,23 +114,22 @@
 								<i class="fa-regular fa-eye"></i>
 							</button>
 
-							<button class="confirm"
-								*ngIf="item.estado === 'Pendiente'"
+							<button class="document">
+								<i class="fa-regular fa-file-lines"></i>
+							</button>
+
+							<button class="confirm" *ngIf="item.estado === 'Pendiente'"
 								(click)="confirmarReserva(item)">
 								Confirmar
 							</button>
-							<button class="confirm disabled"
-								*ngIf="item.estado !== 'Pendiente'" disabled>
+							<button class="confirm disabled" *ngIf="item.estado !== 'Pendiente'" disabled>
 								Confirmar
 							</button>
 
-							<button class="cancel"
-								*ngIf="item.estado !== 'Cancelada'"
-								(click)="openCancelModal(item)">
+							<button class="cancel" *ngIf="item.estado !== 'Cancelada'" (click)="openCancelModal(item)">
 								Cancelar
 							</button>
-							<button class="reactivate"
-								*ngIf="item.estado === 'Cancelada'"
+							<button class="reactivate" *ngIf="item.estado === 'Cancelada'"
 								(click)="reactivarReserva(item)">
 								Reactivar
 							</button>
@@ -167,37 +164,21 @@
 </div>
 
 <!-- MODAL CONFIRMAR CANCELACIÓN -->
-<app-confirm-modal
-	[isOpen]="showCancelModal"
-	title="Cancelar reserva"
+<app-confirm-modal [isOpen]="showCancelModal" title="Cancelar reserva"
 	message="Esta acción cancelará la reserva del cliente. Podrá reactivarla más adelante."
-	confirmText="Cancelar reserva"
-	cancelText="Volver"
-	icon="fa-solid fa-triangle-exclamation"
-	confirmColor="#ff3b3b"
-	iconBg="rgba(255, 59, 59, 0.12)"
-	iconColor="#ff3b3b"
-	(confirmed)="confirmCancel()"
-	(closed)="closeCancelModal()">
+	confirmText="Cancelar reserva" cancelText="Volver" icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b"
+	iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b" (confirmed)="confirmCancel()" (closed)="closeCancelModal()">
 </app-confirm-modal>
 
 <!-- TOAST -->
-<app-toast-notification
-	[show]="showToast"
-	[title]="toastTitle"
-	[message]="toastMessage">
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
 </app-toast-notification>
 
 <!-- MODAL CREAR RESERVA -->
-<app-form-reservation-creation
-	[isOpen]="showCreateModal"
-	(closed)="closeCreateModal()"
+<app-form-reservation-creation [isOpen]="showCreateModal" (closed)="closeCreateModal()"
 	(reservationCreated)="onReservationCreated($event)">
 </app-form-reservation-creation>
 
 <!-- DETALLE RESERVA -->
-<app-reservation-detail-sheet
-	[isOpen]="sheetOpen"
-	[reservation]="selectedReservationDetail"
-	(closed)="closeDetail()">
+<app-reservation-detail-sheet [isOpen]="sheetOpen" [reservation]="selectedReservationDetail" (closed)="closeDetail()">
 </app-reservation-detail-sheet>
