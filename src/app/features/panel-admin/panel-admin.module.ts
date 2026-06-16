@@ -29,9 +29,7 @@ import { AsignarTransporteComponent } from './pages/operaciones/pages/assign-tra
 import { CheckInQrComponent } from './pages/operaciones/pages/check-in-qr/check-in-qr.component';
 import { AsignarAlojamientoComponent } from './pages/operaciones/pages/assign-accommodation/assign-accommodation.component';
 import { InfoMedicaComponent } from './pages/operaciones/pages/medical-info/medical-info.component';
-import { IncidentesComponent } from './pages/operaciones/pages/incidents/incidents.component';
 import { ComunicacionesComponent } from './pages/operaciones/pages/communications/communications.component';
-import { AsignarRestauranteComponent } from './pages/operaciones/pages/assign-restaurant/assign-restaurant.component';
 import { DocumentManagementComponent } from './pages/operaciones/pages/document-management/document-management.component';
 
 @NgModule({
@@ -61,9 +59,7 @@ import { DocumentManagementComponent } from './pages/operaciones/pages/document-
 		CheckInQrComponent,
 		AsignarAlojamientoComponent,
 		InfoMedicaComponent,
-		IncidentesComponent,
 		ComunicacionesComponent,
-		AsignarRestauranteComponent,
 		DocumentManagementComponent,
 	],
 	imports: [
