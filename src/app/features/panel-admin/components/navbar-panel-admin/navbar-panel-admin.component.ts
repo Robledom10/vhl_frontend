@@ -90,6 +90,10 @@ export class NavbarPanelAdminComponent {
 					route: '/panel-admin/operaciones-dashboard',
 				},
 				{
+					label: 'Gestión Documental',
+					route: '/panel-admin/gestion-documental'
+				},
+				{
 					label: 'Asignar transporte',
 					route: '/panel-admin/operaciones-transporte',
 				},
@@ -106,16 +110,8 @@ export class NavbarPanelAdminComponent {
 					route: '/panel-admin/operaciones-info-medica',
 				},
 				{
-					label: 'Incidentes',
-					route: '/panel-admin/operaciones-incidentes',
-				},
-				{
 					label: 'Comunicaciones',
 					route: '/panel-admin/operaciones-comunicaciones',
-				},
-				{
-					label: 'Restaurantes',
-					route: '/panel-admin/operaciones-restaurantes',
 				},
 			],
 		},

@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild, AfterViewChecked } from '@angular/core';
-import { ChatbotService, ChatMessage } from '../chatbot/chatbot.service';
+import { ChatbotService, ChatMessage } from '../../core/services/chatbot.service';
 
 @Component({
 	selector: 'app-chatbot-widget',

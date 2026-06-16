@@ -4,7 +4,6 @@ import { BehaviorSubject, catchError, filter, Observable, switchMap, take, throw
 import { AuthService } from '../services/auth.service';
 
 @Injectable()
-
 export class AuthInterceptor implements HttpInterceptor {
 	private isRefreshing = false;
 	private refreshTokenSubject = new BehaviorSubject<string | null>(null);
@@ -19,20 +18,24 @@ export class AuthInterceptor implements HttpInterceptor {
 			req.url.includes('/auth/login') ||
 			req.url.includes('/auth/register') ||
 			req.url.includes('/auth/tokens/refresh') ||
-			req.url.includes('/auth/tokens/logout');
+			req.url.includes('/auth/tokens/logout') ||
+			req.url.includes('/auth/google-login'); // 👈 Añadido por seguridad para tu flujo de Google
 
-		let authReq = req;
+		// 1. Clonamos la petición inicial agregando SIEMPRE la cabecera para ngrok
+		let authReq = req.clone({
+			headers: req.headers.set('ngrok-skip-browser-warning', 'true')
+		});
 
 		const token = this.authService.getToken();
 
-		//NO enviar token en rutas públicas
+		// 2. NO enviar token en rutas públicas, pero conservamos la cabecera ngrok que añadimos arriba
 		if (!isAuthRequest && token) {
-			authReq = this.addToken(req, token);
+			authReq = this.addToken(authReq, token); // 👈 Pasamos 'authReq' (que ya tiene ngrok) en lugar de 'req'
 		}
 
 		return next.handle(authReq).pipe(
 			catchError((error: HttpErrorResponse) => {
-				//SOLO manejar 401 en endpoints protegidos
+				// SOLO manejar 401 en endpoints protegidos
 				if (error.status === 401 && !isAuthRequest) {
 					return this.handle401Error(authReq, next);
 				}
@@ -53,12 +56,12 @@ export class AuthInterceptor implements HttpInterceptor {
 
 					const newToken = response.accessToken;
 
-					//Guardar nuevo token
+					// Guardar nuevo token
 					localStorage.setItem('token', newToken);
 
 					this.refreshTokenSubject.next(newToken);
 
-					//Reintentar request original
+					// Reintentar request original (addToken ya mantiene la cabecera ngrok existente)
 					return next.handle(this.addToken(req, newToken));
 				}),
 				catchError((err) => {
@@ -71,7 +74,7 @@ export class AuthInterceptor implements HttpInterceptor {
 				}),
 			);
 		} else {
-			//Esperar mientras otro refresh termina
+			// Esperar mientras otro refresh termina (addToken mantiene la cabecera ngrok existente)
 			return this.refreshTokenSubject.pipe(
 				filter((token) => token != null),
 				take(1),
@@ -81,6 +84,7 @@ export class AuthInterceptor implements HttpInterceptor {
 	}
 
 	private addToken(request: HttpRequest<any>, token: string) {
+		// 'setHeaders' conserva las cabeceras existentes (como la de ngrok) y añade/reemplaza el Authorization
 		return request.clone({
 			setHeaders: {
 				Authorization: `Bearer ${token}`,

@@ -114,7 +114,8 @@
 									</span>
 								</div>
 
-								<button class="edit-review-btn" *ngIf="canEditComment(comment) && editingCommentId !== comment.id"
+								<button class="edit-review-btn"
+									*ngIf="canEditComment(comment) && editingCommentId !== comment.id"
 									(click)="startEditComment(comment)" title="Editar comentario">
 									<i class="fa-regular fa-pen-to-square"></i>
 								</button>
@@ -131,7 +132,8 @@
 								<textarea rows="3" [(ngModel)]="editCommentText"></textarea>
 
 								<div class="edit-comment-actions">
-									<button class="cancel-edit-btn" type="button" (click)="cancelEditComment()">Cancelar</button>
+									<button class="cancel-edit-btn" type="button"
+										(click)="cancelEditComment()">Cancelar</button>
 									<button class="save-edit-btn" type="button" (click)="saveEditComment(comment)"
 										[disabled]="savingEdit || !editCommentText.trim()">
 										{{ savingEdit ? 'Guardando...' : 'Guardar' }}
@@ -234,6 +236,28 @@
 							</button>
 						</div>
 
+						<div class="travel-date-selector">
+
+							<label>Fecha disponible</label>
+
+							<select [(ngModel)]="selectedTripId" (change)="onTripChange()">
+
+								<option [ngValue]="null">
+									Selecciona una fecha
+								</option>
+
+								<option *ngFor="let viaje of viajesDisponibles" [value]="viaje.id">
+
+									{{ viaje.fechaSalida | date:'dd/MM/yyyy' }}
+									-
+									{{ viaje.fechaRegreso | date:'dd/MM/yyyy' }}
+
+								</option>
+
+							</select>
+
+						</div>
+
 						<div class="reservation-price">
 							<div class="reservation-total">
 								<span>Total estimado</span>
@@ -247,7 +271,7 @@
 							</small>
 						</div>
 
-						<button class="reserve-btn" (click)="openReservationWizard()">
+						<button class="reserve-btn" (click)="openReservationWizard()" [disabled]="!viajeSeleccionado">
 							Continuar reserva
 						</button>
 					</div>
@@ -291,5 +315,6 @@
 	</div>
 </div>
 
-<app-reservation-wizard *ngIf="wizardOpen" (closed)="closeReservationWizard()">
+<app-reservation-wizard *ngIf="wizardOpen" [travelers]="travelers" [package]="package" [totalPrice]="totalPrice"
+	[selectedTrip]="viajeSeleccionado" (closed)="closeReservationWizard()">
 </app-reservation-wizard>

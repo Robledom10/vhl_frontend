@@ -159,39 +159,50 @@
 				<div class="fields-grid">
 
 					<div class="field-group full">
-						<select id="paqueteNombre"
-							[(ngModel)]="form.paqueteNombre"
-							(ngModelChange)="onPaqueteChange($event)"
-							[class.ng-invalid]="submitted && !form.paqueteNombre"
-							[class.ng-touched]="submitted && !form.paqueteNombre">
-							<option value="" disabled selected></option>
-							<option *ngFor="let p of paquetesDisponibles" [value]="p.nombre">{{ p.nombre }}</option>
+						<select id="idViaje"
+							[(ngModel)]="form.idViaje"
+							(ngModelChange)="onViajeChange($event)"
+							[disabled]="cargandoViajes"
+							[class.ng-invalid]="submitted && !form.idViaje"
+							[class.ng-touched]="submitted && !form.idViaje">
+							<option value="" disabled selected>
+								{{ cargandoViajes ? 'Cargando viajes...' : (viajesDisponibles.length === 0 ? 'No hay viajes programados' : 'Selecciona un viaje') }}
+							</option>
+							<option *ngFor="let v of viajesDisponibles" [value]="v.id">
+								{{ v.paqueteNombre }} — {{ v.fechaSalida }} → {{ v.fechaRegreso }}
+							</option>
 						</select>
-						<label for="paqueteNombre">Paquete seleccionado <span class="req">*</span></label>
+						<label for="idViaje">Viaje programado <span class="req">*</span></label>
+						<span class="field-hint" *ngIf="errorViajes" style="color:#e53935;font-size:12px;">
+							No se pudieron cargar los viajes.
+							<button type="button" (click)="cargarViajes()" style="background:none;border:none;color:#e53935;cursor:pointer;text-decoration:underline;padding:0;">Reintentar</button>
+						</span>
 					</div>
 
-					<div class="field-group full">
+					<div class="field-group half">
+						<input type="text" id="paqueteNombre" placeholder=" " class="readonly-field"
+							[value]="form.paqueteNombre || ''" readonly>
+						<label for="paqueteNombre">Paquete</label>
+					</div>
+
+					<div class="field-group half">
 						<input type="text" id="destino" placeholder=" " class="readonly-field"
 							[value]="form.destino || ''" readonly>
 						<label for="destino">Destino</label>
 					</div>
 
 					<div class="field-group half">
-						<input type="date" id="fechaSalida"
-							[(ngModel)]="form.fechaSalida"
-							(ngModelChange)="calcDuracion()"
+						<input type="text" id="fechaSalida" placeholder=" " class="readonly-field"
+							[value]="form.fechaSalida || ''" readonly
 							[class.ng-invalid]="submitted && !form.fechaSalida"
 							[class.ng-touched]="submitted && !form.fechaSalida">
-						<label for="fechaSalida">Fecha de salida <span class="req">*</span></label>
+						<label for="fechaSalida">Fecha de salida</label>
 					</div>
 
 					<div class="field-group half">
-						<input type="date" id="fechaRegreso"
-							[(ngModel)]="form.fechaRegreso"
-							(ngModelChange)="calcDuracion()"
-							[class.ng-invalid]="submitted && !form.fechaRegreso"
-							[class.ng-touched]="submitted && !form.fechaRegreso">
-						<label for="fechaRegreso">Fecha de regreso <span class="req">*</span></label>
+						<input type="text" id="fechaRegreso" placeholder=" " class="readonly-field"
+							[value]="form.fechaRegreso || ''" readonly>
+						<label for="fechaRegreso">Fecha de regreso</label>
 					</div>
 
 					<div class="field-group half">
@@ -357,16 +368,17 @@
 
 		<!-- FOOTER -->
 		<div class="modal-footer">
-			<button class="btn-cancel" (click)="cancel()">Cancelar</button>
+			<button class="btn-cancel" (click)="cancel()" [disabled]="isSaving">Cancelar</button>
 			<div class="footer-right">
-				<button class="btn-prev" *ngIf="currentStep > 1" (click)="prevStep()">
+				<span *ngIf="saveError" class="save-error">{{ saveError }}</span>
+				<button class="btn-prev" *ngIf="currentStep > 1" (click)="prevStep()" [disabled]="isSaving">
 					← Anterior
 				</button>
 				<button class="btn-next" *ngIf="currentStep < 3" (click)="nextStep()">
 					Siguiente →
 				</button>
-				<button class="btn-confirm" *ngIf="currentStep === 3" (click)="confirm()">
-					✓ Confirmar
+				<button class="btn-confirm" *ngIf="currentStep === 3" (click)="confirm()" [disabled]="isSaving">
+					{{ isSaving ? 'Guardando...' : '✓ Confirmar' }}
 				</button>
 			</div>
 		</div>

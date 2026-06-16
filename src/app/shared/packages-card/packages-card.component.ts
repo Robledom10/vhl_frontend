@@ -86,7 +86,7 @@ export class PackagesCardComponent implements OnInit {
 			duration: `${nights} Día${nights !== 1 ? 's' : ''} / ${nights - 1} Noche${nights - 1 !== 1 ? 's' : ''}`,
 			departurePlace: p.lugarSalida || 'Por confirmar',
 			transport: p.tiposTransporte?.join(', ') || p.tipoTransporte || 'Por confirmar',
-			mainImage: p.fotoHorizontalUrl || p.fotoVerticalUrl || '',
+			mainImage: p.fotoVerticalUrl || '',
 			galleryImages: [p.fotoVerticalUrl, p.fotoHorizontalUrl].filter((url): url is string => !!url && url.trim() !== ''),
 			itinerary: (p.itinerario || []).map((it) => ({
 				day: `Día ${it.numeroDia}:`,
