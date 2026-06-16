@@ -37,12 +37,12 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'quindio',
       name: 'Hernando Lopera',
       label: 'Calarca, Quindío',
-      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780082818/logo_mejorado_qh8dck.png',
+      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1780082818/logo_mejorado_qh8dck.png',
       staticImages: [
-        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780082818/logo_mejorado_qh8dck.png',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780084272/hl_mejorada_ymwkxn.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1780082818/logo_mejorado_qh8dck.png',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1780084272/hl_mejorada_ymwkxn.jpg',
       ],
-      description: 'El corazón del Eje Cafetero. Valle del Cocora, palmas de cera, fincas cafeteras y el encanto de sus pueblos patrimonio.',
+      description: 'Tu punto de partida hacia aventuras inolvidables; expertos en diseñar excursiones personalizadas y grandes viajes para descubrir Colombia y el mundo.',
       lat: 4.5318,
       lng: -75.6442,
       placeId: 'ChIJx8bT4x7Koo8R7x4X0sJfR5M',
@@ -54,12 +54,14 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'santamarta',
       name: 'Santa Marta',
       label: 'Magdalena, Colombia',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/El_Rodadero%2C_Santa_Marta.jpg/640px-El_Rodadero%2C_Santa_Marta.jpg',
+      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5//v1781040742/SantaMarta01_i6mfge.jpg',
       staticImages: [
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/El_Rodadero%2C_Santa_Marta.jpg/640px-El_Rodadero%2C_Santa_Marta.jpg',
-        // Agrega aquí más URLs de Santa Marta
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781040742/SantaMarta01_i6mfge.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781639331/SantaMarta04_yo3eub.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781634987/SantaMarta03_zqdoiu.jpg',
+        
       ],
-      description: 'La ciudad más antigua de Colombia. Playas paradisíacas, la Sierra Nevada y el Parque Tayrona.',
+      description: 'La ciudad más antigua de Colombia; un rincón caribeño donde la historia colonial se une con playas paradisíacas y la Sierra Nevada.',
       lat: 11.2408,
       lng: -74.211,
       placeId: 'ChIJRcbVhzJa-o4Rz5GJkFDZ1uE',
@@ -71,12 +73,13 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'cartagena',
       name: 'Cartagena',
       label: 'Bolívar, Colombia',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Cartagena_de_Indias_-_Centro_Historico.jpg/640px-Cartagena_de_Indias_-_Centro_Historico.jpg',
+      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781038971/Cartagena01_rx3n25.jpg',
       staticImages: [
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Cartagena_de_Indias_-_Centro_Historico.jpg/640px-Cartagena_de_Indias_-_Centro_Historico.jpg',
-        // Agrega aquí más URLs de Cartagena
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781038971/Cartagena01_rx3n25.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781209879/Cartagena02_pjawq4.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781209879/Cartagena02_pjawq4.jpg'
       ],
-      description: 'Ciudad amurallada Patrimonio de la Humanidad. Historia colonial, islas del Rosario y playas del Caribe.',
+      description: 'Un tesoro histórico de calles coloridas, murallas centenarias y fortalezas coloniales llenas de romance y leyenda.',
       lat: 10.391,
       lng: -75.4794,
       placeId: 'ChIJp9r1aNIm-Y4RVWBS3g8Xv6A',
@@ -169,8 +172,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
 
       const bubble = document.createElement('div');
       bubble.style.cssText = `
-        width: 44px; height: 44px; border-radius: 50%; background: #e2e8f0;
-        border: 3px solid #3fa2db;
+        width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0;
         display: flex; align-items: center; justify-content: center;
         box-shadow: 0 3px 12px rgba(0,0,0,0.25);
         transition: transform 0.2s; overflow: hidden;
@@ -188,7 +190,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       label.style.cssText = `
         background: #1a1a2e; color: #fff; font-size: 10px; font-family: sans-serif;
         padding: 2px 7px; border-radius: 10px; margin-top: 4px; white-space: nowrap;
-        font-weight: 600; letter-spacing: 0.3px;
+        font-weight: 600; letter-spacing: 1px;
       `;
       label.textContent = dest.name;
 
