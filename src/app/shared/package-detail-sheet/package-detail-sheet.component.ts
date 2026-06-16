@@ -2,6 +2,8 @@ import { Component, Input, Output, EventEmitter, OnChanges, OnDestroy, SimpleCha
 import { PackageService } from '../../core/services/package.service';
 import { RespuestaComentarioPaquete } from './models/comments.model';
 import { AuthService } from '../../core/services/auth.service';
+import { OperacionesService } from '../../core/services/operaciones.service';
+import { Viaje } from '../../features/panel-admin/models/operaciones.models';
 
 export interface InfoRow {
 	label: string;
@@ -58,9 +60,14 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 
 	comments: RespuestaComentarioPaquete[] = [];
 
+	viajesDisponibles: Viaje[] = [];
+
+	viajeSeleccionado: Viaje | null = null;
+
 	constructor(
 		private packageService: PackageService,
-		private authService: AuthService
+		private authService: AuthService,
+		private operacionesService: OperacionesService
 	) { }
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -73,6 +80,7 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 
 			if (this.package?.id) {
 				this.loadComments();
+				this.loadTrips();
 			}
 
 			this.visible = true;
@@ -92,6 +100,45 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 
 	ngOnDestroy(): void {
 		this.restoreScroll();
+	}
+
+	loadTrips(): void {
+
+		if (!this.package?.id) {
+			return;
+		}
+
+		this.operacionesService
+			.getViajes()
+			.subscribe({
+
+				next: viajes => {
+
+					this.viajesDisponibles = viajes
+						.filter(v =>
+							v.idPaquete === this.package!.id &&
+							v.estado !== 'CANCELADO' &&
+							v.estado !== 'FINALIZADO'
+						);
+
+				},
+
+				error: error => {
+					console.error(error);
+				}
+
+			});
+	}
+
+	selectedTripId: number | null = null;
+
+	onTripChange(): void {
+
+		this.viajeSeleccionado =
+			this.viajesDisponibles.find(
+				v => v.id === Number(this.selectedTripId)
+			) ?? null;
+
 	}
 
 	private blockScroll(): void {

@@ -236,6 +236,28 @@
 							</button>
 						</div>
 
+						<div class="travel-date-selector">
+
+							<label>Fecha disponible</label>
+
+							<select [(ngModel)]="selectedTripId" (change)="onTripChange()">
+
+								<option [ngValue]="null">
+									Selecciona una fecha
+								</option>
+
+								<option *ngFor="let viaje of viajesDisponibles" [value]="viaje.id">
+
+									{{ viaje.fechaSalida | date:'dd/MM/yyyy' }}
+									-
+									{{ viaje.fechaRegreso | date:'dd/MM/yyyy' }}
+
+								</option>
+
+							</select>
+
+						</div>
+
 						<div class="reservation-price">
 							<div class="reservation-total">
 								<span>Total estimado</span>
@@ -249,7 +271,7 @@
 							</small>
 						</div>
 
-						<button class="reserve-btn" (click)="openReservationWizard()">
+						<button class="reserve-btn" (click)="openReservationWizard()" [disabled]="!viajeSeleccionado">
 							Continuar reserva
 						</button>
 					</div>
@@ -293,5 +315,6 @@
 	</div>
 </div>
 
-<app-reservation-wizard *ngIf="wizardOpen" [travelers]="travelers" (closed)="closeReservationWizard()">
+<app-reservation-wizard *ngIf="wizardOpen" [travelers]="travelers" [package]="package" [totalPrice]="totalPrice"
+	[selectedTrip]="viajeSeleccionado" (closed)="closeReservationWizard()">
 </app-reservation-wizard>
