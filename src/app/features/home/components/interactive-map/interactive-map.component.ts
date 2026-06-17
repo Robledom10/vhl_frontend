@@ -40,7 +40,9 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1780082818/logo_mejorado_qh8dck.png',
       staticImages: [
         'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1780082818/logo_mejorado_qh8dck.png',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1777919861/D%C3%ADa3-75_t3mdvr.jpg',
         'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1780084272/hl_mejorada_ymwkxn.jpg',
+      
       ],
       description: 'Tu punto de partida hacia aventuras inolvidables; expertos en diseñar excursiones personalizadas y grandes viajes para descubrir Colombia y el mundo.',
       lat: 4.5318,
@@ -77,7 +79,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       staticImages: [
         'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781038971/Cartagena01_rx3n25.jpg',
         'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781209879/Cartagena02_pjawq4.jpg',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781209879/Cartagena02_pjawq4.jpg'
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781401858/Cartagena03_bqt20f.jpg'
       ],
       description: 'Un tesoro histórico de calles coloridas, murallas centenarias y fortalezas coloniales llenas de romance y leyenda.',
       lat: 10.391,
@@ -91,14 +93,13 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'barranquilla',
       name: 'Barranquilla',
       label: 'Atlántico, Colombia',
-      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780080999/D%C3%ADa5-12_ayipp0.jpg',
+      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781116112/Barranquilla02_y3rgro.jpg',
       staticImages: [
-        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780080999/D%C3%ADa5-12_ayipp0.jpg',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780080999/D%C3%ADa5-12_ayipp0.jpg',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780080999/D%C3%ADa5-12_ayipp0.jpg',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780080999/D%C3%ADa5-12_ayipp0.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781116112/Barranquilla02_y3rgro.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781210643/Barranquilla05_n9kgel.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781206755/Barranquilla03_kefkcn.jpg',
       ],
-      description: 'La capital de la alegría. Sede del famoso Carnaval declarado Patrimonio Inmaterial de la Humanidad.',
+      description: 'Una vibrante ciudad caribeña que enamora con la alegría de su Carnaval y su gran desarrollo moderno junto al Río Magdalena.',
       lat: 10.9685,
       lng: -74.7813,
       placeId: 'ChIJR1fBKzR6-Y4RAoGRzMsU2bE',
@@ -110,12 +111,13 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'medellin',
       name: 'Medellín',
       label: 'Antioquia, Colombia',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Medellin_Vista_Parcial.jpg/640px-Medellin_Vista_Parcial.jpg',
+      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781037862/Medellin02_w4p72p.jpg',
       staticImages: [
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Medellin_Vista_Parcial.jpg/640px-Medellin_Vista_Parcial.jpg',
-        // Agrega aquí más URLs de Medellín
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781037862/Medellin02_w4p72p.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781036054/Medellin01_y99rjb.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781645599/Medellin04_s2mqna.jpg',
       ],
-      description: 'La ciudad de la eterna primavera. Innovación, cultura, flores y la calidez de su gente paisa.',
+      description: 'La Ciudad de la Eterna Primavera cautiva con su innovadora transformación urbana, el colorido de sus flores y la inigualable calidez de la cultura paisa.',
       lat: 6.2442,
       lng: -75.5812,
       placeId: 'ChIJaUjKMaKRRI8R9VsEUJM2fLI',
@@ -152,10 +154,16 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
     this.map = new google.maps.Map(document.getElementById('travel-map'), {
       center: { lat: 7.5, lng: -75.2 },
       zoom: 6,
-      minZoom: 5,
-      maxZoom: 18,
+      minZoom: 6,
+      maxZoom: 14,
       mapId: 'DEMO_MAP_ID',
-      zoomControl: true,
+      // Bloquea toda interacción manual: arrastrar, scroll, pinch y doble clic.
+      // Las llamadas por código (panTo/setZoom) siguen funcionando sin problema.
+      gestureHandling: 'none',
+      // Oculta los botones +/-, ya que no queremos ninguna vía manual de zoom.
+      zoomControl: false,
+      // Evita que las flechas o +/- del teclado muevan o amplíen el mapa.
+      keyboardShortcuts: false,
       streetViewControl: false,
       mapTypeControl: false,
       fullscreenControl: false,
