@@ -301,7 +301,7 @@ export class ProfileComponent implements OnInit {
 			next: (reservations) => {
 
 				this.reservations = reservations.filter(
-					r => r.clienteEmail === user?.email
+					r => r.datosUsuario?.email === user?.email
 				);
 
 				this.isLoadingReservations = false;
