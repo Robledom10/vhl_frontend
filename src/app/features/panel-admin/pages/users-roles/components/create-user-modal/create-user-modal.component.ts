@@ -50,6 +50,7 @@ export class CreateUserModalComponent {
 			firstName: ['', [Validators.required, Validators.minLength(3)]],
 			lastName: ['', [Validators.required]],
 			email: ['', [Validators.required, Validators.email]],
+			phone: ['', [Validators.pattern(/^\+?[\d\s\-]{7,20}$/)]],
 			documentType: ['', [Validators.required]],
 			documentNumber: [
 				'',
@@ -132,6 +133,7 @@ export class CreateUserModalComponent {
 			firstName: formValue.firstName!,
 			lastName: formValue.lastName!,
 			email: formValue.email!,
+			phone: formValue.phone || undefined,
 			documentType: formValue.documentType!,
 			documentNumber: formValue.documentNumber!,
 			password: formValue.password!,

@@ -97,9 +97,10 @@ export class ReservationsComponent implements OnInit {
 
 	applyFilters(): void {
 		this.filteredReservations = this.reservations.filter(r => {
+			const nombreCompleto = `${r.datosUsuario?.nombre ?? ''} ${r.datosUsuario?.apellido ?? ''}`.toLowerCase();
 			const matchSearch =
 				!this.searchTerm ||
-				r.clienteNombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+				nombreCompleto.includes(this.searchTerm.toLowerCase()) ||
 				r.destino.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
 				r.paqueteNombre.toLowerCase().includes(this.searchTerm.toLowerCase());
 
@@ -130,7 +131,7 @@ export class ReservationsComponent implements OnInit {
 				this.replaceReservation(updated);
 				this.triggerToast(
 					'Reserva confirmada',
-					`La reserva de ${updated.clienteNombre} fue confirmada exitosamente.`
+					`La reserva de ${this.getNombre(updated)} fue confirmada exitosamente.`
 				);
 			},
 			error: () => this.triggerToast('Error', 'No se pudo confirmar la reserva.'),
@@ -143,7 +144,7 @@ export class ReservationsComponent implements OnInit {
 				this.replaceReservation(updated);
 				this.triggerToast(
 					'Reserva reactivada',
-					`La reserva de ${updated.clienteNombre} fue reactivada.`
+					`La reserva de ${this.getNombre(updated)} fue reactivada.`
 				);
 			},
 			error: () => this.triggerToast('Error', 'No se pudo reactivar la reserva.'),
@@ -163,7 +164,7 @@ export class ReservationsComponent implements OnInit {
 
 	confirmCancel(): void {
 		if (!this.selectedReservation) return;
-		const nombre = this.selectedReservation.clienteNombre;
+		const nombre = this.getNombre(this.selectedReservation);
 		this.reservationService.cancelar(this.selectedReservation.id).subscribe({
 			next: (updated) => {
 				this.replaceReservation(updated);
@@ -196,7 +197,7 @@ export class ReservationsComponent implements OnInit {
 		this.closeCreateModal();
 		this.triggerToast(
 			'Reserva creada',
-			`La reserva de ${newReservation.clienteNombre} fue registrada exitosamente.`
+			`La reserva de ${this.getNombre(newReservation)} fue registrada exitosamente.`
 		);
 	}
 
@@ -212,6 +213,18 @@ export class ReservationsComponent implements OnInit {
 	}
 
 	// ─── Helpers ──────────────────────────────────────────
+
+	getNombre(r: Reservation): string {
+		if (!r.datosUsuario) return `Usuario #${r.idUsuario}`;
+		return `${r.datosUsuario.nombre} ${r.datosUsuario.apellido}`.trim();
+	}
+
+	getInitialsFromItem(r: Reservation): string {
+		if (!r.datosUsuario) return '?';
+		const n = (r.datosUsuario.nombre?.[0] ?? '').toUpperCase();
+		const a = (r.datosUsuario.apellido?.[0] ?? '').toUpperCase();
+		return (n + a) || '?';
+	}
 
 	private replaceReservation(updated: Reservation): void {
 		const idx = this.reservations.findIndex(r => r.id === updated.id);

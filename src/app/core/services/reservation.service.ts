@@ -5,15 +5,18 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Reservation } from '../../features/panel-admin/pages/reservations/models/reservations.models';
 
+export interface ContactoEmergenciaRequest {
+  nombre: string;
+  parentesco: string;
+  telefono: string;
+  correo?: string;
+}
+
 export interface SolicitudReserva {
-  clienteNombre: string;
-  tipoDocumento: string;
-  documento: string;
-  clienteEmail: string;
-  clienteTelefono: string;
-  ciudadResidencia: string;
+  idUsuario: number;
   personas: number;
   acompanantes: { nombre: string; fechaNacimiento: string; tipoDocumento: string; documento: string }[];
+  contactosEmergencia?: ContactoEmergenciaRequest[];
   idViaje?: number;
   paqueteNombre: string;
   destino: string;
@@ -22,8 +25,6 @@ export interface SolicitudReserva {
   tipoHabitacion: string;
   solicitudEspecial?: string;
   notas?: string;
-  metodoPago: string;
-  estadoPago: string;
   total: number;
 }
 
@@ -65,19 +66,34 @@ export class ReservationService {
 
   private mapDto(dto: any): Reservation {
     return {
-      id:              dto.id,
-      clienteNombre:   dto.clienteNombre  ?? '',
-      clienteImagen:   dto.clienteImagen  ?? '',
-      clienteEmail:    dto.clienteEmail   ?? '',
-      clienteTelefono: dto.clienteTelefono ?? '',
-      destino:         dto.destino        ?? '',
-      personas:        dto.personas       ?? dto.cantidadPasajeros ?? 1,
-      fechaViaje:      dto.fechaViaje     ?? '',
-      fechaReserva:    dto.fechaReserva   ?? '',
-      estado:          (dto.estadoDescripcion ?? 'Pendiente') as Reservation['estado'],
-      paqueteNombre:   dto.paqueteNombre  ?? '',
-      total:           dto.total          ?? dto.precioTotal ?? 0,
-      notas:           dto.notas,
+      id:          dto.id,
+      idUsuario:   dto.idUsuario ?? 0,
+      datosUsuario: dto.datosUsuario ? {
+        id:       dto.datosUsuario.id,
+        nombre:   dto.datosUsuario.nombre   ?? '',
+        apellido: dto.datosUsuario.apellido ?? '',
+        email:    dto.datosUsuario.email    ?? '',
+        telefono: dto.datosUsuario.telefono ?? '',
+        rol:      dto.datosUsuario.rol,
+        activo:   dto.datosUsuario.activo,
+      } : undefined,
+      contactosEmergencia: Array.isArray(dto.contactosEmergencia)
+        ? dto.contactosEmergencia.map((c: any) => ({
+            id:         c.id,
+            nombre:     c.nombre     ?? '',
+            parentesco: c.parentesco ?? '',
+            telefono:   c.telefono   ?? '',
+            correo:     c.correo,
+          }))
+        : [],
+      destino:      dto.destino        ?? '',
+      personas:     dto.personas       ?? dto.cantidadPasajeros ?? 1,
+      fechaViaje:   dto.fechaViaje     ?? '',
+      fechaReserva: dto.fechaReserva   ?? '',
+      estado:       (dto.estadoDescripcion ?? 'Pendiente') as Reservation['estado'],
+      paqueteNombre: dto.paqueteNombre ?? '',
+      total:        dto.total          ?? dto.precioTotal ?? 0,
+      notas:        dto.notas,
     };
   }
 }

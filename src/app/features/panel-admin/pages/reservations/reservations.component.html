@@ -93,10 +93,10 @@
 					[class.row-cancelled]="item.estado === 'Cancelada'">
 
 					<td>
-						<img [src]="item.clienteImagen" [alt]="item.clienteNombre" />
+						<div class="table-avatar">{{ getInitialsFromItem(item) }}</div>
 					</td>
 
-					<td>{{ item.clienteNombre }}</td>
+					<td>{{ getNombre(item) }}</td>
 					<td>{{ item.destino }}</td>
 					<td>{{ item.personas }}</td>
 					<td>{{ item.fechaViaje }}</td>

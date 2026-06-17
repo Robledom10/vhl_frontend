@@ -16,9 +16,9 @@
 
       <!-- ENCABEZADO -->
       <div class="detail-header">
-        <img [src]="reservation.clienteImagen" [alt]="reservation.clienteNombre" class="detail-avatar" />
+        <div class="detail-avatar-initials">{{ getInitials() }}</div>
         <div class="detail-header-info">
-          <h2 class="title">{{ reservation.clienteNombre }}</h2>
+          <h2 class="title">{{ getNombreCompleto() }}</h2>
           <p class="subtitle">{{ reservation.paqueteNombre }}</p>
           <span class="estado-badge" [ngClass]="getEstadoClass()">{{ reservation.estado }}</span>
         </div>
@@ -31,7 +31,7 @@
           <div class="info-icon-circle"><i class="fa-solid fa-envelope"></i></div>
           <div class="info-text">
             <span class="info-row-label">Correo</span>
-            <span class="info-row-value">{{ reservation.clienteEmail }}</span>
+            <span class="info-row-value">{{ reservation.datosUsuario?.email || '—' }}</span>
           </div>
         </div>
 
@@ -39,7 +39,7 @@
           <div class="info-icon-circle"><i class="fa-solid fa-phone"></i></div>
           <div class="info-text">
             <span class="info-row-label">Teléfono</span>
-            <span class="info-row-value">{{ reservation.clienteTelefono }}</span>
+            <span class="info-row-value">{{ reservation.datosUsuario?.telefono || '—' }}</span>
           </div>
         </div>
 
@@ -75,6 +75,31 @@
           </div>
         </div>
 
+      </div>
+
+      <!-- CONTACTOS DE EMERGENCIA -->
+      <div class="emergency-section" *ngIf="reservation.contactosEmergencia && reservation.contactosEmergencia.length > 0">
+        <div class="section-header">
+          <i class="fa-solid fa-shield-heart"></i>
+          <span class="section-title">Contactos de emergencia</span>
+        </div>
+        <div class="emergency-list">
+          <div class="emergency-card" *ngFor="let c of reservation.contactosEmergencia; let i = index">
+            <div class="emergency-num">{{ i + 1 }}</div>
+            <div class="emergency-info">
+              <span class="emergency-name">{{ c.nombre }}</span>
+              <span class="emergency-rel">{{ c.parentesco }}</span>
+              <div class="emergency-contact-row">
+                <i class="fa-solid fa-phone"></i>
+                <span>{{ c.telefono }}</span>
+              </div>
+              <div class="emergency-contact-row" *ngIf="c.correo">
+                <i class="fa-solid fa-envelope"></i>
+                <span>{{ c.correo }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- NOTAS -->
