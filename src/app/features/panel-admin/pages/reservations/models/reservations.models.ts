@@ -1,15 +1,32 @@
+export interface DatosUsuario {
+  id: number;
+  nombre: string;
+  apellido: string;
+  email: string;
+  telefono: string;
+  rol?: string;
+  activo?: boolean;
+}
+
+export interface ContactoEmergencia {
+  id?: number;
+  nombre: string;
+  parentesco: string;
+  telefono: string;
+  correo?: string;
+}
+
 export interface Reservation {
-	id: number;
-	clienteNombre: string;
-	clienteImagen: string;
-	clienteEmail: string;
-	clienteTelefono: string;
-	destino: string;
-	personas: number;
-	fechaViaje: string;
-	fechaReserva: string;
-	estado: 'Confirmada' | 'Pendiente' | 'Cancelada' | 'Pasada' | 'Completada' | 'Bloqueada';
-	paqueteNombre: string;
-	total: number;
-	notas?: string;
+  id: number;
+  idUsuario: number;
+  datosUsuario?: DatosUsuario;
+  contactosEmergencia?: ContactoEmergencia[];
+  destino: string;
+  personas: number;
+  fechaViaje: string;
+  fechaReserva: string;
+  estado: 'Confirmada' | 'Pendiente' | 'Cancelada' | 'Pasada' | 'Completada' | 'Bloqueada';
+  paqueteNombre: string;
+  total: number;
+  notas?: string;
 }

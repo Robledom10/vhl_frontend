@@ -101,6 +101,10 @@ export class OperacionesService {
 		return this.http.get<ContactoEmergencia[]>(`${this.base}/viajes/${idViaje}/contactos-emergencia`);
 	}
 
+	getContactosDesdeReservas(idViaje: number): Observable<ContactoEmergencia[]> {
+		return this.http.get<ContactoEmergencia[]>(`${environment.apiUrl}/v1/reservas/viaje/${idViaje}/contactos-emergencia`);
+	}
+
 	registrarContacto(idViajero: number, body: object): Observable<ContactoEmergencia> {
 		return this.http.post<ContactoEmergencia>(`${this.base}/viajeros/${idViajero}/contactos-emergencia`, body);
 	}

@@ -9,6 +9,7 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { ChatbotWidgetComponent } from './shared/chatbot-widget/chatbot-widget.component';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
 	declarations: [
@@ -21,6 +22,7 @@ import { ChatbotWidgetComponent } from './shared/chatbot-widget/chatbot-widget.c
 		AppRoutingModule,
 		HttpClientModule,
 		FormsModule,
+		SharedModule,
 	],
 	providers: [
 		{

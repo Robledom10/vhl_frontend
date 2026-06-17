@@ -22,62 +22,16 @@
 			</div>
 			<div class="divider"></div>
 
-			<!-- PASO 1 — Datos del cliente -->
+			<!-- PASO 1 — ID del usuario + personas + acompañantes -->
 			<div class="step-content" *ngIf="currentStep === 1" @fadeStep>
 				<div class="fields-grid">
 
-					<div class="field-group full">
-						<input type="text" id="clienteNombre" placeholder=" "
-							[(ngModel)]="form.clienteNombre"
-							[class.ng-invalid]="submitted && !form.clienteNombre"
-							[class.ng-touched]="submitted && !form.clienteNombre">
-						<label for="clienteNombre">Nombre completo <span class="req">*</span></label>
-					</div>
-
 					<div class="field-group half">
-						<select id="tipoDocumento"
-							[(ngModel)]="form.tipoDocumento"
-							[class.ng-invalid]="submitted && !form.tipoDocumento"
-							[class.ng-touched]="submitted && !form.tipoDocumento">
-							<option value="" disabled selected></option>
-							<option value="CC">Cédula de ciudadanía</option>
-							<option value="CE">Cédula extranjería</option>
-							<option value="PA">Pasaporte</option>
-							<option value="TI">Tarjeta de identidad</option>
-						</select>
-						<label for="tipoDocumento">Tipo de documento <span class="req">*</span></label>
-					</div>
-
-					<div class="field-group half">
-						<input type="text" id="documento" placeholder=" "
-							[(ngModel)]="form.documento"
-							[class.ng-invalid]="submitted && !form.documento"
-							[class.ng-touched]="submitted && !form.documento">
-						<label for="documento">Número de documento <span class="req">*</span></label>
-					</div>
-
-					<div class="field-group half">
-						<input type="email" id="clienteEmail" placeholder=" "
-							[(ngModel)]="form.clienteEmail"
-							[class.ng-invalid]="submitted && !form.clienteEmail"
-							[class.ng-touched]="submitted && !form.clienteEmail">
-						<label for="clienteEmail">Correo electrónico <span class="req">*</span></label>
-					</div>
-
-					<div class="field-group half">
-						<input type="tel" id="clienteTelefono" placeholder=" "
-							[(ngModel)]="form.clienteTelefono"
-							[class.ng-invalid]="submitted && !form.clienteTelefono"
-							[class.ng-touched]="submitted && !form.clienteTelefono">
-						<label for="clienteTelefono">Número de teléfono <span class="req">*</span></label>
-					</div>
-
-					<div class="field-group half">
-						<input type="text" id="ciudadResidencia" placeholder=" "
-							[(ngModel)]="form.ciudadResidencia"
-							[class.ng-invalid]="submitted && !form.ciudadResidencia"
-							[class.ng-touched]="submitted && !form.ciudadResidencia">
-						<label for="ciudadResidencia">Ciudad de residencia <span class="req">*</span></label>
+						<input type="number" id="idUsuario" placeholder=" "
+							[(ngModel)]="form.idUsuario"
+							[class.ng-invalid]="submitted && !form.idUsuario"
+							[class.ng-touched]="submitted && !form.idUsuario">
+						<label for="idUsuario">ID del usuario <span class="req">*</span></label>
 					</div>
 
 					<div class="field-group half">
@@ -247,57 +201,60 @@
 				</div>
 			</div>
 
-			<!-- PASO 3 — Pago y confirmación -->
+			<!-- PASO 3 — Contactos de emergencia + confirmación -->
 			<div class="step-content" *ngIf="currentStep === 3" @fadeStep>
-				<div class="fields-grid">
 
-					<div class="field-group half">
-						<select id="metodoPago"
-							[(ngModel)]="form.metodoPago"
-							[class.ng-invalid]="submitted && !form.metodoPago"
-							[class.ng-touched]="submitted && !form.metodoPago">
-							<option value="" disabled selected></option>
-							<option value="Efectivo">Efectivo</option>
-							<option value="Transferencia">Transferencia bancaria</option>
-							<option value="Tarjeta crédito">Tarjeta de crédito</option>
-							<option value="Tarjeta débito">Tarjeta de débito</option>
-							<option value="PSE">PSE</option>
-							<option value="Nequi">Nequi</option>
-							<option value="Daviplata">Daviplata</option>
-						</select>
-						<label for="metodoPago">Método de pago <span class="req">*</span></label>
+				<!-- CONTACTOS DE EMERGENCIA -->
+				<div class="companions-section">
+					<div class="companions-header">
+						<span>Contactos de emergencia</span>
 					</div>
 
-					<div class="field-group half">
-						<select id="estadoPago"
-							[(ngModel)]="form.estadoPago"
-							[class.ng-invalid]="submitted && !form.estadoPago"
-							[class.ng-touched]="submitted && !form.estadoPago">
-							<option value="" disabled selected></option>
-							<option value="Pendiente">Pendiente</option>
-							<option value="Anticipo">Anticipo pagado</option>
-							<option value="Completo">Pago completo</option>
-						</select>
-						<label for="estadoPago">Estado de pago <span class="req">*</span></label>
+					<div class="companion-card emergency-form-card"
+						*ngFor="let c of form.contactosEmergencia; let i = index" @fadeStep>
+						<div class="companion-title">
+							<div class="companion-num emergency-num-icon">
+								<i class="fa-solid fa-shield-heart"></i>
+							</div>
+							<span>Contacto {{ i + 1 }}</span>
+							<button type="button" class="remove-contact-btn"
+								*ngIf="form.contactosEmergencia.length > 1"
+								(click)="removeContactoEmergencia(i)">
+								<i class="fa-solid fa-trash"></i>
+							</button>
+						</div>
+						<div class="fields-grid">
+
+							<div class="field-group full">
+								<input type="text" [id]="'ec-nombre-' + i" placeholder=" "
+									[(ngModel)]="c.nombre">
+								<label [for]="'ec-nombre-' + i">Nombre completo <span class="req">*</span></label>
+							</div>
+
+							<div class="field-group half">
+								<input type="text" [id]="'ec-parentesco-' + i" placeholder=" "
+									[(ngModel)]="c.parentesco">
+								<label [for]="'ec-parentesco-' + i">Parentesco <span class="req">*</span></label>
+							</div>
+
+							<div class="field-group half">
+								<input type="tel" [id]="'ec-telefono-' + i" placeholder=" "
+									[(ngModel)]="c.telefono">
+								<label [for]="'ec-telefono-' + i">Teléfono <span class="req">*</span></label>
+							</div>
+
+							<div class="field-group full">
+								<input type="email" [id]="'ec-correo-' + i" placeholder=" "
+									[(ngModel)]="c.correo">
+								<label [for]="'ec-correo-' + i">Correo electrónico</label>
+							</div>
+
+						</div>
 					</div>
 
-					<div class="field-group half">
-						<input type="number" id="total" placeholder=" "
-							[(ngModel)]="form.total"
-							[class.ng-invalid]="submitted && !form.total"
-							[class.ng-touched]="submitted && !form.total">
-						<label for="total">Monto a pagar <span class="req">*</span></label>
-					</div>
-
-					<div class="field-group half">
-						<input type="text" id="comprobante" placeholder=" " class="readonly-field"
-							[value]="form.comprobante || ''"
-							(click)="fileInput.click()" readonly>
-						<label for="comprobante">Comprobante de pago</label>
-						<input #fileInput type="file" accept="image/*,.pdf" style="display:none"
-							(change)="onFileChange($event)">
-					</div>
-
+					<button type="button" class="add-companion-btn" (click)="addContactoEmergencia()">
+						<i class="fa-solid fa-plus"></i> Agregar contacto
+					</button>
 				</div>
 
 				<!-- RESUMEN -->
@@ -307,8 +264,8 @@
 					</div>
 					<div class="summary-grid">
 						<div class="summary-item">
-							<span class="s-label">Cliente</span>
-							<span class="s-value">{{ form.clienteNombre || '—' }}</span>
+							<span class="s-label">Usuario ID</span>
+							<span class="s-value">{{ form.idUsuario || '—' }}</span>
 						</div>
 						<div class="summary-item">
 							<span class="s-label">Destino</span>
