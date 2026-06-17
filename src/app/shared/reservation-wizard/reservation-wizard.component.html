@@ -1,5 +1,5 @@
 <div class="modal-overlay" (click)="close()">
-	<div class="modal-container" (click)="$event.stopPropagation()">
+	<div class="modal-container" (click)="onModalClick($event)">
 		<button class="close-btn" (click)="close()">×</button>
 
 		<div class="modal-scroll">
@@ -13,7 +13,7 @@
 							<i class="fa-solid fa-check" *ngIf="currentStep > 1"></i>
 							<span *ngIf="currentStep <= 1">1</span>
 						</div>
-						<p [class.active]="currentStep === 1">Titular</p>
+						<p [class.active]="currentStep === 1">Viajeros</p>
 					</div>
 
 					<div class="line" [class.active]="currentStep >= 2"></div>
@@ -23,7 +23,7 @@
 							<i class="fa-solid fa-check" *ngIf="currentStep > 2"></i>
 							<span *ngIf="currentStep <= 2">2</span>
 						</div>
-						<p [class.active]="currentStep === 2">Viajeros</p>
+						<p [class.active]="currentStep === 2">Solicitudes</p>
 					</div>
 
 					<div class="line" [class.active]="currentStep >= 3"></div>
@@ -33,7 +33,7 @@
 							<i class="fa-solid fa-check" *ngIf="currentStep > 3"></i>
 							<span *ngIf="currentStep <= 3">3</span>
 						</div>
-						<p [class.active]="currentStep === 3">Reserva</p>
+						<p [class.active]="currentStep === 3">Emergencia</p>
 					</div>
 
 					<div class="line" [class.active]="currentStep >= 4"></div>
@@ -48,47 +48,209 @@
 				</div>
 
 				<h2 class="modal-title">
-					Reserva de <span>Cartagena</span>
+					Reserva de <span>{{ package?.title }}</span>
 				</h2>
 
 				<div class="divider"></div>
 
 				<div *ngIf="currentStep === 1" class="step-content">
-					<div class="form-group">
-						<input type="text" placeholder=" ">
-						<label>Nombre</label>
+
+					<!-- TITULAR -->
+
+					<div class="section-card">
+						<div class="section-title">
+							<i class="fa-solid fa-user"></i>
+							<h3>Datos del titular</h3>
+						</div>
+
+						<div class="form-grid">
+							<div class="form-group">
+								<input type="text" placeholder=" " [(ngModel)]="holder.firstName">
+								<label>Nombre</label>
+							</div>
+
+							<div class="form-group">
+								<input type="text" placeholder=" " [(ngModel)]="holder.lastName">
+								<label>Apellido</label>
+							</div>
+
+							<div class="form-group custom-select-group">
+								<div class="custom-select" [class.open]="openDropdown === 'holderDocument'"
+									[class.selected]="holder.documentType"
+									(click)="toggleDropdown('holderDocument', $event)">
+
+									<div class="custom-select-value">
+										{{ getDocumentLabel(holder.documentType) || 'Seleccionar' }}
+									</div>
+
+									<i class="fa-solid fa-angle-down select-icon"></i>
+
+									<div class="custom-select-dropdown" *ngIf="openDropdown === 'holderDocument'"
+										(click)="$event.stopPropagation()">
+
+										<div class="custom-option" *ngFor="let option of documentTypes"
+											(click)="selectHolderDocument($event, option.value)">
+											{{ option.label }}
+										</div>
+									</div>
+								</div>
+
+								<label [class.active]="holder.documentType">
+									Tipo de documento
+								</label>
+							</div>
+
+							<div class="form-group">
+								<input type="text" placeholder=" " [(ngModel)]="holder.documentNumber">
+								<label>Número de documento</label>
+							</div>
+
+							<div class="form-group">
+								<input type="email" placeholder=" " [(ngModel)]="holder.email">
+								<label>Correo electrónico</label>
+							</div>
+
+							<div class="form-group">
+								<input type="text" placeholder=" " [(ngModel)]="holder.phone">
+								<label>Teléfono</label>
+							</div>
+
+							<div class="form-group full-width">
+								<input type="text" placeholder=" " [(ngModel)]="holder.city">
+								<label>Ciudad de residencia</label>
+							</div>
+						</div>
 					</div>
 
-					<div class="form-group">
-						<input type="text" placeholder=" ">
-						<label>Apellido</label>
-					</div>
+					<!-- ACOMPAÑANTES -->
 
-					<div class="form-group">
-						<input type="text" placeholder=" ">
-						<label>Documento</label>
-					</div>
+					<div class="traveler-card" *ngFor="let traveler of companions; let i = index">
 
-					<div class="form-group">
-						<input type="text" placeholder=" ">
-						<label>Teléfono</label>
+						<div class="section-title">
+							<i class="fa-solid fa-users"></i>
+							<h3>Acompañante #{{ i + 1 }}</h3>
+						</div>
+
+						<div class="form-grid">
+							<div class="form-group">
+								<input type="text" placeholder=" " [(ngModel)]="traveler.name">
+								<label>Nombre completo</label>
+							</div>
+
+							<div class="form-group">
+								<input type="date" [(ngModel)]="traveler.birthDate">
+								<label>Fecha de nacimiento</label>
+							</div>
+
+							<div class="form-group custom-select-group">
+								<div class="custom-select" [class.open]="openDropdown === 'companionDocument' + i"
+									[class.selected]="traveler.documentType"
+									(click)="toggleDropdown('companionDocument' + i, $event)">
+
+									<div class="custom-select-value">
+										{{ getDocumentLabel(traveler.documentType) || 'Seleccionar' }}
+									</div>
+
+									<i class="fa-solid fa-angle-down select-icon"></i>
+
+									<div class="custom-select-dropdown" *ngIf="openDropdown === 'companionDocument' + i"
+										(click)="$event.stopPropagation()">
+
+										<div class="custom-option" *ngFor="let option of documentTypes"
+											(click)="selectCompanionDocument($event, traveler, option.value)">
+											{{ option.label }}
+										</div>
+									</div>
+								</div>
+
+								<label [class.active]="traveler.documentType">
+									Tipo de documento
+								</label>
+							</div>
+
+							<div class="form-group">
+								<input type="text" placeholder=" " [(ngModel)]="traveler.documentNumber">
+								<label>Número de documento</label>
+							</div>
+						</div>
 					</div>
 				</div>
 
 				<div *ngIf="currentStep === 2" class="step-content">
-
-					<div class="traveler-card">
-
-						<h3>Acompañante #1</h3>
-
-						<div class="form-group">
-							<input type="text" placeholder=" ">
-							<label>Nombre</label>
+					<div class="section-card">
+						<div class="section-title">
+							<i class="fa-solid fa-bed"></i>
+							<h3>Solicitudes especiales</h3>
 						</div>
 
-						<div class="form-group">
-							<input type="text" placeholder=" ">
-							<label>Documento</label>
+						<div class="form-grid">
+							<div class="form-group custom-select-group">
+
+								<div class="custom-select" [class.open]="openDropdown === 'request'"
+									[class.selected]="selectedSpecialRequest"
+									(click)="toggleDropdown('request', $event)">
+
+									<div class="custom-select-value">
+										{{ selectedSpecialRequest }}
+									</div>
+
+									<i class="fa-solid fa-angle-down select-icon"></i>
+
+									<div class="custom-select-dropdown" *ngIf="openDropdown === 'request'"
+										(click)="$event.stopPropagation()">
+
+										<div class="custom-option" *ngFor="let option of specialRequests"
+											(click)="selectOption($event,option, 'request')">
+
+											{{ option }}
+
+										</div>
+
+									</div>
+
+								</div>
+
+								<label [class.active]="selectedSpecialRequest">
+									Solicitud Especial
+								</label>
+
+							</div>
+
+							<div class="form-group custom-select-group">
+
+								<div class="custom-select" [class.open]="openDropdown === 'room'"
+									[class.selected]="selectedRoomType" (click)="toggleDropdown('room', $event)">
+
+									<div class="custom-select-value">
+										{{ selectedRoomType }}
+									</div>
+
+									<i class="fa-solid fa-angle-down select-icon"></i>
+
+									<div class="custom-select-dropdown" *ngIf="openDropdown === 'room'"
+										(click)="$event.stopPropagation()">
+
+										<div class="custom-option" *ngFor="let option of roomTypes"
+											(click)="selectOption($event,option, 'room')">
+
+											{{ option }}
+
+										</div>
+
+									</div>
+
+								</div>
+
+								<label [class.active]="selectedRoomType">
+									Tipo de habitación
+								</label>
+
+							</div>
+
+							<div class="form-group full-width">
+								<textarea placeholder=" " [(ngModel)]="additionalNotes"></textarea>
+								<label>Notas adicionales</label>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -107,24 +269,26 @@
 							</button>
 						</div>
 
-						<div class="form-group">
-							<input type="text" placeholder=" " [(ngModel)]="contact.fullName">
-							<label>Nombre completo</label>
-						</div>
+						<div class="form-grid">
+							<div class="form-group">
+								<input type="text" placeholder=" " [(ngModel)]="contact.fullName">
+								<label>Nombre completo</label>
+							</div>
 
-						<div class="form-group">
-							<input type="text" placeholder=" " [(ngModel)]="contact.relationship">
-							<label>Parentesco</label>
-						</div>
+							<div class="form-group">
+								<input type="text" placeholder=" " [(ngModel)]="contact.relationship">
+								<label>Parentesco</label>
+							</div>
 
-						<div class="form-group">
-							<input type="text" placeholder=" " [(ngModel)]="contact.phone">
-							<label>Teléfono</label>
-						</div>
+							<div class="form-group">
+								<input type="text" placeholder=" " [(ngModel)]="contact.phone">
+								<label>Teléfono</label>
+							</div>
 
-						<div class="form-group">
-							<input type="email" placeholder=" " [(ngModel)]="contact.alternatePhone">
-							<label>Correo</label>
+							<div class="form-group">
+								<input type="email" placeholder=" " [(ngModel)]="contact.alternatePhone">
+								<label>Correo electrónico</label>
+							</div>
 						</div>
 					</div>
 
@@ -135,29 +299,146 @@
 				</div>
 
 				<div *ngIf="currentStep === 4">
+					<div class="section-card">
+						<div class="section-title">
+							<i class="fa-solid fa-credit-card"></i>
+							<h3>Información de pago</h3>
+						</div>
+
+						<div class="form-grid">
+							<div class="form-group custom-select-group">
+								<div class="custom-select" [class.open]="openDropdown === 'payment'"
+									[class.selected]="selectedPaymentMethod"
+									(click)="toggleDropdown('payment', $event)">
+
+									<div class="custom-select-value">
+										{{ selectedPaymentMethod }}
+									</div>
+
+									<i class="fa-solid fa-angle-down select-icon"></i>
+
+									<div class="custom-select-dropdown" *ngIf="openDropdown === 'payment'"
+										(click)="$event.stopPropagation()">
+
+										<div class="custom-option" *ngFor="let option of paymentMethods"
+											(click)="selectOption($event,option, 'payment')">
+											{{ option }}
+										</div>
+									</div>
+								</div>
+
+								<label [class.active]="selectedPaymentMethod">
+									Método de Pago
+								</label>
+							</div>
+
+							<div class="form-group custom-select-group">
+								<div class="custom-select" [class.open]="openDropdown === 'status'"
+									[class.selected]="selectedPaymentStatus" (click)="toggleDropdown('status', $event)">
+
+									<div class="custom-select-value">
+										{{ selectedPaymentStatus }}
+									</div>
+
+									<i class="fa-solid fa-angle-down select-icon"></i>
+
+									<div class="custom-select-dropdown" *ngIf="openDropdown === 'status'"
+										(click)="$event.stopPropagation()">
+
+										<div class="custom-option" *ngFor="let option of paymentStatuses"
+											(click)="selectOption($event,option, 'status')">
+											{{ option }}
+										</div>
+									</div>
+								</div>
+
+								<label [class.active]="selectedPaymentStatus">
+									Estado del Pago
+								</label>
+							</div>
+
+							<div class="form-group full-width">
+								<input type="text" placeholder=" " [ngModel]="totalPrice | number:'1.0-0'">
+								<label>Monto total</label>
+							</div>
+						</div>
+					</div>
 
 					<div class="summary-card">
 
 						<h3>Resumen de la reserva</h3>
 
-						<div class="summary-row">
-							<span>Destino</span>
-							<strong>Cartagena</strong>
+						<div class="summary-grid">
+							<div class="summary-item">
+								<span>Cliente</span>
+								<strong>
+									{{ holder.firstName }} {{ holder.lastName }}
+								</strong>
+							</div>
+
+							<div class="summary-item">
+								<span>Destino</span>
+								<strong>{{ package?.destinations }}</strong>
+							</div>
+
+							<div class="summary-item">
+								<span>Paquete</span>
+								<strong>{{ package?.title }}</strong>
+							</div>
+
+							<div class="summary-item">
+								<span>Personas</span>
+								<strong>{{ travelers }}</strong>
+							</div>
+
+							<div class="summary-item">
+								<span>Fecha de salida</span>
+								<strong>
+									{{ selectedTrip?.fechaSalida | date:'dd/MM/yyyy' }}
+								</strong>
+							</div>
+
+							<div class="summary-item">
+								<span>Fecha de regreso</span>
+								<strong>
+									{{ selectedTrip?.fechaRegreso | date:'dd/MM/yyyy' }}
+								</strong>
+							</div>
+
+							<div class="summary-item">
+								<span>Duración</span>
+								<strong>{{ package?.duration }}</strong>
+							</div>
+
+							<div class="summary-item">
+								<span>Lugar de Salida</span>
+								<strong>{{ package?.departurePlace }}</strong>
+							</div>
 						</div>
 
-						<div class="summary-row">
-							<span>Viajeros</span>
-							<strong>4</strong>
-						</div>
-
-						<div class="summary-row">
+						<div class="total-highlight">
 							<span>Total</span>
-							<strong>$3.400.000</strong>
+							<strong>
+								${{ totalPrice | number:'1.0-0' }}
+							</strong>
 						</div>
-
 					</div>
 
+					<div class="terms-card">
+						<label class="checkbox-item">
+							<input type="checkbox" [(ngModel)]="acceptTerms">
+							<span class="custom-checkbox"></span>
+							Acepto los términos y condiciones.
+						</label>
+
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span class="custom-checkbox" [(ngModel)]="acceptCancellation"></span>
+							Acepto la política de cancelación.
+						</label>
+					</div>
 				</div>
+
 				<div class="actions">
 					<button *ngIf="currentStep > 1" class="btn-secondary" (click)="previousStep()">
 						Anterior
@@ -169,7 +450,7 @@
 						Siguiente
 					</button>
 
-					<button *ngIf="currentStep === 4" class="btn-primary">
+					<button *ngIf="currentStep === 4" class="btn-primary" (click)="confirmReservation()">
 						Confirmar reserva
 					</button>
 				</div>

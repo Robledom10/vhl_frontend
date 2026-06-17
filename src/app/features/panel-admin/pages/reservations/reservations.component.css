@@ -301,7 +301,7 @@ tbody td:last-child {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 8px;
+	gap: 10px;
 }
 
 .actions button {
@@ -323,6 +323,18 @@ tbody td:last-child {
 	height: 36px;
 	background: rgba(63, 162, 219, 0.12);
 	color: var(--color-primario);
+	border-radius: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.actions .document {
+	width: 36px;
+	height: 36px;
+	background: rgba(40, 131, 250, 0.12);
+	color: #3592fc;
 	border-radius: 12px;
 	display: flex;
 	align-items: center;

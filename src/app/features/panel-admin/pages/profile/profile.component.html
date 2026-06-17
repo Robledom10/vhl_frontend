@@ -140,6 +140,101 @@
 	</form>
 </div>
 
+<!-- =========================
+	RESERVAS DEL USUARIO
+========================= -->
+
+<div class="reservations-content">
+
+	<div class="section-header">
+		<h2>Mis reservas</h2>
+		<p>Consulta el estado de tus viajes y adjunta documentos cuando sea necesario.</p>
+	</div>
+
+	<div class="table-container">
+
+		<table>
+
+			<thead>
+				<tr>
+					<th>Destino</th>
+					<th>Personas</th>
+					<th>Fecha viaje</th>
+					<th>Estado</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+
+			<tbody>
+
+				<tr *ngFor="let item of reservations">
+
+					<td>{{ item.destino }}</td>
+
+					<td>{{ item.personas }}</td>
+
+					<td>{{ item.fechaViaje }}</td>
+
+					<td>
+						<span class="status" [class.confirmada]="item.estado === 'Confirmada'"
+							[class.pendiente]="item.estado === 'Pendiente'"
+							[class.cancelada]="item.estado === 'Cancelada'">
+
+							{{ item.estado }}
+
+						</span>
+					</td>
+
+					<td>
+
+						<div class="actions">
+
+							<button class="view" (click)="openDetail(item)">
+								<i class="fa-regular fa-eye"></i>
+							</button>
+
+							<button class="upload" *ngIf="item.estado === 'Pendiente'" (click)="openUploadModal(item)">
+								<i class="fa-solid fa-file-arrow-up"></i>
+								Subir
+							</button>
+
+							<button class="upload disabled" *ngIf="item.estado !== 'Pendiente'" disabled>
+								Documento enviado
+							</button>
+
+							<button class="pay">
+								<i class="fa-solid fa-credit-card"></i>
+								Pagar
+							</button>
+
+							<button class="cancel">
+								Cancelar
+							</button>
+
+						</div>
+
+					</td>
+
+				</tr>
+
+				<tr *ngIf="isLoadingReservations">
+					<td colspan="5" class="empty-state">
+						<i class="fa-solid fa-circle-notch fa-spin"></i>
+						<span>Cargando reservas...</span>
+					</td>
+				</tr>
+
+				<tr *ngIf="!isLoadingReservations && reservations.length === 0">
+					<td colspan="5" class="empty-state">
+						<i class="fa-regular fa-calendar-xmark"></i>
+						<span>No tienes reservas registradas</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
 <app-confirm-modal [isOpen]="showConfirmModal" title="Guardar cambios"
 	message="¿Estás seguro de que deseas actualizar la información de tu perfil?" confirmText="Sí, guardar"
 	cancelText="Cancelar" icon="fa-solid fa-circle-question" confirmColor="var(--color-primario)"
@@ -159,3 +254,13 @@
 	cancelText="" icon="fa-solid fa-circle-xmark" confirmColor="#ff3b3b" iconBg="rgba(255, 59, 59, 0.12)"
 	iconColor="#ff3b3b" (confirmed)="showErrorModal = false" (closed)="showErrorModal = false">
 </app-confirm-modal>
+
+<!-- Modal detalles de reserva -->
+
+<app-reservation-detail-sheet [isOpen]="sheetOpen" [reservation]="selectedReservation" (closed)="closeDetail()">
+</app-reservation-detail-sheet>
+
+<app-upload-document-modal [isOpen]="showUploadModal" [userId]="user?.id"
+	[reservationId]="selectedReservationUpload?.id" (closed)="showUploadModal = false"
+	(uploaded)="showUploadModal = false">
+</app-upload-document-modal>

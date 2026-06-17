@@ -94,7 +94,7 @@ export class NavbarPanelAdminComponent {
 					route: '/panel-admin/operaciones-transporte',
 				},
 				{
-					label: 'Check-in por QR',
+					label: 'Check-in',
 					route: '/panel-admin/operaciones-check-in',
 				},
 				{
@@ -106,16 +106,8 @@ export class NavbarPanelAdminComponent {
 					route: '/panel-admin/operaciones-info-medica',
 				},
 				{
-					label: 'Incidentes',
-					route: '/panel-admin/operaciones-incidentes',
-				},
-				{
 					label: 'Comunicaciones',
 					route: '/panel-admin/operaciones-comunicaciones',
-				},
-				{
-					label: 'Restaurantes',
-					route: '/panel-admin/operaciones-restaurantes',
 				},
 			],
 		},

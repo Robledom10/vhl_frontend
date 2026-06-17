@@ -14,9 +14,7 @@ import { AsignarTransporteComponent } from './pages/operaciones/pages/assign-tra
 import { CheckInQrComponent } from './pages/operaciones/pages/check-in-qr/check-in-qr.component';
 import { AsignarAlojamientoComponent } from './pages/operaciones/pages/assign-accommodation/assign-accommodation.component';
 import { InfoMedicaComponent } from './pages/operaciones/pages/medical-info/medical-info.component';
-import { IncidentesComponent } from './pages/operaciones/pages/incidents/incidents.component';
 import { ComunicacionesComponent } from './pages/operaciones/pages/communications/communications.component';
-import { AsignarRestauranteComponent } from './pages/operaciones/pages/assign-restaurant/assign-restaurant.component';
 
 const routes: Routes = [
 	{
@@ -38,9 +36,7 @@ const routes: Routes = [
 			{ path: 'operaciones-check-in', component: CheckInQrComponent },
 			{ path: 'operaciones-alojamiento', component: AsignarAlojamientoComponent },
 			{ path: 'operaciones-info-medica', component: InfoMedicaComponent },
-			{ path: 'operaciones-incidentes', component: IncidentesComponent },
 			{ path: 'operaciones-comunicaciones', component: ComunicacionesComponent },
-			{ path: 'operaciones-restaurantes', component: AsignarRestauranteComponent },
 		],
 	},
 ];

@@ -34,11 +34,11 @@ export class AsignarTransporteComponent implements OnInit {
 	toastMsg = '';
 	toastType: 'success' | 'error' = 'success';
 	viajeSeleccionado: ViajeDisplay | null = null;
-
+	search = '';
 	viajes: ViajeDisplay[] = [];
-	filtroViajeId: number | null = null;
 	editandoTransporteId: number | null = null;
 	showCalendarHorario = false;
+	fechaEditable = false;
 	proveedoresTransporte: RespuestaProveedor[] = [];
 
 	get viajesConViaje(): ViajeDisplay[] {
@@ -46,13 +46,14 @@ export class AsignarTransporteComponent implements OnInit {
 	}
 
 	get viajesFiltrados(): ViajeDisplay[] {
-		if (!this.filtroViajeId) return this.viajes;
-		return this.viajes.filter(v => v.id === this.filtroViajeId);
-	}
+		const texto = this.search?.toLowerCase() || '';
 
-	onFiltroViajeChange(event: Event): void {
-		const val = (event.target as HTMLSelectElement).value;
-		this.filtroViajeId = val ? Number(val) : null;
+		return this.viajes
+			.filter(v => v.tieneViaje)
+			.filter(v =>
+				v.titulo.toLowerCase().includes(texto) ||
+				(`${v.id}`).includes(texto)
+			);
 	}
 
 	transporteForm = this.fb.group({
@@ -63,11 +64,11 @@ export class AsignarTransporteComponent implements OnInit {
 		cantidadViajeros: ['', [Validators.required, Validators.min(1)]],
 		conductor: ['', [Validators.required, Validators.minLength(3)]],
 		telefonoConductor: ['', [Validators.required, Validators.pattern(/^[+\d\s\-]{7,20}$/)]],
-		horarioSalida: ['', Validators.required],
+		horarioSalida: [''],
 		placa: ['', [Validators.required, Validators.minLength(5)]],
 	});
 
-	tiposVehiculo = ['Buses Granada', 'Avión', 'Van', 'Minibus', 'Lancha', 'Otro'];
+	tiposVehiculo = ['Buse', 'Avión'];
 
 	constructor(private fb: FormBuilder, private svc: OperacionesService, private pkgSvc: PackageService) { }
 
@@ -92,6 +93,23 @@ export class AsignarTransporteComponent implements OnInit {
 			telefonoConductor: p.telefonoConductor || p.telefono || '',
 			capacidad: p.capacidad ? String(p.capacidad) : '',
 		});
+	}
+
+	onViajeChange(event: Event): void {
+
+		const idViaje = Number(
+			(event.target as HTMLSelectElement).value
+		);
+
+		const viaje = this.viajes.find(
+			v => v.id === idViaje
+		);
+
+		if (viaje) {
+			this.transporteForm.patchValue({
+				horarioSalida: viaje.fecha
+			});
+		}
 	}
 
 	cargarViajes(): void {
@@ -199,11 +217,18 @@ export class AsignarTransporteComponent implements OnInit {
 	}
 
 	seleccionarViaje(viaje: ViajeDisplay): void {
+
 		this.viajeSeleccionado = viaje;
+		this.fechaEditable = false;
+
 		this.transporteForm.reset();
+
 		if (viaje.transporteAsignado && viaje.transportes.length > 0) {
+
 			const t = viaje.transportes[0];
+
 			this.editandoTransporteId = t.id;
+
 			this.transporteForm.patchValue({
 				tipoVehiculo: t.tipoTransporte,
 				empresa: t.empresa,
@@ -212,11 +237,20 @@ export class AsignarTransporteComponent implements OnInit {
 				telefonoConductor: t.telefonoConductor,
 				capacidad: String(t.capacidad),
 				cantidadViajeros: String(t.cantidadViajeros),
-				horarioSalida: t.fechaSalida ? t.fechaSalida.substring(0, 16) : '',
+
+				// FECHA DEL VIAJE
+				horarioSalida: viaje.fecha
 			});
+
 		} else {
+
 			this.editandoTransporteId = null;
+
+			this.transporteForm.patchValue({
+				horarioSalida: viaje.fecha
+			});
 		}
+
 		this.showForm = true;
 	}
 
@@ -288,5 +322,9 @@ export class AsignarTransporteComponent implements OnInit {
 	onHorarioDateSelected(date: string): void {
 		this.showCalendarHorario = false;
 		this.transporteForm.patchValue({ horarioSalida: `${date}T00:00` });
+	}
+
+	habilitarEdicionFecha(): void {
+		this.fechaEditable = true;
 	}
 }

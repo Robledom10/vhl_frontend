@@ -565,7 +565,7 @@
 	padding: 14px;
 	resize: none;
 	min-height: 120px;
-	font-family: "Outfit", sans-serif; 
+	font-family: "Outfit", sans-serif;
 	font-size: .95rem;
 	outline: none;
 	transition: .3s;
@@ -828,6 +828,36 @@
 .reservation-price small {
 	font-size: 14px;
 	color: var(--color-texto-secundario);
+}
+
+.travel-date-selector {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.travel-date-selector label {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--color-texto-principal);
+}
+
+.travel-date-selector select {
+	height: 52px;
+	border-radius: 20px;
+	border: 1px solid #dbeafe;
+	padding: 0 16px;
+	font-family: "Outfit", sans-serif;
+	font-size: 15px;
+	outline: none;
+	background: white;
+	cursor: pointer;
+	transition: .2s;
+}
+
+.travel-date-selector select:focus {
+	border-color: var(--color-primario);
+	box-shadow: 0 0 0 4px rgba(63, 162, 219, .15);
 }
 
 /* Reservar */

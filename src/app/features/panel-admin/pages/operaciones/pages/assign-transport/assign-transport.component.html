@@ -3,9 +3,9 @@
 	<div class="page-header">
 		<div>
 			<h2 class="page-title">Asignar <span>Transporte</span></h2>
-			<p class="page-subtitle">Gestiona el transporte asignado a cada viaje activo</p>
+			<p class="page-subtitle">Gestiona el transporte asignado a cada viaje
+				activo</p>
 		</div>
-		<button class="btn-nuevo" (click)="abrirNuevo()">+ Asignar transporte</button>
 	</div>
 
 	<!-- PROVEEDORES DISPONIBLES -->
@@ -16,19 +16,26 @@
 		</div>
 		<div class="proveedores-grid">
 			<div class="proveedor-card" *ngFor="let p of proveedoresTransporte">
-				<div class="pc-icon-wrap pc-transporte"><i class="fa-solid fa-bus"></i></div>
+				<div class="pc-icon-wrap pc-transporte"><i
+						class="fa-solid fa-bus"></i></div>
 				<div class="pc-info">
 					<div class="pc-nombre">{{ p.nombre }}</div>
-					<div class="pc-detalle" *ngIf="p.tipoVehiculo"><i class="fa-solid fa-car"></i> {{ p.tipoVehiculo }}
+					<div class="pc-detalle" *ngIf="p.tipoVehiculo"><i
+							class="fa-solid fa-car"></i> {{ p.tipoVehiculo }}
 					</div>
-					<div class="pc-detalle" *ngIf="p.placa"><i class="fa-solid fa-id-card"></i> {{ p.placa }}</div>
-					<div class="pc-detalle" *ngIf="p.conductor"><i class="fa-solid fa-user-tie"></i> {{ p.conductor }}
+					<div class="pc-detalle" *ngIf="p.placa"><i class="fa-solid fa-id-card"></i>
+						{{ p.placa }}</div>
+					<div class="pc-detalle" *ngIf="p.conductor"><i
+							class="fa-solid fa-user-tie"></i> {{ p.conductor }}
 					</div>
-					<div class="pc-detalle" *ngIf="p.capacidad"><i class="fa-solid fa-users"></i> {{ p.capacidad }}
+					<div class="pc-detalle" *ngIf="p.capacidad"><i
+							class="fa-solid fa-users"></i> {{ p.capacidad }}
 						personas</div>
-					<div class="pc-detalle" *ngIf="p.telefono"><i class="fa-solid fa-phone"></i> {{ p.telefono }}</div>
+					<div class="pc-detalle" *ngIf="p.telefono"><i
+							class="fa-solid fa-phone"></i> {{ p.telefono }}</div>
 				</div>
-				<button class="pc-btn" (click)="asignarDesdeProveedor(p)">Asignar a viaje</button>
+				<button class="pc-btn" (click)="asignarDesdeProveedor(p)">Asignar a
+					viaje</button>
 			</div>
 		</div>
 	</div>
@@ -39,15 +46,11 @@
 		<h3>Viajes y estado de transporte</h3>
 	</div>
 
-	<!-- FILTRO POR VIAJE -->
-	<div class="filtro-viaje">
-		<label>Filtrar por viaje</label>
-		<select (change)="onFiltroViajeChange($event)">
-			<option value="">Todos los viajes</option>
-			<option *ngFor="let v of viajesConViaje" [value]="v.id">
-				{{ v.titulo }} &mdash; Viaje #{{ v.id }} &middot; {{ v.fecha | date:'dd/MM/yyyy' }}
-			</option>
-		</select>
+	<div class="search-box">
+		<input type="text" placeholder="Buscar" [(ngModel)]="search">
+		<button>
+			<i class="fa-solid fa-magnifying-glass"></i>
+		</button>
 	</div>
 
 	<div class="table-container">
@@ -64,36 +67,47 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr *ngFor="let viaje of viajesFiltrados" [class.fila-sin-viaje]="!viaje.tieneViaje">
+				<tr *ngFor="let viaje of viajesFiltrados"
+					[class.fila-sin-viaje]="!viaje.tieneViaje">
 					<td>
 						<div class="paquete-nombre">{{ viaje.titulo }}</div>
-						<small class="viaje-id" *ngIf="viaje.tieneViaje">Viaje #{{ viaje.id }}</small>
+						<small class="viaje-id" *ngIf="viaje.tieneViaje">Viaje #{{ viaje.id
+							}}</small>
 					</td>
-					<td>{{ viaje.tieneViaje ? (viaje.transportes[0].empresa || '—') : '—' }}</td>
-					<td>{{ viaje.tieneViaje ? (viaje.transportes[0].tipoTransporte || '—') : '—' }}</td>
-					<td>{{ viaje.tieneViaje ? (viaje.transportes[0].conductor || '—') : '—' }}</td>
-					<td>{{ viaje.tieneViaje ? (viaje.transportes[0].placa || '—') : '—' }}</td>
+					<td>{{ viaje.tieneViaje ? (viaje.transportes[0].empresa || '—') : '—'
+						}}</td>
+					<td>{{ viaje.tieneViaje ? (viaje.transportes[0].tipoTransporte || '—') :
+						'—' }}</td>
+					<td>{{ viaje.tieneViaje ? (viaje.transportes[0].conductor || '—') : '—'
+						}}</td>
+					<td>{{ viaje.tieneViaje ? (viaje.transportes[0].placa || '—') : '—'
+						}}</td>
 					<td>
-						<span *ngIf="viaje.tieneViaje" class="estado-dot" [class.ok]="viaje.transporteAsignado"
+						<span *ngIf="viaje.tieneViaje" class="estado-dot"
+							[class.ok]="viaje.transporteAsignado"
 							[class.pendiente]="!viaje.transporteAsignado">
 							{{ viaje.transporteAsignado ? 'Asignado' : 'Pendiente' }}
 						</span>
-						<span *ngIf="!viaje.tieneViaje" class="estado-dot disabled">Sin viaje</span>
+						<span *ngIf="!viaje.tieneViaje" class="estado-dot disabled">Sin
+							viaje</span>
 					</td>
 					<td>
 						<div class="actions" *ngIf="viaje.tieneViaje">
-							<button class="ver" *ngIf="viaje.transporteAsignado" (click)="verDetalle(viaje)">
+							<button class="ver" *ngIf="viaje.transporteAsignado"
+								(click)="verDetalle(viaje)">
 								<i class="fa-solid fa-eye"></i>
 							</button>
 							<button [class]="viaje.transporteAsignado ? 'edit' : 'assign'"
 								(click)="seleccionarViaje(viaje)">
 								{{ viaje.transporteAsignado ? 'Editar' : 'Asignar' }}
 							</button>
-							<button class="del" *ngIf="viaje.transporteAsignado" (click)="eliminar(viaje)">
+							<button class="del" *ngIf="viaje.transporteAsignado"
+								(click)="eliminar(viaje)">
 								Eliminar
 							</button>
 						</div>
-						<span *ngIf="!viaje.tieneViaje" class="sin-viaje-label">Sin viaje creado</span>
+						<span *ngIf="!viaje.tieneViaje" class="sin-viaje-label">Sin viaje
+							creado</span>
 					</td>
 				</tr>
 				<tr *ngIf="viajes.length === 0">
@@ -107,7 +121,8 @@
 	<div class="modal-backdrop" *ngIf="showForm" (click)="cerrarForm()"></div>
 	<div class="modal-panel" *ngIf="showForm">
 		<div class="modal-header">
-			<h3>{{ editandoTransporteId ? 'Editar' : 'Asignar' }} transporte<span *ngIf="viajeSeleccionado"> &mdash; {{
+			<h3>{{ editandoTransporteId ? 'Editar' : 'Asignar' }} transporte<span
+					*ngIf="viajeSeleccionado"> &mdash; {{
 					viajeSeleccionado.titulo }}</span></h3>
 			<button class="btn-cerrar" (click)="cerrarForm()">&#x2715;</button>
 		</div>
@@ -122,21 +137,25 @@
 			<div class="form-grid">
 				<div class="form-group span-2" *ngIf="!viajeSeleccionado">
 					<label>Viaje *</label>
-					<select formControlName="idViaje">
-						<option value="">Seleccionar viaje...</option>
+					<select formControlName="idViaje"
+						(change)="onViajeChange($event)">
+						<option value>Seleccionar viaje...</option>
 						<ng-container *ngFor="let v of viajes">
 							<option *ngIf="v.tieneViaje" [value]="v.id">{{ v.nombre }}</option>
-							<option *ngIf="!v.tieneViaje" disabled>{{ v.titulo }} — (Sin viaje creado)</option>
+							<option *ngIf="!v.tieneViaje" disabled>{{ v.titulo }} — (Sin viaje
+								creado)</option>
 						</ng-container>
 					</select>
 				</div>
 
 				<div class="form-group span-2" *ngIf="proveedoresTransporte.length > 0">
 					<label>Proveedor registrado</label>
-					<select class="proveedor-select" (change)="seleccionarProveedorTransporte($event)">
-						<option value="">Seleccionar proveedor (opcional)...</option>
+					<select class="proveedor-select"
+						(change)="seleccionarProveedorTransporte($event)">
+						<option value>Seleccionar proveedor (opcional)...</option>
 						<option *ngFor="let p of proveedoresTransporte" [value]="p.id">
-							{{ p.nombre }}{{ p.tipoVehiculo ? ' · ' + p.tipoVehiculo : '' }}{{ p.placa ? ' · Placa: ' +
+							{{ p.nombre }}{{ p.tipoVehiculo ? ' · ' + p.tipoVehiculo : '' }}{{
+							p.placa ? ' · Placa: ' +
 							p.placa : '' }}{{ p.conductor ? ' · ' + p.conductor : '' }}
 						</option>
 					</select>
@@ -144,7 +163,8 @@
 
 				<div class="form-group">
 					<label>Empresa de transporte *</label>
-					<input type="text" formControlName="empresa" placeholder="Ej: Transportes Caribe S.A.S">
+					<input type="text" formControlName="empresa"
+						placeholder="Ej: Transportes Caribe S.A.S">
 					<span class="error"
 						*ngIf="transporteForm.get('empresa')?.invalid && transporteForm.get('empresa')?.touched">Campo
 						requerido (min. 3 caracteres)</span>
@@ -152,7 +172,8 @@
 
 				<div class="form-group">
 					<label>Tipo de vehiculo *</label>
-					<input type="text" formControlName="tipoVehiculo" placeholder="Ej: Bus, Avión, Van, Lancha">
+					<input type="text" formControlName="tipoVehiculo"
+						placeholder="Ej: Bus, Avión, Van, Lancha">
 					<span class="error"
 						*ngIf="transporteForm.get('tipoVehiculo')?.invalid && transporteForm.get('tipoVehiculo')?.touched">Campo
 						requerido</span>
@@ -160,7 +181,8 @@
 
 				<div class="form-group">
 					<label>Capacidad (personas) *</label>
-					<input type="number" formControlName="capacidad" placeholder="Ej: 40" min="1">
+					<input type="number" formControlName="capacidad" placeholder="Ej: 40"
+						min="1">
 					<span class="error"
 						*ngIf="transporteForm.get('capacidad')?.invalid && transporteForm.get('capacidad')?.touched">Capacidad
 						requerida (min. 1)</span>
@@ -168,7 +190,8 @@
 
 				<div class="form-group">
 					<label>Cantidad de viajeros *</label>
-					<input type="number" formControlName="cantidadViajeros" placeholder="Ej: 35" min="1">
+					<input type="number" formControlName="cantidadViajeros"
+						placeholder="Ej: 35" min="1">
 					<span class="error"
 						*ngIf="transporteForm.get('cantidadViajeros')?.invalid && transporteForm.get('cantidadViajeros')?.touched">Campo
 						requerido</span>
@@ -184,7 +207,8 @@
 
 				<div class="form-group">
 					<label>Conductor *</label>
-					<input type="text" formControlName="conductor" placeholder="Ej: Carlos Romero">
+					<input type="text" formControlName="conductor"
+						placeholder="Ej: Carlos Romero">
 					<span class="error"
 						*ngIf="transporteForm.get('conductor')?.invalid && transporteForm.get('conductor')?.touched">Campo
 						requerido</span>
@@ -192,34 +216,34 @@
 
 				<div class="form-group">
 					<label>Telefono del conductor *</label>
-					<input type="text" formControlName="telefonoConductor" placeholder="Ej: +57 300 000 0000">
+					<input type="text" formControlName="telefonoConductor"
+						placeholder="Ej: +57 300 000 0000">
 					<span class="error"
 						*ngIf="transporteForm.get('telefonoConductor')?.invalid && transporteForm.get('telefonoConductor')?.touched">Telefono
 						invalido</span>
 				</div>
 
 				<div class="form-group">
-					<label>Horario de salida *</label>
-					<div class="cal-wrap">
-						<input type="text" readonly placeholder="Seleccionar fecha"
-							[value]="(transporteForm.get('horarioSalida')?.value?.substring(0, 10)) | date:'dd/MM/yyyy'"
-							(click)="showCalendarHorario = !showCalendarHorario; $event.stopPropagation()"
-							class="cal-trigger">
-						<i class="fa-regular fa-calendar cal-icon"></i>
-						<app-custom-calendar *ngIf="showCalendarHorario" [isOpen]="showCalendarHorario"
-							[disablePastDates]="true"
-							[selectedDate]="transporteForm.get('horarioSalida')?.value?.substring(0, 10) || ''"
-							(dateSelected)="onHorarioDateSelected($event)" (closed)="showCalendarHorario = false">
-						</app-custom-calendar>
-					</div>
-					<span class="error"
-						*ngIf="transporteForm.get('horarioSalida')?.invalid && transporteForm.get('horarioSalida')?.touched">Horario
-						requerido</span>
+					<label>Fecha de salida</label>
+
+					<input
+						type="text"
+						class="readonly-field"
+						[value]="transporteForm.get('horarioSalida')?.value 
+		? (transporteForm.get('horarioSalida')?.value | date:'dd/MM/yyyy')
+		: 'Seleccione un viaje para visualizar la fecha'"
+						readonly>
+
+					<small class="field-info">
+						Esta fecha proviene del viaje programado.
+					</small>
 				</div>
+
 			</div>
 
 			<div class="modal-actions">
-				<button type="button" class="btn-cancelar" (click)="cerrarForm()">Cancelar</button>
+				<button type="button" class="btn-cancelar"
+					(click)="cerrarForm()">Cancelar</button>
 				<button type="submit" class="btn-guardar" [disabled]="enviando">
 					{{ enviando ? 'Guardando...' : 'Guardar asignacion' }}
 				</button>
@@ -228,10 +252,12 @@
 	</div>
 
 	<!-- MODAL DETALLE -->
-	<div class="modal-backdrop" *ngIf="showDetalle" (click)="cerrarDetalle()"></div>
+	<div class="modal-backdrop" *ngIf="showDetalle"
+		(click)="cerrarDetalle()"></div>
 	<div class="modal-panel detalle-panel" *ngIf="showDetalle && viajeDetalle">
 		<div class="modal-header">
-			<h3><i class="fa-solid fa-eye" style="color:var(--color-primario);margin-right:10px;"></i>Detalle de
+			<h3><i class="fa-solid fa-eye"
+					style="color:var(--color-primario);margin-right:10px;"></i>Detalle de
 				transporte</h3>
 			<button class="btn-cerrar" (click)="cerrarDetalle()">&#x2715;</button>
 		</div>
@@ -241,11 +267,13 @@
 		</div>
 		<div class="detalle-grid" *ngIf="viajeDetalle.transportes[0] as t">
 			<div class="detalle-item">
-				<span class="detalle-label"><i class="fa-solid fa-building"></i> Empresa</span>
+				<span class="detalle-label"><i class="fa-solid fa-building"></i>
+					Empresa</span>
 				<span class="detalle-valor">{{ t.empresa }}</span>
 			</div>
 			<div class="detalle-item">
-				<span class="detalle-label"><i class="fa-solid fa-bus"></i> Tipo de vehiculo</span>
+				<span class="detalle-label"><i class="fa-solid fa-bus"></i> Tipo de
+					vehiculo</span>
 				<span class="detalle-valor">{{ t.tipoTransporte }}</span>
 			</div>
 			<div class="detalle-item">
@@ -253,20 +281,26 @@
 				<span class="detalle-valor">{{ t.placa }}</span>
 			</div>
 			<div class="detalle-item">
-				<span class="detalle-label"><i class="fa-solid fa-user-tie"></i> Conductor</span>
+				<span class="detalle-label"><i class="fa-solid fa-user-tie"></i>
+					Conductor</span>
 				<span class="detalle-valor">{{ t.conductor }}</span>
 			</div>
 			<div class="detalle-item">
-				<span class="detalle-label"><i class="fa-solid fa-phone"></i> Telefono conductor</span>
+				<span class="detalle-label"><i class="fa-solid fa-phone"></i> Telefono
+					conductor</span>
 				<span class="detalle-valor">{{ t.telefonoConductor }}</span>
 			</div>
 			<div class="detalle-item">
-				<span class="detalle-label"><i class="fa-solid fa-users"></i> Capacidad / Viajeros</span>
-				<span class="detalle-valor">{{ t.capacidad }} / {{ t.cantidadViajeros }}</span>
+				<span class="detalle-label"><i class="fa-solid fa-users"></i> Capacidad /
+					Viajeros</span>
+				<span class="detalle-valor">{{ t.capacidad }} / {{ t.cantidadViajeros
+					}}</span>
 			</div>
 			<div class="detalle-item span-2">
-				<span class="detalle-label"><i class="fa-solid fa-clock"></i> Horario de salida</span>
-				<span class="detalle-valor">{{ t.fechaSalida | date:'dd/MM/yyyy HH:mm' }}</span>
+				<span class="detalle-label"><i class="fa-solid fa-clock"></i> Horario de
+					salida</span>
+				<span class="detalle-valor">{{ t.fechaSalida | date:'dd/MM/yyyy HH:mm'
+					}}</span>
 			</div>
 		</div>
 		<div class="detalle-actions">
