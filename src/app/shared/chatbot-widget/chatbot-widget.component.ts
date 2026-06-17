@@ -93,9 +93,9 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy, AfterViewCheck
 
 	}
 
-	/** El usuario tocó una de las opciones de respuesta rápida del saludo inicial. */
+	/** El usuario tocó una de las opciones de respuesta rápida. */
 	onQuickReply(msg: ChatMessage, option: QuickReply): void {
-		msg.quickReplies = undefined; // ya se usaron, no las repetimos
+		msg.quickReplies = undefined;
 		if (option.action === 'upload') {
 			this.fileInputRef.nativeElement.click();
 			return;
@@ -104,8 +104,52 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy, AfterViewCheck
 			this.showPackages(option.label);
 			return;
 		}
+		if (option.action === 'faq_menu') {
+			this.showFaqMenu();
+			return;
+		}
+		if (option.action === 'faq') {
+			this.showFaqAnswer(option.payload ?? '');
+			return;
+		}
+		if (option.action === 'main_menu') {
+			this.pushBot('¿En qué más te puedo ayudar? 🦈', false, undefined, undefined, QUICK_REPLIES);
+			this.shouldScroll = true;
+			return;
+		}
+		if (option.action === 'support') {
+			this.pushBot(
+				'Para hablar con soporte comunícate al 604-123-4567 o contáctanos desde la plataforma. ¡Estamos pa\' lo que necesites! 🦈',
+				false, undefined, undefined,
+				[{ label: '← Volver al menú', action: 'main_menu' }]
+			);
+			this.shouldScroll = true;
+			return;
+		}
 		this.userInput = option.payload ?? '';
 		this.sendMessage();
+	}
+
+	private showFaqMenu(): void {
+		const faqReplies: QuickReply[] = FAQ_ITEMS.map(item => ({
+			label: item.question,
+			action: 'faq',
+			payload: item.id,
+		}));
+		faqReplies.push({ label: '← Volver al menú', action: 'main_menu' });
+		this.pushBot('¿Sobre qué tenés dudas? Elegí la pregunta 🦈', false, undefined, undefined, faqReplies);
+		this.shouldScroll = true;
+	}
+
+	private showFaqAnswer(id: string): void {
+		const item = FAQ_ITEMS.find(f => f.id === id);
+		if (!item) return;
+		this.pushUser(item.question);
+		this.pushBot(item.answer, false, undefined, undefined, [
+			{ label: '❓ Otras preguntas frecuentes', action: 'faq_menu' },
+			SUPPORT_CHIP,
+		]);
+		this.shouldScroll = true;
 	}
 
 	/** Muestra el catálogo real (fotos y precios reales) como tarjetas dentro del chat. */
@@ -295,8 +339,9 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy, AfterViewCheck
 		isDocument = false,
 		docEstado?: ChatMessage['docEstado'],
 		packages?: TravelPackage[],
+		quickReplies?: QuickReply[],
 	): void {
-		this.messages.push({ role: 'bot', content, isDocument, docEstado, packages, timestamp: new Date() });
+		this.messages.push({ role: 'bot', content, isDocument, docEstado, packages, quickReplies, timestamp: new Date() });
 	}
 
 	private scrollToBottom(): void {
