@@ -108,11 +108,11 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy, AfterViewCheck
 			this.showFaqMenu();
 			return;
 		}
-		if (option.action === 'faq') {
+		if (option.action === 'faq_answer') {
 			this.showFaqAnswer(option.payload ?? '');
 			return;
 		}
-		if (option.action === 'main_menu') {
+		if (option.action === 'menu') {
 			this.pushBot('¿En qué más te puedo ayudar? 🦈', false, undefined, undefined, QUICK_REPLIES);
 			this.shouldScroll = true;
 			return;
@@ -121,7 +121,7 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy, AfterViewCheck
 			this.pushBot(
 				'Para hablar con soporte comunícate al 604-123-4567 o contáctanos desde la plataforma. ¡Estamos pa\' lo que necesites! 🦈',
 				false, undefined, undefined,
-				[{ label: '← Volver al menú', action: 'main_menu' }]
+				[{ label: '← Volver al menú', action: 'menu' }]
 			);
 			this.shouldScroll = true;
 			return;
@@ -133,10 +133,10 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy, AfterViewCheck
 	private showFaqMenu(): void {
 		const faqReplies: QuickReply[] = FAQ_ITEMS.map(item => ({
 			label: item.question,
-			action: 'faq',
+			action: 'faq_answer' as const,
 			payload: item.id,
 		}));
-		faqReplies.push({ label: '← Volver al menú', action: 'main_menu' });
+		faqReplies.push({ label: '← Volver al menú', action: 'menu' });
 		this.pushBot('¿Sobre qué tenés dudas? Elegí la pregunta 🦈', false, undefined, undefined, faqReplies);
 		this.shouldScroll = true;
 	}
