@@ -189,11 +189,11 @@
 
 						<div class="actions">
 
-							<button class="view">
+							<button class="view" (click)="openDetail(item)">
 								<i class="fa-regular fa-eye"></i>
 							</button>
 
-							<button class="upload" *ngIf="item.estado === 'Pendiente'">
+							<button class="upload" *ngIf="item.estado === 'Pendiente'" (click)="openUploadModal(item)">
 								<i class="fa-solid fa-file-arrow-up"></i>
 								Subir
 							</button>
@@ -217,7 +217,14 @@
 
 				</tr>
 
-				<tr *ngIf="reservations.length === 0">
+				<tr *ngIf="isLoadingReservations">
+					<td colspan="5" class="empty-state">
+						<i class="fa-solid fa-circle-notch fa-spin"></i>
+						<span>Cargando reservas...</span>
+					</td>
+				</tr>
+
+				<tr *ngIf="!isLoadingReservations && reservations.length === 0">
 					<td colspan="5" class="empty-state">
 						<i class="fa-regular fa-calendar-xmark"></i>
 						<span>No tienes reservas registradas</span>
@@ -247,3 +254,13 @@
 	cancelText="" icon="fa-solid fa-circle-xmark" confirmColor="#ff3b3b" iconBg="rgba(255, 59, 59, 0.12)"
 	iconColor="#ff3b3b" (confirmed)="showErrorModal = false" (closed)="showErrorModal = false">
 </app-confirm-modal>
+
+<!-- Modal detalles de reserva -->
+
+<app-reservation-detail-sheet [isOpen]="sheetOpen" [reservation]="selectedReservation" (closed)="closeDetail()">
+</app-reservation-detail-sheet>
+
+<app-upload-document-modal [isOpen]="showUploadModal" [userId]="user?.id"
+	[reservationId]="selectedReservationUpload?.id" (closed)="showUploadModal = false"
+	(uploaded)="showUploadModal = false">
+</app-upload-document-modal>

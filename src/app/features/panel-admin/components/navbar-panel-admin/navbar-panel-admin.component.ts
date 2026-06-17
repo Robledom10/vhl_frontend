@@ -90,15 +90,11 @@ export class NavbarPanelAdminComponent {
 					route: '/panel-admin/operaciones-dashboard',
 				},
 				{
-					label: 'Gestión Documental',
-					route: '/panel-admin/gestion-documental'
-				},
-				{
 					label: 'Asignar transporte',
 					route: '/panel-admin/operaciones-transporte',
 				},
 				{
-					label: 'Check-in por QR',
+					label: 'Check-in',
 					route: '/panel-admin/operaciones-check-in',
 				},
 				{

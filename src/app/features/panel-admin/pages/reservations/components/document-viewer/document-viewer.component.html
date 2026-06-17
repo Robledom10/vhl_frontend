@@ -1,0 +1,31 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="close()">
+
+	<div class="modal-container" (click)="$event.stopPropagation()">
+
+		<h2>
+			Documentos
+		</h2>
+
+		<div class="document-row" *ngFor="let doc of documents">
+
+			<div>
+				<strong>
+					{{ doc.documentType }}
+				</strong>
+
+				<br>
+
+				<small>
+					{{ doc.status }}
+				</small>
+			</div>
+
+			<button (click)="viewDocument(doc.idDocument)">
+				Ver
+			</button>
+
+		</div>
+
+	</div>
+
+</div>

@@ -3,6 +3,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { minimumAgeValidator } from '../../../../core/validators/custom.validators';
 import colombiaData from '../../../../../assets/data/colombia.json';
+import { ReservationService } from '../../../../core/services/reservation.service';
 
 @Component({
 	selector: 'app-profile',
@@ -38,35 +39,27 @@ export class ProfileComponent implements OnInit {
 	departments: string[] = [];
 	cities: string[] = [];
 
-	reservations = [
-		{
-			destino: 'San Andrés',
-			personas: 2,
-			fechaViaje: '15/08/2026',
-			estado: 'Pendiente',
-		},
-		{
-			destino: 'Cartagena',
-			personas: 4,
-			fechaViaje: '20/09/2026',
-			estado: 'Confirmada',
-		},
-		{
-			destino: 'Eje Cafetero',
-			personas: 3,
-			fechaViaje: '05/10/2026',
-			estado: 'Cancelada',
-		},
-	];
+	reservations: any[] = [];
+
+	isLoadingReservations = false;
+
+	sheetOpen = false;
+	selectedReservation: any = null;
+
+	showUploadModal = false;
+	selectedReservationUpload: any = null;
 
 	ngOnInit(): void {
 		this.loadProfile();
+		this.loadReservations();
+
 		this.departments = colombiaData.colombia.map((item) => item.departamento);
 	}
 
 	constructor(
 		public authService: AuthService,
 		private fb: FormBuilder,
+		private reservationService: ReservationService
 	) { }
 
 	profileForm = this.fb.group({
@@ -283,6 +276,56 @@ export class ProfileComponent implements OnInit {
 
 		this.f.city.markAsTouched();
 		this.cityDropdownOpen = false;
+	}
+
+	// Reservas
+
+
+	openDetail(reservation: any): void {
+		this.selectedReservation = reservation;
+		this.sheetOpen = true;
+	}
+
+	closeDetail(): void {
+		this.sheetOpen = false;
+	}
+
+	loadReservations(): void {
+
+		this.isLoadingReservations = true;
+
+		const user = this.authService.getUser();
+
+		this.reservationService.getAll().subscribe({
+
+			next: (reservations) => {
+
+				this.reservations = reservations.filter(
+					r => r.clienteEmail === user?.email
+				);
+
+				this.isLoadingReservations = false;
+			},
+
+			error: (err) => {
+
+				console.error(err);
+
+				this.isLoadingReservations = false;
+			}
+		});
+	}
+
+	openUploadModal(reservation: any): void {
+		this.selectedReservationUpload = reservation;
+		this.showUploadModal = true;
+		document.body.style.overflow = 'hidden';
+	}
+
+	closeUploadModal(): void {
+		this.showUploadModal = false;
+		this.selectedReservationUpload = null;
+		document.body.style.overflow = '';
 	}
 
 	// =========================
