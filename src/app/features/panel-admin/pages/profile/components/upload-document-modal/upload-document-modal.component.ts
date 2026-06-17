@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { DocumentManagementService } from '../../../../../../core/services/document-management.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { DocumentManagementService } from '../../../../../../core/services/docum
 	templateUrl: './upload-document-modal.component.html',
 	styleUrl: './upload-document-modal.component.css'
 })
-export class UploadDocumentModalComponent {
+export class UploadDocumentModalComponent implements OnChanges {
 
 	@Input() isOpen = false;
 	@Input() reservationId!: number;
@@ -16,14 +16,19 @@ export class UploadDocumentModalComponent {
 	@Output() uploaded = new EventEmitter<void>();
 
 	selectedType = '';
-	selectedFile!: File;
-
+	selectedFile: File | null = null;
 	dropdownOpen = false;
 	selectedTypeLabel = '';
 
 	constructor(
-		private documentService: DocumentManagementService
+		private documentService: DocumentManagementService,
 	) { }
+
+	ngOnChanges(): void {
+		if (!this.isOpen) {
+			this.resetForm();
+		}
+	}
 
 	selectType(type: string, label: string): void {
 		this.selectedType = type;
@@ -54,6 +59,7 @@ export class UploadDocumentModalComponent {
 			.subscribe({
 
 				next: () => {
+					this.resetForm();
 					this.uploaded.emit();
 				},
 
@@ -63,8 +69,28 @@ export class UploadDocumentModalComponent {
 			});
 	}
 
-	@HostListener('document:click')
-	closeDropdown(): void {
+	resetForm(): void {
+		this.selectedType = '';
+		this.selectedTypeLabel = '';
 		this.dropdownOpen = false;
+		this.selectedFile = null;
+	}
+
+	closeModal(): void {
+		this.resetForm();
+		this.closed.emit();
+	}
+
+	toggleDropdown(): void {
+		this.dropdownOpen = !this.dropdownOpen;
+	}
+
+	onModalClick(event: Event): void {
+		event.stopPropagation();
+		const target = event.target as HTMLElement;
+
+		if (!target.closest('.custom-select')) {
+			this.dropdownOpen = false;
+		}
 	}
 }

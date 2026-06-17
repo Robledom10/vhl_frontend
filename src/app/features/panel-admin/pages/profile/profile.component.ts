@@ -319,11 +319,13 @@ export class ProfileComponent implements OnInit {
 	openUploadModal(reservation: any): void {
 		this.selectedReservationUpload = reservation;
 		this.showUploadModal = true;
+		document.body.style.overflow = 'hidden';
 	}
 
 	closeUploadModal(): void {
 		this.showUploadModal = false;
 		this.selectedReservationUpload = null;
+		document.body.style.overflow = '';
 	}
 
 	// =========================

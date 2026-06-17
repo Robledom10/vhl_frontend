@@ -168,8 +168,7 @@ export class CreateUserModalComponent {
 	// DROPDOWN
 	// =========================
 
-	toggleDocumentDropdown(event: Event): void {
-		event.stopPropagation();
+	toggleDocumentDropdown(): void {
 		this.documentDropdownOpen = !this.documentDropdownOpen;
 	}
 
@@ -180,9 +179,14 @@ export class CreateUserModalComponent {
 		this.documentDropdownOpen = false;
 	}
 
-	@HostListener('document:click')
-	closeDropdowns(): void {
-		this.documentDropdownOpen = false;
+	onModalClick(event: Event): void {
+		event.stopPropagation();
+
+		const target = event.target as HTMLElement;
+
+		if (!target.closest('.custom-select')) {
+			this.documentDropdownOpen = false;
+		}
 	}
 
 	// =========================
