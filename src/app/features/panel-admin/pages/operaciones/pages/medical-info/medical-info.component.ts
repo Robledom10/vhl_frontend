@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { forkJoin, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { OperacionesService } from '../../../../../../core/services/operaciones.service';
-import { AuthService } from '../../../../../../core/services/auth.service';
 import { Viaje, InformacionMedica, ContactoEmergencia } from '../../../../models/operaciones.models';
-
-interface Usuario { id: number; firstName: string; lastName: string; }
 
 @Component({
 	selector: 'app-medical-info',
@@ -18,8 +15,6 @@ export class InfoMedicaComponent implements OnInit {
 	// ── Estado compartido ────────────────────────────────────────────
 	viajes: Viaje[] = [];
 	idViajeSeleccionado: number | null = null;
-	usuarios: Usuario[] = [];
-	usuarioMap: Record<number, string> = {};
 	paqueteTituloMap: Record<number, string> = {};
 	showToast = false;
 	toastMsg = '';
@@ -42,34 +37,14 @@ export class InfoMedicaComponent implements OnInit {
 	});
 
 	// ── Contactos de Emergencia ───────────────────────────────────────
-	showFormContacto = false;
-	enviandoContacto = false;
-	editandoContacto: ContactoEmergencia | null = null;
 	contactos: ContactoEmergencia[] = [];
-
-	contactoForm = this.fb.group({
-		nombreViajero: ['', Validators.required],
-		nombreContacto: ['', [Validators.required, Validators.minLength(3)]],
-		relacion: ['', Validators.required],
-		telefono: ['', [Validators.required, Validators.pattern(/^\+?[\d\s\-]{7,20}$/)]],
-		correo: ['', Validators.email],
-	});
 
 	constructor(
 		private fb: FormBuilder,
 		private svc: OperacionesService,
-		private authSvc: AuthService,
 	) { }
 
 	ngOnInit(): void {
-		this.authSvc.getAllUsers().subscribe({
-			next: (users: any[]) => {
-				this.usuarios = users.map(u => ({ id: u.id, firstName: u.firstName, lastName: u.lastName }));
-				this.usuarioMap = Object.fromEntries(this.usuarios.map(u => [u.id, `${u.firstName} ${u.lastName}`]));
-			},
-			error: () => { },
-		});
-
 		this.svc.getViajes().subscribe({
 			next: (viajes) => {
 				this.viajes = viajes;
@@ -78,31 +53,36 @@ export class InfoMedicaComponent implements OnInit {
 					this.idViajeSeleccionado = viajes[0].id;
 					this.cargarTodo();
 				}
+				this.cargarTodosContactos();
 			},
 			error: () => { },
 		});
-	}
-
-	getNombreViajero(id: number): string {
-		return this.usuarioMap[id] || `Viajero #${id}`;
 	}
 
 	onViajeChange(event: Event): void {
 		const id = Number((event.target as HTMLSelectElement).value);
 		this.idViajeSeleccionado = id || null;
 		this.registros = [];
-		this.contactos = [];
 		if (this.idViajeSeleccionado) this.cargarTodo();
+	}
+
+	cargarTodosContactos(): void {
+		if (this.viajes.length === 0) return;
+		forkJoin(
+			this.viajes.map(v => this.svc.getContactos(v.id).pipe(catchError(() => of([]))))
+		).pipe(
+			map(results => (results as ContactoEmergencia[][]).flat())
+		).subscribe(contactos => {
+			this.contactos = contactos;
+		});
 	}
 
 	cargarTodo(): void {
 		if (!this.idViajeSeleccionado) return;
-		forkJoin({
-			medicos: this.svc.getInformacionMedica(this.idViajeSeleccionado).pipe(catchError(() => of([]))),
-			contactos: this.svc.getContactos(this.idViajeSeleccionado).pipe(catchError(() => of([]))),
-		}).subscribe(({ medicos, contactos }) => {
+		this.svc.getInformacionMedica(this.idViajeSeleccionado).pipe(
+			catchError(() => of([]))
+		).subscribe(medicos => {
 			this.registros = medicos as InformacionMedica[];
-			this.contactos = contactos as ContactoEmergencia[];
 		});
 	}
 
@@ -112,7 +92,7 @@ export class InfoMedicaComponent implements OnInit {
 	abrirMedico(r: InformacionMedica): void {
 		this.editandoMedico = r;
 		this.medForm.patchValue({
-			nombreViajero: r.nombreViajero || this.getNombreViajero(r.idViajero),
+			nombreViajero: r.nombreViajero || ('Viajero #' + r.idViajero),
 			tipoSangre: r.tipoSangre,
 			alergias: r.alergias,
 			medicamentos: r.medicamentos,
@@ -157,64 +137,10 @@ export class InfoMedicaComponent implements OnInit {
 	}
 
 	eliminarMedico(r: InformacionMedica): void {
-		if (!confirm(`¿Eliminar el registro médico de ${this.getNombreViajero(r.idViajero)}?`)) return;
+		if (!confirm(`¿Eliminar el registro médico de ${r.nombreViajero || 'Viajero #' + r.idViajero}?`)) return;
 		this.svc.eliminarInformacionMedica(r.idViajero, r.id).subscribe({
 			next: () => { this.mostrarToast('Registro médico eliminado'); this.cargarTodo(); },
 			error: () => { this.mostrarToast('Error al eliminar', 'error'); },
-		});
-	}
-
-	// ── Contacto ──────────────────────────────────────────────────────
-	abrirNuevoContacto(): void { this.editandoContacto = null; this.contactoForm.reset(); this.showFormContacto = true; }
-
-	abrirContacto(c: ContactoEmergencia): void {
-		this.editandoContacto = c;
-		this.contactoForm.patchValue({
-			nombreViajero: c.nombreViajero || '',
-			nombreContacto: c.nombre,
-			relacion: c.parentesco,
-			telefono: c.telefono,
-			correo: c.correo,
-		});
-		this.showFormContacto = true;
-	}
-
-	cerrarContacto(): void { this.showFormContacto = false; this.editandoContacto = null; }
-
-	guardarContacto(): void {
-		if (this.contactoForm.invalid) { this.contactoForm.markAllAsTouched(); return; }
-		if (!this.idViajeSeleccionado) { this.mostrarToast('Selecciona un viaje', 'error'); return; }
-		this.enviandoContacto = true;
-		const v = this.contactoForm.value;
-		const idViajero = this.editandoContacto ? this.editandoContacto.idViajero : 1;
-		const body = {
-			idViaje: this.idViajeSeleccionado,
-			nombre: v.nombreContacto || '',
-			parentesco: v.relacion || '',
-			telefono: v.telefono || '',
-			correo: v.correo || undefined,
-			nombreViajero: v.nombreViajero || '',
-		};
-		const req$ = this.editandoContacto
-			? this.svc.actualizarContacto(this.editandoContacto.idViajero, this.editandoContacto.id, body)
-			: this.svc.registrarContacto(idViajero, body);
-		req$.subscribe({
-			next: () => {
-				this.enviandoContacto = false; this.showFormContacto = false; this.editandoContacto = null;
-				this.mostrarToast('Contacto de emergencia guardado'); this.cargarTodo();
-			},
-			error: (err) => {
-				this.enviandoContacto = false;
-				this.mostrarToast(err?.error?.mensaje || 'Error al guardar', 'error');
-			},
-		});
-	}
-
-	eliminarContacto(c: ContactoEmergencia): void {
-		if (!confirm(`¿Eliminar el contacto "${c.nombre}"?`)) return;
-		this.svc.eliminarContacto(c.idViajero, c.id).subscribe({
-			next: () => { this.contactos = this.contactos.filter(x => x.id !== c.id); this.mostrarToast('Contacto eliminado'); },
-			error: () => { this.mostrarToast('Error al eliminar el contacto', 'error'); },
 		});
 	}
 

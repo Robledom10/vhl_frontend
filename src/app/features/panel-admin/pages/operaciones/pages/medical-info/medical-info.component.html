@@ -53,7 +53,7 @@
 					<tr *ngFor="let r of registros">
 						<td class="td-viajero">
 							<div class="avatar-sm"><i class="fa-solid fa-user"></i></div>
-							{{ r.nombreViajero || getNombreViajero(r.idViajero) }}
+							{{ r.nombreViajero || ('Viajero #' + r.idViajero) }}
 						</td>
 						<td><span class="badge-sg">{{ r.tipoSangre }}</span></td>
 						<td>
@@ -96,12 +96,9 @@
 				<div class="section-icon contact-icon"><i class="fa-solid fa-phone-volume"></i></div>
 				<div>
 					<h3>Contactos de emergencia</h3>
-					<p>Personas de contacto en caso de emergencia durante el viaje</p>
+					<p>Se registran automáticamente desde las reservas del viaje</p>
 				</div>
 			</div>
-			<button class="btn-agregar btn-agregar-contact" (click)="abrirNuevoContacto()">
-				<i class="fa-solid fa-plus"></i> Nuevo contacto
-			</button>
 		</div>
 
 		<div class="contactos-grid">
@@ -112,9 +109,9 @@
 					<div class="cc-avatar"><i class="fa-solid fa-user"></i></div>
 					<div class="cc-viajero">
 						<span class="cc-viajero-nombre">{{ c.nombre }}</span>
-						<span class="cc-viajero-sub">{{ c.nombreViajero || getNombreViajero(c.idViajero) }} &mdash; {{
-							c.parentesco }}</span>
+						<span class="cc-viajero-sub">{{ c.parentesco }}</span>
 					</div>
+					<span class="cc-viaje-tag">Viaje #{{ c.idViaje }}</span>
 				</div>
 
 				<div class="cc-divider"></div>
@@ -151,16 +148,11 @@
 					</div>
 				</div>
 
-				<!-- Acciones -->
-				<div class="cc-actions">
-					<button class="btn-edit-card" (click)="abrirContacto(c)">Editar</button>
-					<button class="btn-del-card" (click)="eliminarContacto(c)">Eliminar</button>
-				</div>
 			</div>
 
 			<div class="contactos-empty" *ngIf="contactos.length === 0">
 				<i class="fa-solid fa-phone-slash"></i>
-				<p>No hay contactos de emergencia para este viaje.</p>
+				<p>No hay contactos de emergencia registrados.</p>
 			</div>
 		</div>
 	</div>
@@ -227,71 +219,6 @@
 				<button type="button" class="btn-cancelar" (click)="cerrarMedico()">Cancelar</button>
 				<button type="submit" class="btn-guardar" [disabled]="enviandoMedico">
 					{{ enviandoMedico ? 'Guardando...' : 'Guardar registro' }}
-				</button>
-			</div>
-		</form>
-	</div>
-
-	<!-- ═══════════════════════════════════════════════════════════════ -->
-	<!-- MODAL: CONTACTO DE EMERGENCIA                                   -->
-	<!-- ═══════════════════════════════════════════════════════════════ -->
-	<div class="modal-backdrop" *ngIf="showFormContacto" (click)="cerrarContacto()"></div>
-	<div class="modal-panel" *ngIf="showFormContacto">
-		<div class="modal-header">
-			<div class="modal-title-wrap">
-				<div class="modal-icon-wrap contact-icon-sm"><i class="fa-solid fa-phone-volume"></i></div>
-				<h3>{{ editandoContacto ? 'Editar contacto de emergencia' : 'Nuevo contacto de emergencia' }}</h3>
-			</div>
-			<button class="btn-cerrar" (click)="cerrarContacto()">&#x2715;</button>
-		</div>
-
-		<form [formGroup]="contactoForm" (ngSubmit)="guardarContacto()">
-			<div class="form-grid">
-				<div class="form-group span-2">
-					<label>Nombre del viajero *</label>
-					<input type="text" formControlName="nombreViajero" placeholder="Ej: Juan Pérez" autocomplete="off">
-					<span class="error"
-						*ngIf="contactoForm.get('nombreViajero')?.invalid && contactoForm.get('nombreViajero')?.touched">Campo
-						requerido</span>
-				</div>
-
-				<div class="form-group span-2">
-					<label>Nombre del contacto *</label>
-					<input type="text" formControlName="nombreContacto" placeholder="Nombre completo del contacto">
-					<span class="error"
-						*ngIf="contactoForm.get('nombreContacto')?.invalid && contactoForm.get('nombreContacto')?.touched">Campo
-						requerido (mín. 3 caracteres)</span>
-				</div>
-
-				<div class="form-group">
-					<label>Relación *</label>
-					<input type="text" formControlName="relacion" placeholder="Ej: Madre, Esposo/a, Amigo/a">
-					<span class="error"
-						*ngIf="contactoForm.get('relacion')?.invalid && contactoForm.get('relacion')?.touched">Campo
-						requerido</span>
-				</div>
-
-				<div class="form-group">
-					<label>Teléfono principal *</label>
-					<input type="text" formControlName="telefono" placeholder="+57 300 000 0000">
-					<span class="error"
-						*ngIf="contactoForm.get('telefono')?.invalid && contactoForm.get('telefono')?.touched">Teléfono
-						inválido</span>
-				</div>
-
-				<div class="form-group span-2">
-					<label>Correo electrónico (opcional)</label>
-					<input type="email" formControlName="correo" placeholder="contacto@email.com">
-					<span class="error"
-						*ngIf="contactoForm.get('correo')?.invalid && contactoForm.get('correo')?.touched">Correo
-						inválido</span>
-				</div>
-			</div>
-
-			<div class="modal-actions">
-				<button type="button" class="btn-cancelar" (click)="cerrarContacto()">Cancelar</button>
-				<button type="submit" class="btn-guardar btn-guardar-contact" [disabled]="enviandoContacto">
-					{{ enviandoContacto ? 'Guardando...' : 'Guardar contacto' }}
 				</button>
 			</div>
 		</form>

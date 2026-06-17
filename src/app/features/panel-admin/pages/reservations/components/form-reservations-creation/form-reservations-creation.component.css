@@ -610,6 +610,60 @@
 }
 
 /* =========================================================
+   CONTACTOS DE EMERGENCIA — BOTONES
+========================================================= */
+
+.add-companion-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	height: 44px;
+	padding: 0 22px;
+	border-radius: 999px;
+	border: none;
+	background: var(--color-primario);
+	color: #fff;
+	font-family: "Outfit", sans-serif;
+	font-size: var(--inputs);
+	font-weight: 500;
+	cursor: pointer;
+	margin-top: 4px;
+	transition: all 0.22s ease;
+}
+
+.add-companion-btn:hover {
+	box-shadow: 0 8px 20px rgba(63, 162, 219, 0.25);
+	transform: translateY(-1px);
+}
+
+.remove-contact-btn {
+	margin-left: auto;
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	border: none;
+	background: rgba(255, 59, 59, 0.12);
+	color: #ff3b3b;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	font-size: 13px;
+	flex-shrink: 0;
+	transition: all 0.2s ease;
+}
+
+.remove-contact-btn:hover {
+	background: rgba(255, 59, 59, 0.22);
+	transform: scale(1.08);
+}
+
+.emergency-num-icon {
+	background: rgba(255, 107, 107, 0.12) !important;
+	color: #e53935 !important;
+}
+
+/* =========================================================
    ANIMACIONES
 ========================================================= */
 

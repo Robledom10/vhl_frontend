@@ -282,50 +282,33 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 
 	confirmReservation(): void {
 
+		const currentUser = this.authService.getUser();
+
 		const solicitud: SolicitudReserva = {
-
-			clienteNombre: `${this.holder.firstName} ${this.holder.lastName}`,
-
-			tipoDocumento: this.holder.documentType,
-
-			documento: this.holder.documentNumber,
-
-			clienteEmail: this.holder.email,
-
-			clienteTelefono: this.holder.phone,
-
-			ciudadResidencia: this.holder.city,
-
+			idUsuario: currentUser?.id ?? 0,
+			idPaquete: this.selectedTrip?.idPaquete,
 			personas: this.travelers,
-
-			acompanantes:
-				this.companions.map(companion => ({
-					nombre: companion.name,
-					fechaNacimiento: companion.birthDate,
-					tipoDocumento: companion.documentType,
-					documento: companion.documentNumber
+			acompanantes: this.companions.map(companion => ({
+				nombre: companion.name,
+				fechaNacimiento: companion.birthDate,
+				tipoDocumento: companion.documentType,
+				documento: companion.documentNumber
+			})),
+			contactosEmergencia: this.emergencyContacts
+				.filter(c => c.fullName && c.relationship && c.phone)
+				.map(c => ({
+					nombre: c.fullName,
+					parentesco: c.relationship,
+					telefono: c.phone,
 				})),
-
 			idViaje: this.selectedTrip?.id,
-
 			paqueteNombre: this.package?.title ?? '',
-
 			destino: this.package?.destinations ?? '',
-
 			fechaSalida: this.selectedTrip?.fechaSalida ?? '',
-
 			fechaRegreso: this.selectedTrip?.fechaRegreso ?? '',
-
 			tipoHabitacion: this.selectedRoomType,
-
 			solicitudEspecial: this.selectedSpecialRequest,
-
 			notas: this.additionalNotes,
-
-			metodoPago: this.selectedPaymentMethod,
-
-			estadoPago: this.selectedPaymentStatus,
-
 			total: this.totalPrice
 		};
 

@@ -1,5 +1,5 @@
 <div class="modal-overlay" *ngIf="isOpen" (click)="closeModal()">
-	<div class="create-user-modal" (click)="$event.stopPropagation()">
+	<div class="create-user-modal" (click)="onModalClick($event)">
 		<!-- HEADER -->
 		<div class="modal-header">
 			<button type="button" class="close-btn" (click)="closeModal()">
@@ -59,6 +59,19 @@
 
 				</div>
 
+				<div class="form-group">
+
+					<input type="tel" formControlName="phone" placeholder="Teléfono"
+						[class.ng-touched]="f.phone.touched" />
+
+					<label>Teléfono (opcional)</label>
+
+					<span *ngIf="f.phone.touched && f.phone.errors?.['pattern']">
+						Formato inválido (Ej: +57 300 123 4567)
+					</span>
+
+				</div>
+
 				<div class="modal-actions">
 
 					<button type="button" class="btn-cancel" (click)="closeModal()">Cancelar</button>
@@ -79,7 +92,7 @@
 						<div class="custom-select" [class.open]="documentDropdownOpen"
 							[class.selected]="selectedDocumentType"
 							[class.invalid]="step2Submitted && f.documentType.invalid"
-							(click)="toggleDocumentDropdown($event)">
+							(click)="toggleDocumentDropdown()">
 
 							<div class="custom-select-value">
 								{{ selectedDocumentType || 'Tipo documento' }}

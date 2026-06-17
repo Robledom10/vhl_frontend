@@ -33,6 +33,20 @@ export class ReservationDetailSheetComponent {
     }
   }
 
+  getNombreCompleto(): string {
+    if (!this.reservation?.datosUsuario) return `Usuario #${this.reservation?.idUsuario ?? '—'}`;
+    const { nombre, apellido } = this.reservation.datosUsuario;
+    return `${nombre} ${apellido}`.trim() || `Usuario #${this.reservation.idUsuario}`;
+  }
+
+  getInitials(): string {
+    if (!this.reservation?.datosUsuario) return '?';
+    const { nombre, apellido } = this.reservation.datosUsuario;
+    const n = (nombre?.[0] ?? '').toUpperCase();
+    const a = (apellido?.[0] ?? '').toUpperCase();
+    return (n + a) || '?';
+  }
+
   getEstadoClass(): string {
     if (!this.reservation) return '';
     return {

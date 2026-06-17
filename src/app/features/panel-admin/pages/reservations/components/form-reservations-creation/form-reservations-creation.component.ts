@@ -15,15 +15,18 @@ export interface Acompanante {
 	documento: string;
 }
 
+export interface ContactoEmergenciaForm {
+	nombre: string;
+	parentesco: string;
+	telefono: string;
+	correo: string;
+}
+
 export interface ReservationForm {
-	clienteNombre: string;
-	tipoDocumento: string;
-	documento: string;
-	clienteEmail: string;
-	clienteTelefono: string;
-	ciudadResidencia: string;
+	idUsuario: number | '';
 	personas: number | '';
 	acompanantes: Acompanante[];
+	contactosEmergencia: ContactoEmergenciaForm[];
 	idViaje: number | '';
 	paqueteNombre: string;
 	destino: string;
@@ -33,10 +36,7 @@ export interface ReservationForm {
 	tipoHabitacion: string;
 	solicitudEspecial: string;
 	notas: string;
-	metodoPago: string;
-	estadoPago: string;
 	total: number | '';
-	comprobante: string;
 	aceptaTerminos: boolean;
 	aceptaPolitica: boolean;
 }
@@ -103,7 +103,7 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 	) { }
 
 	currentStep = 1;
-	steps = ['Datos del cliente', 'Datos del viaje', 'Pago y confirmación'];
+	steps = ['Datos del cliente', 'Datos del viaje', 'Contactos y confirmación'];
 	submitted = false;
 	isSaving = false;
 	saveError = '';
@@ -190,17 +190,7 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 
 	private validateStep(step: number): boolean {
 		if (step === 1) {
-			const base =
-				!!this.form.clienteNombre &&
-				!!this.form.tipoDocumento &&
-				!!this.form.documento &&
-				!!this.form.clienteEmail &&
-				!!this.form.clienteTelefono &&
-				!!this.form.ciudadResidencia &&
-				this.form.personas !== '';
-
-			if (!base) return false;
-
+			if (!this.form.idUsuario || !this.form.personas) return false;
 			if (Number(this.form.personas) > 1) {
 				return this.form.acompanantes.every(
 					a => !!a.nombre && !!a.fechaNacimiento && !!a.tipoDocumento && !!a.documento
@@ -221,8 +211,6 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 
 		if (step === 3) {
 			return (
-				!!this.form.metodoPago &&
-				!!this.form.estadoPago &&
 				this.form.total !== '' &&
 				this.form.aceptaTerminos &&
 				this.form.aceptaPolitica
@@ -239,7 +227,6 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 		}
 		const count = Number(value) - 1;
 		const current = this.form.acompanantes.length;
-
 		if (count > current) {
 			for (let i = current; i < count; i++) {
 				this.form.acompanantes.push(this.emptyAcompanante());
@@ -275,24 +262,20 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 			this.form.duracion = '';
 			return;
 		}
-		const salida = new Date(this.form.fechaSalida);
+		const salida  = new Date(this.form.fechaSalida);
 		const regreso = new Date(this.form.fechaRegreso);
 		const diff = Math.ceil(
 			(regreso.getTime() - salida.getTime()) / (1000 * 60 * 60 * 24)
 		);
-
-		if (diff <= 0) {
-			this.form.duracion = '';
-			return;
-		}
-		this.form.duracion = `${diff} ${diff === 1 ? 'día' : 'días'}`;
+		this.form.duracion = diff > 0 ? `${diff} ${diff === 1 ? 'día' : 'días'}` : '';
 	}
 
-	onFileChange(event: Event): void {
-		const input = event.target as HTMLInputElement;
-		if (input.files?.length) {
-			this.form.comprobante = input.files[0].name;
-		}
+	addContactoEmergencia(): void {
+		this.form.contactosEmergencia.push(this.emptyContacto());
+	}
+
+	removeContactoEmergencia(i: number): void {
+		this.form.contactosEmergencia.splice(i, 1);
 	}
 
 	confirm(): void {
@@ -302,31 +285,35 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 		this.isSaving = true;
 		this.saveError = '';
 
+		const viajeSeleccionado = this.viajesDisponibles.find(v => v.id === Number(this.form.idViaje));
+
 		const solicitud = {
-			clienteNombre: this.form.clienteNombre,
-			tipoDocumento: this.form.tipoDocumento,
-			documento: this.form.documento,
-			clienteEmail: this.form.clienteEmail,
-			clienteTelefono: this.form.clienteTelefono,
-			ciudadResidencia: this.form.ciudadResidencia,
-			personas: Number(this.form.personas) || 1,
-			acompanantes: this.form.acompanantes.map(a => ({
-				nombre: a.nombre,
+			idUsuario:           Number(this.form.idUsuario),
+			idPaquete:           viajeSeleccionado?.idPaquete || undefined,
+			personas:            Number(this.form.personas) || 1,
+			acompanantes:        this.form.acompanantes.map(a => ({
+				nombre:          a.nombre,
 				fechaNacimiento: a.fechaNacimiento,
-				tipoDocumento: a.tipoDocumento,
-				documento: a.documento,
+				tipoDocumento:   a.tipoDocumento,
+				documento:       a.documento,
 			})),
-			idViaje: this.form.idViaje || undefined,
-			paqueteNombre: this.form.paqueteNombre,
-			destino: this.form.destino,
-			fechaSalida: this.form.fechaSalida,
-			fechaRegreso: this.form.fechaRegreso,
-			tipoHabitacion: this.form.tipoHabitacion,
+			contactosEmergencia: this.form.contactosEmergencia
+				.filter(c => c.nombre && c.parentesco && c.telefono)
+				.map(c => ({
+					nombre:     c.nombre,
+					parentesco: c.parentesco,
+					telefono:   c.telefono,
+					correo:     c.correo || undefined,
+				})),
+			idViaje:           this.form.idViaje || undefined,
+			paqueteNombre:     this.form.paqueteNombre,
+			destino:           this.form.destino,
+			fechaSalida:       this.form.fechaSalida,
+			fechaRegreso:      this.form.fechaRegreso,
+			tipoHabitacion:    this.form.tipoHabitacion,
 			solicitudEspecial: this.form.solicitudEspecial || undefined,
-			notas: this.form.notas || undefined,
-			metodoPago: this.form.metodoPago,
-			estadoPago: this.form.estadoPago,
-			total: Number(this.form.total) || 0,
+			notas:             this.form.notas || undefined,
+			total:             Number(this.form.total) || 0,
 		};
 
 		this.reservationService.crear(solicitud).subscribe({
@@ -362,38 +349,30 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 
 	private emptyForm(): ReservationForm {
 		return {
-			clienteNombre: '',
-			tipoDocumento: '',
-			documento: '',
-			clienteEmail: '',
-			clienteTelefono: '',
-			ciudadResidencia: '',
-			personas: '',
-			acompanantes: [],
-			idViaje: '',
-			paqueteNombre: '',
-			destino: '',
-			fechaSalida: '',
-			fechaRegreso: '',
-			duracion: '',
-			tipoHabitacion: '',
-			solicitudEspecial: '',
-			notas: '',
-			metodoPago: '',
-			estadoPago: '',
-			total: '',
-			comprobante: '',
-			aceptaTerminos: false,
-			aceptaPolitica: false,
+			idUsuario:           '',
+			personas:            '',
+			acompanantes:        [],
+			contactosEmergencia: [this.emptyContacto()],
+			idViaje:             '',
+			paqueteNombre:       '',
+			destino:             '',
+			fechaSalida:         '',
+			fechaRegreso:        '',
+			duracion:            '',
+			tipoHabitacion:      '',
+			solicitudEspecial:   '',
+			notas:               '',
+			total:               '',
+			aceptaTerminos:      false,
+			aceptaPolitica:      false,
 		};
 	}
 
 	private emptyAcompanante(): Acompanante {
-		return {
-			nombre: '',
-			fechaNacimiento: '',
-			tipoDocumento: '',
-			documento: '',
-		};
+		return { nombre: '', fechaNacimiento: '', tipoDocumento: '', documento: '' };
+	}
+
+	private emptyContacto(): ContactoEmergenciaForm {
+		return { nombre: '', parentesco: '', telefono: '', correo: '' };
 	}
 }
