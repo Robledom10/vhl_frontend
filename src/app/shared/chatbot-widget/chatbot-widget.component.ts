@@ -7,10 +7,18 @@ import { TravelPackage, mapToTravelPackage, mapToPackageDetail, mapToPackageDeta
 
 const QUICK_REPLIES: QuickReply[] = [
 	{ label: '📦 Ver paquetes y precios', action: 'show_packages' },
+	{ label: '🔍 Buscar paquete', action: 'filter_menu' },
+	{ label: '⚖️ Comparar paquetes', action: 'compare' },
 	{ label: '🧳 ¿Cómo reservo?', action: 'message', payload: '¿Cómo puedo reservar un paquete paso a paso?' },
+	{ label: '📋 Mis reservas', action: 'reservations' },
 	{ label: '📄 Validar mi voucher', action: 'upload' },
 	{ label: '💳 ¿Cómo pago?', action: 'message', payload: '¿Cómo funcionan los pagos en la plataforma?' },
 	{ label: '❓ Preguntas frecuentes', action: 'faq_menu' },
+];
+
+const CONTINUE_REPLIES: QuickReply[] = [
+	{ label: '💬 Sí, tengo otra pregunta', action: 'menu' },
+	{ label: '👋 No, listo — salir', action: 'exit' },
 ];
 
 const SUPPORT_CHIP: QuickReply = { label: '🆘 Hablar con soporte', action: 'support' };
@@ -27,31 +35,70 @@ const FAQ_ITEMS: FaqItem[] = [
 		id: 'cancelar',
 		question: '¿Cómo cancelo mi reserva?',
 		answer:
-			'Puedes cancelar desde tu perfil > "Mis Reservas". En general aplica: cancelación gratuita hasta 5 días antes ' +
-			'del viaje, 50% de reembolso si cancelas con 48 horas de anticipación, y no hay devolución el mismo día del viaje. ' +
-			'Revisa la política específica de tu paquete porque puede variar un poco.',
+			'Podés cancelar desde tu perfil > "Mis Reservas". En general: cancelación gratuita hasta 5 días antes, ' +
+			'50% de reembolso con 48 horas de anticipación y sin devolución el mismo día del viaje. ' +
+			'Revisá la política específica de tu paquete porque puede variar.',
 	},
 	{
 		id: 'pago-tarde',
 		question: '¿Qué pasa si no pago a tiempo?',
 		answer:
-			'Si no completas el pago antes de la fecha límite de tu reserva, el cupo se libera y deberás reservar de nuevo ' +
+			'Si no completás el pago antes de la fecha límite, el cupo se libera y deberás reservar de nuevo ' +
 			'sujeto a disponibilidad. Te recomendamos pagar por Wompi lo antes posible para asegurar tu lugar.',
 	},
 	{
 		id: 'menor-edad',
 		question: '¿Puedo viajar con un menor de edad?',
 		answer:
-			'Sí, pero el menor debe viajar con un permiso firmado por sus padres o tutores legales y cumplir la edad ' +
-			'mínima del paquete. Revisa los requisitos específicos de cada paquete antes de reservar — puedes preguntarme ' +
-			'por los requisitos de un paquete puntual.',
+			'Sí, pero el menor debe viajar con permiso firmado por los padres o tutores legales y cumplir la edad ' +
+			'mínima del paquete. Revisá los requisitos de cada paquete antes de reservar.',
 	},
 	{
 		id: 'cambiar-reserva',
 		question: '¿Cómo cambio mi reserva?',
 		answer:
-			'Los cambios de fecha o de paquete se gestionan contactando a soporte (604-123-4567) o desde el detalle de tu ' +
-			'reserva en "Mis Reservas". Cuéntame qué necesitas cambiar y te oriento.',
+			'Los cambios de fecha o paquete se gestionan llamando al 604-123-4567 o desde el detalle de tu ' +
+			'reserva en "Mis Reservas". Contame qué necesitás cambiar y te oriento.',
+	},
+	{
+		id: 'maleta',
+		question: '¿Qué debo llevar en la maleta?',
+		answer:
+			'Lo básico para cualquier viaje VHL: ropa ligera y cómoda, zapatos cerrados para caminar, bloqueador solar, ' +
+			'repelente de insectos, una chaqueta delgada (las noches pueden ser frescas), medicamentos personales y ' +
+			'copia de tus documentos. Preguntame por tu destino específico si querés una lista más detallada.',
+	},
+	{
+		id: 'documentos',
+		question: '¿Qué documentos necesito para viajar?',
+		answer:
+			'Para destinos nacionales (Colombia) vas con tu cédula de ciudadanía o tarjeta de identidad si sos menor de edad. ' +
+			'Para destinos internacionales necesitás pasaporte vigente con mínimo 6 meses de validez. ' +
+			'Algunos paquetes también piden el voucher de pago y el permiso firmado para menores.',
+	},
+	{
+		id: 'horario',
+		question: '¿Cuál es el horario de atención?',
+		answer:
+			'Atendemos de lunes a viernes de 8:00 a.m. a 6:00 p.m. y sábados de 9:00 a.m. a 2:00 p.m. ' +
+			'Podés llamarnos al 604-123-4567 o escribirnos desde la plataforma. ' +
+			'Fuera de horario dejanos tu mensaje y te respondemos el siguiente día hábil.',
+	},
+	{
+		id: 'redes',
+		question: '¿Tienen WhatsApp o redes sociales?',
+		answer:
+			'¡Claro! Encontranos en Instagram como @hernandoloperaviajes y en Facebook como Hernando Lopera Viajes. ' +
+			'Para atención directa escribinos al WhatsApp: 604-123-4567 en horario de atención. ' +
+			'Seguinos para ver destinos, promos y novedades.',
+	},
+	{
+		id: 'punto-encuentro',
+		question: '¿Dónde es el punto de encuentro?',
+		answer:
+			'El lugar de salida depende del paquete que elijas — aparece en el detalle de cada tour. ' +
+			'Si querés saber el punto exacto, preguntame "¿Dónde es la salida del paquete [nombre]?" y te digo con el dato real. ' +
+			'La mayoría de salidas son desde un punto central de Medellín.',
 	},
 ];
 
@@ -76,9 +123,12 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy, AfterViewCheck
 	sheetOpen = false;
 	selectedPackageDetail: PackageDetail | null = null;
 
+	likedPackageIds = new Set<number>();
+
 	private shouldScroll = false;
 	private objectUrls: string[] = [];
 	private cachedApiPackages: RespuestaPaqueteTuristico[] = [];
+	private pkgByIdMap = new Map<number, TravelPackage>();
 
 	constructor(private chatbot: ChatbotService, private packageService: PackageService) { }
 
@@ -126,8 +176,137 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy, AfterViewCheck
 			this.shouldScroll = true;
 			return;
 		}
+		if (option.action === 'reservations') {
+			this.pushBot(
+				'Para ver tus reservas entrá a tu Perfil > "Mis Reservas" en el menú principal. ' +
+				'Ahí encontrás el estado de pago, el itinerario día a día y todos los detalles de cada tour que reservaste. 🦈',
+				false, undefined, undefined,
+				[{ label: '← Volver al menú', action: 'menu' }]
+			);
+			this.shouldScroll = true;
+			return;
+		}
+		if (option.action === 'exit') {
+			this.pushBot('¡Fue un placer, parcero! 🦈 Cuando quieras volver, aquí estoy. ¡Buen viaje!');
+			this.shouldScroll = true;
+			setTimeout(() => this.closeChat(), 1800);
+			return;
+		}
+		if (option.action === 'compare') {
+			this.pushBot(
+				'¡Al pelo! 🦈 Decime los nombres o destinos de los dos paquetes que querés comparar y te cuento las diferencias.',
+				false, undefined, undefined,
+				[{ label: '← Volver al menú', action: 'menu' }]
+			);
+			this.shouldScroll = true;
+			return;
+		}
+		if (option.action === 'filter_menu') {
+			this.showFilterMenu();
+			return;
+		}
+		if (option.action === 'filter_budget_menu') {
+			this.pushBot('¿Cuál es tu presupuesto? 🦈', false, undefined, undefined, [
+				{ label: '💰 Menos de $500k', action: 'filter_budget', payload: 'low' },
+				{ label: '💸 $500k – $1M', action: 'filter_budget', payload: 'mid' },
+				{ label: '💎 Más de $1M', action: 'filter_budget', payload: 'high' },
+				{ label: '← Buscar por otro criterio', action: 'filter_menu' },
+			]);
+			this.shouldScroll = true;
+			return;
+		}
+		if (option.action === 'filter_duration_menu') {
+			this.pushBot('¿Cuánto tiempo tenés? 🦈', false, undefined, undefined, [
+				{ label: '🗓 Fin de semana (1–2 días)', action: 'filter_duration', payload: 'short' },
+				{ label: '🗓 3 a 5 días', action: 'filter_duration', payload: 'medium' },
+				{ label: '🗓 Más de 5 días', action: 'filter_duration', payload: 'long' },
+				{ label: '← Buscar por otro criterio', action: 'filter_menu' },
+			]);
+			this.shouldScroll = true;
+			return;
+		}
+		if (option.action === 'filter_budget') {
+			const ranges: Record<string, [number, number]> = {
+				low: [0, 499999], mid: [500000, 999999], high: [1000000, Infinity],
+			};
+			const [min, max] = ranges[option.payload ?? 'low'];
+			this.filterPackages(option.label, p => p.price >= min && p.price <= max);
+			return;
+		}
+		if (option.action === 'filter_duration') {
+			const ranges: Record<string, [number, number]> = {
+				short: [1, 2], medium: [3, 5], long: [6, 999],
+			};
+			const [min, max] = ranges[option.payload ?? 'short'];
+			this.filterPackages(option.label, p => p.nights >= min && p.nights <= max);
+			return;
+		}
+		if (option.action === 'filter_type') {
+			this.userInput = `Muéstrame paquetes de ${option.payload}`;
+			this.sendMessage();
+			return;
+		}
+		if (option.action === 'pkg_detail') {
+			const id = Number(option.payload);
+			const api = this.cachedApiPackages.find(p => p.id === id);
+			const travel = this.pkgByIdMap.get(id);
+			this.selectedPackageDetail = api ? mapToPackageDetail(api) : (travel ? mapToPackageDetailFallback(travel) : null);
+			if (this.selectedPackageDetail) this.sheetOpen = true;
+			return;
+		}
 		this.userInput = option.payload ?? '';
 		this.sendMessage();
+	}
+
+	private showFilterMenu(): void {
+		this.pushBot('¿Cómo querés buscar tu plan? 🦈', false, undefined, undefined, [
+			{ label: '💰 Por presupuesto', action: 'filter_budget_menu' },
+			{ label: '⏱ Por duración', action: 'filter_duration_menu' },
+			{ label: '🏖 Playa', action: 'filter_type', payload: 'playa o destino de costa' },
+			{ label: '🏔 Aventura', action: 'filter_type', payload: 'aventura o naturaleza' },
+			{ label: '← Menú principal', action: 'menu' },
+		]);
+		this.shouldScroll = true;
+	}
+
+	private filterPackages(label: string, predicate: (p: TravelPackage) => boolean): void {
+		this.pushUser(label);
+		this.isLoading = true;
+		this.shouldScroll = true;
+
+		const doFilter = (apiPkgs: RespuestaPaqueteTuristico[]) => {
+			const all = apiPkgs.map(mapToTravelPackage);
+			all.forEach(p => this.pkgByIdMap.set(p.id, p));
+			const filtered = all.filter(predicate);
+			this.isLoading = false;
+			if (filtered.length === 0) {
+				this.pushBot('No encontré paquetes con ese criterio 🦈 ¿Probamos con otro filtro?', false, undefined, undefined, [
+					{ label: '🔍 Buscar de nuevo', action: 'filter_menu' },
+					{ label: '📦 Ver todos los paquetes', action: 'show_packages' },
+				]);
+			} else {
+				this.pushBot(
+					`Encontré ${filtered.length} paquete${filtered.length !== 1 ? 's' : ''} 🦈 Tocá cualquiera para ver el detalle.`,
+					false, undefined, filtered,
+					[{ label: '🔍 Buscar con otro filtro', action: 'filter_menu' }]
+				);
+			}
+			this.shouldScroll = true;
+		};
+
+		if (this.cachedApiPackages.length > 0) {
+			doFilter(this.cachedApiPackages);
+			this.isLoading = false;
+		} else {
+			this.packageService.getPackages({ activo: true, tamano: 50 }).subscribe({
+				next: (page) => { this.cachedApiPackages = page.content; doFilter(page.content); },
+				error: () => {
+					this.isLoading = false;
+					this.pushBot('No pude cargar los paquetes. Intenta de nuevo en un momento 🙏');
+					this.shouldScroll = true;
+				},
+			});
+		}
 	}
 
 	private showFaqMenu(): void {
@@ -162,6 +341,7 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy, AfterViewCheck
 			next: (page) => {
 				this.cachedApiPackages = page.content;
 				const packages = page.content.map(mapToTravelPackage);
+				packages.forEach(p => this.pkgByIdMap.set(p.id, p));
 				this.isLoading = false;
 				if (packages.length === 0) {
 					this.pushBot('Por ahora no tenemos paquetes activos publicados, pero pronto subimos novedades 🦈');
@@ -176,6 +356,24 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy, AfterViewCheck
 				this.shouldScroll = true;
 			},
 		});
+	}
+
+	toggleLike(pkg: TravelPackage, event: Event): void {
+		event.stopPropagation();
+		if (this.likedPackageIds.has(pkg.id)) {
+			this.likedPackageIds.delete(pkg.id);
+			return;
+		}
+		this.likedPackageIds.add(pkg.id);
+		this.pushBot(
+			`¡Qué nota! Guardé "${pkg.name}" en tus intereses 🦈 ¿Querés ver el detalle completo o saber cómo reservarlo?`,
+			false, undefined, undefined,
+			[
+				{ label: '📋 Ver detalles', action: 'pkg_detail', payload: String(pkg.id) },
+				{ label: '🧳 Cómo lo reservo', action: 'message', payload: `¿Cómo reservo el paquete ${pkg.name}?` },
+			]
+		);
+		this.shouldScroll = true;
 	}
 
 	/** Abre el mismo bottom sheet de detalle/reserva que usa la página pública de Paquetes. */
@@ -193,6 +391,10 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy, AfterViewCheck
 		const img = event.target as HTMLImageElement;
 		img.src = 'https://placehold.co/300x160/3fa2db/white?text=VHL';
 		img.onerror = null;
+	}
+
+	scrollPkgs(el: HTMLElement, dir: 1 | -1): void {
+		el.scrollBy({ left: dir * 230, behavior: 'smooth' });
 	}
 
 	ngAfterViewChecked(): void {
@@ -280,7 +482,7 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy, AfterViewCheck
 		this.chatbot.sendMessage(text, this.sessionId).subscribe({
 			next: (res) => {
 				this.sessionId = res.session_id;
-				this.pushBot(res.reply);
+				this.pushBot(res.reply, false, undefined, undefined, CONTINUE_REPLIES);
 				this.isLoading = false;
 				this.shouldScroll = true;
 			},
@@ -311,7 +513,7 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy, AfterViewCheck
 
 		this.chatbot.validateDocument(file).subscribe({
 			next: (res) => {
-				this.pushBot(res.result, true, res.estado);
+				this.pushBot(res.result, true, res.estado, undefined, CONTINUE_REPLIES);
 				this.isLoading = false;
 				this.shouldScroll = true;
 			},
