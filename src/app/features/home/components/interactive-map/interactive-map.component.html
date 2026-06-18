@@ -11,12 +11,8 @@
       <button class="destination-trigger" (click)="toggleDropdown()" [class.open]="isDropdownOpen">
         <span class="trigger-inner">
           <!-- Imagen real cuando hay destino seleccionado -->
-          <img
-            *ngIf="selectedDestination"
-            [src]="selectedDestination.thumbnail || selectedDestination.image"
-            [alt]="selectedDestination.name"
-            class="trigger-thumb"
-          />
+          <img *ngIf="selectedDestination" [src]="selectedDestination.thumbnail || selectedDestination.image"
+            [alt]="selectedDestination.name" class="trigger-thumb" />
           <!-- Ícono genérico si no hay selección -->
           <span class="trigger-icon-placeholder" *ngIf="!selectedDestination">
             <i class="fa-solid fa-bus-simple"></i>
@@ -29,7 +25,8 @@
           </span>
         </span>
         <svg class="chevron" [class.rotated]="isDropdownOpen" width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+            stroke-linejoin="round" />
         </svg>
       </button>
 
@@ -37,19 +34,11 @@
       <div class="dropdown-panel" *ngIf="isDropdownOpen">
         <div class="panel-label">Paradas del recorrido</div>
 
-        <button
-          class="dest-item"
-          *ngFor="let dest of destinations; let i = index"
-          (click)="selectDestination(dest)"
-          [class.active]="selectedDestination?.id === dest.id"
-        >
+        <button class="dest-item" *ngFor="let dest of destinations; let i = index" (click)="selectDestination(dest)"
+          [class.active]="selectedDestination?.id === dest.id">
           <div class="dest-thumb-wrap">
-            <img
-              *ngIf="dest.thumbnail || dest.image"
-              [src]="dest.thumbnail || dest.image"
-              [alt]="dest.name"
-              class="dest-thumb"
-            />
+            <img *ngIf="dest.thumbnail || dest.image" [src]="dest.thumbnail || dest.image" [alt]="dest.name"
+              class="dest-thumb" />
             <div class="dest-thumb-placeholder" *ngIf="!dest.thumbnail && !dest.image">
               <span>📍</span>
             </div>
@@ -58,16 +47,15 @@
             <span class="dest-name">{{ dest.name }}</span>
             <span class="dest-label">{{ dest.label }}</span>
           </div>
-          <svg *ngIf="selectedDestination?.id === dest.id" class="check-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8l3.5 3.5L13 5" stroke="var(--color-primario)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg *ngIf="selectedDestination?.id === dest.id" class="check-icon" width="16" height="16" viewBox="0 0 16 16"
+            fill="none">
+            <path d="M3 8l3.5 3.5L13 5" stroke="var(--color-primario)" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
           </svg>
         </button>
 
         <button class="view-all-btn" (click)="showAll()">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/>
-            <path d="M4 7h6M7 4v6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-          </svg>
+          <i class="fa-regular fa-eye"></i>
           Ver ruta completa
         </button>
       </div>
@@ -84,28 +72,22 @@
       <!-- Galería -->
       <div class="photo-gallery" *ngIf="!isLoadingPhotos">
         <div class="photo-track" *ngIf="selectedDestination.photos.length > 0">
-          <img
-            [src]="selectedDestination.photos[activePhotoIndex]"
-            [alt]="selectedDestination.name"
-            class="gallery-img"
-          />
+          <img [src]="selectedDestination.photos[activePhotoIndex]" [alt]="selectedDestination.name"
+            class="gallery-img" />
           <button class="photo-nav prev" (click)="prevPhoto()" *ngIf="activePhotoIndex > 0">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M10 4L6 8l4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 4L6 8l4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </button>
-          <button class="photo-nav next" (click)="nextPhoto()" *ngIf="activePhotoIndex < selectedDestination.photos.length - 1">
+          <button class="photo-nav next" (click)="nextPhoto()"
+            *ngIf="activePhotoIndex < selectedDestination.photos.length - 1">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M6 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </button>
           <div class="photo-dots">
-            <span
-              *ngFor="let p of selectedDestination.photos; let pi = index"
-              class="dot"
-              [class.active]="pi === activePhotoIndex"
-              (click)="activePhotoIndex = pi"
-            ></span>
+            <span *ngFor="let p of selectedDestination.photos; let pi = index" class="dot"
+              [class.active]="pi === activePhotoIndex" (click)="activePhotoIndex = pi"></span>
           </div>
         </div>
 
@@ -123,12 +105,9 @@
       <div class="detail-body">
         <div class="detail-top">
           <!-- Miniatura cuadrada en lugar del emoji/link -->
-          <img
-            *ngIf="selectedDestination.thumbnail || selectedDestination.image"
-            [src]="selectedDestination.thumbnail || selectedDestination.image"
-            [alt]="selectedDestination.name"
-            class="detail-dest-thumb"
-          />
+          <img *ngIf="selectedDestination.thumbnail || selectedDestination.image"
+            [src]="selectedDestination.thumbnail || selectedDestination.image" [alt]="selectedDestination.name"
+            class="detail-dest-thumb" />
           <div class="detail-dest-placeholder" *ngIf="!selectedDestination.thumbnail && !selectedDestination.image">
             📍
           </div>
