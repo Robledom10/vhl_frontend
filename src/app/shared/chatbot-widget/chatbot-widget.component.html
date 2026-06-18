@@ -51,24 +51,34 @@
 						<p>{{ msg.content }}</p>
 
 						<!-- Carrusel de paquetes reales (foto, destino y precio reales) -->
-						<div class="chat-packages" *ngIf="msg.packages?.length">
-							<div class="chat-pkg-card" *ngFor="let pkg of msg.packages" (click)="openPackageDetail(pkg)">
-								<div class="chat-pkg-img-wrap">
-									<img [src]="pkg.imageUrl" [alt]="pkg.name" (error)="onPkgImgError($event)" />
-								</div>
-								<div class="chat-pkg-body">
-									<div class="chat-pkg-location">📍 {{ pkg.location }}</div>
-									<div class="chat-pkg-name">{{ pkg.name }}</div>
-									<div class="chat-pkg-footer">
-										<div class="chat-pkg-price">
-											<span class="label">Desde</span>
-											<span class="amount">{{ pkg.price | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
+						<div class="chat-packages-wrap" *ngIf="msg.packages?.length">
+							<button class="pkg-nav pkg-nav--prev" (click)="scrollPkgs(pkgTrack, -1)" aria-label="Anterior">‹</button>
+							<div class="chat-packages" #pkgTrack>
+								<div class="chat-pkg-card" *ngFor="let pkg of msg.packages" (click)="openPackageDetail(pkg)">
+									<div class="chat-pkg-img-wrap">
+										<img [src]="pkg.imageUrl" [alt]="pkg.name" (error)="onPkgImgError($event)" />
+										<span class="pkg-nights-badge">🌙 {{ pkg.nights }} día{{ pkg.nights !== 1 ? 's' : '' }}</span>
+									</div>
+									<div class="chat-pkg-body">
+										<div class="chat-pkg-location">📍 {{ pkg.location }}</div>
+										<div class="chat-pkg-name">{{ pkg.name }}</div>
+										<div class="chat-pkg-footer">
+											<div class="chat-pkg-price">
+												<span class="label">Desde</span>
+												<span class="amount">{{ pkg.price | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
+											</div>
+											<button type="button" class="chat-pkg-btn"
+												(click)="openPackageDetail(pkg); $event.stopPropagation()">Ver</button>
 										</div>
-										<button type="button" class="chat-pkg-btn"
-											(click)="openPackageDetail(pkg); $event.stopPropagation()">Ver más</button>
+										<button type="button" class="chat-pkg-like-btn"
+											[class.chat-pkg-like-btn--active]="likedPackageIds.has(pkg.id)"
+											(click)="toggleLike(pkg, $event)">
+											{{ likedPackageIds.has(pkg.id) ? '❤️' : '🤍' }} Me interesa
+										</button>
 									</div>
 								</div>
 							</div>
+							<button class="pkg-nav pkg-nav--next" (click)="scrollPkgs(pkgTrack, 1)" aria-label="Siguiente">›</button>
 						</div>
 
 						<!-- Vista previa del documento que el usuario adjuntó -->

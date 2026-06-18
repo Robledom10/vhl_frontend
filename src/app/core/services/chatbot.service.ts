@@ -8,7 +8,7 @@ export type VoucherEstado = 'puede_viajar' | 'pendiente' | 'no_puede_viajar' | '
 
 export interface QuickReply {
 	label: string;
-	action: 'message' | 'upload' | 'show_packages' | 'faq_menu' | 'faq_answer' | 'support' | 'menu';
+	action: 'message' | 'upload' | 'show_packages' | 'faq_menu' | 'faq_answer' | 'support' | 'menu' | 'exit' | 'reservations' | 'pkg_detail' | 'filter_menu' | 'filter_budget_menu' | 'filter_duration_menu' | 'filter_budget' | 'filter_duration' | 'filter_type' | 'compare';
 	payload?: string;
 }
 
