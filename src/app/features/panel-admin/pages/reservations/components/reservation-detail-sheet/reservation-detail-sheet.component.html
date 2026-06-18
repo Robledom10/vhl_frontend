@@ -1,122 +1,123 @@
 <div class="sheet-overlay" [class.open]="isOpen" (click)="onOverlayClick($event)">
 
-  <div class="sheet-container" [class.open]="isOpen">
+	<div class="sheet-container" [class.open]="isOpen">
 
-    <!-- Handle -->
-    <div class="drag-handle-wrapper">
-      <div class="drag-handle"></div>
-    </div>
+		<!-- Handle -->
+		<div class="drag-handle-wrapper">
+			<div class="drag-handle"></div>
+		</div>
 
-    <!-- Cerrar -->
-    <button class="close-btn" (click)="close()">
-      <i class="fa-solid fa-xmark"></i>
-    </button>
+		<!-- Cerrar -->
+		<button class="close-btn" (click)="close()">
+			<i class="fa-solid fa-xmark"></i>
+		</button>
 
-    <div class="sheet-body" *ngIf="reservation">
+		<div class="sheet-body" *ngIf="reservation">
 
-      <!-- ENCABEZADO -->
-      <div class="detail-header">
-        <div class="detail-avatar-initials">{{ getInitials() }}</div>
-        <div class="detail-header-info">
-          <h2 class="title">{{ getNombreCompleto() }}</h2>
-          <p class="subtitle">{{ reservation.paqueteNombre }}</p>
-          <span class="estado-badge" [ngClass]="getEstadoClass()">{{ reservation.estado }}</span>
-        </div>
-      </div>
+			<!-- ENCABEZADO -->
+			<div class="detail-header">
+				<div class="detail-avatar-initials">{{ getInitials() }}</div>
+				<div class="detail-header-info">
+					<h2 class="title">{{ getNombreCompleto() }}</h2>
+					<p class="subtitle">{{ reservation.paqueteNombre }}</p>
+					<span class="estado-badge" [ngClass]="getEstadoClass()">{{ reservation.estado }}</span>
+				</div>
+			</div>
 
-      <!-- GRID DE INFO -->
-      <div class="info-grid">
+			<!-- GRID DE INFO -->
+			<div class="info-grid">
 
-        <div class="info-row">
-          <div class="info-icon-circle"><i class="fa-solid fa-envelope"></i></div>
-          <div class="info-text">
-            <span class="info-row-label">Correo</span>
-            <span class="info-row-value">{{ reservation.datosUsuario?.email || '—' }}</span>
-          </div>
-        </div>
+				<div class="info-row">
+					<div class="info-icon-circle"><i class="fa-solid fa-envelope"></i></div>
+					<div class="info-text">
+						<span class="info-row-label">Correo</span>
+						<span class="info-row-value">{{ reservation.datosUsuario?.email || '—' }}</span>
+					</div>
+				</div>
 
-        <div class="info-row">
-          <div class="info-icon-circle"><i class="fa-solid fa-phone"></i></div>
-          <div class="info-text">
-            <span class="info-row-label">Teléfono</span>
-            <span class="info-row-value">{{ reservation.datosUsuario?.telefono || '—' }}</span>
-          </div>
-        </div>
+				<div class="info-row">
+					<div class="info-icon-circle"><i class="fa-solid fa-phone"></i></div>
+					<div class="info-text">
+						<span class="info-row-label">Teléfono</span>
+						<span class="info-row-value">{{ reservation.datosUsuario?.telefono || '—' }}</span>
+					</div>
+				</div>
 
-        <div class="info-row">
-          <div class="info-icon-circle"><i class="fa-solid fa-location-dot"></i></div>
-          <div class="info-text">
-            <span class="info-row-label">Destino</span>
-            <span class="info-row-value">{{ reservation.destino }}</span>
-          </div>
-        </div>
+				<div class="info-row">
+					<div class="info-icon-circle"><i class="fa-solid fa-location-dot"></i></div>
+					<div class="info-text">
+						<span class="info-row-label">Destino</span>
+						<span class="info-row-value">{{ reservation.destino }}</span>
+					</div>
+				</div>
 
-        <div class="info-row">
-          <div class="info-icon-circle"><i class="fa-solid fa-users"></i></div>
-          <div class="info-text">
-            <span class="info-row-label">Personas</span>
-            <span class="info-row-value">{{ reservation.personas }}</span>
-          </div>
-        </div>
+				<div class="info-row">
+					<div class="info-icon-circle"><i class="fa-solid fa-users"></i></div>
+					<div class="info-text">
+						<span class="info-row-label">Personas</span>
+						<span class="info-row-value">{{ reservation.personas }}</span>
+					</div>
+				</div>
 
-        <div class="info-row">
-          <div class="info-icon-circle"><i class="fa-solid fa-plane-departure"></i></div>
-          <div class="info-text">
-            <span class="info-row-label">Fecha de viaje</span>
-            <span class="info-row-value">{{ reservation.fechaViaje }}</span>
-          </div>
-        </div>
+				<div class="info-row">
+					<div class="info-icon-circle"><i class="fa-solid fa-plane-departure"></i></div>
+					<div class="info-text">
+						<span class="info-row-label">Fecha de viaje</span>
+						<span class="info-row-value">{{ reservation.fechaViaje }}</span>
+					</div>
+				</div>
 
-        <div class="info-row">
-          <div class="info-icon-circle"><i class="fa-solid fa-calendar-check"></i></div>
-          <div class="info-text">
-            <span class="info-row-label">Fecha de reserva</span>
-            <span class="info-row-value">{{ reservation.fechaReserva }}</span>
-          </div>
-        </div>
+				<div class="info-row">
+					<div class="info-icon-circle"><i class="fa-solid fa-calendar-check"></i></div>
+					<div class="info-text">
+						<span class="info-row-label">Fecha de reserva</span>
+						<span class="info-row-value">{{ reservation.fechaReserva }}</span>
+					</div>
+				</div>
 
-      </div>
+			</div>
 
-      <!-- CONTACTOS DE EMERGENCIA -->
-      <div class="emergency-section" *ngIf="reservation.contactosEmergencia && reservation.contactosEmergencia.length > 0">
-        <div class="section-header">
-          <i class="fa-solid fa-shield-heart"></i>
-          <span class="section-title">Contactos de emergencia</span>
-        </div>
-        <div class="emergency-list">
-          <div class="emergency-card" *ngFor="let c of reservation.contactosEmergencia; let i = index">
-            <div class="emergency-num">{{ i + 1 }}</div>
-            <div class="emergency-info">
-              <span class="emergency-name">{{ c.nombre }}</span>
-              <span class="emergency-rel">{{ c.parentesco }}</span>
-              <div class="emergency-contact-row">
-                <i class="fa-solid fa-phone"></i>
-                <span>{{ c.telefono }}</span>
-              </div>
-              <div class="emergency-contact-row" *ngIf="c.correo">
-                <i class="fa-solid fa-envelope"></i>
-                <span>{{ c.correo }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+			<!-- CONTACTOS DE EMERGENCIA -->
+			<div class="emergency-section"
+				*ngIf="reservation.contactosEmergencia && reservation.contactosEmergencia.length > 0">
+				<div class="section-header">
+					<i class="fa-solid fa-shield-heart"></i>
+					<span class="section-title">Contactos de emergencia</span>
+				</div>
+				<div class="emergency-list">
+					<div class="emergency-card" *ngFor="let c of reservation.contactosEmergencia; let i = index">
+						<div class="emergency-num">{{ i + 1 }}</div>
+						<div class="emergency-info">
+							<span class="emergency-name">{{ c.nombre }}</span>
+							<span class="emergency-rel">{{ c.parentesco }}</span>
+							<div class="emergency-contact-row">
+								<i class="fa-solid fa-phone"></i>
+								<span>{{ c.telefono }}</span>
+							</div>
+							<div class="emergency-contact-row" *ngIf="c.correo">
+								<i class="fa-solid fa-envelope"></i>
+								<span>{{ c.correo }}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-      <!-- NOTAS -->
-      <div class="notas-card" *ngIf="reservation.notas">
-        <div class="notas-header">
-          <i class="fa-solid fa-note-sticky"></i>
-          <span class="notas-title">Notas</span>
-        </div>
-        <p class="notas-text">{{ reservation.notas }}</p>
-      </div>
+			<!-- NOTAS -->
+			<div class="notas-card" *ngIf="reservation.notas">
+				<div class="notas-header">
+					<i class="fa-solid fa-note-sticky"></i>
+					<span class="notas-title">Notas</span>
+				</div>
+				<p class="notas-text">{{ reservation.notas }}</p>
+			</div>
 
-      <!-- TOTAL -->
-      <div class="precio-bar">
-        <div class="precio-icon"><i class="fa-solid fa-dollar-sign"></i></div>
-        <span class="precio-text">Total: <strong>{{ formatTotal(reservation.total) }}</strong></span>
-      </div>
+			<!-- TOTAL -->
+			<div class="precio-bar">
+				<div class="precio-icon"><i class="fa-solid fa-dollar-sign"></i></div>
+				<span class="precio-text">Total: <strong>{{ formatTotal(reservation.total) }}</strong></span>
+			</div>
 
-    </div>
-  </div>
+		</div>
+	</div>
 </div>
