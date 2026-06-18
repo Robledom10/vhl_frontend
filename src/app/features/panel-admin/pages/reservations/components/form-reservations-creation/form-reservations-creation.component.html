@@ -27,17 +27,14 @@
 				<div class="fields-grid">
 
 					<div class="field-group half">
-						<input type="number" id="idUsuario" placeholder=" "
-							[(ngModel)]="form.idUsuario"
+						<input type="number" id="idUsuario" placeholder=" " [(ngModel)]="form.idUsuario"
 							[class.ng-invalid]="submitted && !form.idUsuario"
 							[class.ng-touched]="submitted && !form.idUsuario">
 						<label for="idUsuario">ID del usuario <span class="req">*</span></label>
 					</div>
 
 					<div class="field-group half">
-						<select id="personas"
-							[(ngModel)]="form.personas"
-							(ngModelChange)="onPersonasChange($event)"
+						<select id="personas" [(ngModel)]="form.personas" (ngModelChange)="onPersonasChange($event)"
 							[class.ng-invalid]="submitted && !form.personas"
 							[class.ng-touched]="submitted && !form.personas">
 							<option value="" disabled selected></option>
@@ -65,24 +62,21 @@
 						<div class="fields-grid">
 
 							<div class="field-group full">
-								<input type="text" [id]="'ac-nombre-' + i" placeholder=" "
-									[(ngModel)]="c.nombre"
+								<input type="text" [id]="'ac-nombre-' + i" placeholder=" " [(ngModel)]="c.nombre"
 									[class.ng-invalid]="submitted && !c.nombre"
 									[class.ng-touched]="submitted && !c.nombre">
 								<label [for]="'ac-nombre-' + i">Nombre completo <span class="req">*</span></label>
 							</div>
 
 							<div class="field-group half">
-								<input type="date" [id]="'ac-fecha-' + i"
-									[(ngModel)]="c.fechaNacimiento"
+								<input type="date" [id]="'ac-fecha-' + i" [(ngModel)]="c.fechaNacimiento"
 									[class.ng-invalid]="submitted && !c.fechaNacimiento"
 									[class.ng-touched]="submitted && !c.fechaNacimiento">
 								<label [for]="'ac-fecha-' + i">Fecha de nacimiento <span class="req">*</span></label>
 							</div>
 
 							<div class="field-group half">
-								<select [id]="'ac-tipo-' + i"
-									[(ngModel)]="c.tipoDocumento"
+								<select [id]="'ac-tipo-' + i" [(ngModel)]="c.tipoDocumento"
 									[class.ng-invalid]="submitted && !c.tipoDocumento"
 									[class.ng-touched]="submitted && !c.tipoDocumento">
 									<option value="" disabled selected></option>
@@ -96,8 +90,7 @@
 							</div>
 
 							<div class="field-group full">
-								<input type="text" [id]="'ac-doc-' + i" placeholder=" "
-									[(ngModel)]="c.documento"
+								<input type="text" [id]="'ac-doc-' + i" placeholder=" " [(ngModel)]="c.documento"
 									[class.ng-invalid]="submitted && !c.documento"
 									[class.ng-touched]="submitted && !c.documento">
 								<label [for]="'ac-doc-' + i">Número de documento <span class="req">*</span></label>
@@ -113,14 +106,12 @@
 				<div class="fields-grid">
 
 					<div class="field-group full">
-						<select id="idViaje"
-							[(ngModel)]="form.idViaje"
-							(ngModelChange)="onViajeChange($event)"
-							[disabled]="cargandoViajes"
-							[class.ng-invalid]="submitted && !form.idViaje"
+						<select id="idViaje" [(ngModel)]="form.idViaje" (ngModelChange)="onViajeChange($event)"
+							[disabled]="cargandoViajes" [class.ng-invalid]="submitted && !form.idViaje"
 							[class.ng-touched]="submitted && !form.idViaje">
 							<option value="" disabled selected>
-								{{ cargandoViajes ? 'Cargando viajes...' : (viajesDisponibles.length === 0 ? 'No hay viajes programados' : 'Selecciona un viaje') }}
+								{{ cargandoViajes ? 'Cargando viajes...' : (viajesDisponibles.length === 0 ? 
+								'No hay viajes programados' : 'Selecciona un viaje') }}
 							</option>
 							<option *ngFor="let v of viajesDisponibles" [value]="v.id">
 								{{ v.paqueteNombre }} — {{ v.fechaSalida }} → {{ v.fechaRegreso }}
@@ -129,7 +120,8 @@
 						<label for="idViaje">Viaje programado <span class="req">*</span></label>
 						<span class="field-hint" *ngIf="errorViajes" style="color:#e53935;font-size:12px;">
 							No se pudieron cargar los viajes.
-							<button type="button" (click)="cargarViajes()" style="background:none;border:none;color:#e53935;cursor:pointer;text-decoration:underline;padding:0;">Reintentar</button>
+							<button type="button" (click)="cargarViajes()"
+								style="background:none;border:none;color:#e53935;cursor:pointer;text-decoration:underline;padding:0;">Reintentar</button>
 						</span>
 					</div>
 
@@ -166,8 +158,7 @@
 					</div>
 
 					<div class="field-group half">
-						<select id="tipoHabitacion"
-							[(ngModel)]="form.tipoHabitacion"
+						<select id="tipoHabitacion" [(ngModel)]="form.tipoHabitacion"
 							[class.ng-invalid]="submitted && !form.tipoHabitacion"
 							[class.ng-touched]="submitted && !form.tipoHabitacion">
 							<option value="" disabled selected></option>
@@ -217,8 +208,7 @@
 								<i class="fa-solid fa-shield-heart"></i>
 							</div>
 							<span>Contacto {{ i + 1 }}</span>
-							<button type="button" class="remove-contact-btn"
-								*ngIf="form.contactosEmergencia.length > 1"
+							<button type="button" class="remove-contact-btn" *ngIf="form.contactosEmergencia.length > 1"
 								(click)="removeContactoEmergencia(i)">
 								<i class="fa-solid fa-trash"></i>
 							</button>
@@ -226,8 +216,7 @@
 						<div class="fields-grid">
 
 							<div class="field-group full">
-								<input type="text" [id]="'ec-nombre-' + i" placeholder=" "
-									[(ngModel)]="c.nombre">
+								<input type="text" [id]="'ec-nombre-' + i" placeholder=" " [(ngModel)]="c.nombre">
 								<label [for]="'ec-nombre-' + i">Nombre completo <span class="req">*</span></label>
 							</div>
 
@@ -238,14 +227,12 @@
 							</div>
 
 							<div class="field-group half">
-								<input type="tel" [id]="'ec-telefono-' + i" placeholder=" "
-									[(ngModel)]="c.telefono">
+								<input type="tel" [id]="'ec-telefono-' + i" placeholder=" " [(ngModel)]="c.telefono">
 								<label [for]="'ec-telefono-' + i">Teléfono <span class="req">*</span></label>
 							</div>
 
 							<div class="field-group full">
-								<input type="email" [id]="'ec-correo-' + i" placeholder=" "
-									[(ngModel)]="c.correo">
+								<input type="email" [id]="'ec-correo-' + i" placeholder=" " [(ngModel)]="c.correo">
 								<label [for]="'ec-correo-' + i">Correo electrónico</label>
 							</div>
 
@@ -306,7 +293,8 @@
 							(click)="form.aceptaTerminos = !form.aceptaTerminos">
 							<ng-container *ngIf="form.aceptaTerminos">✓</ng-container>
 						</div>
-						<span>Acepto los <a href="#" (click)="$event.preventDefault()">términos y condiciones</a> del servicio</span>
+						<span>Acepto los <a href="#" (click)="$event.preventDefault()">términos y condiciones</a> del
+							servicio</span>
 					</label>
 					<label class="check-item">
 						<div class="custom-check" [class.active]="form.aceptaPolitica"
@@ -339,6 +327,5 @@
 				</button>
 			</div>
 		</div>
-
 	</div>
 </div>

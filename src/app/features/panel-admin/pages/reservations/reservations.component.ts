@@ -9,12 +9,16 @@ import { ReservationService } from '../../../../core/services/reservation.servic
 })
 export class ReservationsComponent implements OnInit {
 
-	constructor(private reservationService: ReservationService) {}
+	constructor(private reservationService: ReservationService) { }
 
 	// ─── Modales ──────────────────────────────────────────
 	showCreateModal = false;
 	showCancelModal = false;
 	sheetOpen = false;
+
+	// Modal documento
+	showDocumentViewer = false;
+	selectedUserId = 0;
 
 	// ─── Toast ────────────────────────────────────────────
 	showToast = false;
@@ -237,5 +241,18 @@ export class ReservationsComponent implements OnInit {
 		this.toastMessage = message;
 		this.showToast = true;
 		setTimeout(() => { this.showToast = false; }, 3000);
+	}
+
+	// Modal documento
+	openDocuments(reservation: Reservation): void {
+		this.selectedUserId = reservation.idUsuario;
+		this.showDocumentViewer = true;
+		document.body.style.overflow = 'hidden';
+	}
+
+	closeDocuments(): void {
+		this.showDocumentViewer = false;
+		this.selectedUserId = 0;
+		document.body.style.overflow = '';
 	}
 }
