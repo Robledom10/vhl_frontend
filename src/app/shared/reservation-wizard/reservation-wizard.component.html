@@ -106,16 +106,11 @@
 							</div>
 
 							<div class="form-group">
-								<input type="email" placeholder=" " [(ngModel)]="holder.email">
-								<label>Correo electrónico</label>
-							</div>
-
-							<div class="form-group">
 								<input type="text" placeholder=" " [(ngModel)]="holder.phone">
 								<label>Teléfono</label>
 							</div>
 
-							<div class="form-group full-width">
+							<div class="form-group">
 								<input type="text" placeholder=" " [(ngModel)]="holder.city">
 								<label>Ciudad de residencia</label>
 							</div>
@@ -299,71 +294,6 @@
 				</div>
 
 				<div *ngIf="currentStep === 4">
-					<div class="section-card">
-						<div class="section-title">
-							<i class="fa-solid fa-credit-card"></i>
-							<h3>Información de pago</h3>
-						</div>
-
-						<div class="form-grid">
-							<div class="form-group custom-select-group">
-								<div class="custom-select" [class.open]="openDropdown === 'payment'"
-									[class.selected]="selectedPaymentMethod"
-									(click)="toggleDropdown('payment', $event)">
-
-									<div class="custom-select-value">
-										{{ selectedPaymentMethod }}
-									</div>
-
-									<i class="fa-solid fa-angle-down select-icon"></i>
-
-									<div class="custom-select-dropdown" *ngIf="openDropdown === 'payment'"
-										(click)="$event.stopPropagation()">
-
-										<div class="custom-option" *ngFor="let option of paymentMethods"
-											(click)="selectOption($event,option, 'payment')">
-											{{ option }}
-										</div>
-									</div>
-								</div>
-
-								<label [class.active]="selectedPaymentMethod">
-									Método de Pago
-								</label>
-							</div>
-
-							<div class="form-group custom-select-group">
-								<div class="custom-select" [class.open]="openDropdown === 'status'"
-									[class.selected]="selectedPaymentStatus" (click)="toggleDropdown('status', $event)">
-
-									<div class="custom-select-value">
-										{{ selectedPaymentStatus }}
-									</div>
-
-									<i class="fa-solid fa-angle-down select-icon"></i>
-
-									<div class="custom-select-dropdown" *ngIf="openDropdown === 'status'"
-										(click)="$event.stopPropagation()">
-
-										<div class="custom-option" *ngFor="let option of paymentStatuses"
-											(click)="selectOption($event,option, 'status')">
-											{{ option }}
-										</div>
-									</div>
-								</div>
-
-								<label [class.active]="selectedPaymentStatus">
-									Estado del Pago
-								</label>
-							</div>
-
-							<div class="form-group full-width">
-								<input type="text" placeholder=" " [ngModel]="totalPrice | number:'1.0-0'">
-								<label>Monto total</label>
-							</div>
-						</div>
-					</div>
-
 					<div class="summary-card">
 
 						<h3>Resumen de la reserva</h3>
@@ -432,8 +362,8 @@
 						</label>
 
 						<label class="checkbox-item">
-							<input type="checkbox">
-							<span class="custom-checkbox" [(ngModel)]="acceptCancellation"></span>
+							<input type="checkbox" [(ngModel)]="acceptCancellation">
+							<span class="custom-checkbox"></span>
 							Acepto la política de cancelación.
 						</label>
 					</div>

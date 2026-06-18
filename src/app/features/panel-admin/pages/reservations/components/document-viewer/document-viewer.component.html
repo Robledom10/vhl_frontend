@@ -1,31 +1,41 @@
 <div class="modal-overlay" *ngIf="isOpen" (click)="close()">
-
 	<div class="modal-container" (click)="$event.stopPropagation()">
+		<div class="modal-header">
+			<h2>
+				Documentos del viajero
+			</h2>
 
-		<h2>
-			Documentos
-		</h2>
-
-		<div class="document-row" *ngFor="let doc of documents">
-
-			<div>
-				<strong>
-					{{ doc.documentType }}
-				</strong>
-
-				<br>
-
-				<small>
-					{{ doc.status }}
-				</small>
-			</div>
-
-			<button (click)="viewDocument(doc.idDocument)">
-				Ver
+			<button class="close-btn" (click)="close()">
+				<i class="fa-solid fa-xmark"></i>
 			</button>
-
 		</div>
 
-	</div>
+		<div class="divider"></div>
 
+		<div class="loading" *ngIf="isLoading">
+			<i class="fa-solid fa-circle-notch fa-spin"></i>
+			Cargando documentos...
+		</div>
+
+		<div class="empty" *ngIf="!isLoading && documents.length==0">
+			<i class="fa-regular fa-folder-open"></i>
+			No hay documentos registrados.
+		</div>
+
+		<div class="document-card" *ngFor="let doc of documents">
+
+			<div>
+				<h4> {{ getDocumentName(doc.documentType) }}</h4>
+
+				<span class="status" [ngClass]="doc.status">
+					{{ getStatus(doc.status) }}
+				</span>
+			</div>
+
+			<button class="view-btn" (click)="viewDocument(doc.idDocument)">
+				<i class="fa-regular fa-eye"></i>
+				Ver
+			</button>
+		</div>
+	</div>
 </div>
