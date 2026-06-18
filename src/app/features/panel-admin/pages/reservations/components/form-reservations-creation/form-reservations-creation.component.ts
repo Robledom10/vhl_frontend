@@ -262,7 +262,7 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 			this.form.duracion = '';
 			return;
 		}
-		const salida  = new Date(this.form.fechaSalida);
+		const salida = new Date(this.form.fechaSalida);
 		const regreso = new Date(this.form.fechaRegreso);
 		const diff = Math.ceil(
 			(regreso.getTime() - salida.getTime()) / (1000 * 60 * 60 * 24)
@@ -288,32 +288,32 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 		const viajeSeleccionado = this.viajesDisponibles.find(v => v.id === Number(this.form.idViaje));
 
 		const solicitud = {
-			idUsuario:           Number(this.form.idUsuario),
-			idPaquete:           viajeSeleccionado?.idPaquete || undefined,
-			personas:            Number(this.form.personas) || 1,
-			acompanantes:        this.form.acompanantes.map(a => ({
-				nombre:          a.nombre,
+			idUsuario: Number(this.form.idUsuario),
+			idPaquete: viajeSeleccionado?.idPaquete || undefined,
+			personas: Number(this.form.personas) || 1,
+			acompanantes: this.form.acompanantes.map(a => ({
+				nombre: a.nombre,
 				fechaNacimiento: a.fechaNacimiento,
-				tipoDocumento:   a.tipoDocumento,
-				documento:       a.documento,
+				tipoDocumento: a.tipoDocumento,
+				documento: a.documento,
 			})),
 			contactosEmergencia: this.form.contactosEmergencia
 				.filter(c => c.nombre && c.parentesco && c.telefono)
 				.map(c => ({
-					nombre:     c.nombre,
+					nombre: c.nombre,
 					parentesco: c.parentesco,
-					telefono:   c.telefono,
-					correo:     c.correo || undefined,
+					telefono: c.telefono,
+					correo: c.correo || undefined,
 				})),
-			idViaje:           this.form.idViaje || undefined,
-			paqueteNombre:     this.form.paqueteNombre,
-			destino:           this.form.destino,
-			fechaSalida:       this.form.fechaSalida,
-			fechaRegreso:      this.form.fechaRegreso,
-			tipoHabitacion:    this.form.tipoHabitacion,
+			idViaje: this.form.idViaje || undefined,
+			paqueteNombre: this.form.paqueteNombre,
+			destino: this.form.destino,
+			fechaSalida: this.form.fechaSalida,
+			fechaRegreso: this.form.fechaRegreso,
+			tipoHabitacion: this.form.tipoHabitacion,
 			solicitudEspecial: this.form.solicitudEspecial || undefined,
-			notas:             this.form.notas || undefined,
-			total:             Number(this.form.total) || 0,
+			notas: this.form.notas || undefined,
+			total: Number(this.form.total) || 0,
 		};
 
 		this.reservationService.crear(solicitud).subscribe({
@@ -349,22 +349,22 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 
 	private emptyForm(): ReservationForm {
 		return {
-			idUsuario:           '',
-			personas:            '',
-			acompanantes:        [],
+			idUsuario: '',
+			personas: '',
+			acompanantes: [],
 			contactosEmergencia: [this.emptyContacto()],
-			idViaje:             '',
-			paqueteNombre:       '',
-			destino:             '',
-			fechaSalida:         '',
-			fechaRegreso:        '',
-			duracion:            '',
-			tipoHabitacion:      '',
-			solicitudEspecial:   '',
-			notas:               '',
-			total:               '',
-			aceptaTerminos:      false,
-			aceptaPolitica:      false,
+			idViaje: '',
+			paqueteNombre: '',
+			destino: '',
+			fechaSalida: '',
+			fechaRegreso: '',
+			duracion: '',
+			tipoHabitacion: '',
+			solicitudEspecial: '',
+			notas: '',
+			total: '',
+			aceptaTerminos: false,
+			aceptaPolitica: false,
 		};
 	}
 
