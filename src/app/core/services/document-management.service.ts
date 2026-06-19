@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -58,14 +58,22 @@ export class DocumentManagementService {
 		);
 	}
 
-	downloadDocument(documentId: number): Observable<Blob> {
+	// =========================
+	// VER / DESCARGAR DOCUMENTO
+	// =========================
+
+	downloadDocument(
+		documentId: number
+	): Observable<HttpResponse<Blob>> {
 
 		return this.http.get(
 			`${this.apiUrl}/documents/download/${documentId}`,
 			{
-				responseType: 'blob'
+				responseType: 'blob',
+				observe: 'response'
 			}
 		);
+
 	}
 
 	// =========================

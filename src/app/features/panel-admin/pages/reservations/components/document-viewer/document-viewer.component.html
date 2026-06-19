@@ -1,41 +1,102 @@
 <div class="modal-overlay" *ngIf="isOpen" (click)="close()">
+
 	<div class="modal-container" (click)="$event.stopPropagation()">
+
+		<!-- HEADER -->
 		<div class="modal-header">
-			<h2>
-				Documentos del viajero
-			</h2>
+
+			<div>
+				<h2>Documentos del viajero</h2>
+				<p class="subtitle">
+					{{ documents.length }} documento{{ documents.length === 1 ? '' : 's' }}
+				</p>
+			</div>
 
 			<button class="close-btn" (click)="close()">
 				<i class="fa-solid fa-xmark"></i>
 			</button>
+
 		</div>
 
 		<div class="divider"></div>
 
+		<!-- RESUMEN -->
+		<div class="resume">
+			<div>
+				<strong>{{ pendingCount }}</strong>
+				Pendientes
+			</div>
+
+			<div>
+				<strong>{{ approvedCount }}</strong>
+				Aprobados
+			</div>
+
+			<div>
+				<strong>{{ rejectedCount }}</strong>
+				Rechazados
+			</div>
+		</div>
+
+		<!-- LOADING -->
 		<div class="loading" *ngIf="isLoading">
 			<i class="fa-solid fa-circle-notch fa-spin"></i>
 			Cargando documentos...
 		</div>
 
-		<div class="empty" *ngIf="!isLoading && documents.length==0">
+		<!-- EMPTY -->
+		<div class="empty" *ngIf="!isLoading && documents.length === 0">
 			<i class="fa-regular fa-folder-open"></i>
 			No hay documentos registrados.
 		</div>
 
+		<!-- LISTA -->
 		<div class="document-card" *ngFor="let doc of documents">
 
-			<div>
-				<h4> {{ getDocumentName(doc.documentType) }}</h4>
+			<div class="document-left">
 
-				<span class="status" [ngClass]="doc.status">
-					{{ getStatus(doc.status) }}
-				</span>
+				<div class="document-icon">
+					<i class="fa-solid" [ngClass]="getFileIcon(doc.fileUrl)"></i>
+				</div>
+
+				<div class="document-data">
+
+					<h4>{{ getDocumentName(doc.documentType) }}</h4>
+
+					<div class="file-name">
+						{{ getFileName(doc.fileUrl) }}
+					</div>
+
+					<div class="created" *ngIf="doc.createdAt">
+						Subido: {{ doc.createdAt | date:'dd/MM/yyyy HH:mm' }}
+					</div>
+
+					<span class="status" [ngClass]="doc.status">
+						{{ getStatus(doc.status) }}
+					</span>
+
+				</div>
+
 			</div>
 
-			<button class="view-btn" (click)="viewDocument(doc.idDocument)">
-				<i class="fa-regular fa-eye"></i>
-				Ver
-			</button>
+			<div class="document-actions">
+
+				<button class="view-btn" (click)="viewDocument(doc.idDocument)">
+					<i class="fa-regular fa-eye"></i>
+					Ver
+				</button>
+
+				<button class="approve-btn" *ngIf="doc.status !== 'aprobado'" (click)="approveDocument(doc)">
+					Aprobar
+				</button>
+
+				<button class="reject-btn" *ngIf="doc.status !== 'rechazado'" (click)="rejectDocument(doc)">
+					Rechazar
+				</button>
+
+			</div>
+
 		</div>
+
 	</div>
 </div>
