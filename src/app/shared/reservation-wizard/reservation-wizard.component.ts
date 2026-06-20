@@ -33,9 +33,8 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 	holder = {
 		firstName: '',
 		lastName: '',
-		documentType: '', // Guardará la abreviatura (ej: 'CC')
+		documentType: '',
 		documentNumber: '',
-		email: '',
 		phone: '',
 		city: ''
 	};
@@ -62,10 +61,22 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 
 	// MODIFICADO: Arreglo de objetos con abreviatura y nombre completo
 	documentTypes = [
-		{ value: 'CC', label: 'Cédula de ciudadanía' },
-		{ value: 'TI', label: 'Tarjeta de identidad' },
-		{ value: 'CE', label: 'Cédula de extranjería' },
-		{ value: 'PA', label: 'Pasaporte' }
+		{
+			value: 'Cedula Ciudadania',
+			label: 'Cédula de ciudadanía'
+		},
+		{
+			value: 'Tarjeta Identidad',
+			label: 'Tarjeta de identidad'
+		},
+		{
+			value: 'Cedula Extranjeria',
+			label: 'Cédula de extranjería'
+		},
+		{
+			value: 'Pasaporte',
+			label: 'Pasaporte'
+		}
 	];
 
 	specialRequests = [
@@ -86,26 +97,8 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 		'Suite'
 	];
 
-	paymentMethods = [
-		'Efectivo',
-		'Transferencia bancaria',
-		'Tarjeta de crédito',
-		'Tarjeta de débito',
-		'PSE',
-		'Nequi',
-		'Daviplata'
-	];
-
-	paymentStatuses = [
-		'Pendiente',
-		'Anticipo pagado',
-		'Pago completo'
-	];
-
 	selectedSpecialRequest = '';
 	selectedRoomType = '';
-	selectedPaymentMethod = '';
-	selectedPaymentStatus = '';
 
 	constructor(
 		private authService: AuthService,
@@ -160,30 +153,6 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy(): void {
 		this.restoreScroll();
-	}
-
-	private loadCurrentUser(): void {
-		const user = this.authService.getUser();
-		if (!user) { return; }
-
-		this.holder.firstName = user.firstName ?? '';
-		this.holder.lastName = user.lastName ?? '';
-		this.holder.email = user.email ?? '';
-		this.holder.phone = user.phone ?? user.telefono ?? '';
-		this.holder.city = user.city ?? user.ciudad ?? '';
-
-		// Al recibirlo, intentamos mapear a abreviatura si viene el nombre largo completo
-		const rawDocType = user.documentType ?? user.tipoDocumento ?? '';
-		const found = this.documentTypes.find(d => d.label === rawDocType || d.value === rawDocType);
-		this.holder.documentType = found ? found.value : rawDocType;
-
-		this.holder.documentNumber = user.documentNumber ?? user.numeroDocumento ?? '';
-	}
-
-	// NUEVO MÉTODO AUXILIAR: Para mostrar el texto largo en la interfaz basado en la abreviatura guardada
-	getDocumentLabel(value: string): string {
-		const found = this.documentTypes.find(d => d.value === value);
-		return found ? found.label : '';
 	}
 
 	close(): void {
@@ -254,8 +223,6 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 		target:
 			| 'request'
 			| 'room'
-			| 'payment'
-			| 'status'
 	): void {
 
 		event.stopPropagation();
@@ -267,73 +234,185 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 
 			case 'room': this.selectedRoomType = value;
 				break;
-
-			case 'payment': this.selectedPaymentMethod = value;
-				break;
-
-			case 'status': this.selectedPaymentStatus = value;
-				break;
 		}
 
 		this.openDropdown = null;
+	}
+
+	// Actualizar datos del usuario
+
+	private loadCurrentUser(): void {
+
+		const user = this.authService.getUser();
+
+		if (!user) {
+			return;
+		}
+
+		this.holder.firstName = user.firstName ?? '';
+		this.holder.lastName = user.lastName ?? '';
+		this.holder.phone = user.phone ?? '';
+		this.holder.city = user.city ?? '';
+
+		const rawDocType = user.documentType ?? '';
+
+		const found = this.documentTypes.find(
+			d => d.value === rawDocType
+		);
+
+		this.holder.documentType = found
+			? found.value
+			: '';
+
+		this.holder.documentNumber =
+			user.documentNumber ?? '';
+	}
+
+	getDocumentLabel(value: string): string {
+
+		const found = this.documentTypes.find(
+			d => d.value === value
+		);
+
+		return found?.label ?? '';
+	}
+
+	private updateUserProfile(callback: () => void): void {
+
+		const profileData: any = {};
+
+		if (this.holder.firstName) {
+			profileData.firstName = this.holder.firstName;
+		}
+
+		if (this.holder.lastName) {
+			profileData.lastName = this.holder.lastName;
+		}
+
+		if (this.holder.phone) {
+			profileData.phone = this.holder.phone;
+		}
+
+		if (this.holder.city) {
+			profileData.city = this.holder.city;
+		}
+
+		if (this.holder.documentType) {
+			profileData.documentType = this.holder.documentType;
+		}
+
+		if (this.holder.documentNumber) {
+			profileData.documentNumber = this.holder.documentNumber;
+		}
+
+		this.authService
+			.updateProfile(profileData)
+			.subscribe({
+
+				next: updatedUser => {
+
+					localStorage.setItem(
+						'user',
+						JSON.stringify(updatedUser)
+					);
+
+					callback();
+				},
+
+				error: err => {
+
+					console.error(
+						'Error actualizando perfil',
+						err
+					);
+
+					callback();
+				}
+
+			});
 	}
 
 	// Reserva
 
 	confirmReservation(): void {
 
-		const currentUser = this.authService.getUser();
+		this.updateUserProfile(() => {
 
-		const solicitud: SolicitudReserva = {
-			idUsuario: currentUser?.id ?? 0,
-			idPaquete: this.selectedTrip?.idPaquete,
-			personas: this.travelers,
-			acompanantes: this.companions.map(companion => ({
-				nombre: companion.name,
-				fechaNacimiento: companion.birthDate,
-				tipoDocumento: companion.documentType,
-				documento: companion.documentNumber
-			})),
-			contactosEmergencia: this.emergencyContacts
-				.filter(c => c.fullName && c.relationship && c.phone)
-				.map(c => ({
-					nombre: c.fullName,
-					parentesco: c.relationship,
-					telefono: c.phone,
+			const currentUser = this.authService.getUser();
+
+			const solicitud: SolicitudReserva = {
+
+				idUsuario: currentUser?.id ?? 0,
+				idPaquete: this.selectedTrip?.idPaquete,
+				personas: this.travelers,
+
+				acompanantes: this.companions.map(companion => ({
+					nombre: companion.name,
+					fechaNacimiento: companion.birthDate,
+					tipoDocumento: companion.documentType,
+					documento: companion.documentNumber
 				})),
-			idViaje: this.selectedTrip?.id,
-			paqueteNombre: this.package?.title ?? '',
-			destino: this.package?.destinations ?? '',
-			fechaSalida: this.selectedTrip?.fechaSalida ?? '',
-			fechaRegreso: this.selectedTrip?.fechaRegreso ?? '',
-			tipoHabitacion: this.selectedRoomType,
-			solicitudEspecial: this.selectedSpecialRequest,
-			notas: this.additionalNotes,
-			total: this.totalPrice
-		};
 
-		this.reservationService
-			.crear(solicitud)
-			.subscribe({
+				contactosEmergencia: this.emergencyContacts
+					.filter(c =>
+						c.fullName &&
+						c.relationship &&
+						c.phone
+					)
+					.map(c => ({
+						nombre: c.fullName,
+						parentesco: c.relationship,
+						telefono: c.phone
+					})),
 
-				next: reservation => {
+				idViaje: this.selectedTrip?.id,
 
-					console.log(
-						'Reserva creada',
-						reservation
-					);
+				paqueteNombre: this.package?.title ?? '',
 
-					this.close();
-				},
+				destino: this.package?.destinations ?? '',
 
-				error: error => {
+				fechaSalida: this.selectedTrip?.fechaSalida ?? '',
 
-					console.error(
-						'Error creando reserva',
-						error
-					);
-				}
-			});
+				fechaRegreso: this.selectedTrip?.fechaRegreso ?? '',
+
+				tipoHabitacion: this.selectedRoomType,
+
+				solicitudEspecial: this.selectedSpecialRequest,
+
+				notas: this.additionalNotes,
+
+				total: this.totalPrice
+
+			};
+
+			this.reservationService
+				.crear(solicitud)
+				.subscribe({
+
+					next: reservation => {
+
+						console.log(
+							'Reserva creada',
+							reservation
+						);
+
+						this.close();
+
+					},
+
+					error: error => {
+
+						console.error(
+							'Error creando reserva',
+							error
+						);
+
+					}
+
+				});
+
+		});
+
 	}
 
 	// Funcionamiento de abrir y cerrar el modal y el dropdown
