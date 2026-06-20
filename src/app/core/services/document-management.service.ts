@@ -16,11 +16,7 @@ export class DocumentManagementService {
 	// DOCUMENTOS
 	// =========================
 
-	uploadDocument(
-		userId: number,
-		documentType: string,
-		file: File
-	): Observable<any> {
+	uploadDocument(userId: number, documentType: string, file: File): Observable<any> {
 
 		const formData = new FormData();
 
@@ -62,9 +58,7 @@ export class DocumentManagementService {
 	// VER / DESCARGAR DOCUMENTO
 	// =========================
 
-	downloadDocument(
-		documentId: number
-	): Observable<HttpResponse<Blob>> {
+	downloadDocument(documentId: number): Observable<HttpResponse<Blob>> {
 
 		return this.http.get(
 			`${this.apiUrl}/documents/download/${documentId}`,
@@ -73,7 +67,6 @@ export class DocumentManagementService {
 				observe: 'response'
 			}
 		);
-
 	}
 
 	// =========================
@@ -91,21 +84,42 @@ export class DocumentManagementService {
 		);
 	}
 
-	getValidationDetail(
-		documentId: number
-	): Observable<any> {
-
+	getValidationDetail(documentId: number): Observable<any> {
 		return this.http.get(
 			`${this.apiUrl}/validation/detail/${documentId}`
 		);
 	}
 
-	getValidationHistory(
-		documentId: number
-	): Observable<any[]> {
-
+	getValidationHistory(documentId: number): Observable<any[]> {
 		return this.http.get<any[]>(
 			`${this.apiUrl}/history/${documentId}`
+		);
+	}
+
+	// =========================
+	// REVISIÓN DE DOCUMENTOS
+	// =========================
+
+	startReview(documentId: number): Observable<any> {
+		return this.http.put(
+			`${this.apiUrl}/documents/${documentId}/review`,
+			{}
+		);
+	}
+
+	approveDocument(documentId: number): Observable<any> {
+		return this.http.put(
+			`${this.apiUrl}/documents/${documentId}/approve`,
+			{}
+		);
+	}
+
+	rejectDocument(documentId: number, observation: string): Observable<any> {
+		return this.http.put(
+			`${this.apiUrl}/documents/${documentId}/reject`,
+			{
+				observation
+			}
 		);
 	}
 
@@ -136,10 +150,7 @@ export class DocumentManagementService {
 		);
 	}
 
-	hasAcceptedContract(
-		reservationId: number,
-		userId: number
-	): Observable<boolean> {
+	hasAcceptedContract(reservationId: number, userId: number): Observable<boolean> {
 
 		const params = new HttpParams()
 			.set('reservationId', reservationId)
@@ -155,10 +166,7 @@ export class DocumentManagementService {
 	// FLUJO RESERVA
 	// =========================
 
-	canContinueReservation(
-		userId: number,
-		reservationId: number
-	): Observable<boolean> {
+	canContinueReservation(userId: number, reservationId: number): Observable<boolean> {
 
 		const params = new HttpParams()
 			.set('userId', userId)
@@ -174,10 +182,7 @@ export class DocumentManagementService {
 	// ARCHIVO VIAJERO
 	// =========================
 
-	getTravelerFile(
-		userId: number
-	): Observable<any> {
-
+	getTravelerFile(userId: number): Observable<any> {
 		return this.http.get(
 			`${this.apiUrl}/files/${userId}`
 		);
@@ -188,7 +193,6 @@ export class DocumentManagementService {
 	// =========================
 
 	getAdminDocuments(): Observable<any[]> {
-
 		return this.http.get<any[]>(
 			`${this.apiUrl}/admin/documents`
 		);
