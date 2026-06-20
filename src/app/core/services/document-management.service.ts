@@ -16,11 +16,16 @@ export class DocumentManagementService {
 	// DOCUMENTOS
 	// =========================
 
-	uploadDocument(userId: number, documentType: string, file: File): Observable<any> {
+	uploadDocument(userId: number, reservationId: number, documentType: string, file: File): Observable<any> {
 
 		const formData = new FormData();
 
 		formData.append('userId', userId.toString());
+
+		// Provisional.
+		// El backend actual simplemente lo ignorará si no existe.
+		formData.append('reservationId', reservationId.toString());
+
 		formData.append('documentType', documentType);
 		formData.append('file', file);
 
@@ -101,24 +106,26 @@ export class DocumentManagementService {
 	// =========================
 
 	startReview(documentId: number): Observable<any> {
-		return this.http.put(
-			`${this.apiUrl}/documents/${documentId}/review`,
+		return this.http.post(
+			`${this.apiUrl}/admin/documents/${documentId}/in-process`,
 			{}
 		);
 	}
 
-	approveDocument(documentId: number): Observable<any> {
-		return this.http.put(
-			`${this.apiUrl}/documents/${documentId}/approve`,
-			{}
-		);
-	}
-
-	rejectDocument(documentId: number, observation: string): Observable<any> {
-		return this.http.put(
-			`${this.apiUrl}/documents/${documentId}/reject`,
+	approveDocument(documentId: number, observations?: string): Observable<any> {
+		return this.http.post(
+			`${this.apiUrl}/admin/documents/${documentId}/approve`,
 			{
-				observation
+				observations: observations ?? null
+			}
+		);
+	}
+
+	rejectDocument(documentId: number, observations: string): Observable<any> {
+		return this.http.post(
+			`${this.apiUrl}/admin/documents/${documentId}/reject`,
+			{
+				observations
 			}
 		);
 	}

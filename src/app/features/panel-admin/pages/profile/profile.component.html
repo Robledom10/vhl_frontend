@@ -198,8 +198,8 @@
 								Subir
 							</button>
 
-							<button class="upload disabled" *ngIf="item.estado !== 'Pendiente'" disabled>
-								Documento enviado
+							<button class="upload disabled" disabled>
+								{{ getDocumentStatus(item) }}
 							</button>
 
 							<button class="pay">
@@ -210,11 +210,8 @@
 							<button class="cancel">
 								Cancelar
 							</button>
-
 						</div>
-
 					</td>
-
 				</tr>
 
 				<tr *ngIf="isLoadingReservations">
@@ -261,6 +258,5 @@
 </app-reservation-detail-sheet>
 
 <app-upload-document-modal [isOpen]="showUploadModal" [userId]="user?.id"
-	[reservationId]="selectedReservationUpload?.id" (closed)="showUploadModal = false"
-	(uploaded)="showUploadModal = false">
+	[reservationId]="selectedReservationUpload?.id" (closed)="closeUploadModal()" (uploaded)="closeUploadModal()">
 </app-upload-document-modal>

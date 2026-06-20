@@ -591,9 +591,11 @@ tbody td:last-child {
 }
 
 .actions .upload.disabled {
-	background: #f1f1f1;
-	color: #b5b5b5;
+	background: #e5e7eb;
+	color: #6b7280;
 	cursor: not-allowed;
+	position: relative;
+	padding-left: 30px;
 }
 
 /* PAGAR */

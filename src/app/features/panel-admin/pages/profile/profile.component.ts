@@ -4,6 +4,13 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { minimumAgeValidator } from '../../../../core/validators/custom.validators';
 import colombiaData from '../../../../../assets/data/colombia.json';
 import { ReservationService } from '../../../../core/services/reservation.service';
+import { Reservation } from '../reservations/models/reservations.models';
+
+export interface Documento {
+	id?: number;
+	status: 'aprobado' | 'rechazado' | 'en_proceso' | 'pendiente';
+	type?: string;
+}
 
 @Component({
 	selector: 'app-profile',
@@ -280,7 +287,6 @@ export class ProfileComponent implements OnInit {
 
 	// Reservas
 
-
 	openDetail(reservation: any): void {
 		this.selectedReservation = reservation;
 		this.sheetOpen = true;
@@ -293,9 +299,7 @@ export class ProfileComponent implements OnInit {
 	loadReservations(): void {
 
 		this.isLoadingReservations = true;
-
 		const user = this.authService.getUser();
-
 		this.reservationService.getAll().subscribe({
 
 			next: (reservations) => {
@@ -303,14 +307,11 @@ export class ProfileComponent implements OnInit {
 				this.reservations = reservations.filter(
 					r => r.datosUsuario?.email === user?.email
 				);
-
 				this.isLoadingReservations = false;
 			},
 
 			error: (err) => {
-
 				console.error(err);
-
 				this.isLoadingReservations = false;
 			}
 		});
@@ -326,6 +327,20 @@ export class ProfileComponent implements OnInit {
 		this.showUploadModal = false;
 		this.selectedReservationUpload = null;
 		document.body.style.overflow = '';
+	}
+
+	getDocumentStatus(reservation: Reservation): string {
+		const docs = reservation.documentos ?? [];
+
+		if (!docs.length) return 'Sin documentos';
+
+		if (docs.every((d: Documento) => d.status === 'aprobado')) return 'Aprobado';
+
+		if (docs.some((d: Documento) => d.status === 'rechazado')) return 'Rechazado';
+
+		if (docs.some((d: Documento) => d.status === 'en_proceso')) return 'En revisión';
+
+		return 'Enviado';
 	}
 
 	// =========================
