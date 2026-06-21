@@ -439,6 +439,59 @@
 }
 
 /* =======================================================
+	VALIDACIÓN IA
+======================================================= */
+
+.ai-review {
+	margin-top: 15px;
+	padding: 14px;
+	background: #f7fbff;
+	border: 1px solid #d9ecff;
+	border-radius: 12px;
+}
+
+.ai-review.waiting {
+	background: #fafafa;
+	border-color: #ececec;
+	color: #777;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.ai-header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: 600;
+	margin-bottom: 10px;
+	color: var(--color-primario);
+}
+
+.ai-item {
+	margin-bottom: 8px;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.validation-result {
+	padding: 4px 10px;
+	border-radius: 20px;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.validation-result.valid {
+	background: rgba(45, 206, 137, .15);
+	color: #22a06b;
+}
+
+.validation-result.invalid {
+	background: rgba(255, 59, 59, .12);
+	color: #ff3b3b;
+}
+
+/* =======================================================
    RESPONSIVE
 ======================================================= */
 

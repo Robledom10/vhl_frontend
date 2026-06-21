@@ -3,6 +3,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
+export interface ValidationDetail {
+	source: string;
+	result: string;
+	observations: string;
+	validationDate: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -89,10 +96,11 @@ export class DocumentManagementService {
 		);
 	}
 
-	getValidationDetail(documentId: number): Observable<any> {
-		return this.http.get(
+	getValidationDetail(documentId: number): Observable<ValidationDetail> {
+		return this.http.get<ValidationDetail>(
 			`${this.apiUrl}/validation/detail/${documentId}`
 		);
+
 	}
 
 	getValidationHistory(documentId: number): Observable<any[]> {

@@ -85,6 +85,43 @@
 							<span class="status" [ngClass]="doc.status">
 								{{ getStatus(doc.status) }}
 							</span>
+
+							<div class="ai-review" *ngIf="doc.validation; else waitingValidation">
+								<div class="ai-header">
+									<i class="fa-solid fa-robot"></i>
+									Validación automática
+								</div>
+
+								<div class="ai-item">
+									<strong>Origen:</strong>
+									{{ doc.validation.source }}
+								</div>
+
+								<div class="ai-item">
+									<strong>Resultado:</strong>
+									<span class="validation-result"
+										[ngClass]="{ 'valid': doc.validation.result === 'VALIDO' || doc.validation.result === 'VALIDO' || doc.validation.result?.toLowerCase() === 'valido',  'invalid': doc.validation.result === 'INVALIDO' || doc.validation.result?.toLowerCase() === 'invalido'  }">
+										{{ doc.validation.result }}
+									</span>
+								</div>
+
+								<div class="ai-item" *ngIf="doc.validation.observations">
+									<strong>Observaciones:</strong>
+									{{ doc.validation.observations }}
+								</div>
+
+								<div class="created">
+									Validado:
+									{{ doc.validation.validationDate | date:'dd/MM/yyyy HH:mm' }}
+								</div>
+							</div>
+
+							<ng-template #waitingValidation>
+								<div class="ai-review waiting">
+									<i class="fa-regular fa-clock"></i>
+									Pendiente de validación automática
+								</div>
+							</ng-template>
 						</div>
 					</div>
 
@@ -100,8 +137,8 @@
 						</button>
 
 						<ng-container *ngIf="doc.status === 'en_proceso'">
-							<button class="approve-btn" (click)="approveDocument(doc)">
-								<i class="fa-solid fa-check"></i>
+							<button class="approve-btn" [disabled]="doc.validation?.result === 'INVALIDO'"
+								(click)="approveDocument(doc)">
 								Aprobar
 							</button>
 

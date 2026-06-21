@@ -53,6 +53,11 @@ export class DocumentViewerComponent implements OnChanges {
 
 				next: (documents) => {
 					this.documents = documents;
+
+					this.documents.forEach(doc => {
+						this.loadValidation(doc);
+					});
+
 					this.isLoading = false;
 				},
 
@@ -110,15 +115,69 @@ export class DocumentViewerComponent implements OnChanges {
 	// FLUJO DE REVISIÓN (TEMPORAL FRONTEND)
 	// ==================================================
 
+	executeAIValidation(doc: TravelerDocument): void {
+
+		this.documentService
+			.validateDocument(doc.idDocument)
+			.subscribe({
+
+				next: () => {
+					this.loadValidation(doc);
+				},
+
+				error: err => {
+					console.error(err);
+				}
+			});
+	}
+
+	loadValidation(doc: TravelerDocument): void {
+		this.documentService
+			.getValidationHistory(doc.idDocument)
+			.subscribe({
+				next: (history: any[]) => {
+					if (history && history.length > 0) {
+						// Buscamos en el historial la validación hecha por la IA
+						const aiValidation = history.find(v => v.source === 'IA');
+
+						if (aiValidation) {
+							// Mapeamos los datos al formato que espera tu ValidationDetail en el HTML
+							doc.validation = {
+								source: aiValidation.source,
+								// Si el backend devuelve 'result', lo usamos; si devuelve 'status' (como 'valido'), lo convertimos a Mayúsculas
+								result: (aiValidation.result || aiValidation.status || '').toUpperCase(),
+								observations: aiValidation.observations,
+								validationDate: aiValidation.validationDate || aiValidation.createdAt
+							};
+						} else {
+							// Si no hay fila de la IA en el historial, dejamos que muestre el template de espera
+							doc.validation = undefined;
+						}
+					} else {
+						doc.validation = undefined;
+					}
+				},
+				error: () => {
+					doc.validation = undefined;
+				}
+			});
+	}
+
 	startReview(doc: TravelerDocument): void {
 		this.documentService
 			.startReview(doc.idDocument)
 			.subscribe({
 
 				next: () => {
+
 					doc.status = 'en_proceso';
+
+					this.executeAIValidation(doc);
+
 				}
+
 			});
+
 	}
 
 	approveDocument(doc: TravelerDocument): void {

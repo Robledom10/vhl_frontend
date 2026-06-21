@@ -1,3 +1,5 @@
+import { ValidationDetail } from "../../../../../core/services/document-management.service";
+
 export interface TravelerDocument {
 
 	idDocument: number;
@@ -21,6 +23,9 @@ export interface TravelerDocument {
 	| 'rechazado';
 
 	createdAt: string;
+
+	// Para la IA
+	validation?: ValidationDetail;
 }
 
 export interface TravelerFile {
