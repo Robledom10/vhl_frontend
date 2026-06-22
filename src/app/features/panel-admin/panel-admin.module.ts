@@ -62,7 +62,7 @@ import { DocumentViewerComponent } from './pages/reservations/components/documen
 		InfoMedicaComponent,
 		ComunicacionesComponent,
 		UploadDocumentModalComponent,
-  DocumentViewerComponent,
+		DocumentViewerComponent,
 	],
 	imports: [
 		CommonModule,

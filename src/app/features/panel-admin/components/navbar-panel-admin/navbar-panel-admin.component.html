@@ -11,23 +11,11 @@
 
 	<!-- MENU ADMIN -->
 	<div class="nav-menu">
-	<div *ngFor="let item of adminMenu">
+		<div *ngFor="let item of visibleMenu">
 
-		<!-- ITEM NORMAL -->
-		<a *ngIf="!item.children" [routerLink]="item.route" routerLinkActive="active" class="menu-item">
+			<!-- ITEM NORMAL -->
+			<a *ngIf="!item.children" [routerLink]="item.route" routerLinkActive="active" class="menu-item">
 
-			<div class="menu-left">
-				<i [class]="item.icon"></i>
-
-				<span class="menu-label">
-					{{ item.label }}
-				</span>
-			</div>
-		</a>
-
-		<!-- ITEM DESPLEGABLE -->
-		<div *ngIf="item.children">
-			<button class="menu-item dropdown-btn" (click)="toggleMenu(item)">
 				<div class="menu-left">
 					<i [class]="item.icon"></i>
 
@@ -35,18 +23,30 @@
 						{{ item.label }}
 					</span>
 				</div>
+			</a>
 
-				<i class="fa-solid fa-chevron-down dropdown-arrow" [class.rotate]="item.open"></i>
-			</button>
+			<!-- ITEM DESPLEGABLE -->
+			<div *ngIf="item.children">
+				<button class="menu-item dropdown-btn" (click)="toggleMenu(item)">
+					<div class="menu-left">
+						<i [class]="item.icon"></i>
 
-			<!-- SUBMENU -->
-			<div class="submenu" *ngIf="item.open">
+						<span class="menu-label">
+							{{ item.label }}
+						</span>
+					</div>
 
-				<a *ngFor="let child of item.children" [routerLink]="child.route" routerLinkActive="active-submenu"
-					class="submenu-item">
-					{{ child.label }}
-				</a>
+					<i class="fa-solid fa-chevron-down dropdown-arrow" [class.rotate]="item.open"></i>
+				</button>
+
+				<!-- SUBMENU -->
+				<div class="submenu" *ngIf="item.open">
+
+					<a *ngFor="let child of item.children" [routerLink]="child.route" routerLinkActive="active-submenu"
+						class="submenu-item">
+						{{ child.label }}
+					</a>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
