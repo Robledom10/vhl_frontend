@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+
 import { DocumentManagementService } from '../../../../../../core/services/document-management.service';
 import { TravelerDocument } from '../../models/document-management';
 
@@ -16,7 +17,20 @@ export class DocumentViewerComponent implements OnChanges {
 	documents: TravelerDocument[] = [];
 	isLoading = false;
 
-	constructor(private documentService: DocumentManagementService) { }
+	// ===========================
+	// RECHAZO (Frontend)
+	// ===========================
+
+	selectedRejectDocument: TravelerDocument | null = null;
+	rejectMessage = '';
+
+	constructor(
+		private documentService: DocumentManagementService
+	) { }
+
+	// ==================================================
+	// CICLO DE VIDA
+	// ==================================================
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes['isOpen']?.currentValue && this.userId) {
@@ -24,15 +38,29 @@ export class DocumentViewerComponent implements OnChanges {
 		}
 	}
 
-	loadDocuments(): void {
-		this.isLoading = true;
+	// ==================================================
+	// CARGAR DOCUMENTOS
+	// ==================================================
 
-		this.documentService.getUserDocuments(this.userId)
+	loadDocuments(): void {
+
+		this.isLoading = true;
+		this.cancelReject();
+
+		this.documentService
+			.getUserDocuments(this.userId)
 			.subscribe({
-				next: docs => {
-					this.documents = docs;
+
+				next: (documents) => {
+					this.documents = documents;
+
+					this.documents.forEach(doc => {
+						this.loadValidation(doc);
+					});
+
 					this.isLoading = false;
 				},
+
 				error: () => {
 					this.documents = [];
 					this.isLoading = false;
@@ -40,59 +68,206 @@ export class DocumentViewerComponent implements OnChanges {
 			});
 	}
 
+	// ==================================================
+	// CERRAR
+	// ==================================================
+
 	close(): void {
+		this.cancelReject();
 		this.closed.emit();
 	}
 
+	// ==================================================
+	// VER DOCUMENTO
+	// ==================================================
+
 	viewDocument(documentId: number): void {
-		this.documentService.downloadDocument(documentId)
+
+		this.documentService
+			.downloadDocument(documentId)
 			.subscribe({
+
 				next: response => {
 
-					const blob = new Blob([response.body!], {
-						type: response.headers.get('Content-Type') || 'application/pdf'
-					});
+					const blob = new Blob(
+						[response.body!],
+						{
+							type:
+								response.headers.get('Content-Type')
+								|| 'application/pdf'
+						}
+					);
 
 					const url = URL.createObjectURL(blob);
+
 					window.open(url, '_blank');
 
-					setTimeout(() => URL.revokeObjectURL(url), 1000);
+					setTimeout(() => {
+
+						URL.revokeObjectURL(url);
+
+					}, 1000);
 				}
 			});
 	}
 
-	approveDocument(doc: TravelerDocument): void {
-		this.documentService.validateDocument(doc.idDocument)
-			.subscribe(() => {
-				doc.status = 'aprobado';
+	// ==================================================
+	// FLUJO DE REVISIÓN (TEMPORAL FRONTEND)
+	// ==================================================
+
+	executeAIValidation(doc: TravelerDocument): void {
+
+		this.documentService
+			.validateDocument(doc.idDocument)
+			.subscribe({
+
+				next: () => {
+					this.loadValidation(doc);
+				},
+
+				error: err => {
+					console.error(err);
+				}
 			});
 	}
 
-	rejectDocument(doc: TravelerDocument): void {
-		this.documentService.validateDocument(doc.idDocument)
-			.subscribe(() => {
-				doc.status = 'rechazado';
+	loadValidation(doc: TravelerDocument): void {
+		this.documentService
+			.getValidationHistory(doc.idDocument)
+			.subscribe({
+				next: (history: any[]) => {
+					if (history && history.length > 0) {
+						// Buscamos en el historial la validación hecha por la IA
+						const aiValidation = history.find(v => v.source === 'IA');
+
+						if (aiValidation) {
+							// Mapeamos los datos al formato que espera tu ValidationDetail en el HTML
+							doc.validation = {
+								source: aiValidation.source,
+								// Si el backend devuelve 'result', lo usamos; si devuelve 'status' (como 'valido'), lo convertimos a Mayúsculas
+								result: (aiValidation.result || aiValidation.status || '').toUpperCase(),
+								observations: aiValidation.observations,
+								validationDate: aiValidation.validationDate || aiValidation.createdAt
+							};
+						} else {
+							// Si no hay fila de la IA en el historial, dejamos que muestre el template de espera
+							doc.validation = undefined;
+						}
+					} else {
+						doc.validation = undefined;
+					}
+				},
+				error: () => {
+					doc.validation = undefined;
+				}
 			});
 	}
+
+	startReview(doc: TravelerDocument): void {
+		this.documentService
+			.startReview(doc.idDocument)
+			.subscribe({
+
+				next: () => {
+
+					doc.status = 'en_proceso';
+
+					this.executeAIValidation(doc);
+
+				}
+
+			});
+
+	}
+
+	approveDocument(doc: TravelerDocument): void {
+		this.cancelReject();
+		this.documentService
+			.approveDocument(doc.idDocument)
+			.subscribe({
+
+				next: () => {
+					doc.status = 'aprobado';
+				}
+			});
+	}
+
+	showRejectForm(doc: TravelerDocument): void {
+		if (this.selectedRejectDocument?.idDocument === doc.idDocument) {
+			this.cancelReject();
+			return;
+		}
+
+		this.selectedRejectDocument = doc;
+		this.rejectMessage = '';
+	}
+
+	cancelReject(): void {
+		this.selectedRejectDocument = null;
+		this.rejectMessage = '';
+	}
+
+	confirmReject(): void {
+		if (!this.selectedRejectDocument) {
+			return;
+		}
+
+		this.documentService
+			.rejectDocument(
+				this.selectedRejectDocument.idDocument,
+				this.rejectMessage
+			)
+			.subscribe({
+				next: () => {
+					this.selectedRejectDocument!.status = 'rechazado';
+					this.cancelReject();
+				}
+			});
+	}
+
+	// ==================================================
+	// UTILIDADES
+	// ==================================================
 
 	getDocumentName(type: string): string {
 		switch (type) {
-			case 'cedula': return 'Cédula';
-			case 'pasaporte': return 'Pasaporte';
-			case 'visa': return 'Visa';
-			case 'vacuna': return 'Carnet de vacuna';
-			case 'permiso_menor': return 'Permiso de menor';
-			default: return 'Otro';
+			case 'cedula':
+				return 'Cédula';
+
+			case 'pasaporte':
+				return 'Pasaporte';
+
+			case 'visa':
+				return 'Visa';
+
+			case 'vacuna':
+				return 'Carnet de vacuna';
+
+			case 'permiso_menor':
+				return 'Permiso de menor';
+
+			default:
+				return 'Otro';
 		}
 	}
 
 	getStatus(status: string): string {
 		switch (status) {
-			case 'pendiente': return 'Pendiente';
-			case 'en_proceso': return 'En proceso';
-			case 'aprobado': return 'Aprobado';
-			case 'rechazado': return 'Rechazado';
-			default: return status;
+
+			case 'pendiente':
+				return 'Pendiente';
+
+			case 'en_proceso':
+				return 'En proceso';
+
+			case 'aprobado':
+				return 'Aprobado';
+
+			case 'rechazado':
+				return 'Rechazado';
+
+			default:
+				return status;
 		}
 	}
 
@@ -101,31 +276,59 @@ export class DocumentViewerComponent implements OnChanges {
 	}
 
 	getFileIcon(path: string): string {
-		const ext = path?.split('.').pop()?.toLowerCase();
+		const extension = path
+			?.split('.')
+			.pop()
+			?.toLowerCase();
 
-		switch (ext) {
-			case 'pdf': return 'fa-file-pdf';
+		switch (extension) {
+			case 'pdf':
+				return 'fa-file-pdf';
+
 			case 'jpg':
 			case 'jpeg':
 			case 'png':
+			case 'webp':
 				return 'fa-file-image';
+
 			case 'doc':
 			case 'docx':
 				return 'fa-file-word';
+
+			case 'xls':
+			case 'xlsx':
+				return 'fa-file-excel';
+
 			default:
 				return 'fa-file';
 		}
 	}
 
-	get pendingCount() {
-		return this.documents.filter(d => d.status === 'pendiente').length;
+	// ==================================================
+	// CONTADORES
+	// ==================================================
+
+	get pendingCount(): number {
+		return this.documents.filter(
+			document => document.status === 'pendiente'
+		).length;
 	}
 
-	get approvedCount() {
-		return this.documents.filter(d => d.status === 'aprobado').length;
+	get inProcessCount(): number {
+		return this.documents.filter(
+			document => document.status === 'en_proceso'
+		).length;
 	}
 
-	get rejectedCount() {
-		return this.documents.filter(d => d.status === 'rechazado').length;
+	get approvedCount(): number {
+		return this.documents.filter(
+			document => document.status === 'aprobado'
+		).length;
+	}
+
+	get rejectedCount(): number {
+		return this.documents.filter(
+			document => document.status === 'rechazado'
+		).length;
 	}
 }

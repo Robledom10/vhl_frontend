@@ -7,8 +7,6 @@ import { TravelPackage, mapToTravelPackage, mapToPackageDetail, mapToPackageDeta
 
 const QUICK_REPLIES: QuickReply[] = [
 	{ label: '📦 Ver paquetes y precios', action: 'show_packages' },
-	{ label: '🔍 Buscar paquete', action: 'filter_menu' },
-	{ label: '⚖️ Comparar paquetes', action: 'compare' },
 	{ label: '🧳 ¿Cómo reservo?', action: 'message', payload: '¿Cómo puedo reservar un paquete paso a paso?' },
 	{ label: '📋 Mis reservas', action: 'reservations' },
 	{ label: '📄 Validar mi voucher', action: 'upload' },

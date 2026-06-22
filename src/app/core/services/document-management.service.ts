@@ -3,6 +3,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
+export interface ValidationDetail {
+	source: string;
+	result: string;
+	observations: string;
+	validationDate: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -16,15 +23,16 @@ export class DocumentManagementService {
 	// DOCUMENTOS
 	// =========================
 
-	uploadDocument(
-		userId: number,
-		documentType: string,
-		file: File
-	): Observable<any> {
+	uploadDocument(userId: number, reservationId: number, documentType: string, file: File): Observable<any> {
 
 		const formData = new FormData();
 
 		formData.append('userId', userId.toString());
+
+		// Provisional.
+		// El backend actual simplemente lo ignorará si no existe.
+		formData.append('reservationId', reservationId.toString());
+
 		formData.append('documentType', documentType);
 		formData.append('file', file);
 
@@ -62,9 +70,7 @@ export class DocumentManagementService {
 	// VER / DESCARGAR DOCUMENTO
 	// =========================
 
-	downloadDocument(
-		documentId: number
-	): Observable<HttpResponse<Blob>> {
+	downloadDocument(documentId: number): Observable<HttpResponse<Blob>> {
 
 		return this.http.get(
 			`${this.apiUrl}/documents/download/${documentId}`,
@@ -73,7 +79,6 @@ export class DocumentManagementService {
 				observe: 'response'
 			}
 		);
-
 	}
 
 	// =========================
@@ -91,21 +96,45 @@ export class DocumentManagementService {
 		);
 	}
 
-	getValidationDetail(
-		documentId: number
-	): Observable<any> {
-
-		return this.http.get(
+	getValidationDetail(documentId: number): Observable<ValidationDetail> {
+		return this.http.get<ValidationDetail>(
 			`${this.apiUrl}/validation/detail/${documentId}`
+		);
+
+	}
+
+	getValidationHistory(documentId: number): Observable<any[]> {
+		return this.http.get<any[]>(
+			`${this.apiUrl}/history/${documentId}`
 		);
 	}
 
-	getValidationHistory(
-		documentId: number
-	): Observable<any[]> {
+	// =========================
+	// REVISIÓN DE DOCUMENTOS
+	// =========================
 
-		return this.http.get<any[]>(
-			`${this.apiUrl}/history/${documentId}`
+	startReview(documentId: number): Observable<any> {
+		return this.http.post(
+			`${this.apiUrl}/admin/documents/${documentId}/in-process`,
+			{}
+		);
+	}
+
+	approveDocument(documentId: number, observations?: string): Observable<any> {
+		return this.http.post(
+			`${this.apiUrl}/admin/documents/${documentId}/approve`,
+			{
+				observations: observations ?? null
+			}
+		);
+	}
+
+	rejectDocument(documentId: number, observations: string): Observable<any> {
+		return this.http.post(
+			`${this.apiUrl}/admin/documents/${documentId}/reject`,
+			{
+				observations
+			}
 		);
 	}
 
@@ -136,10 +165,7 @@ export class DocumentManagementService {
 		);
 	}
 
-	hasAcceptedContract(
-		reservationId: number,
-		userId: number
-	): Observable<boolean> {
+	hasAcceptedContract(reservationId: number, userId: number): Observable<boolean> {
 
 		const params = new HttpParams()
 			.set('reservationId', reservationId)
@@ -155,10 +181,7 @@ export class DocumentManagementService {
 	// FLUJO RESERVA
 	// =========================
 
-	canContinueReservation(
-		userId: number,
-		reservationId: number
-	): Observable<boolean> {
+	canContinueReservation(userId: number, reservationId: number): Observable<boolean> {
 
 		const params = new HttpParams()
 			.set('userId', userId)
@@ -174,10 +197,7 @@ export class DocumentManagementService {
 	// ARCHIVO VIAJERO
 	// =========================
 
-	getTravelerFile(
-		userId: number
-	): Observable<any> {
-
+	getTravelerFile(userId: number): Observable<any> {
 		return this.http.get(
 			`${this.apiUrl}/files/${userId}`
 		);
@@ -188,7 +208,6 @@ export class DocumentManagementService {
 	// =========================
 
 	getAdminDocuments(): Observable<any[]> {
-
 		return this.http.get<any[]>(
 			`${this.apiUrl}/admin/documents`
 		);

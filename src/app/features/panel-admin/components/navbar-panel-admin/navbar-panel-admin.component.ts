@@ -86,7 +86,7 @@ export class NavbarPanelAdminComponent {
 			open: false,
 			children: [
 				{
-					label: 'Dashboard operativo',
+					label: 'Asignar Viaje',
 					route: '/panel-admin/operaciones-dashboard',
 				},
 				{

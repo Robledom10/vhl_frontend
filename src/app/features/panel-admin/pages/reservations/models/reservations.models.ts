@@ -1,3 +1,5 @@
+import { Documento } from "../../profile/profile.component";
+
 export interface DatosUsuario {
 	id: number;
 	nombre: string;
@@ -21,6 +23,7 @@ export interface Reservation {
 	idUsuario: number;
 	datosUsuario?: DatosUsuario;
 	contactosEmergencia?: ContactoEmergencia[];
+	documentos?: Documento[]; 
 	destino: string;
 	personas: number;
 	fechaViaje: string;

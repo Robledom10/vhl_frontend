@@ -1,102 +1,181 @@
 <div class="modal-overlay" *ngIf="isOpen" (click)="close()">
-
 	<div class="modal-container" (click)="$event.stopPropagation()">
+		<div class="modal-scroll">
+			<div class="modal-content">
+				<!-- HEADER -->
+				<div class="modal-header">
+					<div>
+						<h2>Documentos del viajero</h2>
 
-		<!-- HEADER -->
-		<div class="modal-header">
-
-			<div>
-				<h2>Documentos del viajero</h2>
-				<p class="subtitle">
-					{{ documents.length }} documento{{ documents.length === 1 ? '' : 's' }}
-				</p>
-			</div>
-
-			<button class="close-btn" (click)="close()">
-				<i class="fa-solid fa-xmark"></i>
-			</button>
-
-		</div>
-
-		<div class="divider"></div>
-
-		<!-- RESUMEN -->
-		<div class="resume">
-			<div>
-				<strong>{{ pendingCount }}</strong>
-				Pendientes
-			</div>
-
-			<div>
-				<strong>{{ approvedCount }}</strong>
-				Aprobados
-			</div>
-
-			<div>
-				<strong>{{ rejectedCount }}</strong>
-				Rechazados
-			</div>
-		</div>
-
-		<!-- LOADING -->
-		<div class="loading" *ngIf="isLoading">
-			<i class="fa-solid fa-circle-notch fa-spin"></i>
-			Cargando documentos...
-		</div>
-
-		<!-- EMPTY -->
-		<div class="empty" *ngIf="!isLoading && documents.length === 0">
-			<i class="fa-regular fa-folder-open"></i>
-			No hay documentos registrados.
-		</div>
-
-		<!-- LISTA -->
-		<div class="document-card" *ngFor="let doc of documents">
-
-			<div class="document-left">
-
-				<div class="document-icon">
-					<i class="fa-solid" [ngClass]="getFileIcon(doc.fileUrl)"></i>
-				</div>
-
-				<div class="document-data">
-
-					<h4>{{ getDocumentName(doc.documentType) }}</h4>
-
-					<div class="file-name">
-						{{ getFileName(doc.fileUrl) }}
+						<p class="subtitle">
+							{{ documents.length }}
+							documento{{ documents.length === 1 ? '' : 's' }}
+						</p>
 					</div>
 
-					<div class="created" *ngIf="doc.createdAt">
-						Subido: {{ doc.createdAt | date:'dd/MM/yyyy HH:mm' }}
-					</div>
-
-					<span class="status" [ngClass]="doc.status">
-						{{ getStatus(doc.status) }}
-					</span>
-
+					<button class="close-btn" (click)="close()">
+						<i class="fa-solid fa-xmark"></i>
+					</button>
 				</div>
 
+				<div class="divider"></div>
+
+				<!-- RESUMEN -->
+
+				<div class="resume">
+					<div>
+						<strong>{{ pendingCount }}</strong>
+						<span>Pendientes</span>
+					</div>
+
+					<div>
+						<strong>{{ inProcessCount }}</strong>
+						<span>En proceso</span>
+					</div>
+
+					<div>
+						<strong>{{ approvedCount }}</strong>
+						<span>Aprobados</span>
+					</div>
+
+					<div>
+						<strong>{{ rejectedCount }}</strong>
+						<span>Rechazados</span>
+					</div>
+				</div>
+
+				<!-- LOADING -->
+
+				<div class="loading" *ngIf="isLoading">
+					<i class="fa-solid fa-circle-notch fa-spin"></i>
+					Cargando documentos...
+				</div>
+
+				<!-- EMPTY -->
+
+				<div class="empty" *ngIf="!isLoading && documents.length === 0">
+					<i class="fa-regular fa-folder-open"></i>
+					<p>No hay documentos registrados.</p>
+				</div>
+
+				<!-- LISTADO -->
+
+				<div class="document-card" *ngFor="let doc of documents">
+					<div class="document-left">
+
+						<div class="document-icon">
+							<i class="fa-solid" [ngClass]="getFileIcon(doc.fileUrl)">
+							</i>
+						</div>
+
+						<div class="document-data">
+							<h4>
+								{{ getDocumentName(doc.documentType) }}
+							</h4>
+
+							<div class="file-name">
+								{{ getFileName(doc.fileUrl) }}
+							</div>
+
+							<div class="created" *ngIf="doc.createdAt">
+								Subido:
+								{{ doc.createdAt | date:'dd/MM/yyyy HH:mm' }}
+							</div>
+
+							<span class="status" [ngClass]="doc.status">
+								{{ getStatus(doc.status) }}
+							</span>
+
+							<div class="ai-review" *ngIf="doc.validation; else waitingValidation">
+								<div class="ai-header">
+									<i class="fa-solid fa-robot"></i>
+									Validación automática
+								</div>
+
+								<div class="ai-item">
+									<strong>Origen:</strong>
+									{{ doc.validation.source }}
+								</div>
+
+								<div class="ai-item">
+									<strong>Resultado:</strong>
+									<span class="validation-result"
+										[ngClass]="{ 'valid': doc.validation.result === 'VALIDO' || doc.validation.result === 'VALIDO' || doc.validation.result?.toLowerCase() === 'valido',  'invalid': doc.validation.result === 'INVALIDO' || doc.validation.result?.toLowerCase() === 'invalido'  }">
+										{{ doc.validation.result }}
+									</span>
+								</div>
+
+								<div class="ai-item" *ngIf="doc.validation.observations">
+									<strong>Observaciones:</strong>
+									{{ doc.validation.observations }}
+								</div>
+
+								<div class="created">
+									Validado:
+									{{ doc.validation.validationDate | date:'dd/MM/yyyy HH:mm' }}
+								</div>
+							</div>
+
+							<ng-template #waitingValidation>
+								<div class="ai-review waiting">
+									<i class="fa-regular fa-clock"></i>
+									Pendiente de validación automática
+								</div>
+							</ng-template>
+						</div>
+					</div>
+
+					<div class="document-actions">
+						<button class="view-btn" (click)="viewDocument(doc.idDocument)">
+							<i class="fa-regular fa-eye"></i>
+							Ver
+						</button>
+
+						<button class="review-btn" *ngIf="doc.status === 'pendiente'" (click)="startReview(doc)">
+							<i class="fa-solid fa-magnifying-glass"></i>
+							Iniciar revisión
+						</button>
+
+						<ng-container *ngIf="doc.status === 'en_proceso'">
+							<button class="approve-btn" [disabled]="doc.validation?.result === 'INVALIDO'"
+								(click)="approveDocument(doc)">
+								Aprobar
+							</button>
+
+							<button class="reject-btn" (click)="showRejectForm(doc)">
+								<i class="fa-solid fa-xmark"></i>
+								Rechazar
+							</button>
+						</ng-container>
+					</div>
+
+					<!-- PANEL SOLO PARA ESTE DOCUMENTO -->
+
+					<div class="reject-panel" *ngIf="selectedRejectDocument?.idDocument === doc.idDocument">
+						<h3>
+							<i class="fa-solid fa-circle-exclamation"></i>
+							Motivo del rechazo
+						</h3>
+
+						<p>
+							Este mensaje será visible para el viajero cuando consulte el estado del documento.
+						</p>
+
+						<textarea rows="5" [(ngModel)]="rejectMessage"
+							placeholder="Escriba aquí el motivo del rechazo..."></textarea>
+
+						<div class="reject-actions">
+							<button class="cancel-btn" (click)="cancelReject()">
+								Cancelar
+							</button>
+
+							<button class="confirm-btn" [disabled]="!rejectMessage.trim()" (click)="confirmReject()">
+								Confirmar rechazo
+							</button>
+						</div>
+					</div>
+				</div>
 			</div>
-
-			<div class="document-actions">
-
-				<button class="view-btn" (click)="viewDocument(doc.idDocument)">
-					<i class="fa-regular fa-eye"></i>
-					Ver
-				</button>
-
-				<button class="approve-btn" *ngIf="doc.status !== 'aprobado'" (click)="approveDocument(doc)">
-					Aprobar
-				</button>
-
-				<button class="reject-btn" *ngIf="doc.status !== 'rechazado'" (click)="rejectDocument(doc)">
-					Rechazar
-				</button>
-
-			</div>
-
 		</div>
-
 	</div>
 </div>

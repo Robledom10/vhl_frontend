@@ -154,7 +154,7 @@
 	color: var(--color-primario);
 }
 
-.custom-select.selected .select-icon{
+.custom-select.selected .select-icon {
 	color: var(--color-primario);
 }
 
@@ -191,7 +191,8 @@
 ====================== */
 
 .file-upload {
-	height: 80px;
+	min-height: 120px;
+	height: auto;
 	border: 2px dashed #d7dce3;
 	border-radius: 16px;
 	display: flex;
@@ -201,6 +202,9 @@
 	cursor: pointer;
 	transition: .25s;
 	background: #fafafa;
+	width: 100%;
+	overflow: hidden;
+	flex-direction: column;
 }
 
 .file-upload:hover {
@@ -227,6 +231,224 @@
 .file-info small {
 	color: #6b7280;
 	font-size: 12px;
+}
+
+/* ======================
+   SELECTED FILES (REFORMADO)
+====================== */
+
+.selected-files {
+	width: 100%;
+}
+
+.selected-files-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 6px 10px;
+	margin-bottom: 10px;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: .5px;
+	text-transform: uppercase;
+	color: #6b7280;
+	background: rgba(63, 162, 219, 0.06);
+	border: 1px solid rgba(63, 162, 219, 0.15);
+	border-radius: 12px;
+	transition: all .2s ease;
+}
+
+.file-count {
+	background: var(--color-primario);
+	color: white;
+	font-size: 11px;
+	font-weight: 700;
+	padding: 3px 10px;
+	border-radius: 999px;
+	min-width: 26px;
+	text-align: center;
+}
+
+.selected-files-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	max-height: 220px;
+	overflow-y: auto;
+	padding-right: 6px;
+	scrollbar-width: thin;
+	scrollbar-color: #b5e5ff transparent;
+}
+
+/* Chrome scroll */
+.selected-files-list::-webkit-scrollbar {
+	width: 6px;
+}
+
+.selected-files-list::-webkit-scrollbar-track {
+	background: transparent;
+	border-radius: 10px;
+}
+
+.selected-files-list::-webkit-scrollbar-thumb {
+	background: #b5e5ff;
+	border-radius: 10px;
+}
+
+.selected-files-list::-webkit-scrollbar-thumb:hover {
+	background: #87d3ff;
+}
+
+/* CARD */
+.file-card {
+	display: flex;
+	justify-content: space-between;
+	padding: 14px;
+	background: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 16px;
+	transition: all .2s ease;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.file-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 20px rgba(0, 0, 0, .06);
+}
+
+/* LEFT SIDE */
+.file-left {
+	display: flex;
+	gap: 12px;
+	min-width: 0;
+	flex: 1;
+}
+
+.file-left i {
+	color: var(--color-primario);
+	font-size: 18px;
+	margin-top: 4px;
+}
+
+/* TEXT */
+.file-info {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 0;
+	flex: 1;
+}
+
+.file-name {
+	font-size: 14px;
+	font-weight: 600;
+	color: #1f2937;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 100%;
+}
+
+.file-info small {
+	font-size: 12px;
+	color: #6b7280;
+}
+
+/* PROGRESS BAR */
+.progress-bar {
+	width: 180px;
+	height: 6px;
+	background: #e5e7eb;
+	border-radius: 10px;
+	overflow: hidden;
+	margin-top: 6px;
+}
+
+.progress-fill {
+	height: 100%;
+	width: 0%;
+	background: var(--color-primario);
+	transition: width .2s ease;
+}
+
+/* STATUS */
+.status {
+	font-size: 11px;
+	text-transform: uppercase;
+	font-weight: 600;
+	margin-top: 4px;
+}
+
+.status.uploading {
+	color: #f59e0b;
+}
+
+.status.success {
+	color: #10b981;
+}
+
+.status.error {
+	color: #ef4444;
+}
+
+/* REMOVE */
+.remove-btn {
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	padding: 6px;
+	border-radius: 8px;
+}
+
+.remove-btn i {
+	color: #ef4444;
+	font-size: 14px;
+}
+
+.empty-upload {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	gap: 8px;
+	padding: 25px 10px;
+	color: #6b7280;
+}
+
+.empty-upload i {
+	font-size: 32px;
+	color: var(--color-primario);
+}
+
+.empty-upload strong {
+	font-size: 15px;
+	color: #1f2937;
+}
+
+.empty-upload small {
+	font-size: 12px;
+}
+
+.file-placeholder {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.file-placeholder strong {
+	font-size: 15px;
+	color: #1f2937;
+}
+
+.file-placeholder small {
+	color: #6b7280;
+}
+
+.btn-upload:disabled {
+	opacity: .7;
+	cursor: not-allowed;
 }
 
 .buttons {

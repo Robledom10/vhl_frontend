@@ -55,26 +55,72 @@
 		<!-- ARCHIVO -->
 		<div class="form-group">
 
-			<input type="file" #fileInput (change)="onFileSelected($event)" hidden>
-
+			<input type="file" #fileInput multiple accept=".pdf,.jpg,.jpeg,.png" (change)="onFileSelected($event)"
+				hidden>
 			<div class="file-upload" (click)="fileInput.click()">
-				<i class="fa-solid fa-cloud-arrow-up"></i>
 
-				<div class="file-info">
-					<span class="file-name">
-						{{ selectedFile?.name || 'Seleccionar archivo' }} </span>
+				<div class="selected-files" *ngIf="uploadedFiles.length; else emptyState">
 
-					<small> PDF, JPG o PNG</small>
+					<div class="selected-files-header">
+						<span>Archivos</span>
+						<span class="file-count">{{ uploadedFiles.length }}</span>
+					</div>
+
+					<div class="selected-files-list">
+						<div class="file-card" *ngFor="let item of uploadedFiles; let i = index">
+							<div class="file-left">
+
+								<i class="fa-solid fa-file"></i>
+
+								<div class="file-info">
+									<span class="file-name">{{ item.file.name }}</span>
+
+									<small>
+										{{ item.file.size / 1024 / 1024 | number:'1.0-2' }} MB
+									</small>
+
+									<!-- PROGRESS BAR -->
+									<div class="progress-bar">
+										<div class="progress-fill" [style.width.%]="item.progress">
+										</div>
+									</div>
+
+									<small class="status" [class.uploading]="item.status==='uploading'"
+										[class.success]="item.status==='success'" [class.error]="item.status==='error'">
+										{{ item.status }}
+									</small>
+								</div>
+							</div>
+
+							<button class="remove-btn" (click)="removeFile(i); $event.stopPropagation()"
+								[disabled]="isUploading">
+								<i class="fa-solid fa-xmark"></i>
+							</button>
+						</div>
+					</div>
 				</div>
+
+				<ng-template #emptyState>
+					<div class="empty-upload">
+						<i class="fa-solid fa-cloud-arrow-up"></i>
+
+						<strong>Seleccionar archivos</strong>
+
+						<small>
+							PDF, JPG, JPEG, PNG (Máx 10 MB)
+						</small>
+					</div>
+				</ng-template>
 			</div>
 		</div>
 
 		<div class="buttons">
-			<button class="btn-cancel" (click)="closeModal()">
+			<button class="btn-cancel" [disabled]="isUploading" (click)="closeModal()">
 				Cancelar
 			</button>
 
-			<button class="btn-upload" (click)="upload()">
+			<button class="btn-upload" [disabled]="!uploadedFiles.length || !selectedType || isUploading"
+				(click)="upload()">
 				Subir documento
 			</button>
 		</div>
