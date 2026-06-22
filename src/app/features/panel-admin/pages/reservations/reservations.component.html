@@ -139,7 +139,6 @@
 
 				<tr *ngIf="isLoading">
 					<td colspan="7" class="empty-state">
-						<i class="fa-solid fa-circle-notch fa-spin"></i>
 						<span>Cargando reservas...</span>
 					</td>
 				</tr>
@@ -148,7 +147,6 @@
 					<td colspan="7" class="empty-state empty-state--error">
 						<i class="fa-solid fa-triangle-exclamation"></i>
 						<span>No se pudieron cargar las reservas</span>
-						<button class="retry-btn" (click)="loadReservations()">Reintentar</button>
 					</td>
 				</tr>
 

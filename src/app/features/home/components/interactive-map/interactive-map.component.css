@@ -75,7 +75,10 @@
 	position: relative;
 	z-index: 100;
 }
-
+.dropdown-menu {
+    position: absolute;
+    z-index: 10001;
+}
 .destination-trigger {
 	position: relative;
 	overflow: hidden;
@@ -92,6 +95,7 @@
 	cursor: pointer;
 	transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
+
 
 .destination-trigger::after {
 	content: '';
