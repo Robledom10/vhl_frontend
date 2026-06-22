@@ -76,7 +76,10 @@
   position: relative;
   z-index: 100;
 }
-
+.dropdown-menu {
+    position: absolute;
+    z-index: 10001;
+}
 .destination-trigger {
   position: relative;
   overflow: hidden;
@@ -93,6 +96,7 @@
   cursor: pointer;
   transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
+
 
 .destination-trigger::after {
   content: '';
@@ -412,16 +416,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.521);
   backdrop-filter: blur(8px);
   cursor: pointer;
-  color: var(--color-texto-principal);
+  color: transparent;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .photo-nav:hover {
-  background: #ffffff;
   transform: translateY(-50%) scale(1.1);
   box-shadow: 0 4px 14px rgba(63, 162, 219, 0.18);
 }

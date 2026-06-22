@@ -1,5 +1,5 @@
 /* =========================================================
-   OVERLAY
+   MODAL OVERLAY
 ========================================================= */
 
 .modal-overlay {
@@ -16,44 +16,68 @@
 }
 
 /* =========================================================
-   PANEL
+   MODAL CONTAINER
 ========================================================= */
 
-.modal-panel {
+.modal-container {
 	width: 100%;
 	max-width: 700px;
 	max-height: 92vh;
 	background: #fff;
 	border-radius: 54px;
 	overflow: hidden;
+	position: relative;
 	display: flex;
 	flex-direction: column;
 }
 
 /* =========================================================
-   STEPPER
+   MODAL SCROLL
 ========================================================= */
 
-.stepper {
+.modal-scroll {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+	scrollbar-gutter: stable;
+}
+
+.modal-scroll::-webkit-scrollbar { width: 6px; }
+.modal-scroll::-webkit-scrollbar-track { background: transparent; }
+.modal-scroll::-webkit-scrollbar-thumb { background: #b5e5ff; border-radius: 999px; }
+.modal-scroll::-webkit-scrollbar-thumb:hover { background: #87d3ff; }
+
+/* =========================================================
+   MODAL CONTENT
+========================================================= */
+
+.modal-content {
+	padding: 40px 36px 30px 36px;
+}
+
+/* =========================================================
+   STEPS
+========================================================= */
+
+.steps-wrapper {
 	display: flex;
 	align-items: flex-start;
 	justify-content: center;
-	padding: 32px 40px 0;
-	gap: 0;
-	flex-shrink: 0;
+	margin-bottom: 40px;
 }
 
-.st {
+.step-item {
+	width: 90px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	text-align: center;
-	width: 80px;
 }
 
-.sc {
-	width: 34px;
-	height: 34px;
+.step {
+	width: 35px;
+	height: 35px;
 	border-radius: 50%;
 	border: 2px solid #d8d8d8;
 	background: #fff;
@@ -61,100 +85,100 @@
 	align-items: center;
 	justify-content: center;
 	font-family: "Outfit", sans-serif;
-	font-size: 13px;
+	font-size: 14px;
 	font-weight: 600;
 	color: #b2b2b2;
 	transition: 0.25s ease;
 }
 
-.st.active .sc {
+.step.active {
 	border-color: var(--color-primario);
 	background: rgba(63, 162, 219, 0.08);
 	color: var(--color-primario);
 }
 
-.st.done .sc {
-	border-color: var(--color-primario);
-	background: var(--color-primario);
-	color: #fff;
-}
-
-.sl {
+.line {
 	width: 60px;
 	height: 2px;
 	background: #e6e6e6;
-	margin-top: 16px;
-	flex-shrink: 0;
+	margin-top: 22px;
 	transition: 0.25s ease;
 }
 
-.sl.filled {
-	background: var(--color-primario);
-}
+.line.active { background: var(--color-primario); }
 
-.step-label {
-	margin-top: 8px;
-	font-size: 11px;
-	line-height: 1.3;
+.step-item p {
+	margin-top: 12px;
+	font-size: 12px;
+	line-height: 1.4;
 	font-family: "Outfit", sans-serif;
 	color: #b0b0b0;
-	padding-bottom: 18px;
 }
 
-.st.active .step-label,
-.st.done .step-label {
+.step-item p.active {
 	color: var(--color-primario);
 	font-weight: 500;
 }
 
 /* =========================================================
-   FORM BODY
+   TITLE
 ========================================================= */
 
-.form-body {
-	flex: 1;
-	overflow-y: auto;
-	padding: 28px 36px 0;
-	scrollbar-width: thin;
-	scrollbar-color: #b5e5ff transparent;
-}
-
-.form-body::-webkit-scrollbar { width: 6px; }
-.form-body::-webkit-scrollbar-track { background: transparent; }
-.form-body::-webkit-scrollbar-thumb { background: #b5e5ff; border-radius: 999px; }
-.form-body::-webkit-scrollbar-thumb:hover { background: #87d3ff; }
-
-.form-title {
+.modal-title {
 	text-align: center;
-	margin-bottom: 18px;
-}
-
-.form-title h2 {
-	font-size: 26px;
+	font-size: var(--titulos-medianos);
 	font-weight: 700;
 	font-family: "Outfit", sans-serif;
 	color: #1e1e1e;
-	margin: 0;
+	margin-bottom: 42px;
 }
 
-.form-title h2 span {
-	color: var(--color-primario);
-}
+.modal-title span { color: var(--color-primario); }
 
 .divider {
 	width: 100%;
 	height: 1px;
 	background: #ececec;
-	margin-bottom: 28px;
-}
-
-.step-content {
-	padding-bottom: 28px;
+	margin-bottom: 36px;
 }
 
 /* =========================================================
-   FIELDS GRID
+   ERROR BANNER
 ========================================================= */
+
+.save-error-banner {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 14px 18px;
+	border-radius: 18px;
+	background: rgba(255, 59, 59, 0.08);
+	color: #d32f2f;
+	font-weight: 600;
+	margin-bottom: 18px;
+	font-family: "Outfit", sans-serif;
+	font-size: 13px;
+}
+
+.save-error-banner i { font-size: 18px; }
+.save-error-banner p { margin: 0; }
+
+/* =========================================================
+   STEP CONTENT / GRID
+========================================================= */
+
+.step-content {
+	display: flex;
+	flex-direction: column;
+	gap: 34px;
+}
+
+/* form-row: layout de los campos del cliente (fila superior del step 1) */
+.form-row {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	gap: 26px 20px;
+}
 
 .fields-grid {
 	display: grid;
@@ -162,123 +186,75 @@
 	gap: 26px 20px;
 }
 
-.field-group {
+.form-group {
 	position: relative;
 	min-width: 0;
+	width: 100%;
 }
 
-.field-group.full {
-	grid-column: 1 / -1;
-}
-
-.field-group.half {
-	grid-column: span 1;
-}
+.form-group.full { grid-column: 1 / -1; }
+.form-group.half { grid-column: span 1; }
 
 /* =========================================================
-   FLOATING LABEL
+   INPUTS — scoped al modal para no afectar otros componentes
 ========================================================= */
 
-.field-group label {
-	position: absolute;
-	left: 16px;
-	top: 50%;
-	transform: translateY(-50%);
-	padding: 0 5px;
-	background: #fff;
-	font-size: var(--inputs);
-	font-family: "Outfit", sans-serif;
-	color: var(--color-texto-secundario);
-	pointer-events: none;
-	transition: all 0.22s ease;
-	border-radius: 6px;
-	white-space: nowrap;
-	z-index: 1;
-}
-
-/* Textarea: la label arranca un poco más abajo */
-.field-group textarea + label {
-	top: 22px;
-	transform: none;
-}
-
-/* Label activa (focus o con valor) */
-.field-group input:focus + label,
-.field-group input:not(:placeholder-shown) + label,
-.field-group textarea:focus + label,
-.field-group textarea:not(:placeholder-shown) + label,
-.field-group select:focus + label,
-.field-group select:valid + label {
-	top: 0;
-	transform: translateY(-50%);
-	font-size: 11px;
-	color: var(--color-primario);
-}
-
-.field-group .req {
-	color: var(--color-error);
-}
-
-/* =========================================================
-   INPUTS
-========================================================= */
-
-.field-group input:not([type="checkbox"]):not([type="radio"]),
-.field-group textarea,
-.field-group select {
+.modal-overlay .form-group input:not([type="checkbox"]):not([type="radio"]),
+.modal-overlay .form-group textarea,
+.modal-overlay .form-group select {
 	width: 100%;
 	border: 1px solid #e5e5e5;
 	background: #fff;
 	border-radius: 999px;
 	padding: 13px 16px;
-	font-size: var(--inputs);
+	font-size: var(--inputs, 14px);
 	font-family: "Outfit", sans-serif;
 	color: #1f1f1f;
 	outline: none;
-	transition: 0.22s ease;
-	display: block;
+	transition: 0.25s ease;
 	box-sizing: border-box;
 }
 
-.field-group textarea {
-	border-radius: 20px;
-	resize: none;
-	padding-top: 22px;
+.modal-overlay .form-group textarea {
 	min-height: 100px;
+	border-radius: 24px;
+	resize: none;
+	padding-top: 26px;
 }
 
-.field-group select {
+.modal-overlay .form-group select {
 	appearance: none;
 	cursor: pointer;
 	padding-right: 36px;
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a0a8b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
 	background-repeat: no-repeat;
 	background-position: right 14px center;
+	background-color: #fff;
 }
 
-/* Placeholder invisible para floating label */
-.field-group input::placeholder,
-.field-group textarea::placeholder {
+.modal-overlay .form-group input::placeholder,
+.modal-overlay .form-group textarea::placeholder {
 	color: transparent;
 }
 
-/* Focus y con valor */
-.field-group input:not([type="checkbox"]):not([type="radio"]):focus,
-.field-group textarea:focus,
-.field-group select:focus {
+.modal-overlay .form-group input:not([type="checkbox"]):not([type="radio"]):focus,
+.modal-overlay .form-group textarea:focus,
+.modal-overlay .form-group select:focus {
 	border-color: var(--color-primario);
 	box-shadow: 0 0 0 4px rgba(63, 162, 219, 0.08);
 }
 
-.field-group input:not([type="checkbox"]):not([type="radio"]):not(:placeholder-shown),
-.field-group textarea:not(:placeholder-shown),
-.field-group select:valid {
+.modal-overlay .form-group input:not([type="checkbox"]):not([type="radio"]):not(:placeholder-shown),
+.modal-overlay .form-group textarea:not(:placeholder-shown),
+.modal-overlay .form-group select:valid {
 	border-color: var(--color-primario);
 	box-shadow: 0 0 0 4px rgba(63, 162, 219, 0.08);
 }
 
-/* Campo solo lectura */
-.readonly-field {
+/* Campos de solo lectura */
+.modal-overlay .form-group .readonly-field,
+.modal-overlay .form-group input[readonly],
+.modal-overlay .form-group input:disabled {
 	border-color: #e5e5e5 !important;
 	background: #f7f9fc !important;
 	box-shadow: none !important;
@@ -287,52 +263,164 @@
 }
 
 /* =========================================================
-   ERRORS
+   FLOATING LABEL
 ========================================================= */
 
-.field-group input.ng-invalid.ng-touched,
-.field-group textarea.ng-invalid.ng-touched,
-.field-group select.ng-invalid.ng-touched {
-	border-color: var(--color-error);
-	box-shadow: none;
+.form-group label {
+	position: absolute;
+	left: 16px;
+	top: 50%;
+	transform: translateY(-50%);
+	padding: 0 6px;
+	background: #fff;
+	font-size: var(--inputs, 14px);
+	font-family: "Outfit", sans-serif;
+	color: var(--color-texto-secundario, #9aa0b2);
+	pointer-events: none;
+	transition: all 0.25s ease;
+	border-radius: 8px;
+	white-space: nowrap;
 }
 
-.field-group input.ng-invalid.ng-touched + label,
-.field-group textarea.ng-invalid.ng-touched + label,
-.field-group select.ng-invalid.ng-touched + label {
-	color: var(--color-error);
+.form-group textarea + label {
+	top: 24px;
+	transform: none;
+}
+
+/* Label flota cuando el campo tiene contenido o está enfocado */
+.modal-overlay .form-group input:focus + label,
+.modal-overlay .form-group input:not(:placeholder-shown) + label,
+.modal-overlay .form-group textarea:focus + label,
+.modal-overlay .form-group textarea:not(:placeholder-shown) + label,
+.modal-overlay .form-group select:focus + label,
+.modal-overlay .form-group select:valid + label {
+	top: 0;
+	transform: translateY(-50%);
+	font-size: 11px;
+	color: var(--color-primario);
+	background: #fff;
+}
+
+/* Label siempre flotado en campos readonly/disabled */
+.modal-overlay .form-group input[readonly] + label,
+.modal-overlay .form-group input:disabled + label {
+	top: 0;
+	transform: translateY(-50%);
+	font-size: 11px;
+	color: var(--color-primario);
+	background: #f7f9fc;
 }
 
 /* =========================================================
-   ACOMPAÑANTES
+   MENSAJES DE ERROR Y ESTADO
 ========================================================= */
 
-.companions-section {
-	margin-top: 24px;
+.modal-overlay .form-group .error-msg {
+	position: absolute;
+	left: 16px;
+	top: 46px;
+	color: var(--color-error, #e53935);
+	font-size: 11px;
+	font-weight: 400;
+	line-height: 1.3;
 }
+
+.modal-overlay .form-group .status-msg {
+	position: absolute;
+	left: 16px;
+	top: 46px;
+	color: #666;
+	font-size: 11px;
+}
+
+/* Campos con error de Angular */
+.modal-overlay .form-group input.ng-invalid.ng-touched,
+.modal-overlay .form-group select.ng-invalid.ng-touched,
+.modal-overlay .form-group input.invalid,
+.modal-overlay .form-group select.invalid {
+	border-color: var(--color-error, #e53935) !important;
+	box-shadow: none !important;
+}
+
+.modal-overlay .form-group input.ng-invalid.ng-touched + label,
+.modal-overlay .form-group select.ng-invalid.ng-touched + label,
+.modal-overlay .form-group input.invalid + label,
+.modal-overlay .form-group select.invalid + label {
+	color: var(--color-error, #e53935);
+}
+
+.field-hint-error {
+	position: static !important;
+	display: block;
+	margin-top: 8px;
+	padding-left: 16px;
+	color: var(--color-error, #e53935);
+	font-size: 11px;
+}
+
+.retry-link {
+	background: none;
+	border: none;
+	color: var(--color-error, #e53935);
+	cursor: pointer;
+	text-decoration: underline;
+	padding: 0;
+	font-size: 11px;
+	margin-left: 4px;
+	font-family: "Outfit", sans-serif;
+}
+
+/* =========================================================
+   BUSCADOR DE CLIENTE — indicador visual
+========================================================= */
+
+.client-search-wrapper {
+	position: relative;
+}
+
+.client-found-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin-top: 6px;
+	margin-left: 16px;
+	font-size: 11px;
+	color: #2e7d32;
+	font-family: "Outfit", sans-serif;
+}
+
+.client-found-badge i { font-size: 12px; }
+
+/* =========================================================
+   CHECKBOX SECTION
+========================================================= */
+
+.checkbox-section { margin-top: 10px; }
+
+.checkbox-title {
+	margin: 0 0 22px 0;
+	font-size: 18px;
+	font-weight: 600;
+	font-family: "Outfit", sans-serif;
+	color: #1f1f1f;
+}
+
+/* =========================================================
+   ACOMPAÑANTES / CONTACTOS
+========================================================= */
 
 .companions-header {
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	margin-bottom: 16px;
-	padding: 12px 18px;
-	border: 1px solid rgba(63, 162, 219, 0.20);
-	border-radius: 999px;
-	background: rgba(63, 162, 219, 0.05);
+	margin-bottom: 22px;
 }
 
-.companions-header span {
-	font-family: "Outfit", sans-serif;
-	font-size: var(--inputs);
-	font-weight: 600;
-	color: #3a4055;
-	flex: 1;
-}
+.companions-header .checkbox-title { margin: 0; flex: 1; }
 
 .companions-badge {
-	width: 22px;
-	height: 22px;
+	width: 24px;
+	height: 24px;
 	background: var(--color-primario);
 	color: #fff;
 	border-radius: 50%;
@@ -342,20 +430,24 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	flex-shrink: 0;
 }
 
 .companion-card {
 	background: #fafcff;
+	border: 1px solid #e8f0f8;
 	border-radius: 28px;
 	padding: 22px;
 	margin-bottom: 16px;
-	border: 1px solid #e8f0f8;
+	transition: border-color 0.2s ease;
 }
+
+.companion-card:focus-within { border-color: rgba(63, 162, 219, 0.35); }
 
 .companion-title {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 10px;
 	margin-bottom: 18px;
 }
 
@@ -371,14 +463,61 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	flex-shrink: 0;
 }
 
 .companion-title span {
 	font-family: "Outfit", sans-serif;
-	font-size: var(--inputs);
+	font-size: var(--inputs, 14px);
 	font-weight: 600;
 	color: #3a4055;
 }
+
+.emergency-num { background: rgba(255, 59, 59, 0.12); color: #e53935; }
+.emergency-card .remove-list-btn { margin-left: auto; }
+
+/* =========================================================
+   BOTÓN ELIMINAR
+========================================================= */
+
+.remove-list-btn {
+	width: 36px;
+	height: 36px;
+	border: none;
+	border-radius: 50%;
+	background: rgba(255, 59, 59, 0.10);
+	color: #ff4b4b;
+	cursor: pointer;
+	flex-shrink: 0;
+	transition: all 0.25s ease;
+}
+
+.remove-list-btn:hover { background: #ff3b3b; color: #fff; transform: scale(1.05); }
+.remove-list-btn i { font-size: 13px; }
+
+/* =========================================================
+   ADD BUTTON
+========================================================= */
+
+.add-option {
+	margin-top: 4px;
+	height: 48px;
+	padding: 0 18px;
+	border-radius: 999px;
+	background: rgba(63, 162, 219, 0.08);
+	border: none;
+	color: var(--color-primario);
+	transition: all 0.25s ease;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	cursor: pointer;
+	font-family: "Outfit", sans-serif;
+	font-size: var(--inputs, 14px);
+}
+
+.add-option:hover { background: var(--color-primario); color: white; transform: translateY(-1px); }
+.add-option i { font-size: 13px; }
 
 /* =========================================================
    RESUMEN
@@ -386,34 +525,18 @@
 
 .summary-card {
 	background: #fafcff;
+	border: 1px solid #e8f0f8;
 	border-radius: 28px;
 	padding: 24px;
-	margin-top: 20px;
-	border: 1px solid #e8f0f8;
-}
-
-.summary-title {
-	margin-bottom: 18px;
-}
-
-.summary-title span {
-	font-family: "Outfit", sans-serif;
-	font-size: var(--inputs);
-	font-weight: 600;
-	color: #3a4055;
 }
 
 .summary-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 12px;
+	gap: 14px;
 }
 
-.summary-item {
-	display: flex;
-	flex-direction: column;
-	gap: 3px;
-}
+.summary-item { display: flex; flex-direction: column; gap: 3px; }
 
 .summary-item.full {
 	grid-column: 1 / -1;
@@ -433,7 +556,7 @@
 
 .s-value {
 	font-family: "Outfit", sans-serif;
-	font-size: var(--inputs);
+	font-size: var(--inputs, 14px);
 	color: #2a2d3a;
 	font-weight: 500;
 }
@@ -448,27 +571,11 @@
    CONFIRMACIONES
 ========================================================= */
 
-.confirmations {
-	margin-top: 20px;
-	margin-bottom: 4px;
-}
-
-.confirm-title {
-	margin-bottom: 14px;
-}
-
-.confirm-title span {
-	font-family: "Outfit", sans-serif;
-	font-size: var(--inputs);
-	font-weight: 600;
-	color: #3a4055;
-}
-
 .check-item {
 	display: flex;
 	align-items: center;
-	gap: 10px;
-	margin-bottom: 12px;
+	gap: 12px;
+	margin-bottom: 14px;
 	cursor: pointer;
 }
 
@@ -486,244 +593,96 @@
 	font-size: 10px;
 }
 
-.custom-check.active {
-	background: var(--color-primario);
-	border-color: var(--color-primario);
-	color: #fff;
-}
+.custom-check.active { background: var(--color-primario); border-color: var(--color-primario); color: #fff; }
 
 .check-item span {
 	font-family: "Outfit", sans-serif;
-	font-size: var(--inputs);
+	font-size: var(--inputs, 14px);
 	color: #5a6070;
 }
 
-.check-item span a {
-	color: var(--color-primario);
-	text-decoration: none;
-	font-weight: 500;
-}
+.check-item span a { color: var(--color-primario); text-decoration: none; font-weight: 500; }
 
 .check-error {
+	display: block;
 	font-family: "Outfit", sans-serif;
 	font-size: 12px;
-	color: var(--color-error);
-	margin-top: 6px;
+	color: var(--color-error, #e53935);
+	margin-top: 4px;
 }
 
 /* =========================================================
-   FOOTER
+   BUTTONS
 ========================================================= */
 
-.modal-footer {
+.buttons {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 20px 36px 28px;
-	border-top: 1px solid #ececec;
-	gap: 12px;
 	flex-shrink: 0;
+	padding: 20px 36px 28px 36px;
+	border-top: 1px solid #ececec;
+	background: #fff;
 }
 
-.footer-right {
-	display: flex;
-	gap: 12px;
-}
+.right-buttons { display: flex; align-items: center; gap: 14px; }
 
-.btn-cancel,
-.btn-prev,
-.btn-next,
-.btn-confirm {
+.buttons button {
 	height: 48px;
 	padding: 0 25px;
 	border: none;
 	border-radius: 999px;
 	cursor: pointer;
+	transition: 0.25s ease;
 	font-family: "Outfit", sans-serif;
-	font-size: var(--inputs);
-	font-weight: 600;
-	transition: 0.22s ease;
+	font-size: var(--inputs, 14px);
 }
 
-.btn-cancel,
-.btn-prev,
-.btn-next,
-.btn-confirm {
-	display: inline-flex;
-	align-items: center;
-	gap: 8px;
-}
+.buttons button:hover { transform: translateY(-1px); }
+.buttons button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-.btn-cancel {
-	background: rgba(255, 59, 59, 0.10);
-	color: #ff3b3b;
-}
+.cancel { background: #ff3434; color: #fff; }
+.prev { background: #9c9c9c; color: #fff; }
+.next, .save { background: var(--color-primario); color: #fff; }
 
-.btn-cancel:hover {
-	background: rgba(255, 59, 59, 0.20);
-	transform: translateY(-1px);
-}
+.next:hover,
+.save:hover:not(:disabled) { box-shadow: 0 10px 20px rgba(63, 162, 219, 0.22); }
 
-.btn-prev {
-	background: #f3f5f9;
-	color: #8090a8;
-	border: 1px solid #e5e5e5;
-}
-
-.btn-prev:hover {
-	border-color: var(--color-primario);
-	color: var(--color-primario);
-	transform: translateY(-1px);
-}
-
-.btn-next {
-	background: var(--color-primario);
-	color: #fff;
-}
-
-.btn-next:hover {
-	box-shadow: 0 10px 20px rgba(63, 162, 219, 0.22);
-	transform: translateY(-1px);
-}
-
-.btn-confirm {
-	background: linear-gradient(135deg, #2dce89, #20b070);
-	color: #fff;
-}
-
-.btn-confirm:hover:not(:disabled) {
-	box-shadow: 0 10px 20px rgba(45, 206, 137, 0.25);
-	transform: translateY(-1px);
-}
-
-.btn-confirm:disabled,
-.btn-prev:disabled,
-.btn-cancel:disabled {
-	opacity: 0.6;
-	cursor: not-allowed;
-}
-
-.save-error {
-	color: #e53e3e;
-	font-size: 13px;
-	margin-right: 12px;
-}
+.save i.fa-spinner { margin-right: 10px; }
 
 /* =========================================================
-   CONTACTOS DE EMERGENCIA — BOTONES
+   ANIMATIONS
 ========================================================= */
 
-.add-companion-btn {
-	display: inline-flex;
-	align-items: center;
-	gap: 8px;
-	height: 44px;
-	padding: 0 22px;
-	border-radius: 999px;
-	border: none;
-	background: var(--color-primario);
-	color: #fff;
-	font-family: "Outfit", sans-serif;
-	font-size: var(--inputs);
-	font-weight: 500;
-	cursor: pointer;
-	margin-top: 4px;
-	transition: all 0.22s ease;
-}
-
-.add-companion-btn:hover {
-	box-shadow: 0 8px 20px rgba(63, 162, 219, 0.25);
-	transform: translateY(-1px);
-}
-
-.remove-contact-btn {
-	margin-left: auto;
-	width: 34px;
-	height: 34px;
-	border-radius: 50%;
-	border: none;
-	background: rgba(255, 59, 59, 0.12);
-	color: #ff3b3b;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	font-size: 13px;
-	flex-shrink: 0;
-	transition: all 0.2s ease;
-}
-
-.remove-contact-btn:hover {
-	background: rgba(255, 59, 59, 0.22);
-	transform: scale(1.08);
-}
-
-.emergency-num-icon {
-	background: rgba(255, 107, 107, 0.12) !important;
-	color: #e53935 !important;
-}
-
-/* =========================================================
-   ANIMACIONES
-========================================================= */
-
-@keyframes fadeIn {
-	from { opacity: 0; }
-	to   { opacity: 1; }
-}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 /* =========================================================
    RESPONSIVE
 ========================================================= */
 
-@media (max-width: 768px) {
-	.modal-panel {
-		border-radius: 28px;
-	}
-
-	.form-body {
-		padding: 22px 22px 0;
-	}
-
-	.stepper {
-		padding: 24px 22px 0;
-		transform: scale(0.9);
-		transform-origin: center top;
-	}
-
-	.fields-grid {
-		grid-template-columns: minmax(0, 1fr);
-	}
-
-	.field-group.half {
-		grid-column: 1 / -1;
-	}
-
-	.modal-footer {
-		flex-direction: column;
-		padding: 16px 22px 22px;
-	}
-
-	.footer-right {
-		width: 100%;
-		flex-direction: column;
-	}
-
-	.btn-cancel,
-	.btn-prev,
-	.btn-next,
-	.btn-confirm {
-		width: 100%;
-		justify-content: center;
-	}
+@media (max-width: 900px) {
+	.modal-container { border-radius: 28px; }
+	.modal-content { padding: 28px 24px; }
+	.line { width: 50px; }
+	.modal-title { font-size: 30px; }
+	.checkbox-title { font-size: 17px; }
 }
 
-@media (max-width: 480px) {
-	.modal-overlay {
-		padding: 14px;
-	}
+@media (max-width: 600px) {
+	.modal-overlay { padding: 14px; }
+	.modal-container { border-radius: 20px; }
+	.modal-content { padding: 22px 18px 26px; }
+	.steps-wrapper { transform: scale(0.82); margin-bottom: 24px; }
 
-	.modal-panel {
-		border-radius: 20px;
-	}
+	.fields-grid,
+	.form-row { grid-template-columns: minmax(0, 1fr); }
+
+	.form-group.half { grid-column: 1 / -1; }
+	.summary-grid { grid-template-columns: 1fr; }
+
+	.buttons { flex-direction: column; gap: 14px; padding: 16px 22px 22px; }
+	.right-buttons { width: 100%; flex-direction: column; }
+	.buttons button { width: 100%; }
+	.modal-title { font-size: 26px; }
 }
