@@ -9,6 +9,7 @@ import { FooterComponent } from './footer/footer.component';
 import { PackageDetailSheetComponent } from './package-detail-sheet/package-detail-sheet.component';
 import { CustomCalendarComponent } from './custom-calendar/custom-calendar.component';
 import { ReservationWizardComponent } from './reservation-wizard/reservation-wizard.component';
+import { StatsSectionComponent } from './stats-section/stats-section.component';
 
 @NgModule({
 	declarations: [
@@ -18,7 +19,8 @@ import { ReservationWizardComponent } from './reservation-wizard/reservation-wiz
 		FooterComponent,
 		PackageDetailSheetComponent,
 		CustomCalendarComponent,
-		ReservationWizardComponent
+		ReservationWizardComponent,
+  StatsSectionComponent
 	],
 	imports: [
 		CommonModule,

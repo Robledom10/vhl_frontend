@@ -37,12 +37,14 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'quindio',
       name: 'Hernando Lopera',
       label: 'Calarca, Quindío',
-      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780082818/logo_mejorado_qh8dck.png',
+      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1780082818/logo_mejorado_qh8dck.png',
       staticImages: [
-        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780082818/logo_mejorado_qh8dck.png',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780084272/hl_mejorada_ymwkxn.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1780082818/logo_mejorado_qh8dck.png',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1777919861/D%C3%ADa3-75_t3mdvr.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1780084272/hl_mejorada_ymwkxn.jpg',
+      
       ],
-      description: 'El corazón del Eje Cafetero. Valle del Cocora, palmas de cera, fincas cafeteras y el encanto de sus pueblos patrimonio.',
+      description: 'Tu punto de partida hacia aventuras inolvidables; expertos en diseñar excursiones personalizadas y grandes viajes para descubrir Colombia y el mundo.',
       lat: 4.5318,
       lng: -75.6442,
       placeId: 'ChIJx8bT4x7Koo8R7x4X0sJfR5M',
@@ -54,12 +56,14 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'santamarta',
       name: 'Santa Marta',
       label: 'Magdalena, Colombia',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/El_Rodadero%2C_Santa_Marta.jpg/640px-El_Rodadero%2C_Santa_Marta.jpg',
+      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5//v1781040742/SantaMarta01_i6mfge.jpg',
       staticImages: [
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/El_Rodadero%2C_Santa_Marta.jpg/640px-El_Rodadero%2C_Santa_Marta.jpg',
-        // Agrega aquí más URLs de Santa Marta
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781040742/SantaMarta01_i6mfge.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781639331/SantaMarta04_yo3eub.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781634987/SantaMarta03_zqdoiu.jpg',
+        
       ],
-      description: 'La ciudad más antigua de Colombia. Playas paradisíacas, la Sierra Nevada y el Parque Tayrona.',
+      description: 'La ciudad más antigua de Colombia; un rincón caribeño donde la historia colonial se une con playas paradisíacas y la Sierra Nevada.',
       lat: 11.2408,
       lng: -74.211,
       placeId: 'ChIJRcbVhzJa-o4Rz5GJkFDZ1uE',
@@ -71,12 +75,13 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'cartagena',
       name: 'Cartagena',
       label: 'Bolívar, Colombia',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Cartagena_de_Indias_-_Centro_Historico.jpg/640px-Cartagena_de_Indias_-_Centro_Historico.jpg',
+      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781038971/Cartagena01_rx3n25.jpg',
       staticImages: [
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Cartagena_de_Indias_-_Centro_Historico.jpg/640px-Cartagena_de_Indias_-_Centro_Historico.jpg',
-        // Agrega aquí más URLs de Cartagena
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781038971/Cartagena01_rx3n25.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781209879/Cartagena02_pjawq4.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781401858/Cartagena03_bqt20f.jpg'
       ],
-      description: 'Ciudad amurallada Patrimonio de la Humanidad. Historia colonial, islas del Rosario y playas del Caribe.',
+      description: 'Un tesoro histórico de calles coloridas, murallas centenarias y fortalezas coloniales llenas de romance y leyenda.',
       lat: 10.391,
       lng: -75.4794,
       placeId: 'ChIJp9r1aNIm-Y4RVWBS3g8Xv6A',
@@ -88,14 +93,13 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'barranquilla',
       name: 'Barranquilla',
       label: 'Atlántico, Colombia',
-      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780080999/D%C3%ADa5-12_ayipp0.jpg',
+      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781116112/Barranquilla02_y3rgro.jpg',
       staticImages: [
-        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780080999/D%C3%ADa5-12_ayipp0.jpg',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780080999/D%C3%ADa5-12_ayipp0.jpg',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780080999/D%C3%ADa5-12_ayipp0.jpg',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1780080999/D%C3%ADa5-12_ayipp0.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781116112/Barranquilla02_y3rgro.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781210643/Barranquilla05_n9kgel.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781206755/Barranquilla03_kefkcn.jpg',
       ],
-      description: 'La capital de la alegría. Sede del famoso Carnaval declarado Patrimonio Inmaterial de la Humanidad.',
+      description: 'Una vibrante ciudad caribeña que enamora con la alegría de su Carnaval y su gran desarrollo moderno junto al Río Magdalena.',
       lat: 10.9685,
       lng: -74.7813,
       placeId: 'ChIJR1fBKzR6-Y4RAoGRzMsU2bE',
@@ -107,12 +111,13 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       id: 'medellin',
       name: 'Medellín',
       label: 'Antioquia, Colombia',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Medellin_Vista_Parcial.jpg/640px-Medellin_Vista_Parcial.jpg',
+      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781037862/Medellin02_w4p72p.jpg',
       staticImages: [
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Medellin_Vista_Parcial.jpg/640px-Medellin_Vista_Parcial.jpg',
-        // Agrega aquí más URLs de Medellín
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781037862/Medellin02_w4p72p.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781036054/Medellin01_y99rjb.jpg',
+        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781645599/Medellin04_s2mqna.jpg',
       ],
-      description: 'La ciudad de la eterna primavera. Innovación, cultura, flores y la calidez de su gente paisa.',
+      description: 'La Ciudad de la Eterna Primavera cautiva con su innovadora transformación urbana, el colorido de sus flores y la inigualable calidez de la cultura paisa.',
       lat: 6.2442,
       lng: -75.5812,
       placeId: 'ChIJaUjKMaKRRI8R9VsEUJM2fLI',
@@ -149,10 +154,16 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
     this.map = new google.maps.Map(document.getElementById('travel-map'), {
       center: { lat: 7.5, lng: -75.2 },
       zoom: 6,
-      minZoom: 5,
-      maxZoom: 18,
+      minZoom: 6,
+      maxZoom: 14,
       mapId: 'DEMO_MAP_ID',
-      zoomControl: true,
+      // Bloquea toda interacción manual: arrastrar, scroll, pinch y doble clic.
+      // Las llamadas por código (panTo/setZoom) siguen funcionando sin problema.
+      gestureHandling: 'none',
+      // Oculta los botones +/-, ya que no queremos ninguna vía manual de zoom.
+      zoomControl: false,
+      // Evita que las flechas o +/- del teclado muevan o amplíen el mapa.
+      keyboardShortcuts: false,
       streetViewControl: false,
       mapTypeControl: false,
       fullscreenControl: false,
@@ -169,8 +180,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
 
       const bubble = document.createElement('div');
       bubble.style.cssText = `
-        width: 44px; height: 44px; border-radius: 50%; background: #e2e8f0;
-        border: 3px solid #3fa2db;
+        width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0;
         display: flex; align-items: center; justify-content: center;
         box-shadow: 0 3px 12px rgba(0,0,0,0.25);
         transition: transform 0.2s; overflow: hidden;
@@ -188,7 +198,7 @@ export class InteractiveMapComponent implements OnInit, OnDestroy {
       label.style.cssText = `
         background: #1a1a2e; color: #fff; font-size: 10px; font-family: sans-serif;
         padding: 2px 7px; border-radius: 10px; margin-top: 4px; white-space: nowrap;
-        font-weight: 600; letter-spacing: 0.3px;
+        font-weight: 600; letter-spacing: 1px;
       `;
       label.textContent = dest.name;
 
