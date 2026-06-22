@@ -624,3 +624,230 @@ tbody td:last-child {
 	margin-bottom: 12px;
 	color: var(--color-iconos);
 }
+
+@media (max-width: 1279px) {
+	.content,
+	.reservations-content {
+		padding: 32px;
+		border-radius: 24px;
+	}
+
+	.image-profile {
+		width: 120px;
+		height: 120px;
+	}
+
+	.profile-info h2 {
+		font-size: 26px;
+	}
+
+	table {
+		min-width: 820px;
+	}
+}
+
+@media (max-width: 920px) {
+	.content,
+	.reservations-content {
+		padding: 28px;
+	}
+
+	.profile-header {
+		gap: 24px;
+	}
+
+	.image-profile {
+		width: 110px;
+		height: 110px;
+	}
+
+	.profile-info h2 {
+		font-size: 24px;
+	}
+
+	.edit-form {
+		gap: 18px;
+	}
+}
+
+@media (max-width: 768px) {
+	.content,
+	.reservations-content {
+		padding: 24px;
+		border-radius: 22px;
+	}
+
+	.profile-header {
+		flex-direction: column;
+		text-align: center;
+		align-items: center;
+	}
+
+	.profile-info {
+		align-items: center;
+	}
+
+	.edit-form {
+		grid-template-columns: 1fr;
+	}
+
+	.form-group.full-width,
+	.buttons {
+		grid-column: 1;
+	}
+
+	.buttons {
+		justify-content: center;
+	}
+
+	.table-container {
+		overflow-x: visible;
+	}
+
+	table,
+	thead,
+	tbody,
+	tr,
+	td {
+		display: block;
+		width: 100%;
+	}
+
+	table {
+		min-width: 0;
+		width: 100%;
+		border-spacing: 0;
+	}
+
+	thead {
+		display: none;
+	}
+
+	tbody {
+		display: grid;
+		gap: 14px;
+	}
+
+	tbody tr {
+		padding: 16px;
+		border-radius: 18px;
+	}
+
+	tbody td {
+		padding: 0 0 12px;
+		text-align: left;
+		font-size: 14px;
+	}
+
+	tbody td:last-child {
+		padding-bottom: 0;
+	}
+
+	tbody td:first-child,
+	tbody td:last-child {
+		border-radius: 0;
+	}
+
+	tbody td::before {
+		display: block;
+		margin-bottom: 4px;
+		font-size: 12px;
+		font-weight: 600;
+		color: var(--color-primario);
+	}
+
+	tbody td:nth-child(1)::before {
+		content: "Destino";
+	}
+
+	tbody td:nth-child(2)::before {
+		content: "Personas";
+	}
+
+	tbody td:nth-child(3)::before {
+		content: "Fecha viaje";
+	}
+
+	tbody td:nth-child(4)::before {
+		content: "Estado";
+	}
+
+	tbody td:nth-child(5)::before {
+		content: "Acciones";
+	}
+
+	.actions {
+		justify-content: flex-start;
+		margin-right: 0;
+	}
+
+	.empty-state {
+		padding: 32px 16px !important;
+		text-align: center;
+	}
+
+	.empty-state::before {
+		display: none;
+	}
+}
+
+@media (max-width: 480px) {
+	.content,
+	.reservations-content {
+		padding: 18px;
+		border-radius: 20px;
+		gap: 22px;
+	}
+
+	.profile-header {
+		gap: 18px;
+		padding-bottom: 20px;
+	}
+
+	.image-profile {
+		width: 96px;
+		height: 96px;
+	}
+
+	.profile-info h2 {
+		font-size: 22px;
+		line-height: 1.2;
+	}
+
+	.btn-edit,
+	.btn-save,
+	.btn-cancel {
+		width: 100%;
+		padding: 11px 18px;
+	}
+
+	.buttons {
+		flex-direction: column;
+	}
+
+	.section-header h2 {
+		font-size: 22px;
+	}
+
+	.section-header p {
+		font-size: 14px;
+		line-height: 1.45;
+	}
+
+	.actions {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.actions .view,
+	.actions .upload,
+	.actions .pay,
+	.actions .cancel {
+		width: 100%;
+		justify-content: center;
+	}
+
+	.status {
+		font-size: 14px;
+	}
+}

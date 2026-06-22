@@ -61,3 +61,188 @@ body {
 	--links: 18px;
 	--inputs: 16px
 }
+
+/* ===== Panel administrativo: base responsive comun ===== */
+@media (max-width: 1279px) {
+	.admin-layout,
+	.admin-content {
+		min-width: 0;
+	}
+
+	.admin-content > * {
+		max-width: 100%;
+		min-width: 0;
+	}
+
+	.admin-content .top-bar,
+	.admin-content .toolbar,
+	.admin-content .filters-bar,
+	.admin-content .header-actions {
+		max-width: 100%;
+		min-width: 0;
+	}
+
+	.admin-content .search-box,
+	.admin-content .filter-wrapper,
+	.admin-content .filter-btn,
+	.admin-content .add-btn,
+	.admin-content .clear-filter,
+	.admin-content input,
+	.admin-content select,
+	.admin-content textarea,
+	.admin-content .custom-select,
+	.admin-content .date-input-custom {
+		min-width: 0;
+	}
+
+	.admin-content .table-container {
+		max-width: 100%;
+		overflow-x: auto;
+	}
+
+	.admin-content table {
+		max-width: none;
+	}
+}
+
+@media (max-width: 920px) {
+	.admin-content .top-bar {
+		display: grid !important;
+		grid-template-columns: minmax(0, 1fr) auto auto;
+		gap: 12px !important;
+		align-items: center;
+	}
+
+	.admin-content .search-box {
+		width: 100% !important;
+		min-width: 0 !important;
+	}
+
+	.admin-content .filter-btn,
+	.admin-content .add-btn,
+	.admin-content .clear-filter {
+		white-space: nowrap;
+	}
+
+	.admin-content .modal-container,
+	.admin-content .modal-panel,
+	.admin-content .confirm-modal {
+		max-width: calc(100vw - 48px) !important;
+	}
+}
+
+@media (max-width: 768px) {
+	.admin-layout {
+		width: 100%;
+	}
+
+	.admin-content {
+		width: calc(100% - 90px);
+		min-width: 0;
+	}
+
+	.admin-content .top-bar {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+	}
+
+	.admin-content .search-box {
+		grid-column: 1 / -1;
+	}
+
+	.admin-content .filter-wrapper,
+	.admin-content .filter-btn,
+	.admin-content .add-btn,
+	.admin-content .clear-filter {
+		width: 100% !important;
+	}
+
+	.admin-content .filter-btn,
+	.admin-content .add-btn,
+	.admin-content .clear-filter {
+		justify-content: center;
+	}
+
+	.admin-content .edit-form,
+	.admin-content .form-grid,
+	.admin-content .fields-grid,
+	.admin-content .form-row,
+	.admin-content .summary-grid,
+	.admin-content .info-grid,
+	.admin-content .detalle-grid {
+		display: grid !important;
+		grid-template-columns: minmax(0, 1fr) !important;
+	}
+
+	.admin-content .full-width,
+	.admin-content .span-2,
+	.admin-content .form-group.span-2,
+	.admin-content .buttons,
+	.admin-content .modal-actions,
+	.admin-content .modal-footer {
+		grid-column: 1 / -1 !important;
+	}
+
+	.admin-content .actions,
+	.admin-content .card-actions,
+	.admin-content .detalle-actions,
+	.admin-content .modal-actions,
+	.admin-content .modal-footer {
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+}
+
+@media (max-width: 480px) {
+	.admin-content {
+		width: calc(100% - 72px);
+		padding-left: 10px !important;
+		padding-right: 10px !important;
+	}
+
+	.admin-content .top-bar {
+		grid-template-columns: minmax(0, 1fr) !important;
+		gap: 10px !important;
+	}
+
+	.admin-content .search-box,
+	.admin-content .filter-btn,
+	.admin-content .add-btn,
+	.admin-content .clear-filter,
+	.admin-content input,
+	.admin-content select,
+	.admin-content textarea,
+	.admin-content .custom-select,
+	.admin-content .date-input-custom {
+		width: 100% !important;
+		max-width: 100%;
+	}
+
+	.admin-content .content,
+	.admin-content .reservations-content,
+	.admin-content .modal-container,
+	.admin-content .modal-panel,
+	.admin-content .confirm-modal {
+		width: 100% !important;
+		max-width: 100% !important;
+	}
+
+	.admin-content .actions,
+	.admin-content .card-actions,
+	.admin-content .detalle-actions,
+	.admin-content .buttons,
+	.admin-content .modal-actions,
+	.admin-content .modal-footer {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.admin-content .actions button,
+	.admin-content .card-actions button,
+	.admin-content .detalle-actions button,
+	.admin-content .buttons button,
+	.admin-content .modal-actions button,
+	.admin-content .modal-footer button {
+		width: 100% !important;
+		justify-content: center;
+	}
+}
