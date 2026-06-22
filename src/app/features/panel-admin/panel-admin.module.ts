@@ -32,6 +32,7 @@ import { InfoMedicaComponent } from './pages/operaciones/pages/medical-info/medi
 import { ComunicacionesComponent } from './pages/operaciones/pages/communications/communications.component';
 import { UploadDocumentModalComponent } from './pages/profile/components/upload-document-modal/upload-document-modal.component';
 import { DocumentViewerComponent } from './pages/reservations/components/document-viewer/document-viewer.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 @NgModule({
 	declarations: [
@@ -71,6 +72,7 @@ import { DocumentViewerComponent } from './pages/reservations/components/documen
 		RouterModule,
 		ReactiveFormsModule,
 		FormsModule,
+		NgApexchartsModule
 	],
 })
 export class PanelAdminModule { }
