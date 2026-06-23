@@ -10,11 +10,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { ChatbotWidgetComponent } from './shared/chatbot-widget/chatbot-widget.component';
 import { SharedModule } from './shared/shared.module';
+import { PaymentComponentComponent } from './features/payments/components/payment.component';
 
 @NgModule({
 	declarations: [
 		AppComponent,
 		ChatbotWidgetComponent,
+		PaymentComponentComponent,
 	],
 	imports: [
 		BrowserModule,

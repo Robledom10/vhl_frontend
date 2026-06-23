@@ -1,0 +1,16 @@
+<div class="payment-card">
+    <h2>Metodo de pago</h2>
+    <label>cuotas</label>
+
+    <select [(ngModel)]="installments">
+        <option [value]="1">1 cuotas</option>
+        <option [value]="2">2 cuotas</option>
+        <option [value]="3">3 cuotas</option>
+        <option [value]="6">6 cuotas</option>
+        <option [value]="12">12 cuotas</option>
+    </select>
+
+    <button (click)="pay()" [disabled]="loading">
+        {{ loading ? 'Redirigiendo...' : 'pagar con Wompi'}}
+    </button>
+</div>
