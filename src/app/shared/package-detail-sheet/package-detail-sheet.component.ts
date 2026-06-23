@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, OnDestroy, SimpleChanges, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { PackageService } from '../../core/services/package.service';
 import { RespuestaComentarioPaquete } from './models/comments.model';
 import { AuthService } from '../../core/services/auth.service';
@@ -40,6 +40,11 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 	@Input() package: PackageDetail | null = null;
 	@Output() closed = new EventEmitter<void>();
 
+	@ViewChild('tripDropdown')
+	tripDropdown!: ElementRef;
+
+	tripDropdownOpen = false;
+
 	visible = false;
 	animating = false;
 	private scrollY = 0;
@@ -65,6 +70,7 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 	viajeSeleccionado: Viaje | null = null;
 
 	constructor(
+		private elementRef: ElementRef,
 		private packageService: PackageService,
 		private authService: AuthService,
 		private operacionesService: OperacionesService
@@ -132,13 +138,32 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 
 	selectedTripId: number | null = null;
 
-	onTripChange(): void {
+	toggleTripDropdown(): void {
+		this.tripDropdownOpen = !this.tripDropdownOpen;
+	}
 
-		this.viajeSeleccionado =
-			this.viajesDisponibles.find(
-				v => v.id === Number(this.selectedTripId)
-			) ?? null;
+	selectTrip(viaje: Viaje | null): void {
+		this.viajeSeleccionado = viaje;
+		this.selectedTripId = viaje?.id ?? null;
+		this.tripDropdownOpen = false;
+	}
 
+	get selectedTripLabel(): string {
+		if (!this.viajeSeleccionado) {
+			return 'Selecciona una fecha';
+		}
+
+		return `${this.formatDate(this.viajeSeleccionado.fechaSalida)} - ${this.formatDate(this.viajeSeleccionado.fechaRegreso)}`;
+	}
+
+	private formatDate(date: string | Date): string {
+		const d = new Date(date);
+
+		return d.toLocaleDateString('es-CO', {
+			day: '2-digit',
+			month: '2-digit',
+			year: 'numeric'
+		});
 	}
 
 	private blockScroll(): void {
@@ -386,6 +411,25 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 			console.error('Error leyendo datos del token:', error);
 
 			return null;
+		}
+	}
+
+	// HostListener
+
+	@HostListener('document:click', ['$event'])
+	onDocumentClick(event: MouseEvent): void {
+
+		if (!this.tripDropdownOpen) {
+			return;
+		}
+
+		const target = event.target as Node;
+
+		if (
+			this.tripDropdown &&
+			!this.tripDropdown.nativeElement.contains(target)
+		) {
+			this.tripDropdownOpen = false;
 		}
 	}
 }
