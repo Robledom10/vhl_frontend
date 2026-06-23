@@ -3,362 +3,362 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 declare var google: any;
 
 interface Destination {
-  id: string;
-  name: string;
-  label: string;
-  image: string;
-  staticImages: string[];
-  description: string;
-  lat: number;
-  lng: number;
-  placeId: string;
-  photos: string[];
-  thumbnail: string;
-  photosLoaded: boolean;
+	id: string;
+	name: string;
+	label: string;
+	image: string;
+	staticImages: string[];
+	description: string;
+	lat: number;
+	lng: number;
+	placeId: string;
+	photos: string[];
+	thumbnail: string;
+	photosLoaded: boolean;
 }
 
 @Component({
-  selector: 'app-interactive-map',
-  templateUrl: './interactive-map.component.html',
-  styleUrl: './interactive-map.component.css',
+	selector: 'app-interactive-map',
+	templateUrl: './interactive-map.component.html',
+	styleUrl: './interactive-map.component.css',
 })
 export class InteractiveMapComponent implements OnInit, OnDestroy {
-  private map: any = null;
-  private markers: any[] = [];
-  private markerBubbles: Map<string, HTMLImageElement> = new Map();
+	private map: any = null;
+	private markers: any[] = [];
+	private markerBubbles: Map<string, HTMLImageElement> = new Map();
 
-  isDropdownOpen = false;
-  selectedDestination: Destination | null = null;
-  isLoadingPhotos = false;
-  activePhotoIndex = 0;
+	isDropdownOpen = false;
+	selectedDestination: Destination | null = null;
+	isLoadingPhotos = false;
+	activePhotoIndex = 0;
 
-  destinations: Destination[] = [
-    {
-      id: 'quindio',
-      name: 'Hernando Lopera',
-      label: 'Calarca, Quindío',
-      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1780082818/logo_mejorado_qh8dck.png',
-      staticImages: [
-        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1780082818/logo_mejorado_qh8dck.png',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1777919861/D%C3%ADa3-75_t3mdvr.jpg',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1780084272/hl_mejorada_ymwkxn.jpg',
-      
-      ],
-      description: 'Tu punto de partida hacia aventuras inolvidables; expertos en diseñar excursiones personalizadas y grandes viajes para descubrir Colombia y el mundo.',
-      lat: 4.5318,
-      lng: -75.6442,
-      placeId: 'ChIJx8bT4x7Koo8R7x4X0sJfR5M',
-      photos: [],
-      thumbnail: '',
-      photosLoaded: false,
-    },
-    {
-      id: 'santamarta',
-      name: 'Santa Marta',
-      label: 'Magdalena, Colombia',
-      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5//v1781040742/SantaMarta01_i6mfge.jpg',
-      staticImages: [
-        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781040742/SantaMarta01_i6mfge.jpg',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781639331/SantaMarta04_yo3eub.jpg',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781634987/SantaMarta03_zqdoiu.jpg',
-        
-      ],
-      description: 'La ciudad más antigua de Colombia; un rincón caribeño donde la historia colonial se une con playas paradisíacas y la Sierra Nevada.',
-      lat: 11.2408,
-      lng: -74.211,
-      placeId: 'ChIJRcbVhzJa-o4Rz5GJkFDZ1uE',
-      photos: [],
-      thumbnail: '',
-      photosLoaded: false,
-    },
-    {
-      id: 'cartagena',
-      name: 'Cartagena',
-      label: 'Bolívar, Colombia',
-      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781038971/Cartagena01_rx3n25.jpg',
-      staticImages: [
-        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781038971/Cartagena01_rx3n25.jpg',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781209879/Cartagena02_pjawq4.jpg',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781401858/Cartagena03_bqt20f.jpg'
-      ],
-      description: 'Un tesoro histórico de calles coloridas, murallas centenarias y fortalezas coloniales llenas de romance y leyenda.',
-      lat: 10.391,
-      lng: -75.4794,
-      placeId: 'ChIJp9r1aNIm-Y4RVWBS3g8Xv6A',
-      photos: [],
-      thumbnail: '',
-      photosLoaded: false,
-    },
-    {
-      id: 'barranquilla',
-      name: 'Barranquilla',
-      label: 'Atlántico, Colombia',
-      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781116112/Barranquilla02_y3rgro.jpg',
-      staticImages: [
-        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781116112/Barranquilla02_y3rgro.jpg',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781210643/Barranquilla05_n9kgel.jpg',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781206755/Barranquilla03_kefkcn.jpg',
-      ],
-      description: 'Una vibrante ciudad caribeña que enamora con la alegría de su Carnaval y su gran desarrollo moderno junto al Río Magdalena.',
-      lat: 10.9685,
-      lng: -74.7813,
-      placeId: 'ChIJR1fBKzR6-Y4RAoGRzMsU2bE',
-      photos: [],
-      thumbnail: '',
-      photosLoaded: false,
-    },
-    {
-      id: 'medellin',
-      name: 'Medellín',
-      label: 'Antioquia, Colombia',
-      image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781037862/Medellin02_w4p72p.jpg',
-      staticImages: [
-        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781037862/Medellin02_w4p72p.jpg',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781036054/Medellin01_y99rjb.jpg',
-        'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781645599/Medellin04_s2mqna.jpg',
-      ],
-      description: 'La Ciudad de la Eterna Primavera cautiva con su innovadora transformación urbana, el colorido de sus flores y la inigualable calidez de la cultura paisa.',
-      lat: 6.2442,
-      lng: -75.5812,
-      placeId: 'ChIJaUjKMaKRRI8R9VsEUJM2fLI',
-      photos: [],
-      thumbnail: '',
-      photosLoaded: false,
-    },
-  ];
+	destinations: Destination[] = [
+		{
+			id: 'quindio',
+			name: 'Hernando Lopera',
+			label: 'Calarca, Quindío',
+			image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1780082818/logo_mejorado_qh8dck.png',
+			staticImages: [
+				'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1780082818/logo_mejorado_qh8dck.png',
+				'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1777919861/D%C3%ADa3-75_t3mdvr.jpg',
+				'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1780084272/hl_mejorada_ymwkxn.jpg',
 
-  constructor(private ngZone: NgZone) {}
+			],
+			description: 'Tu punto de partida hacia aventuras inolvidables; expertos en diseñar excursiones personalizadas y grandes viajes para descubrir Colombia y el mundo.',
+			lat: 4.5318,
+			lng: -75.6442,
+			placeId: 'ChIJx8bT4x7Koo8R7x4X0sJfR5M',
+			photos: [],
+			thumbnail: '',
+			photosLoaded: false,
+		},
+		{
+			id: 'santamarta',
+			name: 'Santa Marta',
+			label: 'Magdalena, Colombia',
+			image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5//v1781040742/SantaMarta01_i6mfge.jpg',
+			staticImages: [
+				'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781040742/SantaMarta01_i6mfge.jpg',
+				'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781639331/SantaMarta04_yo3eub.jpg',
+				'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781634987/SantaMarta03_zqdoiu.jpg',
 
-  ngOnInit(): void {
-    this.loadGoogleMaps();
-  }
+			],
+			description: 'La ciudad más antigua de Colombia; un rincón caribeño donde la historia colonial se une con playas paradisíacas y la Sierra Nevada.',
+			lat: 11.2408,
+			lng: -74.211,
+			placeId: 'ChIJRcbVhzJa-o4Rz5GJkFDZ1uE',
+			photos: [],
+			thumbnail: '',
+			photosLoaded: false,
+		},
+		{
+			id: 'cartagena',
+			name: 'Cartagena',
+			label: 'Bolívar, Colombia',
+			image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781038971/Cartagena01_rx3n25.jpg',
+			staticImages: [
+				'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781038971/Cartagena01_rx3n25.jpg',
+				'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781209879/Cartagena02_pjawq4.jpg',
+				'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781401858/Cartagena03_bqt20f.jpg'
+			],
+			description: 'Un tesoro histórico de calles coloridas, murallas centenarias y fortalezas coloniales llenas de romance y leyenda.',
+			lat: 10.391,
+			lng: -75.4794,
+			placeId: 'ChIJp9r1aNIm-Y4RVWBS3g8Xv6A',
+			photos: [],
+			thumbnail: '',
+			photosLoaded: false,
+		},
+		{
+			id: 'barranquilla',
+			name: 'Barranquilla',
+			label: 'Atlántico, Colombia',
+			image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781116112/Barranquilla02_y3rgro.jpg',
+			staticImages: [
+				'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781116112/Barranquilla02_y3rgro.jpg',
+				'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781210643/Barranquilla05_n9kgel.jpg',
+				'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781206755/Barranquilla03_kefkcn.jpg',
+			],
+			description: 'Una vibrante ciudad caribeña que enamora con la alegría de su Carnaval y su gran desarrollo moderno junto al Río Magdalena.',
+			lat: 10.9685,
+			lng: -74.7813,
+			placeId: 'ChIJR1fBKzR6-Y4RAoGRzMsU2bE',
+			photos: [],
+			thumbnail: '',
+			photosLoaded: false,
+		},
+		{
+			id: 'medellin',
+			name: 'Medellín',
+			label: 'Antioquia, Colombia',
+			image: 'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781037862/Medellin02_w4p72p.jpg',
+			staticImages: [
+				'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781037862/Medellin02_w4p72p.jpg',
+				'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781036054/Medellin01_y99rjb.jpg',
+				'https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1781645599/Medellin04_s2mqna.jpg',
+			],
+			description: 'La Ciudad de la Eterna Primavera cautiva con su innovadora transformación urbana, el colorido de sus flores y la inigualable calidez de la cultura paisa.',
+			lat: 6.2442,
+			lng: -75.5812,
+			placeId: 'ChIJaUjKMaKRRI8R9VsEUJM2fLI',
+			photos: [],
+			thumbnail: '',
+			photosLoaded: false,
+		},
+	];
 
-  // ─── Carga del SDK ──────────────────────────────────────────────────────────
+	constructor(private ngZone: NgZone) { }
 
-  loadGoogleMaps(): void {
-    if (typeof google !== 'undefined' && google.maps?.Map) {
-      this.initMap();
-      return;
-    }
-    (window as any)['initMapCallback'] = () =>
-      this.ngZone.run(() => this.initMap());
-    const script = document.createElement('script');
-    script.src =
-      'https://maps.googleapis.com/maps/api/js?key=AIzaSyCChhbt5C8uOtQrdF6lFwEYaHxbtuFcNmE&libraries=marker,places&loading=async&callback=initMapCallback';
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
-  }
+	ngOnInit(): void {
+		this.loadGoogleMaps();
+	}
 
-  initMap(): void {
-    this.map = new google.maps.Map(document.getElementById('travel-map'), {
-      center: { lat: 7.5, lng: -75.2 },
-      zoom: 6,
-      minZoom: 6,
-      maxZoom: 14,
-      mapId: 'DEMO_MAP_ID',
-      // Bloquea toda interacción manual: arrastrar, scroll, pinch y doble clic.
-      // Las llamadas por código (panTo/setZoom) siguen funcionando sin problema.
-      gestureHandling: 'none',
-      // Oculta los botones +/-, ya que no queremos ninguna vía manual de zoom.
-      zoomControl: false,
-      // Evita que las flechas o +/- del teclado muevan o amplíen el mapa.
-      keyboardShortcuts: false,
-      streetViewControl: false,
-      mapTypeControl: false,
-      fullscreenControl: false,
-    });
-    this.addMarkersToMap();
-  }
+	// ─── Carga del SDK ──────────────────────────────────────────────────────────
 
-  // ─── Marcadores ────────────────────────────────────────────────────────────
+	loadGoogleMaps(): void {
+		if (typeof google !== 'undefined' && google.maps?.Map) {
+			this.initMap();
+			return;
+		}
+		(window as any)['initMapCallback'] = () =>
+			this.ngZone.run(() => this.initMap());
+		const script = document.createElement('script');
+		script.src =
+			'https://maps.googleapis.com/maps/api/js?key=AIzaSyCChhbt5C8uOtQrdF6lFwEYaHxbtuFcNmE&libraries=marker,places&loading=async&callback=initMapCallback';
+		script.async = true;
+		script.defer = true;
+		document.head.appendChild(script);
+	}
 
-  addMarkersToMap(): void {
-    this.destinations.forEach((dest) => {
-      const pinEl = document.createElement('div');
-      pinEl.style.cssText = `display: flex; flex-direction: column; align-items: center; cursor: pointer;`;
+	initMap(): void {
+		this.map = new google.maps.Map(document.getElementById('travel-map'), {
+			center: { lat: 7.5, lng: -75.2 },
+			zoom: 6,
+			minZoom: 6,
+			maxZoom: 14,
+			mapId: 'DEMO_MAP_ID',
+			// Bloquea toda interacción manual: arrastrar, scroll, pinch y doble clic.
+			// Las llamadas por código (panTo/setZoom) siguen funcionando sin problema.
+			gestureHandling: 'none',
+			// Oculta los botones +/-, ya que no queremos ninguna vía manual de zoom.
+			zoomControl: false,
+			// Evita que las flechas o +/- del teclado muevan o amplíen el mapa.
+			keyboardShortcuts: false,
+			streetViewControl: false,
+			mapTypeControl: false,
+			fullscreenControl: false,
+		});
+		this.addMarkersToMap();
+	}
 
-      const bubble = document.createElement('div');
-      bubble.style.cssText = `
-        width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0;
-        display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 3px 12px rgba(0,0,0,0.25);
-        transition: transform 0.2s; overflow: hidden;
-      `;
+	// ─── Marcadores ────────────────────────────────────────────────────────────
 
-      const img = document.createElement('img');
-      img.alt = dest.name;
-      img.style.cssText = `width: 100%; height: 100%; border-radius: 50%; object-fit: cover;`;
-      img.src = dest.image || this.getPlaceholderDataUrl(dest.name[0]);
+	addMarkersToMap(): void {
+		this.destinations.forEach((dest) => {
+			const pinEl = document.createElement('div');
+			pinEl.style.cssText = `display: flex; flex-direction: column; align-items: center; cursor: pointer;`;
 
-      this.markerBubbles.set(dest.id, img);
-      bubble.appendChild(img);
+			const bubble = document.createElement('div');
+			bubble.style.cssText = `
+			width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0;
+			display: flex; align-items: center; justify-content: center;
+			box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+			transition: transform 0.2s; overflow: hidden;
+			`;
 
-      const label = document.createElement('div');
-      label.style.cssText = `
-        background: #1a1a2e; color: #fff; font-size: 10px; font-family: sans-serif;
-        padding: 2px 7px; border-radius: 10px; margin-top: 4px; white-space: nowrap;
-        font-weight: 600; letter-spacing: 1px;
-      `;
-      label.textContent = dest.name;
+			const img = document.createElement('img');
+			img.alt = dest.name;
+			img.style.cssText = `width: 100%; height: 100%; border-radius: 50%; object-fit: cover;`;
+			img.src = dest.image || this.getPlaceholderDataUrl(dest.name[0]);
 
-      pinEl.appendChild(bubble);
-      pinEl.appendChild(label);
+			this.markerBubbles.set(dest.id, img);
+			bubble.appendChild(img);
 
-      const marker = new google.maps.marker.AdvancedMarkerElement({
-        position: { lat: dest.lat, lng: dest.lng },
-        map: this.map,
-        title: dest.name,
-        content: pinEl,
-      });
+			const label = document.createElement('div');
+			label.style.cssText = `
+			background: #1a1a2e; color: #fff; font-size: 10px; font-family: sans-serif;
+			padding: 2px 7px; border-radius: 10px; margin-top: 4px; white-space: nowrap;
+			font-weight: 600; letter-spacing: 1px;
+			`;
+			label.textContent = dest.name;
 
-      marker.addEventListener('gmp-click', () => {
-        this.ngZone.run(() => this.selectDestination(dest));
-      });
+			pinEl.appendChild(bubble);
+			pinEl.appendChild(label);
 
-      this.markers.push(marker);
-    });
-  }
+			const marker = new google.maps.marker.AdvancedMarkerElement({
+				position: { lat: dest.lat, lng: dest.lng },
+				map: this.map,
+				title: dest.name,
+				content: pinEl,
+			});
 
-  private getPlaceholderDataUrl(letter: string): string {
-    const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44">
-        <rect width="44" height="44" rx="22" fill="#cbd5e1"/>
-        <text x="22" y="28" text-anchor="middle"
-              font-family="sans-serif" font-size="18" font-weight="bold" fill="#64748b">
-          ${letter.toUpperCase()}
-        </text>
-      </svg>`;
-    return `data:image/svg+xml;base64,${btoa(svg)}`;
-  }
+			marker.addEventListener('gmp-click', () => {
+				this.ngZone.run(() => this.selectDestination(dest));
+			});
 
-  // ─── Selección de destino ───────────────────────────────────────────────────
+			this.markers.push(marker);
+		});
+	}
 
-  async selectDestination(dest: Destination): Promise<void> {
-    this.selectedDestination = dest;
-    this.isDropdownOpen = false;
-    this.activePhotoIndex = 0;
+	private getPlaceholderDataUrl(letter: string): string {
+		const svg = `
+		<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44">
+			<rect width="44" height="44" rx="22" fill="#cbd5e1"/>
+			<text x="22" y="28" text-anchor="middle"
+				font-family="sans-serif" font-size="18" font-weight="bold" fill="#64748b">
+			${letter.toUpperCase()}
+			</text>
+		</svg>`;
+		return `data:image/svg+xml;base64,${btoa(svg)}`;
+	}
 
-    // Thumbnail inmediato desde la primera imagen
-    if (!dest.thumbnail) dest.thumbnail = dest.image;
+	// ─── Selección de destino ───────────────────────────────────────────────────
 
-    // Carga las imágenes estáticas propias de inmediato (sin esperar Places)
-    if (dest.photos.length === 0) {
-      dest.photos = dest.staticImages?.length > 0
-        ? [...dest.staticImages]
-        : [dest.image];
-    }
+	async selectDestination(dest: Destination): Promise<void> {
+		this.selectedDestination = dest;
+		this.isDropdownOpen = false;
+		this.activePhotoIndex = 0;
 
-    if (this.map) {
-      this.map.panTo({ lat: dest.lat, lng: dest.lng });
-      this.map.setZoom(12);
-    }
+		// Thumbnail inmediato desde la primera imagen
+		if (!dest.thumbnail) dest.thumbnail = dest.image;
 
-    this.highlightMarker(dest);
+		// Carga las imágenes estáticas propias de inmediato (sin esperar Places)
+		if (dest.photos.length === 0) {
+			dest.photos = dest.staticImages?.length > 0
+				? [...dest.staticImages]
+				: [dest.image];
+		}
 
-    // Intenta enriquecer con Places en segundo plano
-    if (!dest.photosLoaded) {
-      this.isLoadingPhotos = true;
-      await this.loadDestinationPhotos(dest);
-      this.isLoadingPhotos = false;
-    }
-  }
+		if (this.map) {
+			this.map.panTo({ lat: dest.lat, lng: dest.lng });
+			this.map.setZoom(12);
+		}
 
-  // ─── Places API ────────────────────────────────────────────────────────────
+		this.highlightMarker(dest);
 
-  private async loadDestinationPhotos(dest: Destination): Promise<void> {
-    try {
-      const place = new google.maps.places.Place({ id: dest.placeId });
-      await place.fetchFields({
-        fields: ['photos', 'displayName', 'editorialSummary'],
-      });
+		// Intenta enriquecer con Places en segundo plano
+		if (!dest.photosLoaded) {
+			this.isLoadingPhotos = true;
+			await this.loadDestinationPhotos(dest);
+			this.isLoadingPhotos = false;
+		}
+	}
 
-      const placesPhotos: string[] = [];
-      if (place.photos?.length > 0) {
-        place.photos.slice(0, 6).forEach((p: any) => {
-          placesPhotos.push(p.getURI({ maxWidth: 800, maxHeight: 500 }));
-        });
-      }
+	// ─── Places API ────────────────────────────────────────────────────────────
 
-      this.ngZone.run(() => {
-        if (placesPhotos.length > 0) {
-          // Mezcla: tus imágenes propias primero, luego las de Places
-          const own = dest.staticImages?.length > 0 ? dest.staticImages : [];
-          dest.photos = [...own, ...placesPhotos];
-          dest.thumbnail = place.photos[0].getURI({ maxWidth: 120, maxHeight: 120 });
-          const imgEl = this.markerBubbles.get(dest.id);
-          if (imgEl) imgEl.src = dest.thumbnail;
-        }
-        // Si Places no responde, dest.photos ya tiene staticImages — no tocar nada
+	private async loadDestinationPhotos(dest: Destination): Promise<void> {
+		try {
+			const place = new google.maps.places.Place({ id: dest.placeId });
+			await place.fetchFields({
+				fields: ['photos', 'displayName', 'editorialSummary'],
+			});
 
-        if (place.editorialSummary) dest.description = place.editorialSummary;
-        dest.photosLoaded = true;
-      });
-    } catch {
-      this.ngZone.run(() => {
-        dest.photosLoaded = true;
-      });
-    }
-  }
+			const placesPhotos: string[] = [];
+			if (place.photos?.length > 0) {
+				place.photos.slice(0, 6).forEach((p: any) => {
+					placesPhotos.push(p.getURI({ maxWidth: 800, maxHeight: 500 }));
+				});
+			}
 
-  // ─── Resaltar marcador activo ───────────────────────────────────────────────
+			this.ngZone.run(() => {
+				if (placesPhotos.length > 0) {
+					// Mezcla: tus imágenes propias primero, luego las de Places
+					const own = dest.staticImages?.length > 0 ? dest.staticImages : [];
+					dest.photos = [...own, ...placesPhotos];
+					dest.thumbnail = place.photos[0].getURI({ maxWidth: 120, maxHeight: 120 });
+					const imgEl = this.markerBubbles.get(dest.id);
+					if (imgEl) imgEl.src = dest.thumbnail;
+				}
+				// Si Places no responde, dest.photos ya tiene staticImages — no tocar nada
 
-  highlightMarker(dest: Destination): void {
-    this.markers.forEach((marker, i) => {
-      const bubble = marker.content?.querySelector('div');
-      if (bubble) {
-        bubble.style.transform =
-          this.destinations[i].id === dest.id ? 'scale(1.35)' : 'scale(1)';
-        bubble.style.borderColor =
-          this.destinations[i].id === dest.id ? '#b5e5ff' : '#7bdcff';
-      }
-    });
-  }
+				if (place.editorialSummary) dest.description = place.editorialSummary;
+				dest.photosLoaded = true;
+			});
+		} catch {
+			this.ngZone.run(() => {
+				dest.photosLoaded = true;
+			});
+		}
+	}
 
-  // ─── Controles UI ──────────────────────────────────────────────────────────
+	// ─── Resaltar marcador activo ───────────────────────────────────────────────
 
-  toggleDropdown(): void {
-    this.isDropdownOpen = !this.isDropdownOpen;
-  }
+	highlightMarker(dest: Destination): void {
+		this.markers.forEach((marker, i) => {
+			const bubble = marker.content?.querySelector('div');
+			if (bubble) {
+				bubble.style.transform =
+					this.destinations[i].id === dest.id ? 'scale(1.35)' : 'scale(1)';
+				bubble.style.borderColor =
+					this.destinations[i].id === dest.id ? '#b5e5ff' : '#7bdcff';
+			}
+		});
+	}
 
-  closeDropdown(): void {
-    this.isDropdownOpen = false;
-  }
+	// ─── Controles UI ──────────────────────────────────────────────────────────
 
-  prevPhoto(): void {
-    if (this.selectedDestination && this.activePhotoIndex > 0)
-      this.activePhotoIndex--;
-  }
+	toggleDropdown(): void {
+		this.isDropdownOpen = !this.isDropdownOpen;
+	}
 
-  nextPhoto(): void {
-    if (
-      this.selectedDestination &&
-      this.activePhotoIndex < this.selectedDestination.photos.length - 1
-    )
-      this.activePhotoIndex++;
-  }
+	closeDropdown(): void {
+		this.isDropdownOpen = false;
+	}
 
-  showAll(): void {
-    if (this.map) {
-      this.selectedDestination = null;
-      this.map.panTo({ lat: 7.5, lng: -75.2 });
-      this.map.setZoom(6);
-      this.markers.forEach((marker) => {
-        const bubble = marker.content?.querySelector('div');
-        if (bubble) {
-          bubble.style.transform = 'scale(1)';
-          bubble.style.borderColor = '#3acaff';
-        }
-      });
-    }
-  }
+	prevPhoto(): void {
+		if (this.selectedDestination && this.activePhotoIndex > 0)
+			this.activePhotoIndex--;
+	}
 
-  get totalDestinations(): number {
-    return this.destinations.length;
-  }
+	nextPhoto(): void {
+		if (
+			this.selectedDestination &&
+			this.activePhotoIndex < this.selectedDestination.photos.length - 1
+		)
+			this.activePhotoIndex++;
+	}
 
-  ngOnDestroy(): void {
-    this.markers.forEach((m) => (m.map = null));
-    this.markerBubbles.clear();
-  }
+	showAll(): void {
+		if (this.map) {
+			this.selectedDestination = null;
+			this.map.panTo({ lat: 7.5, lng: -75.2 });
+			this.map.setZoom(6);
+			this.markers.forEach((marker) => {
+				const bubble = marker.content?.querySelector('div');
+				if (bubble) {
+					bubble.style.transform = 'scale(1)';
+					bubble.style.borderColor = '#3acaff';
+				}
+			});
+		}
+	}
+
+	get totalDestinations(): number {
+		return this.destinations.length;
+	}
+
+	ngOnDestroy(): void {
+		this.markers.forEach((m) => (m.map = null));
+		this.markerBubbles.clear();
+	}
 }

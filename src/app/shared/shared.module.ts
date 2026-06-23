@@ -20,7 +20,7 @@ import { StatsSectionComponent } from './stats-section/stats-section.component';
 		PackageDetailSheetComponent,
 		CustomCalendarComponent,
 		ReservationWizardComponent,
-  StatsSectionComponent
+		StatsSectionComponent
 	],
 	imports: [
 		CommonModule,

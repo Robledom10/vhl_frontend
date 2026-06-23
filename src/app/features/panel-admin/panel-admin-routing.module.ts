@@ -15,28 +15,86 @@ import { CheckInQrComponent } from './pages/operaciones/pages/check-in-qr/check-
 import { AsignarAlojamientoComponent } from './pages/operaciones/pages/assign-accommodation/assign-accommodation.component';
 import { InfoMedicaComponent } from './pages/operaciones/pages/medical-info/medical-info.component';
 import { ComunicacionesComponent } from './pages/operaciones/pages/communications/communications.component';
+import { AuthGuard } from '../../core/guards/auth.guard';
+import { roleGuard } from '../../core/guards/role.guard';
 
 const routes: Routes = [
 	{
 		path: '',
 		component: PanelAdmin,
+		canActivateChild: [AuthGuard],
 		children: [
 			{ path: '', redirectTo: 'profile', pathMatch: 'full' },
-			{ path: 'control-panel', component: ControlPanelComponent },
-			{ path: 'packages', component: PackagesComponent },
-			{ path: 'packages', component: PackagesComponent },
-			{ path: 'packages-providers', component: ProveedorComponent },
-			{ path: 'reservations', component: ReservationsComponent },
-			{ path: 'users-roles', component: UsersRolesComponent },
-			{ path: 'comments', component: CommentsComponent },
-			{ path: 'gallery-admin', component: GalleryAdminComponent },
-			{ path: 'profile', component: ProfileComponent },
-			{ path: 'operaciones-dashboard', component: DashboardOperativoComponent },
-			{ path: 'operaciones-transporte', component: AsignarTransporteComponent },
-			{ path: 'operaciones-check-in', component: CheckInQrComponent },
-			{ path: 'operaciones-alojamiento', component: AsignarAlojamientoComponent },
-			{ path: 'operaciones-info-medica', component: InfoMedicaComponent },
-			{ path: 'operaciones-comunicaciones', component: ComunicacionesComponent },
+			{
+				path: 'control-panel', component: ControlPanelComponent,
+				canActivate: [roleGuard],
+				data: { roles: ['ADMIN', 'GUIDE'] }
+			},
+			{
+				path: 'packages', component: PackagesComponent,
+				canActivate: [roleGuard],
+				data: { roles: ['ADMIN', 'GUIDE'] }
+			},
+			{
+				path: 'packages-providers', component: ProveedorComponent,
+				canActivate: [roleGuard],
+				data: { roles: ['ADMIN', 'GUIDE'] }
+			},
+			{
+				path: 'reservations', component: ReservationsComponent,
+				canActivate: [roleGuard],
+				data: { roles: ['ADMIN', 'GUIDE'] }
+			},
+			{
+				path: 'users-roles', component: UsersRolesComponent,
+				canActivate: [roleGuard],
+				data: { roles: ['ADMIN', 'GUIDE'] }
+			},
+			{
+				path: 'comments', component: CommentsComponent,
+				canActivate: [roleGuard],
+				data: { roles: ['ADMIN', 'GUIDE'] }
+			},
+			{
+				path: 'gallery-admin', component: GalleryAdminComponent,
+				canActivate: [roleGuard],
+				data: { roles: ['ADMIN', 'GUIDE'] }
+			},
+			{
+				path: 'profile', component: ProfileComponent,
+				canActivate: [roleGuard],
+				data: { roles: ['ADMIN', 'GUIDE', 'CLIENT'] }
+			},
+			{
+				path: 'operaciones-dashboard', component: DashboardOperativoComponent,
+				canActivate: [roleGuard],
+				data: { roles: ['ADMIN', 'GUIDE'] }
+			},
+			{
+				path: 'operaciones-transporte', component: AsignarTransporteComponent,
+				canActivate: [roleGuard],
+				data: { roles: ['ADMIN', 'GUIDE'] }
+			},
+			{
+				path: 'operaciones-check-in', component: CheckInQrComponent,
+				canActivate: [roleGuard],
+				data: { roles: ['ADMIN', 'GUIDE'] }
+			},
+			{
+				path: 'operaciones-alojamiento', component: AsignarAlojamientoComponent,
+				canActivate: [roleGuard],
+				data: { roles: ['ADMIN', 'GUIDE'] }
+			},
+			{
+				path: 'operaciones-info-medica', component: InfoMedicaComponent,
+				canActivate: [roleGuard],
+				data: { roles: ['ADMIN', 'GUIDE'] }
+			},
+			{
+				path: 'operaciones-comunicaciones', component: ComunicacionesComponent,
+				canActivate: [roleGuard],
+				data: { roles: ['ADMIN', 'GUIDE'] }
+			},
 		],
 	},
 ];
