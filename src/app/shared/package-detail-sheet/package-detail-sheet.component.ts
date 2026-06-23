@@ -416,19 +416,14 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 
 	// HostListener
 
-	@HostListener('document:click', ['$event'])
-	onDocumentClick(event: MouseEvent): void {
+	@HostListener('document:mousedown', ['$event'])
+	onDocumentClick(event: MouseEvent) {
 
 		if (!this.tripDropdownOpen) {
 			return;
 		}
 
-		const target = event.target as Node;
-
-		if (
-			this.tripDropdown &&
-			!this.tripDropdown.nativeElement.contains(target)
-		) {
+		if (!this.tripDropdown.nativeElement.contains(event.target)) {
 			this.tripDropdownOpen = false;
 		}
 	}
