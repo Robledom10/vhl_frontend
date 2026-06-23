@@ -221,3 +221,149 @@
 .clear-date:hover {
 	background: var(--color-fondo-iconos);
 }
+
+@media (max-width: 1279px) {
+	.filter-bar {
+		padding: 18px;
+	}
+
+	.filter-item {
+		padding: 0 18px;
+		gap: 12px;
+		min-width: 0;
+	}
+
+	.filter-content {
+		min-width: 0;
+	}
+
+	.filter-content label {
+		font-size: 16px;
+	}
+
+	.filter-selector span {
+		font-size: 14px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		max-width: 160px;
+	}
+
+	.btn-search {
+		padding: 12px 30px;
+	}
+}
+
+@media (max-width: 920px) {
+	.filter-bar {
+		flex-wrap: wrap;
+		gap: 12px;
+		align-items: center;
+	}
+
+	.filter-item {
+		flex: 1 1 210px;
+	}
+
+	.filter-item:first-child {
+		padding-left: 0;
+	}
+
+	.divider {
+		display: none;
+	}
+
+	.btn-search {
+		flex: 1 1 160px;
+		margin-left: 0;
+	}
+
+	.dropdown,
+	.calendar-dropdown {
+		min-width: min(260px, 80vw);
+	}
+}
+
+@media (max-width: 768px) {
+	.search-filter-container {
+		padding: 10px;
+	}
+
+	.filter-bar {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 10px;
+		padding: 12px;
+		border-radius: 16px;
+	}
+
+	.filter-item,
+	.filter-item:first-child {
+		padding: 11px;
+		border: 1px solid var(--bordes);
+		border-radius: 14px;
+	}
+
+	.btn-search {
+		grid-column: 1 / -1;
+		width: 100%;
+	}
+
+	.filter-icon {
+		width: 44px;
+		height: 44px;
+		font-size: 19px;
+	}
+}
+
+@media (max-width: 480px) {
+	.search-filter-container {
+		padding: 8px;
+	}
+
+	.filter-bar {
+		grid-template-columns: 1fr;
+		gap: 10px;
+		padding: 10px;
+		border-radius: 18px;
+	}
+
+	.filter-item,
+	.filter-item:first-child {
+		gap: 12px;
+		padding: 11px 12px;
+		border-radius: 14px;
+	}
+
+	.filter-icon {
+		width: 42px;
+		height: 42px;
+		font-size: 18px;
+	}
+
+	.filter-content label {
+		font-size: 15px;
+	}
+
+	.filter-selector span {
+		max-width: 190px;
+	}
+
+	.dropdown,
+	.calendar-dropdown {
+		left: 50%;
+		min-width: min(280px, calc(100vw - 48px));
+		transform: translate(-50%, 10px);
+	}
+
+	.dropdown.open,
+	.calendar-dropdown.open {
+		transform: translate(-50%, 0);
+	}
+
+	.btn-search {
+		font-size: 16px;
+		padding: 12px 24px;
+		border-radius: 14px;
+	}
+}

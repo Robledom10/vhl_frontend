@@ -3,22 +3,28 @@
 		<img src="/assets/images/logo.png" alt="Logo">
 	</div>
 
-	<div class="navbar-links">
-		<a routerLink="/home" routerLinkActive="active-link">Inicio</a>
-		<a routerLink="/packages" routerLinkActive="active-link">Paquetes</a>
-		<a routerLink="/gallery" routerLinkActive="active-link">Galería</a>
-		<a routerLink="/panel-admin" routerLinkActive="active-link">Panel Administrativo</a>
+	<button class="navbar-toggle" type="button" aria-label="Abrir menu" [class.open]="menuOpen"
+		(click)="toggleMobileMenu($event)">
+		<span></span>
+		<span></span>
+		<span></span>
+	</button>
 
+	<div class="navbar-links" [class.open]="menuOpen" (click)="$event.stopPropagation()">
+		<a routerLink="/home" routerLinkActive="active-link" (click)="closeMobileMenu()">Inicio</a>
+		<a routerLink="/packages" routerLinkActive="active-link" (click)="closeMobileMenu()">Paquetes</a>
+		<a routerLink="/gallery" routerLinkActive="active-link" (click)="closeMobileMenu()">Galería</a>
+		<a routerLink="/panel-admin" routerLinkActive="active-link" (click)="closeMobileMenu()">Panel Administrativo</a>
 	</div>
 
-	<!-- SI NO ESTÁ LOGUEADO -->
-	<div class="navbar-auth" *ngIf="!authService.isAuthenticated()">
-		<a routerLink="/auth/login" class="btn-ingresar">Ingresar</a>
-		<a routerLink="/auth/register" class="btn-registrarse">Registrarse</a>
+	<!-- SI NO ESTA LOGUEADO -->
+	<div class="navbar-auth" [class.open]="menuOpen" *ngIf="!authService.isAuthenticated()" (click)="$event.stopPropagation()">
+		<a routerLink="/auth/login" class="btn-ingresar" (click)="closeMobileMenu()">Ingresar</a>
+		<a routerLink="/auth/register" class="btn-registrarse" (click)="closeMobileMenu()">Registrarse</a>
 	</div>
 
-	<!-- SI ESTÁ LOGUEADO -->
-	<div class="navbar-user" *ngIf="authService.isAuthenticated()">
+	<!-- SI ESTA LOGUEADO -->
+	<div class="navbar-user" [class.open]="menuOpen" *ngIf="authService.isAuthenticated()" (click)="$event.stopPropagation()">
 		<div class="user-info" (click)="toggleDropdown($event)">
 			<img [src]="'https://ui-avatars.com/api/?name=' + user?.firstName + '&background=3fa2db&color=fff&size=120'"
 				alt="user" class="user-avatar" />
