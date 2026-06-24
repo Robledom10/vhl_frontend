@@ -1,14 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import {
-	SolicitudPaqueteTuristico,
-	RespuestaPaqueteTuristico,
-	RespuestaImagenPaquete,
-	PageResponse,
-	SolicitudProveedor,
-	RespuestaProveedor,
-} from '../../features/panel-admin/models/package.model';
+import { SolicitudPaqueteTuristico, RespuestaPaqueteTuristico, RespuestaImagenPaquete, PageResponse, SolicitudProveedor, RespuestaProveedor, } from '../../features/panel-admin/models/package.model';
 import { environment } from '../../../environments/environment';
 import { RespuestaComentarioPaquete, SolicitudComentarioPaquete } from '../../shared/package-detail-sheet/models/comments.model';
 

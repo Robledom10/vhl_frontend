@@ -78,9 +78,14 @@ export class NavbarPanelAdminComponent {
 					roles: ['ADMIN', 'GUIDE']
 				},
 				{
+					label: 'Asignar Viaje',
+					route: '/panel-admin/packages-viajes',
+					roles: ['ADMIN', 'GUIDE']
+				},
+				{
 					icon: 'fa-regular fa-thumbs-up',
 					label: 'Comentarios',
-					route: '/panel-admin/comments',
+					route: '/panel-admin/packages-comments',
 					roles: ['ADMIN', 'GUIDE']
 				},
 				{
@@ -114,11 +119,6 @@ export class NavbarPanelAdminComponent {
 			open: false,
 			roles: ['ADMIN', 'GUIDE'],
 			children: [
-				{
-					label: 'Asignar Viaje',
-					route: '/panel-admin/operaciones-dashboard',
-					roles: ['ADMIN', 'GUIDE']
-				},
 				{
 					label: 'Asignar transporte',
 					route: '/panel-admin/operaciones-transporte',
