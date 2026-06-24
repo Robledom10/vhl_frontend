@@ -9,7 +9,7 @@ import { ReservationsComponent } from './pages/reservations/reservations.compone
 import { UsersRolesComponent } from './pages/users-roles/users-roles.component';
 import { ProveedorComponent } from './pages/packages/pages/proveedor/proveedor.component';
 import { GalleryAdminComponent } from './pages/gallery-admin/gallery-admin.component';
-import { DashboardOperativoComponent } from './pages/operaciones/pages/operations-dashboard/operations-dashboard.component';
+import { DashboardOperativoComponent } from './pages/packages/pages/operations-dashboard/operations-dashboard.component';
 import { AsignarTransporteComponent } from './pages/operaciones/pages/assign-transport/assign-transport.component';
 import { CheckInQrComponent } from './pages/operaciones/pages/check-in-qr/check-in-qr.component';
 import { AsignarAlojamientoComponent } from './pages/operaciones/pages/assign-accommodation/assign-accommodation.component';
@@ -51,7 +51,7 @@ const routes: Routes = [
 				data: { roles: ['ADMIN', 'GUIDE'] }
 			},
 			{
-				path: 'comments', component: CommentsComponent,
+				path: 'packages-comments', component: CommentsComponent,
 				canActivate: [roleGuard],
 				data: { roles: ['ADMIN', 'GUIDE'] }
 			},
@@ -66,7 +66,7 @@ const routes: Routes = [
 				data: { roles: ['ADMIN', 'GUIDE', 'CLIENT'] }
 			},
 			{
-				path: 'operaciones-dashboard', component: DashboardOperativoComponent,
+				path: 'packages-viajes', component: DashboardOperativoComponent,
 				canActivate: [roleGuard],
 				data: { roles: ['ADMIN', 'GUIDE'] }
 			},

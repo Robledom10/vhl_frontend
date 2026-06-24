@@ -3,7 +3,8 @@ import { PackageDetail } from '../package-detail-sheet/package-detail-sheet.comp
 import { PackageService } from '../../core/services/package.service';
 import { RespuestaPaqueteTuristico } from '../../features/panel-admin/models/package.model';
 import { TravelPackage, mapToTravelPackage, mapToPackageDetail, mapToPackageDetailFallback } from '../utils/package-mapper';
-
+import { forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 export { TravelPackage };
 
 @Component({
@@ -28,11 +29,31 @@ export class PackagesCardComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.packageService.getPackages({ activo: true, tamano: 100 }).subscribe({
-			next: (page) => {
+			next: page => {
+
 				this.apiPackages = page.content;
-				const mapped = page.content.map(mapToTravelPackage);
-				this.displayedPackages = this.showAll ? mapped : mapped.slice(0, 6);
-				this.isLoading = false;
+
+				const requests = page.content.map(paquete =>
+
+					this.packageService.getComments(paquete.id).pipe(
+
+						map(comments => {
+							const travelPackage = mapToTravelPackage(paquete);
+							if (comments.length > 0) {
+								const promedio = comments.reduce((suma, c) => suma + c.puntaje, 0) / comments.length;
+								travelPackage.rating = Number(promedio.toFixed(1));
+							} else {
+								travelPackage.rating = 0;
+							}
+							return travelPackage;
+						})
+					)
+				);
+
+				forkJoin(requests).subscribe(result => {
+					this.displayedPackages = this.showAll ? result : result.slice(0, 6);
+					this.isLoading = false;
+				});
 			},
 			error: () => {
 				this.errorMsg = 'No se pudieron cargar los paquetes.';
