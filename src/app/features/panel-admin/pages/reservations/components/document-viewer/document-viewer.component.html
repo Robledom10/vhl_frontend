@@ -100,7 +100,7 @@
 								<div class="ai-item">
 									<strong>Resultado:</strong>
 									<span class="validation-result"
-										[ngClass]="{ 'valid': doc.validation.result === 'VALIDO' || doc.validation.result === 'VALIDO' || doc.validation.result?.toLowerCase() === 'valido',  'invalid': doc.validation.result === 'INVALIDO' || doc.validation.result?.toLowerCase() === 'invalido'  }">
+										[ngClass]="{ 'valid': doc.validation.result === 'VALIDO' || doc.validation.result === 'VALIDO' || doc.validation.result.toLowerCase() === 'valido',  'invalid': doc.validation.result === 'INVALIDO' || doc.validation.result.toLowerCase() === 'invalido'  }">
 										{{ doc.validation.result }}
 									</span>
 								</div>

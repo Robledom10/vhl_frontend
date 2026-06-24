@@ -1,1 +1,195 @@
-<p>control-panel works!</p>
+<div class="dashboard">
+
+	<!-- KPIs -->
+	<div class="kpi-row">
+
+		<div class="kpi-card">
+			<div class="icon icon-blue">
+				<i class="fa-solid fa-users"></i>
+			</div>
+			<div class="kpi-text">
+				<small>Total Usuarios</small>
+				<h2>{{ authStatistics?.totalUsers ?? '—' }}</h2>
+			</div>
+		</div>
+
+		<div class="kpi-card">
+			<div class="icon icon-blue">
+				<i class="fa-solid fa-map-location-dot"></i>
+			</div>
+			<div class="kpi-text">
+				<small>Reservas Totales</small>
+				<h2>{{ reservationStatistics?.totalReservations ?? '—' }}</h2>
+			</div>
+		</div>
+
+		<div class="kpi-card">
+			<div class="icon icon-blue">
+				<i class="fa-solid fa-briefcase"></i>
+			</div>
+			<div class="kpi-text">
+				<small>Paquetes Totales</small>
+				<h2>{{ catalogStatistics?.totalPackages ?? '—' }}</h2>
+			</div>
+		</div>
+
+		<div class="kpi-card">
+			<div class="icon icon-blue">
+				<i class="fa-solid fa-suitcase"></i>
+			</div>
+			<div class="kpi-text">
+				<small>Paquetes Activos</small>
+				<h2>{{ catalogStatistics?.activePackages ?? '—' }}</h2>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Charts -->
+	<div class="charts-row">
+
+		<!-- Usuarios por rol -->
+		<div class="panel-card chart-panel">
+			<div class="panel-header">
+				<h5>Usuarios por Rol</h5>
+				<span class="badge-pill">Total</span>
+			</div>
+
+			<div class="donut-wrap" *ngIf="!loadingAuth; else loadingTpl">
+				<apx-chart [series]="authChart.series" [chart]="authChart.chart" [labels]="authChart.labels"
+					[colors]="authChart.colors" [dataLabels]="authChart.dataLabels" [stroke]="authChart.stroke"
+					[plotOptions]="authChart.plotOptions" [legend]="authChart.legend">
+				</apx-chart>
+
+				<ul class="legend-list">
+					<li *ngFor="let label of authChart.labels; let i = index">
+						<span class="dot" [ngStyle]="{ background: authChart.colors?.[i] }"></span>
+						{{ label }}
+						<strong>{{ authChart.series[i] }}</strong>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<!-- Estado de reservas -->
+		<div class="panel-card chart-panel">
+			<div class="panel-header">
+				<h5>Estado de Reservas</h5>
+				<span class="badge-pill">Total</span>
+			</div>
+
+			<div class="donut-wrap" *ngIf="!loadingReservation; else loadingTpl">
+				<apx-chart [series]="reservationChart.series" [chart]="reservationChart.chart"
+					[labels]="reservationChart.labels" [colors]="reservationChart.colors"
+					[dataLabels]="reservationChart.dataLabels" [stroke]="reservationChart.stroke"
+					[plotOptions]="reservationChart.plotOptions" [legend]="reservationChart.legend">
+				</apx-chart>
+
+				<ul class="legend-list">
+					<li *ngFor="let label of reservationChart.labels; let i = index">
+						<span class="dot" [ngStyle]="{ background: reservationChart.colors?.[i] }"></span>
+						{{ label }}
+						<strong>{{ reservationChart.series[i] }}</strong>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="bottom-row">
+
+		<!-- Paquetes turísticos -->
+		<div class="panel-card chart-panel wide">
+			<div class="panel-header">
+				<h5>Paquetes Turísticos</h5>
+				<span class="badge-pill">{{ catalogStatistics?.totalCategories ?? 0 }} categorías</span>
+			</div>
+
+			<div *ngIf="!loadingCatalog; else loadingTpl">
+				<apx-chart [series]="catalogChart.series" [chart]="catalogChart.chart"
+					[plotOptions]="catalogChart.plotOptions" [colors]="catalogChart.colors" [fill]="catalogChart.fill"
+					[dataLabels]="catalogChart.dataLabels" [grid]="catalogChart.grid" [xaxis]="catalogChart.xaxis">
+				</apx-chart>
+
+				<!-- NUEVO: descripción de la gráfica -->
+				<p class="chart-caption">
+					Distribución de paquetes turísticos según su estado actual: cuántos están
+					<strong>activos</strong> (disponibles para reserva) y cuántos
+					<strong>inactivos</strong> (despublicados o agotados).
+				</p>
+			</div>
+		</div>
+
+		<!-- Progreso de usuarios activos (estilo "Viajes Totales") -->
+		<div class="panel-card progress-panel">
+			<div class="panel-header">
+				<h5>Usuarios Activos</h5>
+			</div>
+
+			<div class="progress-content">
+				<i class="bi bi-person-check-fill progress-icon"></i>
+				<div class="progress-info">
+					<span class="progress-label">Usuarios con cuenta activa</span>
+					<div class="progress-bar-track">
+						<div class="progress-bar-fill" [style.width.%]="activeUsersPercent"></div>
+					</div>
+				</div>
+				<span class="progress-percent">{{ activeUsersPercent }}%</span>
+			</div>
+
+			<div class="progress-content">
+				<i class="bi bi-bag-check-fill progress-icon"></i>
+				<div class="progress-info">
+					<span class="progress-label">Paquetes disponibles para venta</span>
+					<div class="progress-bar-track">
+						<div class="progress-bar-fill alt" [style.width.%]="activePackagesPercent"></div>
+					</div>
+				</div>
+				<span class="progress-percent">{{ activePackagesPercent }}%</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- NUEVA FILA: Verificación de usuarios + Estado de usuarios -->
+	<div class="charts-row mt-row">
+
+		<!-- Radial bar de verificación -->
+		<div class="panel-card chart-panel">
+			<div class="panel-header">
+				<h5>Verificación de Usuarios</h5>
+				<span class="badge-pill">{{ authStatistics?.totalUsers ?? 0 }} usuarios</span>
+			</div>
+
+			<div *ngIf="!loadingAuth; else loadingTpl">
+				<apx-chart [series]="verificationChart.series" [chart]="verificationChart.chart"
+					[labels]="verificationChart.labels" [colors]="verificationChart.colors"
+					[plotOptions]="verificationChart.plotOptions" [stroke]="verificationChart.stroke"
+					[legend]="verificationChart.legend">
+				</apx-chart>
+			</div>
+		</div>
+
+		<!-- Bar de estado de usuarios -->
+		<div class="panel-card chart-panel">
+			<div class="panel-header">
+				<h5>Estado de Usuarios</h5>
+				<span class="badge-pill">Activos vs Inactivos vs Bloqueados</span>
+			</div>
+
+			<div *ngIf="!loadingAuth; else loadingTpl">
+				<apx-chart [series]="userStatusChart.series" [chart]="userStatusChart.chart"
+					[plotOptions]="userStatusChart.plotOptions" [colors]="userStatusChart.colors"
+					[fill]="userStatusChart.fill" [dataLabels]="userStatusChart.dataLabels"
+					[grid]="userStatusChart.grid" [xaxis]="userStatusChart.xaxis">
+				</apx-chart>
+			</div>
+		</div>
+	</div>
+</div>
+
+<ng-template #loadingTpl>
+	<div class="chart-loading">
+		<div class="spinner"></div>
+	</div>
+</ng-template>

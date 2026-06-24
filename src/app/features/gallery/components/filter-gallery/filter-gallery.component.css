@@ -53,3 +53,76 @@
 	width: 87%;
 	margin: 45px auto 0;
 }
+
+@media (max-width: 1279px) {
+	.explore-section {
+		width: 90%;
+		height: 560px;
+	}
+
+	.explore-filter {
+		width: 86%;
+	}
+}
+
+@media (max-width: 920px) {
+	.explore-section {
+		width: 90%;
+		height: 500px;
+		margin: 42px auto 120px;
+		border-radius: 42px;
+	}
+
+	.explore-container {
+		border-radius: 42px;
+	}
+
+	.video iframe {
+		width: 122%;
+		height: 68vw;
+	}
+
+	.explore-filter {
+		width: 94%;
+	}
+}
+
+@media (max-width: 768px) {
+	.explore-section {
+		height: 400px;
+		margin-bottom: 170px;
+	}
+
+	.video iframe {
+		width: 138%;
+		height: 78vw;
+	}
+}
+
+@media (max-width: 480px) {
+	.explore-section {
+		width: 94%;
+		height: auto;
+		margin: 28px auto 42px;
+		padding-bottom: 16px;
+		border-radius: 26px;
+	}
+
+	.explore-container {
+		height: 280px;
+		border-radius: 26px;
+	}
+
+	.video iframe {
+		width: 150%;
+		height: 94vw;
+	}
+
+	.explore-filter {
+		position: static;
+		transform: none;
+		width: 100%;
+		margin-top: 16px;
+		z-index: auto;
+	}
+}

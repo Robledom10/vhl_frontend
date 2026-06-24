@@ -39,6 +39,7 @@ import { DetailTransportComponent } from './pages/operation/pages/assign-transpo
 import { FormEmergencyContactComponent } from './pages/operation/pages/emergency-contacts/components/form-emergency-contact/form-emergency-contact.component';
 import { FormMedicalInfoComponent } from './pages/operation/pages/medical-info/components/form-medical-info/form-medical-info.component';
 import { FormCommunicationComponent } from './pages/operation/pages/communications/components/form-communication/form-communication.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 @NgModule({
 	declarations: [
@@ -85,6 +86,7 @@ import { FormCommunicationComponent } from './pages/operation/pages/communicatio
 		RouterModule,
 		ReactiveFormsModule,
 		FormsModule,
+		NgApexchartsModule,
 	],
 })
 export class PanelAdminModule { }

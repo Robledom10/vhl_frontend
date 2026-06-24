@@ -32,3 +32,37 @@
 .photo-item:hover img {
 	transform: scale(1.05);
 }
+
+@media (max-width: 1279px) {
+	.gallery-container {
+		width: 92%;
+		column-gap: 22px;
+	}
+}
+
+@media (max-width: 920px) {
+	.gallery-container {
+		width: 92%;
+		column-count: 2;
+		padding: 48px 0;
+	}
+}
+
+@media (max-width: 768px) {
+	.gallery-container {
+		column-gap: 18px;
+	}
+
+	.photo-item {
+		margin-bottom: 18px;
+		border-radius: 16px;
+	}
+}
+
+@media (max-width: 480px) {
+	.gallery-container {
+		width: 94%;
+		column-count: 1;
+		padding: 36px 0;
+	}
+}
