@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Reservation } from '../../features/panel-admin/pages/reservations/models/reservations.models';
+import { PageResponse } from '../../features/panel-admin/models/package.model';
 
 export interface ContactoEmergenciaRequest {
 	nombre: string;
@@ -39,8 +40,24 @@ export class ReservationService {
 	constructor(private http: HttpClient) { }
 
 	getAll(): Observable<Reservation[]> {
-		return this.http.get<any[]>(this.base).pipe(
-			map(dtos => dtos.map(d => this.mapDto(d)))
+		const params = new HttpParams().set('pagina', 0).set('tamano', 1000);
+		return this.http.get<any>(this.base, { params }).pipe(
+			map(page => (page.content as any[]).map(d => this.mapDto(d)))
+		);
+	}
+
+	getAllPaginado(pagina: number, tamano: number): Observable<PageResponse<Reservation>> {
+		const params = new HttpParams()
+			.set('pagina', pagina)
+			.set('tamano', tamano);
+		return this.http.get<any>(this.base, { params }).pipe(
+			map(page => ({
+				content: (page.content as any[]).map(d => this.mapDto(d)),
+				totalElements: page.totalElements,
+				totalPages: page.totalPages,
+				number: page.number,
+				size: page.size,
+			}))
 		);
 	}
 

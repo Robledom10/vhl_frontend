@@ -1,0 +1,44 @@
+<div class="modal-backdrop" *ngIf="isOpen" (click)="cerrar()"></div>
+<div class="modal-panel detalle-panel" *ngIf="isOpen && viaje" (click)="$event.stopPropagation()">
+	<div class="modal-header">
+		<h3><i class="fa-solid fa-eye" style="color:var(--color-primario);margin-right:10px;"></i>Detalle de transporte</h3>
+		<button class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
+	</div>
+	<div class="detalle-paquete">
+		<span class="detalle-titulo">{{ viaje.titulo }}</span>
+		<span class="detalle-viaje-id">Viaje #{{ viaje.id }}</span>
+	</div>
+	<div class="detalle-grid" *ngIf="viaje.transportes[0] as t">
+		<div class="detalle-item">
+			<span class="detalle-label"><i class="fa-solid fa-building"></i> Empresa</span>
+			<span class="detalle-valor">{{ t.empresa }}</span>
+		</div>
+		<div class="detalle-item">
+			<span class="detalle-label"><i class="fa-solid fa-bus"></i> Tipo de vehiculo</span>
+			<span class="detalle-valor">{{ t.tipoTransporte }}</span>
+		</div>
+		<div class="detalle-item">
+			<span class="detalle-label"><i class="fa-solid fa-id-card"></i> Placa</span>
+			<span class="detalle-valor">{{ t.placa }}</span>
+		</div>
+		<div class="detalle-item">
+			<span class="detalle-label"><i class="fa-solid fa-user-tie"></i> Conductor</span>
+			<span class="detalle-valor">{{ t.conductor }}</span>
+		</div>
+		<div class="detalle-item">
+			<span class="detalle-label"><i class="fa-solid fa-phone"></i> Telefono conductor</span>
+			<span class="detalle-valor">{{ t.telefonoConductor }}</span>
+		</div>
+		<div class="detalle-item">
+			<span class="detalle-label"><i class="fa-solid fa-users"></i> Capacidad / Viajeros</span>
+			<span class="detalle-valor">{{ t.capacidad }} / {{ t.cantidadViajeros }}</span>
+		</div>
+		<div class="detalle-item span-2">
+			<span class="detalle-label"><i class="fa-solid fa-clock"></i> Horario de salida</span>
+			<span class="detalle-valor">{{ t.fechaSalida | date:'dd/MM/yyyy HH:mm' }}</span>
+		</div>
+	</div>
+	<div class="detalle-actions">
+		<button class="btn-cerrar-detalle" (click)="cerrar()">Cerrar</button>
+	</div>
+</div>

@@ -1,0 +1,117 @@
+<div class="operaciones-container">
+
+	<div class="page-header">
+		<div>
+			<h2 class="page-title">Asignar <span>Alojamiento</span></h2>
+			<p class="page-subtitle">Gestiona el alojamiento asignado a cada viajero por viaje</p>
+		</div>
+		<button class="btn-nuevo" (click)="abrirNuevo()">+ Asignar alojamiento</button>
+	</div>
+
+	<!-- PROVEEDORES DISPONIBLES -->
+	<div *ngIf="proveedoresAlojamiento.length > 0">
+		<div class="section-title">
+			<i class="fa-solid fa-hotel"></i>
+			<h3>Hoteles / Alojamientos registrados</h3>
+		</div>
+		<div class="proveedores-grid">
+			<div class="proveedor-card" *ngFor="let p of proveedoresAlojamiento">
+				<div class="pc-icon-wrap pc-hotel"><i class="fa-solid fa-hotel"></i></div>
+				<div class="pc-info">
+					<div class="pc-nombre">{{ p.nombre }}</div>
+					<div class="pc-detalle" *ngIf="p.direccion"><i class="fa-solid fa-location-dot"></i> {{ p.direccion }}</div>
+					<div class="pc-detalle" *ngIf="p.telefono"><i class="fa-solid fa-phone"></i> {{ p.telefono }}</div>
+					<div class="pc-detalle" *ngIf="p.correo"><i class="fa-regular fa-envelope"></i> {{ p.correo }}</div>
+					<div class="pc-detalle" *ngIf="p.notas"><i class="fa-solid fa-note-sticky"></i> {{ p.notas }}</div>
+				</div>
+				<button class="pc-btn" (click)="asignarDesdeProveedor(p)">Asignar a viaje</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="section-title">
+		<i class="fa-solid fa-bed"></i>
+		<h3>Viajes y estado de alojamiento</h3>
+	</div>
+
+	<div class="table-container">
+		<table>
+			<thead>
+				<tr>
+					<th>Paquete</th>
+					<th>Viajero</th>
+					<th>Hotel</th>
+					<th>Habitacion</th>
+					<th>Direccion</th>
+					<th>Estado</th>
+					<th>Accion</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let viaje of viajes" [class.fila-sin-viaje]="!viaje.tieneViaje">
+					<td>
+						<div class="paquete-nombre">{{ viaje.titulo }}</div>
+						<small class="viaje-id" *ngIf="viaje.tieneViaje">Viaje #{{ viaje.id }}</small>
+					</td>
+					<td>{{ viaje.tieneViaje ? (viaje.viajeroNombre || '—') : '—' }}</td>
+					<td>{{ viaje.tieneViaje ? (viaje.hotel || '—') : '—' }}</td>
+					<td>{{ viaje.tieneViaje ? (viaje.habitacion || '—') : '—' }}</td>
+					<td>{{ viaje.tieneViaje ? (viaje.direccion || '—') : '—' }}</td>
+					<td>
+						<span *ngIf="viaje.tieneViaje" class="estado-dot"
+							[class.ok]="viaje.alojamientoAsignado"
+							[class.pendiente]="!viaje.alojamientoAsignado">
+							{{ viaje.alojamientoAsignado ? 'Asignado' : 'Pendiente' }}
+						</span>
+						<span *ngIf="!viaje.tieneViaje" class="estado-dot disabled">Sin viaje</span>
+					</td>
+					<td>
+						<div class="actions" *ngIf="viaje.tieneViaje">
+							<button class="ver" *ngIf="viaje.alojamientoAsignado" (click)="verDetalle(viaje)">
+								<i class="fa-solid fa-eye"></i>
+							</button>
+							<button [class]="viaje.alojamientoAsignado ? 'edit' : 'assign'" (click)="seleccionarViaje(viaje)">
+								{{ viaje.alojamientoAsignado ? 'Editar' : 'Asignar' }}
+							</button>
+							<button class="del" *ngIf="viaje.alojamientoAsignado" (click)="eliminar(viaje)">
+								Eliminar
+							</button>
+						</div>
+						<span *ngIf="!viaje.tieneViaje" class="sin-viaje-label">Sin viaje creado</span>
+					</td>
+				</tr>
+				<tr *ngIf="viajes.length === 0">
+					<td colspan="7" class="empty">No hay paquetes disponibles.</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
+		<i class="toast-icon"
+			[class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
+		<span class="toast-msg">{{ toastMsg }}</span>
+	</div>
+
+</div>
+
+<!-- FORMULARIO MODAL -->
+<app-form-assign-accommodation
+	[isOpen]="showForm"
+	[viajes]="viajes"
+	[viajeSeleccionado]="viajeSeleccionado"
+	[editandoId]="editandoId"
+	[proveedores]="proveedoresAlojamiento"
+	[usuarios]="usuarios"
+	[preloadData]="formPreload"
+	(closed)="cerrarForm()"
+	(saved)="onFormSaved($event)"
+	(saveFailed)="onFormFailed($event)">
+</app-form-assign-accommodation>
+
+<!-- MODAL DETALLE -->
+<app-detail-accommodation
+	[isOpen]="showDetalle"
+	[viaje]="viajeDetalle"
+	(closed)="cerrarDetalle()">
+</app-detail-accommodation>

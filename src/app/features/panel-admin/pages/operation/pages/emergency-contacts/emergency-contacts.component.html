@@ -1,0 +1,92 @@
+<div class="operaciones-container">
+
+	<div class="page-header">
+		<div>
+			<h2 class="page-title">Contactos de <span>Emergencia</span></h2>
+			<p class="page-subtitle">Consulta y actualiza los contactos de emergencia de cada viajero</p>
+		</div>
+		<button class="btn-nuevo" (click)="abrirNuevo()">
+			Nuevo contacto
+		</button>
+	</div>
+
+	<!-- SELECTOR DE VIAJE -->
+	<div class="form-group" style="max-width: 420px; margin-bottom: 8px;">
+		<label style="font-size:13px; font-weight:500; color:var(--color-texto-secundario); padding-left:6px;">Filtrar
+			por viaje</label>
+		<select (change)="onViajeChange($event)"
+			style="height:52px; border-radius:25px; border:1.5px solid #e8e8e8; padding:0 22px; font-family:'Outfit',sans-serif; font-size:15px; outline:none; background:white; width:100%;">
+			<option value="">Seleccionar viaje...</option>
+			<option *ngFor="let v of viajes" [value]="v.id" [selected]="v.id === idViajeSeleccionado">
+				{{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} &mdash; Viaje #{{ v.id }} &middot; {{
+				v.fechaSalida | date:'dd/MM/yyyy' }}
+			</option>
+		</select>
+	</div>
+
+	<div class="section-title">
+		<i class="fa-solid fa-phone-volume"></i>
+		<h3>Contactos registrados</h3>
+	</div>
+
+	<div class="contactos-grid">
+		<div class="contacto-card" *ngFor="let c of contactos">
+			<div class="card-header">
+				<div class="viajero-badge">
+					<i class="fa-solid fa-user"></i>
+				</div>
+				<div>
+					<p class="viajero-nombre">{{ c.nombre }}</p>
+					<p class="viajero-sub">{{ c.nombreViajero || getNombreViajero(c.idViajero) }} &mdash; {{
+						c.parentesco }}</p>
+				</div>
+			</div>
+
+			<div class="card-info">
+				<div class="info-row">
+					<span class="info-label"><i class="fa-solid fa-person"></i> Contacto</span>
+					<span>{{ c.nombre }}</span>
+				</div>
+				<div class="info-row">
+					<span class="info-label"><i class="fa-solid fa-heart"></i> Relacion</span>
+					<span class="tag-relacion">{{ c.parentesco }}</span>
+				</div>
+				<div class="info-row">
+					<span class="info-label"><i class="fa-solid fa-phone"></i> Telefono</span>
+					<span>{{ c.telefono }}</span>
+				</div>
+				<div class="info-row" *ngIf="c.correo">
+					<span class="info-label"><i class="fa-solid fa-envelope"></i> Correo</span>
+					<span>{{ c.correo }}</span>
+				</div>
+			</div>
+
+			<div class="card-actions">
+				<button class="btn-editar-sm" (click)="abrir(c)">Editar</button>
+				<button class="btn-eliminar-sm" (click)="eliminar(c)">Eliminar</button>
+			</div>
+		</div>
+
+		<div *ngIf="contactos.length === 0"
+			style="padding: 2rem; color: var(--color-texto-secundario); text-align: center; grid-column: 1/-1;">
+			No hay contactos registrados para este viaje.
+		</div>
+	</div>
+
+	<div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
+		<i class="toast-icon"
+			[class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
+		<span class="toast-msg">{{ toastMsg }}</span>
+	</div>
+
+</div>
+
+<!-- FORMULARIO CONTACTO -->
+<app-form-emergency-contact
+	[isOpen]="showForm"
+	[editando]="editando"
+	[idViajeSeleccionado]="idViajeSeleccionado"
+	(closed)="cerrarForm()"
+	(saved)="onFormSaved($event)"
+	(saveFailed)="onFormFailed($event)">
+</app-form-emergency-contact>

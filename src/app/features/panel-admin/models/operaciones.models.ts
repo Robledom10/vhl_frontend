@@ -111,6 +111,16 @@ export interface Notificacion {
 	respuesta?: string;
 }
 
+export interface RespuestaEmail {
+	id: number;
+	notificacionId: number;
+	remitenteEmail: string;
+	asunto: string;
+	contenido: string;
+	fechaRecibida: string;
+	leida: boolean;
+}
+
 export interface ViajeroReserva {
 	id: number;
 	nombre: string;
@@ -125,6 +135,7 @@ export interface ReservaApi {
 	id: number;
 	numeroReserva: string;
 	idPaquete: number;
+	idViaje?: number;
 	idUsuario: number;
 	cantidadPasajeros: number;
 	precioTotal: number;
@@ -134,6 +145,7 @@ export interface ReservaApi {
 	pagoVerificado: boolean;
 	fechaCreacion: string;
 	viajeros: ViajeroReserva[];
+	datosUsuario?: { email?: string; nombre?: string; apellido?: string };
 	notas?: string;
 }
 

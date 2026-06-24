@@ -30,6 +30,25 @@ export class PackagesComponent implements OnInit {
 	cargando = false;
 	private filterChangeTimer: ReturnType<typeof setTimeout> | null = null;
 
+	// ─── Paginación ───────────────────────────────────────
+	paginaActual = 0;
+	totalPaginas = 0;
+	totalElementos = 0;
+	tamano = 12;
+
+	get paginas(): number[] {
+		const delta = 2;
+		const start = Math.max(0, this.paginaActual - delta);
+		const end = Math.min(this.totalPaginas - 1, this.paginaActual + delta);
+		return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+	}
+
+	cambiarPagina(n: number): void {
+		if (n < 0 || n >= this.totalPaginas) return;
+		this.paginaActual = n;
+		this.cargarPaquetes();
+	}
+
 	constructor(private packageService: PackageService) { }
 
 	ngOnInit(): void {
@@ -88,9 +107,14 @@ export class PackagesComponent implements OnInit {
 			destino: this.destinoFiltro || undefined,
 			duracionDias: this.duracionFiltro || undefined,
 			activo: this.estadoFiltro === 'Activos' ? true : this.estadoFiltro === 'Inactivos' ? false : undefined,
+			pagina: this.paginaActual,
+			tamano: this.tamano,
 		}).subscribe({
 			next: (page: PageResponse<RespuestaPaqueteTuristico>) => {
 				this.packages = page.content.map((p: RespuestaPaqueteTuristico) => this.mapToAdminPackage(p));
+				this.totalPaginas = page.totalPages;
+				this.totalElementos = page.totalElements;
+				this.paginaActual = page.number;
 				this.cargando = false;
 			},
 			error: (err: any) => {
@@ -101,6 +125,7 @@ export class PackagesComponent implements OnInit {
 	}
 
 	buscar(): void {
+		this.paginaActual = 0;
 		this.cargarPaquetes();
 	}
 
@@ -110,6 +135,7 @@ export class PackagesComponent implements OnInit {
 		}
 
 		this.filterChangeTimer = setTimeout(() => {
+			this.paginaActual = 0;
 			this.cargarPaquetes();
 		}, delay);
 	}
@@ -121,6 +147,7 @@ export class PackagesComponent implements OnInit {
 	selectEstado(estado: string): void {
 		this.estadoFiltro = estado;
 		this.showFilters = false;
+		this.paginaActual = 0;
 		this.cargarPaquetes();
 	}
 
@@ -134,6 +161,7 @@ export class PackagesComponent implements OnInit {
 		this.destinoFiltro = '';
 		this.duracionFiltro = null;
 		this.estadoFiltro = 'Activos';
+		this.paginaActual = 0;
 		this.cargarPaquetes();
 	}
 

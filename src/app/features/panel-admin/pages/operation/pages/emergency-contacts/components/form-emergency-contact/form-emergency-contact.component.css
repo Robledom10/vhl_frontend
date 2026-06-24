@@ -1,0 +1,161 @@
+.modal-backdrop {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.35);
+	z-index: 998;
+}
+
+.modal-panel {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 999;
+	background: white;
+	border-radius: 28px;
+	padding: 40px;
+	width: min(580px, 94vw);
+	max-height: 90vh;
+	overflow-y: auto;
+	box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+}
+
+.modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 30px;
+}
+
+.modal-header h3 {
+	font-size: 17px;
+	font-weight: 500;
+	color: var(--color-texto-principal);
+	margin: 0;
+}
+
+.btn-cerrar {
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	border: 1px solid var(--bordes);
+	background: white;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--color-texto-secundario);
+	transition: all 0.2s;
+}
+
+.btn-cerrar:hover {
+	background: #fee2e2;
+	border-color: #fca5a5;
+	color: #ef4444;
+}
+
+.form-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.form-group.span-2 {
+	grid-column: span 2;
+}
+
+.form-group label {
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--color-texto-secundario);
+	padding-left: 6px;
+}
+
+.form-group input,
+.form-group select {
+	height: 52px;
+	border-radius: 25px;
+	border: 1.5px solid #e8e8e8;
+	padding: 0 22px;
+	font-family: "Outfit", sans-serif;
+	font-size: 15px;
+	outline: none;
+	transition: border-color 0.2s;
+	background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+	border-color: var(--color-primario);
+}
+
+.error {
+	font-size: 12px;
+	color: #ef4444;
+	padding-left: 6px;
+}
+
+.modal-actions {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	margin-top: 32px;
+}
+
+.btn-cancelar {
+	height: 46px;
+	padding: 0 28px;
+	border-radius: 25px;
+	border: none;
+	background: #ef4444;
+	color: white;
+	cursor: pointer;
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	transition: all 0.2s;
+}
+
+.btn-cancelar:hover {
+	background: #dc2626;
+}
+
+.btn-guardar {
+	height: 46px;
+	padding: 0 32px;
+	border-radius: 25px;
+	border: none;
+	background: var(--color-primario);
+	color: white;
+	cursor: pointer;
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	transition: all 0.2s;
+}
+
+.btn-guardar:hover {
+	opacity: 0.9;
+}
+
+.btn-guardar:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+	.form-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.form-group.span-2 {
+		grid-column: span 1;
+	}
+}

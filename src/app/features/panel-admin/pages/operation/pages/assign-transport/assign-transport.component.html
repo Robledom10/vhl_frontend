@@ -1,0 +1,124 @@
+<div class="operaciones-container">
+
+	<div class="page-header">
+		<div>
+			<h2 class="page-title">Asignar <span>Transporte</span></h2>
+			<p class="page-subtitle">Gestiona el transporte asignado a cada viaje activo</p>
+		</div>
+	</div>
+
+	<!-- PROVEEDORES DISPONIBLES -->
+	<div *ngIf="proveedoresTransporte.length > 0">
+		<div class="section-title">
+			<i class="fa-solid fa-bus"></i>
+			<h3>Proveedores de transporte registrados</h3>
+		</div>
+		<div class="proveedores-grid">
+			<div class="proveedor-card" *ngFor="let p of proveedoresTransporte">
+				<div class="pc-icon-wrap pc-transporte"><i class="fa-solid fa-bus"></i></div>
+				<div class="pc-info">
+					<div class="pc-nombre">{{ p.nombre }}</div>
+					<div class="pc-detalle" *ngIf="p.tipoVehiculo"><i class="fa-solid fa-car"></i> {{ p.tipoVehiculo }}</div>
+					<div class="pc-detalle" *ngIf="p.placa"><i class="fa-solid fa-id-card"></i> {{ p.placa }}</div>
+					<div class="pc-detalle" *ngIf="p.conductor"><i class="fa-solid fa-user-tie"></i> {{ p.conductor }}</div>
+					<div class="pc-detalle" *ngIf="p.capacidad"><i class="fa-solid fa-users"></i> {{ p.capacidad }} personas</div>
+					<div class="pc-detalle" *ngIf="p.telefono"><i class="fa-solid fa-phone"></i> {{ p.telefono }}</div>
+				</div>
+				<button class="pc-btn" (click)="asignarDesdeProveedor(p)">Asignar a viaje</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- TABLA VIAJES -->
+	<div class="section-title">
+		<i class="fa-solid fa-bus-simple"></i>
+		<h3>Viajes y estado de transporte</h3>
+	</div>
+
+	<div class="search-box">
+		<input type="text" placeholder="Buscar" [(ngModel)]="search">
+		<button>
+			<i class="fa-solid fa-magnifying-glass"></i>
+		</button>
+	</div>
+
+	<div class="table-container">
+		<table>
+			<thead>
+				<tr>
+					<th>Paquete</th>
+					<th>Empresa</th>
+					<th>Tipo</th>
+					<th>Conductor</th>
+					<th>Placa</th>
+					<th>Estado</th>
+					<th>Accion</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let viaje of viajesFiltrados" [class.fila-sin-viaje]="!viaje.tieneViaje">
+					<td>
+						<div class="paquete-nombre">{{ viaje.titulo }}</div>
+						<small class="viaje-id" *ngIf="viaje.tieneViaje">Viaje #{{ viaje.id }}</small>
+					</td>
+					<td>{{ viaje.tieneViaje ? (viaje.transportes[0].empresa || '—') : '—' }}</td>
+					<td>{{ viaje.tieneViaje ? (viaje.transportes[0].tipoTransporte || '—') : '—' }}</td>
+					<td>{{ viaje.tieneViaje ? (viaje.transportes[0].conductor || '—') : '—' }}</td>
+					<td>{{ viaje.tieneViaje ? (viaje.transportes[0].placa || '—') : '—' }}</td>
+					<td>
+						<span *ngIf="viaje.tieneViaje" class="estado-dot"
+							[class.ok]="viaje.transporteAsignado"
+							[class.pendiente]="!viaje.transporteAsignado">
+							{{ viaje.transporteAsignado ? 'Asignado' : 'Pendiente' }}
+						</span>
+						<span *ngIf="!viaje.tieneViaje" class="estado-dot disabled">Sin viaje</span>
+					</td>
+					<td>
+						<div class="actions" *ngIf="viaje.tieneViaje">
+							<button class="ver" *ngIf="viaje.transporteAsignado" (click)="verDetalle(viaje)">
+								<i class="fa-solid fa-eye"></i>
+							</button>
+							<button [class]="viaje.transporteAsignado ? 'edit' : 'assign'" (click)="seleccionarViaje(viaje)">
+								{{ viaje.transporteAsignado ? 'Editar' : 'Asignar' }}
+							</button>
+							<button class="del" *ngIf="viaje.transporteAsignado" (click)="eliminar(viaje)">
+								Eliminar
+							</button>
+						</div>
+						<span *ngIf="!viaje.tieneViaje" class="sin-viaje-label">Sin viaje creado</span>
+					</td>
+				</tr>
+				<tr *ngIf="viajes.length === 0">
+					<td colspan="7" class="empty">No hay paquetes disponibles.</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
+		<i class="toast-icon"
+			[class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
+		<span class="toast-msg">{{ toastMsg }}</span>
+	</div>
+
+</div>
+
+<!-- FORMULARIO MODAL -->
+<app-form-assign-transport
+	[isOpen]="showForm"
+	[viajes]="viajes"
+	[viajeSeleccionado]="viajeSeleccionado"
+	[editandoTransporteId]="editandoTransporteId"
+	[proveedores]="proveedoresTransporte"
+	[preloadData]="formPreload"
+	(closed)="cerrarForm()"
+	(saved)="onFormSaved($event)"
+	(saveFailed)="onFormFailed($event)">
+</app-form-assign-transport>
+
+<!-- MODAL DETALLE -->
+<app-detail-transport
+	[isOpen]="showDetalle"
+	[viaje]="viajeDetalle"
+	(closed)="cerrarDetalle()">
+</app-detail-transport>

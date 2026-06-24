@@ -1,0 +1,48 @@
+<div class="modal-backdrop" *ngIf="isOpen" (click)="cerrar()"></div>
+<div class="modal-panel" *ngIf="isOpen">
+	<div class="modal-header">
+		<h3>{{ editando ? 'Editar contacto de emergencia' : 'Nuevo contacto de emergencia' }}</h3>
+		<button class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
+	</div>
+
+	<form [formGroup]="contactoForm" (ngSubmit)="guardar()">
+		<div class="form-grid">
+			<div class="form-group span-2">
+				<label>Nombre del viajero *</label>
+				<input type="text" formControlName="nombreViajero" placeholder="Ej: Juan Pérez" autocomplete="off">
+				<span class="error" *ngIf="contactoForm.get('nombreViajero')?.invalid && contactoForm.get('nombreViajero')?.touched">Campo requerido</span>
+			</div>
+
+			<div class="form-group span-2">
+				<label>Nombre del contacto *</label>
+				<input type="text" formControlName="nombreContacto" placeholder="Nombre completo">
+				<span class="error" *ngIf="contactoForm.get('nombreContacto')?.invalid && contactoForm.get('nombreContacto')?.touched">Campo requerido (min. 3 caracteres)</span>
+			</div>
+
+			<div class="form-group">
+				<label>Relacion *</label>
+				<input type="text" formControlName="relacion" placeholder="Ej: Padre, Madre, Amigo/a">
+				<span class="error" *ngIf="contactoForm.get('relacion')?.invalid && contactoForm.get('relacion')?.touched">Campo requerido</span>
+			</div>
+
+			<div class="form-group">
+				<label>Telefono principal *</label>
+				<input type="text" formControlName="telefono" placeholder="+57 300 000 0000">
+				<span class="error" *ngIf="contactoForm.get('telefono')?.invalid && contactoForm.get('telefono')?.touched">Telefono invalido</span>
+			</div>
+
+			<div class="form-group span-2">
+				<label>Correo electronico (opcional)</label>
+				<input type="email" formControlName="correo" placeholder="contacto@email.com">
+				<span class="error" *ngIf="contactoForm.get('correo')?.invalid && contactoForm.get('correo')?.touched">Correo invalido</span>
+			</div>
+		</div>
+
+		<div class="modal-actions">
+			<button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
+			<button type="submit" class="btn-guardar" [disabled]="enviando">
+				{{ enviando ? 'Guardando...' : 'Guardar cambios' }}
+			</button>
+		</div>
+	</form>
+</div>
