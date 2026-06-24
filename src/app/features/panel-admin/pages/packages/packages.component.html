@@ -125,5 +125,5 @@
 </app-toast-notification>
 
 <app-form-package-creation [isOpen]="showCreateModal" [mode]="editingPackage ? 'edit' : 'create'"
-	[editPackage]="editingPackage" (saved)="handlePackageSaved($event)" (closed)="closeCreateModal()">
+	[editPackage]="editingPackage" (saved)="handlePackageSaved()" (closed)="closeCreateModal()">
 </app-form-package-creation>

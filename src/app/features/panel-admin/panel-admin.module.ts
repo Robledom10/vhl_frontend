@@ -33,6 +33,9 @@ import { ComunicacionesComponent } from './pages/operaciones/pages/communication
 import { UploadDocumentModalComponent } from './pages/profile/components/upload-document-modal/upload-document-modal.component';
 import { DocumentViewerComponent } from './pages/reservations/components/document-viewer/document-viewer.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { DetalleViajeComponent } from './pages/packages/pages/operations-dashboard/components/detalle-viaje/detalle-viaje.component';
+import { EditViajeFormComponent } from './pages/packages/pages/operations-dashboard/components/edit-viaje-form/edit-viaje-form.component';
+import { ViajeFormComponent } from './pages/packages/pages/operations-dashboard/components/viaje-form/viaje-form.component';
 
 @NgModule({
 	declarations: [
@@ -64,6 +67,9 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 		ComunicacionesComponent,
 		UploadDocumentModalComponent,
 		DocumentViewerComponent,
+		DetalleViajeComponent,
+		EditViajeFormComponent,
+		ViajeFormComponent,
 	],
 	imports: [
 		CommonModule,

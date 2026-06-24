@@ -54,21 +54,7 @@ export class PackagesComponent implements OnInit {
 		document.body.style.overflow = '';
 	}
 
-	handlePackageSaved(event: { action: 'created' | 'updated'; name: string }): void {
-		if (event.action === 'created') {
-			this.showFeedbackToast(
-				'Paquete creado con éxito',
-				`El paquete "${event.name}" ya está disponible en la lista.`,
-				'success',
-			);
-		} else {
-			this.showFeedbackToast(
-				'Paquete actualizado',
-				`Los cambios de "${event.name}" se guardaron correctamente.`,
-				'edit',
-			);
-		}
-
+	handlePackageSaved(): void {
 		this.cargarPaquetes();
 	}
 
@@ -206,8 +192,8 @@ export class PackagesComponent implements OnInit {
 			next: () => {
 				this.showDeleteModal = false;
 				this.showFeedbackToast(
-					isInactive ? 'Paquete eliminado definitivamente' : 'Paquete movido a inactivos',
-					isInactive ? `"${deletedName}" fue eliminado permanentemente.` : `"${deletedName}" ya no aparece entre los paquetes activos.`,
+					'Paquete eliminado',
+					`Se eliminó correctamente el paquete ${deletedName}.`,
 					'delete',
 				);
 				this.packages = this.packages.filter(pkg => pkg.id !== this.selectedPackage?.id);
