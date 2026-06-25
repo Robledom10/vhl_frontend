@@ -14,9 +14,11 @@ export class FormProviderComponent implements OnChanges {
 	@Input() mode: 'create' | 'edit' | 'view' = 'create';
 	@Input() provider: RespuestaProveedor | null = null;
 	@Output() closed = new EventEmitter<void>();
-	@Output() saved = new EventEmitter<void>();
+	@Output() saved = new EventEmitter<{ nombre: string }>();
 	loading = false;
 	errorMsg = '';
+	showConfirmModal = false;
+	pendingRequest: SolicitudProveedor | null = null;
 
 	tiposVehiculo = ['Bus', 'Avión', 'Van', 'Minibus', 'Lancha', 'Otro'];
 
@@ -87,7 +89,7 @@ export class FormProviderComponent implements OnChanges {
 		}
 
 		const v = this.providerForm.value;
-		const request: SolicitudProveedor = {
+		this.pendingRequest = {
 			nombre: v.nombre ?? '',
 			tipoProveedor: v.tipoProveedor ?? '',
 			correo: v.correo ?? '',
@@ -101,14 +103,22 @@ export class FormProviderComponent implements OnChanges {
 			notas: v.notas || undefined,
 		};
 
+		this.showConfirmModal = true;
+	}
+
+	confirmSave(): void {
+		if (!this.pendingRequest) return;
+		const request = this.pendingRequest;
+
 		this.loading = true;
 		this.errorMsg = '';
+		this.showConfirmModal = false;
 
 		if (this.mode === 'create') {
 			this.providerService.createProvider(request).subscribe({
 				next: () => {
 					this.loading = false;
-					this.saved.emit();
+					this.saved.emit({ nombre: request.nombre });
 					this.closeModal();
 				},
 				error: (error) => {
@@ -123,7 +133,7 @@ export class FormProviderComponent implements OnChanges {
 			this.providerService.updateProvider(this.provider.id, request).subscribe({
 				next: () => {
 					this.loading = false;
-					this.saved.emit();
+					this.saved.emit({ nombre: request.nombre });
 					this.closeModal();
 				},
 				error: (error) => {

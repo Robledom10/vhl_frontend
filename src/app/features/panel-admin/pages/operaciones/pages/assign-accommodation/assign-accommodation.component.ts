@@ -75,15 +75,22 @@ export class AsignarAlojamientoComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.authSvc.getAllUsers().subscribe({
-			next: (users: any[]) => {
-				this.usuarios = users.map(u => ({ id: u.id, firstName: u.firstName, lastName: u.lastName }));
+			next: (response: any) => {
+				const users = response.content ?? response;
+				this.usuarios = users.map((u: any) => ({
+					id: u.id,
+					firstName: u.firstName,
+					lastName: u.lastName
+				}));
 			},
 			error: () => { this.errorUsuarios = true; }
 		});
+
 		this.pkgSvc.getProveedoresByTipo('Hotel').subscribe({
 			next: (items) => { this.proveedoresAlojamiento = items; },
 			error: () => { }
 		});
+
 		this.cargarViajes();
 	}
 
@@ -221,7 +228,13 @@ export class AsignarAlojamientoComponent implements OnInit {
 		return nombre || '—';
 	}
 
-	cerrarForm(): void { this.showForm = false; this.viajeSeleccionado = null; this.editandoId = null; this.showCalendarCheckIn = false; this.showCalendarCheckOut = false; }
+	cerrarForm(): void {
+		this.showForm = false;
+		this.viajeSeleccionado = null;
+		this.editandoId = null;
+		this.showCalendarCheckIn = false;
+		this.showCalendarCheckOut = false;
+	}
 
 	verDetalle(viaje: ViajeDisplay): void { this.viajeDetalle = viaje; this.showDetalle = true; }
 	cerrarDetalle(): void { this.showDetalle = false; this.viajeDetalle = null; }
@@ -249,6 +262,7 @@ export class AsignarAlojamientoComponent implements OnInit {
 			this.mostrarToast('Selecciona un viaje', 'error');
 			return;
 		}
+
 		const nombreDigitado = (v.nombreViajero || '').trim().toLowerCase();
 		const encontrado = nombreDigitado
 			? this.usuarios.find(u =>
@@ -258,9 +272,10 @@ export class AsignarAlojamientoComponent implements OnInit {
 			: null;
 		const idViajero = encontrado?.id ?? (this.authSvc.getUser()?.id ?? 1);
 		const nombreViajero = (v.nombreViajero || '').trim() || null;
+
 		const body = {
-			idViajero: idViajero,
-			nombreViajero: nombreViajero,
+			idViajero,
+			nombreViajero,
 			hotel: v.nombreHotel,
 			habitacion: v.habitacion,
 			direccion: v.direccion,
@@ -293,7 +308,9 @@ export class AsignarAlojamientoComponent implements OnInit {
 	}
 
 	mostrarToast(msg: string, type: 'success' | 'error' = 'success'): void {
-		this.toastMsg = msg; this.toastType = type; this.showToast = true;
+		this.toastMsg = msg;
+		this.toastType = type;
+		this.showToast = true;
 		setTimeout(() => { this.showToast = false; }, 3500);
 	}
 
