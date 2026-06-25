@@ -179,7 +179,7 @@
 						<div class="form-group full">
 							<select id="idPaquete" [(ngModel)]="selectedPaqueteId"
 								(ngModelChange)="onPaqueteChange($event)"
-								[disabled]="cargandoViajes">
+								[attr.disabled]="cargandoViajes ? true : null">
 								<option value="" disabled selected>
 									{{ cargandoViajes ? 'Cargando paquetes...' : (paquetesDisponibles.length === 0 ? 'No hay paquetes disponibles' : 'Selecciona un paquete') }}
 								</option>
@@ -198,7 +198,7 @@
 						<div class="form-group full">
 							<select id="idViaje" [(ngModel)]="form.idViaje"
 								(ngModelChange)="onViajeChange($event)"
-								[disabled]="!selectedPaqueteId || cargandoViajes"
+								[attr.disabled]="(!selectedPaqueteId || cargandoViajes) ? true : null"
 								[class.ng-invalid]="submitted && !form.idViaje">
 								<option value="" disabled selected>
 									{{ !selectedPaqueteId ? 'Selecciona primero un paquete' : (viajesFiltrados.length === 0 ? 'No hay viajes para este paquete' : 'Selecciona un viaje') }}

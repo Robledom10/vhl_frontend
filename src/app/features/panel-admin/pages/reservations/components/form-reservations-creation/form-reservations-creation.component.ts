@@ -3,9 +3,10 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { forkJoin, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Reservation } from '../../models/reservations.models';
-import { ReservationService } from '../../../../../../core/services/reservation.service';
+import { ReservationService, SolicitudReserva } from '../../../../../../core/services/reservation.service';
 import { OperacionesService } from '../../../../../../core/services/operaciones.service';
 import { UsuarioService } from '../../../../../../core/services/usuario.service';
+import { PackageService } from '../../../../../../core/services/package.service';
 
 // ─── Modelos de front ────
 
@@ -50,16 +51,6 @@ export interface ViajeOption {
     fechaSalida: string;
     fechaRegreso: string;
     precio: number;
-}
-
-export interface ReservationCreateRequest {
-    idUsuario: number;
-    idPaquete: number;
-    cantidadPasajeros: number;
-    precioTotal: number;
-    fechaInicioViaje: string;
-    fechaFinViaje: string;
-    notas?: string;
 }
 
 // ─── Animaciones ─────────────────────────────────────────────
@@ -110,7 +101,8 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
     constructor(
         private reservationService: ReservationService,
         private operacionesService: OperacionesService,
-        private usuarioService: UsuarioService
+        private usuarioService: UsuarioService,
+        private packageService: PackageService
     ) { }
 
     currentStep = 1;
@@ -147,6 +139,9 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['isOpen']?.currentValue === true) {
             this.resetForm();
+            if (this.paquetesDisponibles.length === 0 || this.errorViajes) {
+                this.cargarViajes();
+            }
             if (this.mode === 'new' && this.prefilledDocument) {
                 this.documentoBusqueda = this.prefilledDocument;
                 this.buscarCliente();
@@ -203,50 +198,53 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
         this.cargandoViajes = true;
         this.errorViajes = false;
 
-        this.operacionesService.getViajes().pipe(
-            map(viajes => viajes.filter(v => {
-                const e = (v.estado ?? '').toUpperCase();
-                return e !== 'CANCELADO' && e !== 'FINALIZADO';
-            })),
-            catchError(() => of([]))
-        ).subscribe({
-            next: (viajes) => {
-                if (viajes.length === 0) {
-                    this.viajesDisponibles = [];
+        forkJoin({
+            viajes: this.operacionesService.getViajes().pipe(
+                map((res: any) => Array.isArray(res) ? res : (res?.content ?? [])),
+                catchError(() => of([]))
+            ),
+            paquetes: this.packageService.getPackages({ tamano: 100 }).pipe(
+                map((res: any) => Array.isArray(res) ? res : (res?.content ?? [])),
+                catchError(() => of([]))
+            ),
+        }).subscribe({
+            next: ({ viajes, paquetes }) => {
+                try {
+                    const viajesArray: any[] = Array.isArray(viajes) ? viajes : [];
+                    const paquetesArray: any[] = Array.isArray(paquetes) ? paquetes : [];
+
+                    const filtrados = viajesArray.filter(v => {
+                        const e = (v?.estado ?? '').toUpperCase();
+                        return e !== 'CANCELADO' && e !== 'FINALIZADO';
+                    });
+
+                    const paqueteMap = new Map(paquetesArray.map(p => [p.id, p]));
+
+                    this.viajesDisponibles = filtrados.map(v => {
+                        const pkg = (paqueteMap.get(v.idPaquete) ?? {}) as any;
+                        return {
+                            id: v.id,
+                            idPaquete: v.idPaquete,
+                            paqueteNombre: pkg.titulo ?? `Paquete ${v.idPaquete}`,
+                            destino: pkg.destino ?? '',
+                            fechaSalida: v.fechaSalida,
+                            fechaRegreso: v.fechaRegreso,
+                            precio: pkg.precio ?? 0,
+                        };
+                    });
+
+                    this.paquetesDisponibles = paquetesArray.map(p => ({
+                        id: p.id,
+                        nombre: p.titulo,
+                    }));
+
+                    console.log('[ReservaForm] Paquetes cargados:', this.paquetesDisponibles.length);
+                    console.log('[ReservaForm] Viajes cargados:', this.viajesDisponibles.length);
+                } catch (err) {
+                    console.error('[ReservaForm] Error procesando datos:', err);
+                } finally {
                     this.cargandoViajes = false;
-                    return;
                 }
-                const uniqueIds = [...new Set(viajes.map(v => v.idPaquete))];
-                forkJoin(
-                    uniqueIds.map(id =>
-                        this.operacionesService.getPaquete(id).pipe(catchError(() => of({ titulo: `Paquete ${id}`, destino: '', precio: 0 })))
-                    )
-                ).subscribe({
-                    next: (paquetes) => {
-                        const paqueteMap = new Map(uniqueIds.map((id, i) => [id, paquetes[i] as any]));
-                        this.viajesDisponibles = viajes.map(v => {
-                            const pkg = paqueteMap.get(v.idPaquete) ?? {};
-                            return {
-                                id: v.id,
-                                idPaquete: v.idPaquete,
-                                paqueteNombre: pkg.titulo ?? `Paquete ${v.idPaquete}`,
-                                destino: pkg.destino ?? '',
-                                fechaSalida: v.fechaSalida,
-                                fechaRegreso: v.fechaRegreso,
-                                precio: pkg.precio ?? 0,
-                            };
-                        });
-                        const seen = new Set<number>();
-                        this.paquetesDisponibles = this.viajesDisponibles
-                            .filter(v => { const ok = !seen.has(v.idPaquete); seen.add(v.idPaquete); return ok; })
-                            .map(v => ({ id: v.idPaquete, nombre: v.paqueteNombre }));
-                        this.cargandoViajes = false;
-                    },
-                    error: () => {
-                        this.cargandoViajes = false;
-                        this.errorViajes = true;
-                    },
-                });
             },
             error: () => {
                 this.cargandoViajes = false;
@@ -385,17 +383,34 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
         this.isSaving = true;
         this.saveError = '';
 
-        const solicitud: ReservationCreateRequest = {
+        const solicitud: SolicitudReserva = {
             idUsuario: Number(this.form.idUsuario),
             idPaquete: viajeSeleccionado.idPaquete,
-            cantidadPasajeros: Number(this.form.personas) || 1,
-            precioTotal: Number(this.form.total) || 0,
-            fechaInicioViaje: this.toLocalDateTime(this.form.fechaSalida),
-            fechaFinViaje: this.toLocalDateTime(this.form.fechaRegreso),
+            idViaje: Number(this.form.idViaje),
+            personas: Number(this.form.personas) || 1,
+            acompanantes: this.form.acompanantes,
+            contactosEmergencia: this.form.contactosEmergencia,
+            paqueteNombre: this.form.paqueteNombre,
+            destino: this.form.destino,
+            fechaSalida: this.toLocalDateTime(this.form.fechaSalida),
+            fechaRegreso: this.toLocalDateTime(this.form.fechaRegreso),
+            tipoHabitacion: this.form.tipoHabitacion,
+            solicitudEspecial: this.form.solicitudEspecial || undefined,
             notas: this.form.notas || undefined,
+            total: Number(this.form.total) || 0,
         };
 
-        // this.reservationService.crear(solicitud).subscribe({ ... });
+        this.reservationService.crear(solicitud).subscribe({
+            next: (reservation) => {
+                this.isSaving = false;
+                this.reservationCreated.emit(reservation);
+                this.closed.emit();
+            },
+            error: () => {
+                this.isSaving = false;
+                this.saveError = 'Ocurrió un error al crear la reserva. Intenta de nuevo.';
+            },
+        });
     }
 
     cancel(): void {
