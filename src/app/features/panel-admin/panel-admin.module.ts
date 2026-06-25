@@ -43,6 +43,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { DetalleViajeComponent } from './pages/operation/pages/operations-dashboard/components/detalle-viaje/detalle-viaje.component';
 import { EditViajeFormComponent } from './pages/operation/pages/operations-dashboard/components/edit-viaje-form/edit-viaje-form.component';
 import { ViajeFormComponent } from './pages/operation/pages/operations-dashboard/components/viaje-form/viaje-form.component';
+import { ContactosEmergenciaComponent } from './pages/operation/pages/emergency-contacts/emergency-contacts.component';
 
 @NgModule({
 	declarations: [
@@ -84,6 +85,7 @@ import { ViajeFormComponent } from './pages/operation/pages/operations-dashboard
 		DetalleViajeComponent,
 		EditViajeFormComponent,
 		ViajeFormComponent,
+		ContactosEmergenciaComponent
 	],
 	imports: [
 		CommonModule,

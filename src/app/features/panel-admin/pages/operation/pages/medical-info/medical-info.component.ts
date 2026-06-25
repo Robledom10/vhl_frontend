@@ -32,6 +32,56 @@ export class InfoMedicaComponent implements OnInit {
 	showDeleteModal = false;
 	registroAEliminar: InformacionMedica | null = null;
 
+	// ─── Paginación registros médicos ─────────────────────
+	paginaRegistros = 0;
+	readonly tamanoRegistros = 6;
+
+	get registrosPaginados(): InformacionMedica[] {
+		const start = this.paginaRegistros * this.tamanoRegistros;
+		return this.registros.slice(start, start + this.tamanoRegistros);
+	}
+
+	get totalPaginasRegistros(): number {
+		return Math.ceil(this.registros.length / this.tamanoRegistros);
+	}
+
+	get paginasRegistros(): number[] {
+		const delta = 2;
+		const start = Math.max(0, this.paginaRegistros - delta);
+		const end = Math.min(this.totalPaginasRegistros - 1, this.paginaRegistros + delta);
+		return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+	}
+
+	cambiarPaginaRegistros(n: number): void {
+		if (n < 0 || n >= this.totalPaginasRegistros) return;
+		this.paginaRegistros = n;
+	}
+
+	// ─── Paginación contactos ─────────────────────────────
+	paginaContactos = 0;
+	readonly tamanoContactos = 5;
+
+	get contactosPaginados(): ContactoEmergencia[] {
+		const start = this.paginaContactos * this.tamanoContactos;
+		return this.contactos.slice(start, start + this.tamanoContactos);
+	}
+
+	get totalPaginasContactos(): number {
+		return Math.ceil(this.contactos.length / this.tamanoContactos);
+	}
+
+	get paginasContactos(): number[] {
+		const delta = 2;
+		const start = Math.max(0, this.paginaContactos - delta);
+		const end = Math.min(this.totalPaginasContactos - 1, this.paginaContactos + delta);
+		return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+	}
+
+	cambiarPaginaContactos(n: number): void {
+		if (n < 0 || n >= this.totalPaginasContactos) return;
+		this.paginaContactos = n;
+	}
+
 	constructor(private svc: OperacionesService) { }
 
 	ngOnInit(): void {
@@ -60,6 +110,7 @@ export class InfoMedicaComponent implements OnInit {
 
 	cargarTodosContactos(): void {
 		if (this.viajes.length === 0) return;
+		this.paginaRegistros = 0;
 		forkJoin(
 			this.viajes.map(v => this.svc.getContactos(v.id).pipe(catchError(() => of([]))))
 		).pipe(
@@ -71,6 +122,7 @@ export class InfoMedicaComponent implements OnInit {
 
 	cargarTodo(): void {
 		if (!this.idViajeSeleccionado) return;
+		this.paginaContactos = 0;
 		this.svc.getInformacionMedica(this.idViajeSeleccionado).pipe(
 			catchError(() => {
 				this.mostrarToast('Error', 'No se pudieron cargar los registros médicos.', 'error');

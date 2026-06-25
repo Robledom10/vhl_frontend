@@ -30,7 +30,7 @@
 	</div>
 
 	<div class="contactos-grid">
-		<div class="contacto-card" *ngFor="let c of contactos">
+		<div class="contacto-card" *ngFor="let c of contactosPaginados">
 			<div class="card-header">
 				<div class="viajero-badge">
 					<i class="fa-solid fa-user"></i>
@@ -70,6 +70,31 @@
 		<div *ngIf="contactos.length === 0"
 			style="padding: 2rem; color: var(--color-texto-secundario); text-align: center; grid-column: 1/-1;">
 			No hay contactos registrados para este viaje.
+		</div>
+	</div>
+
+	<!-- PAGINACIÓN -->
+	<div class="pagination-contactos" *ngIf="totalPaginasContactos > 1">
+		<div class="pag-controls">
+			<button class="pag-btn" [disabled]="paginaContactos === 0" (click)="cambiarPaginaContactos(0)">
+				<i class="fa-solid fa-angles-left"></i>
+			</button>
+			<button class="pag-btn" [disabled]="paginaContactos === 0"
+				(click)="cambiarPaginaContactos(paginaContactos - 1)">
+				<i class="fa-solid fa-chevron-left"></i>
+			</button>
+			<button *ngFor="let p of paginasContactos" class="pag-btn" [class.active]="p === paginaContactos"
+				(click)="cambiarPaginaContactos(p)">
+				{{ p + 1 }}
+			</button>
+			<button class="pag-btn" [disabled]="paginaContactos === totalPaginasContactos - 1"
+				(click)="cambiarPaginaContactos(paginaContactos + 1)">
+				<i class="fa-solid fa-chevron-right"></i>
+			</button>
+			<button class="pag-btn" [disabled]="paginaContactos === totalPaginasContactos - 1"
+				(click)="cambiarPaginaContactos(totalPaginasContactos - 1)">
+				<i class="fa-solid fa-angles-right"></i>
+			</button>
 		</div>
 	</div>
 </div>

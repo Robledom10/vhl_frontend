@@ -30,6 +30,10 @@ export class CheckInQrComponent implements OnInit {
 	toastMsg = '';
 	toastType: 'success' | 'error' = 'success';
 
+	// ─── Paginación reservas ──────────────────────────────
+	paginaReservas = 0;
+	readonly tamanoReservas = 5;
+
 	constructor(private svc: OperacionesService) { }
 
 	ngOnInit(): void {
@@ -60,6 +64,7 @@ export class CheckInQrComponent implements OnInit {
 
 	cargarDatos(): void {
 		if (!this.idViajeSeleccionado || !this.viajeActual) return;
+		this.paginaReservas = 0;
 		const idPaquete = this.viajeActual.idPaquete;
 		forkJoin({
 			reservas: this.svc.getReservasPorPaquete(idPaquete).pipe(catchError(() => {
@@ -137,5 +142,26 @@ export class CheckInQrComponent implements OnInit {
 		this.toastType = type;
 		this.showToast = true;
 		setTimeout(() => { this.showToast = false; }, 3500);
+	}
+
+	get reservasPaginadas(): ReservaApi[] {
+		const start = this.paginaReservas * this.tamanoReservas;
+		return this.reservas.slice(start, start + this.tamanoReservas);
+	}
+
+	get totalPaginasReservas(): number {
+		return Math.ceil(this.reservas.length / this.tamanoReservas);
+	}
+
+	get paginasReservas(): number[] {
+		const delta = 2;
+		const start = Math.max(0, this.paginaReservas - delta);
+		const end = Math.min(this.totalPaginasReservas - 1, this.paginaReservas + delta);
+		return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+	}
+
+	cambiarPaginaReservas(n: number): void {
+		if (n < 0 || n >= this.totalPaginasReservas) return;
+		this.paginaReservas = n;
 	}
 }

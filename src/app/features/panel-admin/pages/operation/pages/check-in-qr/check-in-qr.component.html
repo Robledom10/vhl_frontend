@@ -57,6 +57,10 @@
 				<i class="fa-solid fa-ticket"></i>
 				<h3>Reservas del viaje</h3>
 			</div>
+			<!-- Info de paginación en el header -->
+			<span class="panel-pag-info" *ngIf="reservas.length > 0">
+				{{ reservas.length }} reservas · Página {{ paginaReservas + 1 }} de {{ totalPaginasReservas }}
+			</span>
 		</div>
 
 		<div class="table-container">
@@ -71,7 +75,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr *ngFor="let r of reservas">
+					<tr *ngFor="let r of reservasPaginadas">
 						<td>
 							<div class="td-viajero">
 								<div class="avatar-sm">
@@ -119,6 +123,31 @@
 					</tr>
 				</tbody>
 			</table>
+		</div>
+
+		<!-- PAGINACIÓN RESERVAS -->
+		<div class="pagination-reservas" *ngIf="totalPaginasReservas > 1">
+			<div class="pag-controls">
+				<button class="pag-btn" [disabled]="paginaReservas === 0" (click)="cambiarPaginaReservas(0)">
+					<i class="fa-solid fa-angles-left"></i>
+				</button>
+				<button class="pag-btn" [disabled]="paginaReservas === 0"
+					(click)="cambiarPaginaReservas(paginaReservas - 1)">
+					<i class="fa-solid fa-chevron-left"></i>
+				</button>
+				<button *ngFor="let p of paginasReservas" class="pag-btn" [class.active]="p === paginaReservas"
+					(click)="cambiarPaginaReservas(p)">
+					{{ p + 1 }}
+				</button>
+				<button class="pag-btn" [disabled]="paginaReservas === totalPaginasReservas - 1"
+					(click)="cambiarPaginaReservas(paginaReservas + 1)">
+					<i class="fa-solid fa-chevron-right"></i>
+				</button>
+				<button class="pag-btn" [disabled]="paginaReservas === totalPaginasReservas - 1"
+					(click)="cambiarPaginaReservas(totalPaginasReservas - 1)">
+					<i class="fa-solid fa-angles-right"></i>
+				</button>
+			</div>
 		</div>
 	</div>
 </div>

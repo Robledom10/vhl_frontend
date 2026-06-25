@@ -356,6 +356,61 @@ tbody td:last-child {
 	box-shadow: none;
 }
 
+/* ── PAGINACIÓN VIAJES ───────────────────────────────────────────── */
+.panel-pag-info {
+	font-size: 12px;
+	color: var(--color-texto-secundario);
+	font-family: "Outfit", sans-serif;
+}
+
+.pagination-reservas {
+	display: flex;
+	justify-content: center;
+	padding-top: 8px;
+	border-top: 1px solid #f0f0f0;
+}
+
+.pag-controls {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.pag-btn {
+	width: 32px;
+	height: 32px;
+	border-radius: 10px;
+	border: 1px solid var(--bordes);
+	background: white;
+	color: var(--color-texto-secundario);
+	font-family: "Outfit", sans-serif;
+	font-size: 13px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+}
+
+.pag-btn:hover:not(:disabled) {
+	background: rgba(63, 162, 219, 0.08);
+	color: var(--color-primario);
+	border-color: var(--color-primario);
+}
+
+.pag-btn.active {
+	background: var(--color-primario);
+	color: white;
+	border-color: var(--color-primario);
+}
+
+.pag-btn:disabled {
+	opacity: 0.35;
+	cursor: not-allowed;
+}
+
 /* ── SPIN ────────────────────────────────────────────────────────── */
 .spinning {
 	animation: spin 0.9s linear infinite;

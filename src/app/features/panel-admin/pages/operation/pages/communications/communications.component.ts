@@ -49,6 +49,31 @@ export class ComunicacionesComponent implements OnInit {
 		return emails.size;
 	}
 
+	// ─── Paginación comunicaciones ────────────────────────
+	paginaCom = 0;
+	readonly tamanoCom = 5;
+
+	get comunicacionesPaginadas(): Notificacion[] {
+		const start = this.paginaCom * this.tamanoCom;
+		return this.comunicaciones.slice(start, start + this.tamanoCom);
+	}
+
+	get totalPaginasCom(): number {
+		return Math.ceil(this.comunicaciones.length / this.tamanoCom);
+	}
+
+	get paginasCom(): number[] {
+		const delta = 2;
+		const start = Math.max(0, this.paginaCom - delta);
+		const end = Math.min(this.totalPaginasCom - 1, this.paginaCom + delta);
+		return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+	}
+
+	cambiarPaginaCom(n: number): void {
+		if (n < 0 || n >= this.totalPaginasCom) return;
+		this.paginaCom = n;
+	}
+
 	constructor(private svc: OperacionesService) { }
 
 	ngOnInit(): void {
@@ -98,6 +123,7 @@ export class ComunicacionesComponent implements OnInit {
 
 	cargarNotificaciones(): void {
 		if (!this.idViajeSeleccionado) return;
+		this.paginaCom = 0;
 		this.svc.getNotificaciones(this.idViajeSeleccionado).subscribe({
 			next: (items) => { this.comunicaciones = items; },
 			error: () => {

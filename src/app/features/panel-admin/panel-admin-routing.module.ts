@@ -17,6 +17,7 @@ import { InfoMedicaComponent } from './pages/operation/pages/medical-info/medica
 import { ComunicacionesComponent } from './pages/operation/pages/communications/communications.component';
 import { AuthGuard } from '../../core/guards/auth.guard';
 import { roleGuard } from '../../core/guards/role.guard';
+import { ContactosEmergenciaComponent } from './pages/operation/pages/emergency-contacts/emergency-contacts.component';
 
 const routes: Routes = [
 	{
@@ -87,6 +88,11 @@ const routes: Routes = [
 			},
 			{
 				path: 'operaciones-info-medica', component: InfoMedicaComponent,
+				canActivate: [roleGuard],
+				data: { roles: ['ADMIN', 'GUIDE'] }
+			},
+			{
+				path: 'operaciones-contactos-emergencia', component: ContactosEmergenciaComponent,
 				canActivate: [roleGuard],
 				data: { roles: ['ADMIN', 'GUIDE'] }
 			},

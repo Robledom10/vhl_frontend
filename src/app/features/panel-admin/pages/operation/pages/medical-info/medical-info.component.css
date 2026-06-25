@@ -710,6 +710,67 @@ tbody td:last-child {
 	flex: 1;
 }
 
+/* ── PAGINACIÓN ──────────────────────────────────────── */
+.section-header-right {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.pag-info-inline {
+	font-size: 12px;
+	color: var(--color-texto-secundario);
+	font-family: "Outfit", sans-serif;
+}
+
+.pagination-bar {
+	display: flex;
+	justify-content: center;
+	padding-top: 4px;
+}
+
+.pag-controls {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.pag-btn {
+	width: 32px;
+	height: 32px;
+	border-radius: 10px;
+	border: 1px solid var(--bordes);
+	background: white;
+	color: var(--color-texto-secundario);
+	font-family: "Outfit", sans-serif;
+	font-size: 13px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+}
+
+.pag-btn:hover:not(:disabled) {
+	background: rgba(63, 162, 219, 0.08);
+	color: var(--color-primario);
+	border-color: var(--color-primario);
+}
+
+.pag-btn.active {
+	background: var(--color-primario);
+	color: white;
+	border-color: var(--color-primario);
+}
+
+.pag-btn:disabled {
+	opacity: 0.35;
+	cursor: not-allowed;
+}
+
 @keyframes toastIn {
 	from {
 		transform: translateX(80px);

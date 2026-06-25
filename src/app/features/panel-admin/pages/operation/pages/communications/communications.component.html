@@ -85,6 +85,9 @@
 		<i class="fa-solid fa-envelope-open-text"></i>
 		<h3>Mensajes enviados</h3>
 		<span class="badge-count">{{ comunicaciones.length }}</span>
+		<span class="pag-info-inline" *ngIf="totalPaginasCom > 1">
+			Página {{ paginaCom + 1 }} de {{ totalPaginasCom }}
+		</span>
 	</div>
 
 	<div class="empty-state" *ngIf="!idViajeSeleccionado">
@@ -98,7 +101,7 @@
 	</div>
 
 	<div class="comunicaciones-list" *ngIf="comunicaciones.length > 0">
-		<div class="com-card" *ngFor="let c of comunicaciones">
+		<div class="com-card" *ngFor="let c of comunicacionesPaginadas">
 			<div class="com-header">
 				<div class="com-icon" [ngClass]="c.canal === 'WHATSAPP' ? 'whatsapp' : 'gmail'">
 					<i [class]="c.canal === 'WHATSAPP' ? 'fa-brands fa-whatsapp' : 'fa-brands fa-google'"></i>
@@ -152,6 +155,29 @@
 				</div>
 			</div>
 
+		</div>
+	</div>
+
+	<div class="pagination-com" *ngIf="totalPaginasCom > 1">
+		<div class="pag-controls">
+			<button class="pag-btn" [disabled]="paginaCom === 0" (click)="cambiarPaginaCom(0)">
+				<i class="fa-solid fa-angles-left"></i>
+			</button>
+			<button class="pag-btn" [disabled]="paginaCom === 0" (click)="cambiarPaginaCom(paginaCom - 1)">
+				<i class="fa-solid fa-chevron-left"></i>
+			</button>
+			<button *ngFor="let p of paginasCom" class="pag-btn" [class.active]="p === paginaCom"
+				(click)="cambiarPaginaCom(p)">
+				{{ p + 1 }}
+			</button>
+			<button class="pag-btn" [disabled]="paginaCom === totalPaginasCom - 1"
+				(click)="cambiarPaginaCom(paginaCom + 1)">
+				<i class="fa-solid fa-chevron-right"></i>
+			</button>
+			<button class="pag-btn" [disabled]="paginaCom === totalPaginasCom - 1"
+				(click)="cambiarPaginaCom(totalPaginasCom - 1)">
+				<i class="fa-solid fa-angles-right"></i>
+			</button>
 		</div>
 	</div>
 </div>

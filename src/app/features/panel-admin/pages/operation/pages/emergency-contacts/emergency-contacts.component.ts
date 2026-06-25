@@ -29,6 +29,31 @@ export class ContactosEmergenciaComponent implements OnInit {
 	showDeleteModal = false;
 	contactoAEliminar: ContactoEmergencia | null = null;
 
+	// ─── Paginación contactos ─────────────────────────────
+	paginaContactos = 0;
+	readonly tamanoContactos = 4;
+
+	get contactosPaginados(): ContactoEmergencia[] {
+		const start = this.paginaContactos * this.tamanoContactos;
+		return this.contactos.slice(start, start + this.tamanoContactos);
+	}
+
+	get totalPaginasContactos(): number {
+		return Math.ceil(this.contactos.length / this.tamanoContactos);
+	}
+
+	get paginasContactos(): number[] {
+		const delta = 2;
+		const start = Math.max(0, this.paginaContactos - delta);
+		const end = Math.min(this.totalPaginasContactos - 1, this.paginaContactos + delta);
+		return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+	}
+
+	cambiarPaginaContactos(n: number): void {
+		if (n < 0 || n >= this.totalPaginasContactos) return;
+		this.paginaContactos = n;
+	}
+
 	constructor(private svc: OperacionesService, private authSvc: AuthService) { }
 
 	getNombreViajero(id: number): string {
@@ -69,6 +94,7 @@ export class ContactosEmergenciaComponent implements OnInit {
 
 	cargarContactos(): void {
 		if (!this.idViajeSeleccionado) return;
+		this.paginaContactos = 0;
 		this.svc.getContactos(this.idViajeSeleccionado).subscribe({
 			next: (items) => { this.contactos = items; },
 			error: () => {
