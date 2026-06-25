@@ -4,432 +4,455 @@ import { PackageService } from '../../../../../../core/services/package.service'
 import { RespuestaPaqueteTuristico, SolicitudPaqueteTuristico } from '../../../../models/package.model';
 
 @Component({
-  selector: 'app-form-package-creation',
-  templateUrl: './form-package-creation.component.html',
-  styleUrl: './form-package-creation.component.css',
+	selector: 'app-form-package-creation',
+	templateUrl: './form-package-creation.component.html',
+	styleUrl: './form-package-creation.component.css',
 })
 export class FormPackageCreationComponent implements OnInit, OnChanges {
-  @Input() isOpen = false;
-  @Input() mode: 'create' | 'edit' = 'create';
-  @Input() editPackage: RespuestaPaqueteTuristico | null = null;
-  @Output() closed = new EventEmitter<void>();
-  @Output() saved = new EventEmitter<{ action: 'created' | 'updated'; name: string }>();
+	@Input() isOpen = false;
+	@Input() mode: 'create' | 'edit' = 'create';
+	@Input() editPackage: RespuestaPaqueteTuristico | null = null;
+	@Output() closed = new EventEmitter<void>();
+	@Output() saved = new EventEmitter<void>();
 
-  currentStep = 1;
-  enviando = false;
-  showSuccessBanner = false;
-  successMessage = '';
+	currentStep = 1;
+	enviando = false;
 
-  // PREVIEWS
-  coverPreview: string | null = null;
-  galleryPreview: string[] = [];
+	// Confirm modal
+	showConfirmModal = false;
 
-  // URLS subidas a Cloudinary
-  fotoVerticalUrl = '';
-  fotoHorizontalUrl = '';
+	// Toast
+	showToast = false;
+	toastTitle = '';
+	toastMessage = '';
 
-  // INPUTS TEMPORALES
-  newIncluded = '';
-  newNotIncluded = '';
-  newPolicy = '';
-  newRequirement = '';
+	// Acción pendiente
+	private pendingRequest: SolicitudPaqueteTuristico | null = null;
 
-  showIncludedInput = false;
-  showNotIncludedInput = false;
-  showPolicyInput = false;
-  showRequirementInput = false;
+	// PREVIEWS
+	coverPreview: string | null = null;
+	galleryPreview: string[] = [];
 
-  constructor(
-    private fb: FormBuilder,
-    private packageService: PackageService,
-  ) {}
+	// URLS subidas a Cloudinary
+	fotoVerticalUrl = '';
+	fotoHorizontalUrl = '';
 
-  packageForm = this.fb.group({
-    // STEP 1
-    name: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(80)]],
-    destinations: ['', [Validators.required, Validators.minLength(3)]],
-    shortDescription: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(300)]],
-    coverImage: this.fb.control<File | null>(null),
-    galleryImages: this.fb.control<File[]>([]),
+	// INPUTS TEMPORALES
+	newIncluded = '';
+	newNotIncluded = '';
+	newPolicy = '';
+	newRequirement = '';
 
-    // STEP 2
-    duration: ['', [Validators.required, Validators.min(1)]],
-    departurePlace: ['', [Validators.required, Validators.minLength(3)]],
-    transportType: this.fb.control<string[]>([], Validators.required),
-    availableSlots: ['', [Validators.required, Validators.min(1)]],
+	showIncludedInput = false;
+	showNotIncludedInput = false;
+	showPolicyInput = false;
+	showRequirementInput = false;
 
-    // STEP 3
-    price: ['', [Validators.required, Validators.min(10000)]],
+	constructor(
+		private fb: FormBuilder,
+		private packageService: PackageService,
+	) { }
 
-    included: this.fb.array([
-      this.fb.control('Transporte terrestre ida y regreso'),
-      this.fb.control('Hospedaje en hotel 3 estrellas'),
-      this.fb.control('Alimentación (desayuno y cena)'),
-      this.fb.control('Tours turísticos guiados'),
-    ], Validators.required),
+	packageForm = this.fb.group({
+		// STEP 1
+		name: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(80)]],
+		destinations: ['', [Validators.required, Validators.minLength(3)]],
+		shortDescription: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(300)]],
+		coverImage: this.fb.control<File | null>(null),
+		galleryImages: this.fb.control<File[]>([]),
 
-    notIncluded: this.fb.array([
-      this.fb.control('Gastos personales'),
-      this.fb.control('Bebidas alcohólicas'),
-      this.fb.control('Compras personales'),
-    ], Validators.required),
+		// STEP 2
+		duration: ['', [Validators.required, Validators.min(1)]],
+		departurePlace: ['', [Validators.required, Validators.minLength(3)]],
+		transportType: this.fb.control<string[]>([], Validators.required),
+		availableSlots: ['', [Validators.required, Validators.min(1)]],
 
-    // STEP 4
-    itinerary: this.fb.array([this.fb.control('', Validators.required)]),
+		// STEP 3
+		price: ['', [Validators.required, Validators.min(10000)]],
 
-    cancellationPolicies: this.fb.array([
-      this.fb.control('Cancelación gratuita hasta 5 días antes del viaje.'),
-      this.fb.control('50% de reembolso si cancela 48 horas antes.'),
-      this.fb.control('No hay devolución el mismo día del viaje.'),
-    ], Validators.required),
+		included: this.fb.array([
+			this.fb.control('Transporte terrestre ida y regreso'),
+			this.fb.control('Hospedaje en hotel 3 estrellas'),
+			this.fb.control('Alimentación (desayuno y cena)'),
+			this.fb.control('Tours turísticos guiados'),
+		], Validators.required),
 
-    requirements: this.fb.array([
-      this.fb.control('Cédula de ciudadanía obligatoria.'),
-      this.fb.control('Edad mínima: 5 años.'),
-      this.fb.control('Pago completo antes del viaje.'),
-    ], Validators.required),
-  });
+		notIncluded: this.fb.array([
+			this.fb.control('Gastos personales'),
+			this.fb.control('Bebidas alcohólicas'),
+			this.fb.control('Compras personales'),
+		], Validators.required),
 
-  ngOnInit() {
-    this.updateFileValidators();
-    this.packageForm.get('duration')?.valueChanges.subscribe(value => {
-      const days = Number(value);
-      if (days >= 1) this.syncItineraryWithDuration(days);
-    });
-  }
+		// STEP 4
+		itinerary: this.fb.array([this.fb.control('', Validators.required)]),
 
-  private syncItineraryWithDuration(days: number) {
-    while (this.itinerary.length < days) {
-      this.itinerary.push(this.fb.control('', Validators.required));
-    }
-    while (this.itinerary.length > days) {
-      this.itinerary.removeAt(this.itinerary.length - 1);
-    }
-  }
+		cancellationPolicies: this.fb.array([
+			this.fb.control('Cancelación gratuita hasta 5 días antes del viaje.'),
+			this.fb.control('50% de reembolso si cancela 48 horas antes.'),
+			this.fb.control('No hay devolución el mismo día del viaje.'),
+		], Validators.required),
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['mode']) {
-      this.updateFileValidators();
-    }
+		requirements: this.fb.array([
+			this.fb.control('Cédula de ciudadanía obligatoria.'),
+			this.fb.control('Edad mínima: 5 años.'),
+			this.fb.control('Pago completo antes del viaje.'),
+		], Validators.required),
+	});
 
-    if (changes['isOpen'] && this.isOpen && this.mode === 'create') {
-      this.resetForm();
-    }
+	ngOnInit() {
+		this.updateFileValidators();
+		this.packageForm.get('duration')?.valueChanges.subscribe(value => {
+			const days = Number(value);
+			if (days >= 1) this.syncItineraryWithDuration(days);
+		});
+	}
 
-    if (changes['editPackage'] && this.editPackage) {
-      this.loadPackage(this.editPackage);
-    }
-  }
+	private syncItineraryWithDuration(days: number) {
+		while (this.itinerary.length < days) {
+			this.itinerary.push(this.fb.control('', Validators.required));
+		}
+		while (this.itinerary.length > days) {
+			this.itinerary.removeAt(this.itinerary.length - 1);
+		}
+	}
 
-  private updateFileValidators() {
-    const coverControl = this.packageForm.get('coverImage');
-    const galleryControl = this.packageForm.get('galleryImages');
+	ngOnChanges(changes: SimpleChanges) {
+		if (changes['mode']) {
+			this.updateFileValidators();
+		}
 
-    if (this.mode === 'create') {
-      coverControl?.setValidators(Validators.required);
-      galleryControl?.setValidators(Validators.required);
-    } else {
-      coverControl?.clearValidators();
-      galleryControl?.clearValidators();
-    }
+		if (changes['isOpen'] && this.isOpen && this.mode === 'create') {
+			this.resetForm();
+		}
 
-    coverControl?.updateValueAndValidity({ emitEvent: false });
-    galleryControl?.updateValueAndValidity({ emitEvent: false });
-  }
+		if (changes['editPackage'] && this.editPackage) {
+			this.loadPackage(this.editPackage);
+		}
+	}
 
-  private loadPackage(pkg: RespuestaPaqueteTuristico) {
-    this.resetForm();
-    this.currentStep = 1;
-    this.fotoVerticalUrl = pkg.fotoVerticalUrl || '';
-    this.fotoHorizontalUrl = pkg.fotoHorizontalUrl || '';
-    this.coverPreview = pkg.fotoVerticalUrl || '';
-    this.galleryPreview = pkg.fotoHorizontalUrl ? [pkg.fotoHorizontalUrl] : [];
+	private updateFileValidators() {
+		const coverControl = this.packageForm.get('coverImage');
+		const galleryControl = this.packageForm.get('galleryImages');
 
-    this.packageForm.patchValue({
-      name: pkg.titulo,
-      destinations: pkg.destinos?.join(', ') || pkg.destino || '',
-      shortDescription: pkg.descripcion || '',
-      duration: String(pkg.duracionDias || ''),
-      departurePlace: pkg.lugarSalida || '',
-      transportType: pkg.tiposTransporte || [pkg.tipoTransporte || 'Bus de turismo'],
-      availableSlots: String(pkg.cupo || ''),
-      price: String(pkg.precio || ''),
-    });
+		if (this.mode === 'create') {
+			coverControl?.setValidators(Validators.required);
+			galleryControl?.setValidators(Validators.required);
+		} else {
+			coverControl?.clearValidators();
+			galleryControl?.clearValidators();
+		}
 
-    const includedArray = this.fb.array(pkg.incluye?.map(item => this.fb.control(item)) || [], Validators.required);
-    this.packageForm.setControl('included', includedArray);
+		coverControl?.updateValueAndValidity({ emitEvent: false });
+		galleryControl?.updateValueAndValidity({ emitEvent: false });
+	}
 
-    const notIncludedArray = this.fb.array(pkg.noIncluye?.map(item => this.fb.control(item)) || [], Validators.required);
-    this.packageForm.setControl('notIncluded', notIncludedArray);
+	private loadPackage(pkg: RespuestaPaqueteTuristico) {
+		this.resetForm();
+		this.currentStep = 1;
+		this.fotoVerticalUrl = pkg.fotoVerticalUrl || '';
+		this.fotoHorizontalUrl = pkg.fotoHorizontalUrl || '';
+		this.coverPreview = pkg.fotoVerticalUrl || '';
+		this.galleryPreview = pkg.fotoHorizontalUrl ? [pkg.fotoHorizontalUrl] : [];
 
-    const numDays = pkg.duracionDias || 1;
-    const existingTitles = pkg.itinerario?.map(item => item.titulo) || [];
-    while (existingTitles.length < numDays) existingTitles.push('');
-    const itineraryArray = this.fb.array(
-      existingTitles.slice(0, numDays).map(titulo =>
-        this.fb.control(titulo, titulo?.trim() ? Validators.required : [])
-      )
-    );
-    this.packageForm.setControl('itinerary', itineraryArray);
+		this.packageForm.patchValue({
+			name: pkg.titulo,
+			destinations: pkg.destinos?.join(', ') || pkg.destino || '',
+			shortDescription: pkg.descripcion || '',
+			duration: String(pkg.duracionDias || ''),
+			departurePlace: pkg.lugarSalida || '',
+			transportType: pkg.tiposTransporte || [pkg.tipoTransporte || 'Bus de turismo'],
+			availableSlots: String(pkg.cupo || ''),
+			price: String(pkg.precio || ''),
+		});
 
-    const cancellationArray = this.fb.array(pkg.politicasCancelacion?.map(item => this.fb.control(item)) || [] , Validators.required);
-    this.packageForm.setControl('cancellationPolicies', cancellationArray);
+		const includedArray = this.fb.array(pkg.incluye?.map(item => this.fb.control(item)) || [], Validators.required);
+		this.packageForm.setControl('included', includedArray);
 
-    const requirementsArray = this.fb.array(pkg.requisitos?.map(item => this.fb.control(item)) || [
-      this.fb.control('Cédula de ciudadanía obligatoria.'),
-      this.fb.control('Edad mínima: 5 años.'),
-      this.fb.control('Pago completo antes del viaje.'),
-    ]);
-    this.packageForm.setControl('requirements', requirementsArray);
-  }
-  get included(): FormArray { return this.packageForm.get('included') as FormArray; }
-  get notIncluded(): FormArray { return this.packageForm.get('notIncluded') as FormArray; }
-  get itinerary(): FormArray { return this.packageForm.get('itinerary') as FormArray; }
-  get cancellationPolicies(): FormArray { return this.packageForm.get('cancellationPolicies') as FormArray; }
-  get requirements(): FormArray { return this.packageForm.get('requirements') as FormArray; }
+		const notIncludedArray = this.fb.array(pkg.noIncluye?.map(item => this.fb.control(item)) || [], Validators.required);
+		this.packageForm.setControl('notIncluded', notIncludedArray);
 
-  // STEPS
-  nextStep() {
-    let controlsToValidate: string[] = [];
-    switch (this.currentStep) {
-      case 1: controlsToValidate = ['name', 'destinations', 'shortDescription', 'coverImage', 'galleryImages']; break;
-      case 2: controlsToValidate = ['duration', 'departurePlace', 'transportType', 'availableSlots']; break;
-      case 3: controlsToValidate = ['price']; break;
-    }
-    controlsToValidate.forEach(c => this.packageForm.get(c)?.markAsTouched());
-    if (controlsToValidate.some(c => this.packageForm.get(c)?.invalid)) return;
-    if (this.currentStep < 4) this.currentStep++;
-  }
+		const numDays = pkg.duracionDias || 1;
+		const existingTitles = pkg.itinerario?.map(item => item.titulo) || [];
+		while (existingTitles.length < numDays) existingTitles.push('');
+		const itineraryArray = this.fb.array(
+			existingTitles.slice(0, numDays).map(titulo =>
+				this.fb.control(titulo, titulo?.trim() ? Validators.required : [])
+			)
+		);
+		this.packageForm.setControl('itinerary', itineraryArray);
 
-  previousStep() {
-    if (this.currentStep > 1) this.currentStep--;
-  }
+		const cancellationArray = this.fb.array(pkg.politicasCancelacion?.map(item => this.fb.control(item)) || [], Validators.required);
+		this.packageForm.setControl('cancellationPolicies', cancellationArray);
 
-  // COVER IMAGE
-  onCoverImageSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      this.packageForm.patchValue({ coverImage: file });
-      this.packageForm.get('coverImage')?.updateValueAndValidity();
-      const reader = new FileReader();
-      reader.onload = () => { this.coverPreview = reader.result as string; };
-      reader.readAsDataURL(file);
-    }
-  }
+		const requirementsArray = this.fb.array(pkg.requisitos?.map(item => this.fb.control(item)) || [
+			this.fb.control('Cédula de ciudadanía obligatoria.'),
+			this.fb.control('Edad mínima: 5 años.'),
+			this.fb.control('Pago completo antes del viaje.'),
+		]);
+		this.packageForm.setControl('requirements', requirementsArray);
+	}
+	get included(): FormArray { return this.packageForm.get('included') as FormArray; }
+	get notIncluded(): FormArray { return this.packageForm.get('notIncluded') as FormArray; }
+	get itinerary(): FormArray { return this.packageForm.get('itinerary') as FormArray; }
+	get cancellationPolicies(): FormArray { return this.packageForm.get('cancellationPolicies') as FormArray; }
+	get requirements(): FormArray { return this.packageForm.get('requirements') as FormArray; }
 
-  removeCoverImage(event: Event) {
-    event.stopPropagation();
-    this.coverPreview = null;
-    this.fotoVerticalUrl = '';
-    this.packageForm.patchValue({ coverImage: null });
-    this.packageForm.get('coverImage')?.markAsTouched();
-  }
+	// STEPS
+	nextStep() {
+		let controlsToValidate: string[] = [];
+		switch (this.currentStep) {
+			case 1: controlsToValidate = ['name', 'destinations', 'shortDescription', 'coverImage', 'galleryImages']; break;
+			case 2: controlsToValidate = ['duration', 'departurePlace', 'transportType', 'availableSlots']; break;
+			case 3: controlsToValidate = ['price']; break;
+		}
+		controlsToValidate.forEach(c => this.packageForm.get(c)?.markAsTouched());
+		if (controlsToValidate.some(c => this.packageForm.get(c)?.invalid)) return;
+		if (this.currentStep < 4) this.currentStep++;
+	}
 
-  // GALLERY IMAGES
-  onGalleryImagesSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const files = Array.from(input.files);
-      this.packageForm.patchValue({ galleryImages: files });
-      this.packageForm.get('galleryImages')?.updateValueAndValidity();
-      this.galleryPreview = [];
-      files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = () => { this.galleryPreview.push(reader.result as string); };
-        reader.readAsDataURL(file);
-      });
-    }
-  }
+	previousStep() {
+		if (this.currentStep > 1) this.currentStep--;
+	}
 
-  removeGalleryImage(index: number, event: Event) {
-    event.stopPropagation();
-    this.galleryPreview.splice(index, 1);
-    const currentImages = this.packageForm.get('galleryImages')?.value || [];
-    currentImages.splice(index, 1);
-    this.packageForm.patchValue({ galleryImages: currentImages });
-    this.packageForm.get('galleryImages')?.markAsTouched();
-  }
+	// COVER IMAGE
+	onCoverImageSelected(event: Event) {
+		const input = event.target as HTMLInputElement;
+		if (input.files && input.files.length > 0) {
+			const file = input.files[0];
+			this.packageForm.patchValue({ coverImage: file });
+			this.packageForm.get('coverImage')?.updateValueAndValidity();
+			const reader = new FileReader();
+			reader.onload = () => { this.coverPreview = reader.result as string; };
+			reader.readAsDataURL(file);
+		}
+	}
 
-  // SUBMIT — primero sube imágenes a Cloudinary, luego crea el paquete
-  async submitForm() {
-    if (this.packageForm.invalid) {
-      this.packageForm.markAllAsTouched();
-      return;
-    }
+	removeCoverImage(event: Event) {
+		event.stopPropagation();
+		this.coverPreview = null;
+		this.fotoVerticalUrl = '';
+		this.packageForm.patchValue({ coverImage: null });
+		this.packageForm.get('coverImage')?.markAsTouched();
+	}
 
-    this.enviando = true;
-    const formValue = this.packageForm.value;
+	// GALLERY IMAGES
+	onGalleryImagesSelected(event: Event) {
+		const input = event.target as HTMLInputElement;
+		if (input.files && input.files.length > 0) {
+			const files = Array.from(input.files);
+			this.packageForm.patchValue({ galleryImages: files });
+			this.packageForm.get('galleryImages')?.updateValueAndValidity();
+			this.galleryPreview = [];
+			files.forEach(file => {
+				const reader = new FileReader();
+				reader.onload = () => { this.galleryPreview.push(reader.result as string); };
+				reader.readAsDataURL(file);
+			});
+		}
+	}
 
-    try {
-      const coverFile = formValue.coverImage as File;
-      const galleryFiles = formValue.galleryImages as File[];
-      const coverUpload = coverFile
-        ? this.packageService.uploadImage(coverFile).toPromise()
-        : Promise.resolve({ url: this.fotoVerticalUrl });
-      const galleryUpload = galleryFiles && galleryFiles.length > 0
-        ? this.packageService.uploadImage(galleryFiles[0]).toPromise()
-        : Promise.resolve({ url: this.fotoHorizontalUrl });
+	removeGalleryImage(index: number, event: Event) {
+		event.stopPropagation();
+		this.galleryPreview.splice(index, 1);
+		const currentImages = this.packageForm.get('galleryImages')?.value || [];
+		currentImages.splice(index, 1);
+		this.packageForm.patchValue({ galleryImages: currentImages });
+		this.packageForm.get('galleryImages')?.markAsTouched();
+	}
 
-      const [coverResp, galleryResp] = await Promise.all([coverUpload, galleryUpload]);
-      this.fotoVerticalUrl = coverResp?.url || this.fotoVerticalUrl;
-      this.fotoHorizontalUrl = galleryResp?.url || this.fotoHorizontalUrl;
+	// SUBMIT — primero sube imágenes a Cloudinary, luego crea el paquete
+	async submitForm() {
+		if (this.packageForm.invalid) {
+			this.packageForm.markAllAsTouched();
+			return;
+		}
 
-      const destinos = String(formValue.destinations || '').split(',').map((dest: string) => dest.trim()).filter(Boolean);
-      const tiposTransporte = formValue.transportType || [];
+		this.showConfirmModal = true;
+	}
 
-      const request: SolicitudPaqueteTuristico = {
-        titulo: formValue.name?.trim() || '',
-        descripcion: formValue.shortDescription?.trim() || '',
-        destino: formValue.destinations?.trim() || '',
-        destinos: destinos.length ? destinos : [formValue.destinations?.trim() || ''],
-        duracionDias: Number(formValue.duration || 1),
-        precio: Number(formValue.price || 0),
-        cupo: Number(formValue.availableSlots || 1),
-        lugarSalida: formValue.departurePlace?.trim() || '',
-        tipoTransporte: tiposTransporte?.[0] || 'Bus de turismo',
-        tiposTransporte: tiposTransporte,
-        fotoVerticalUrl: this.fotoVerticalUrl,
-        fotoHorizontalUrl: this.fotoHorizontalUrl,
-        incluye: this.included.value as string[],
-        noIncluye: this.notIncluded.value as string[],
-        politicasCancelacion: this.cancellationPolicies.value as string[],
-        requisitos: this.requirements.value as string[],
-        itinerario: this.itinerary.controls.map((control, index) => ({
-          numeroDia: index + 1,
-          titulo: String(control.value || '').trim(),
-        })),
-      };
+	async confirmSubmit() {
 
-      const request$ = this.mode === 'edit' && this.editPackage
-        ? this.packageService.updatePackage(this.editPackage.id, request)
-        : this.packageService.createPackage(request);
+		this.showConfirmModal = false;
+		this.enviando = true;
+		const formValue = this.packageForm.value;
 
-      request$.subscribe({
-        next: () => {
-          this.enviando = false;
-          this.showSuccessBanner = true;
-          const savedName = request.titulo;
-          const savedAction = this.mode === 'edit' ? 'updated' : 'created';
+		try {
+			const coverFile = formValue.coverImage as File;
+			const galleryFiles = formValue.galleryImages as File[];
+			const coverUpload = coverFile ? this.packageService.uploadImage(coverFile).toPromise() : Promise.resolve({ url: this.fotoVerticalUrl });
+			const galleryUpload = galleryFiles && galleryFiles.length > 0 ? this.packageService.uploadImage(galleryFiles[0]).toPromise() : Promise.resolve({ url: this.fotoHorizontalUrl });
 
-          this.successMessage = this.mode === 'edit'
-            ? `Paquete "${savedName}" actualizado correctamente`
-            : `Paquete "${savedName}" creado correctamente`;
+			const [coverResp, galleryResp] = await Promise.all([coverUpload, galleryUpload]);
+			this.fotoVerticalUrl = coverResp?.url || this.fotoVerticalUrl;
+			this.fotoHorizontalUrl = galleryResp?.url || this.fotoHorizontalUrl;
 
-          setTimeout(() => {
-            this.resetForm();
-            this.closeModal();
-            this.saved.emit({ action: savedAction, name: savedName });
-          }, 1300);
-        },
-        error: (err) => {
-          this.enviando = false;
-          console.error(this.mode === 'edit' ? 'Error actualizando paquete:' : 'Error creando paquete:', err);
-          alert(`Error: ${err.error?.message || err.message}`);
-        }
-      });
+			const destinos = String(formValue.destinations || '').split(',').map((dest: string) => dest.trim()).filter(Boolean);
+			const tiposTransporte = formValue.transportType || [];
 
-    } catch (err) {
-      this.enviando = false;
-      console.error('Error subiendo imágenes:', err);
-      alert('Error subiendo las imágenes. Intenta de nuevo.');
-    }
-  }
+			const request: SolicitudPaqueteTuristico = {
+				titulo: formValue.name?.trim() || '',
+				descripcion: formValue.shortDescription?.trim() || '',
+				destino: formValue.destinations?.trim() || '',
+				destinos: destinos.length ? destinos : [formValue.destinations?.trim() || ''],
+				duracionDias: Number(formValue.duration || 1),
+				precio: Number(formValue.price || 0),
+				cupo: Number(formValue.availableSlots || 1),
+				lugarSalida: formValue.departurePlace?.trim() || '',
+				tipoTransporte: tiposTransporte?.[0] || 'Bus de turismo',
+				tiposTransporte: tiposTransporte,
+				fotoVerticalUrl: this.fotoVerticalUrl,
+				fotoHorizontalUrl: this.fotoHorizontalUrl,
+				incluye: this.included.value as string[],
+				noIncluye: this.notIncluded.value as string[],
+				politicasCancelacion: this.cancellationPolicies.value as string[],
+				requisitos: this.requirements.value as string[],
+				itinerario: this.itinerary.controls.map((control, index) => ({
+					numeroDia: index + 1,
+					titulo: String(control.value || '').trim(),
+				})),
+			};
 
-  closeModal() {
-    this.resetForm();
-    this.showSuccessBanner = false;
-    this.enviando = false;
-    this.closed.emit();
-  }
+			const request$ = this.mode === 'edit' && this.editPackage ? this.packageService.updatePackage(this.editPackage.id, request) : this.packageService.createPackage(request);
 
-  resetForm() {
-    this.packageForm.reset();
-    this.packageForm.setControl('included', this.fb.array([
-      this.fb.control('Transporte terrestre ida y regreso'),
-      this.fb.control('Hospedaje en hotel 3 estrellas'),
-      this.fb.control('Alimentación (desayuno y cena)'),
-      this.fb.control('Tours turísticos guiados'),
-    ], Validators.required));
-    this.packageForm.setControl('notIncluded', this.fb.array([
-      this.fb.control('Gastos personales'),
-      this.fb.control('Bebidas alcohólicas'),
-      this.fb.control('Compras personales'),
-    ], Validators.required));
-    this.packageForm.setControl('itinerary', this.fb.array([this.fb.control('', Validators.required)]));
-    this.packageForm.setControl('cancellationPolicies', this.fb.array([
-      this.fb.control('Cancelación gratuita hasta 5 días antes del viaje.'),
-      this.fb.control('50% de reembolso si cancela 48 horas antes.'),
-      this.fb.control('No hay devolución el mismo día del viaje.'),
-    ], Validators.required));
-    this.packageForm.setControl('requirements', this.fb.array([
-      this.fb.control('Cédula de ciudadanía obligatoria.'),
-      this.fb.control('Edad mínima: 5 años.'),
-      this.fb.control('Pago completo antes del viaje.'),
-    ], Validators.required));
-    this.packageForm.patchValue({ transportType: [] });
-    this.showSuccessBanner = false;
-    this.successMessage = '';
-    this.coverPreview = null;
-    this.galleryPreview = [];
-    this.fotoVerticalUrl = '';
-    this.fotoHorizontalUrl = '';
-    this.currentStep = 1;
-    this.newIncluded = '';
-    this.newNotIncluded = '';
-    this.newPolicy = '';
-    this.newRequirement = '';
-  }
+			request$.subscribe({
+				next: () => {
+					this.enviando = false;
 
-  // ITINERARIO
-  addDay() { this.itinerary.push(this.fb.control('', Validators.required)); }
-  removeDay(index: number) { this.itinerary.removeAt(index); }
+					this.showToastNotification(
+						this.mode === 'edit' ? 'Paquete actualizado' : 'Paquete creado',
+						this.mode === 'edit' ? 'El paquete se actualizó correctamente.' : 'El paquete se creó correctamente.'
+					);
 
-  // INCLUYE
-  saveIncluded() {
-    if (!this.newIncluded.trim()) return;
-    this.included.push(this.fb.control(this.newIncluded));
-    this.newIncluded = '';
-    this.showIncludedInput = false;
-  }
-  removeIncluded(index: number) { this.included.removeAt(index); }
+					setTimeout(() => {
 
-  // NO INCLUYE
-  saveNotIncluded() {
-    if (!this.newNotIncluded.trim()) return;
-    this.notIncluded.push(this.fb.control(this.newNotIncluded));
-    this.newNotIncluded = '';
-    this.showNotIncludedInput = false;
-  }
-  removeNotIncluded(index: number) { this.notIncluded.removeAt(index); }
+						this.resetForm();
+						this.closeModal();
 
-  // POLÍTICAS
-  savePolicy() {
-    if (!this.newPolicy.trim()) return;
-    this.cancellationPolicies.push(this.fb.control(this.newPolicy));
-    this.newPolicy = '';
-    this.showPolicyInput = false;
-  }
-  removePolicy(index: number) { this.cancellationPolicies.removeAt(index); }
+						this.saved.emit();
 
-  // REQUISITOS
-  saveRequirement() {
-    if (!this.newRequirement.trim()) return;
-    this.requirements.push(this.fb.control(this.newRequirement));
-    this.newRequirement = '';
-    this.showRequirementInput = false;
-  }
-  removeRequirement(index: number) { this.requirements.removeAt(index); }
+					}, 1500);
+				},
+				error: (err) => {
+					this.enviando = false;
+					console.error(this.mode === 'edit' ? 'Error actualizando paquete:' : 'Error creando paquete:', err);
+					this.showToastNotification(
+						'Error',
+						err.error?.message || 'No fue posible guardar el paquete.'
+					);
+				}
+			});
 
-  // TRANSPORTE
-  onTransportChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const currentValues = this.packageForm.get('transportType')?.value || [];
-    const updatedValues = input.checked
-      ? [...currentValues, input.value]
-      : currentValues.filter((v: string) => v !== input.value);
-    this.packageForm.patchValue({ transportType: updatedValues });
-    this.packageForm.get('transportType')?.markAsTouched();
-  }
+		} catch (err) {
+			this.enviando = false;
+			console.error('Error subiendo imágenes:', err);
+			this.showToastNotification(
+				'Error al subir imágenes',
+				'Ocurrió un problema al subir las imágenes. Intenta nuevamente.'
+			);
+		}
+	}
 
+	showToastNotification(title: string, message: string) {
+		this.toastTitle = title;
+		this.toastMessage = message;
+		this.showToast = true;
+
+		setTimeout(() => {
+			this.showToast = false;
+		}, 3000);
+	}
+
+	closeModal() {
+		this.resetForm();
+		this.showToast = false;
+		this.enviando = false;
+		this.closed.emit();
+	}
+
+	resetForm() {
+		this.packageForm.reset();
+		this.packageForm.setControl('included', this.fb.array([
+			this.fb.control('Transporte terrestre ida y regreso'),
+			this.fb.control('Hospedaje en hotel 3 estrellas'),
+			this.fb.control('Alimentación (desayuno y cena)'),
+			this.fb.control('Tours turísticos guiados'),
+		], Validators.required));
+		this.packageForm.setControl('notIncluded', this.fb.array([
+			this.fb.control('Gastos personales'),
+			this.fb.control('Bebidas alcohólicas'),
+			this.fb.control('Compras personales'),
+		], Validators.required));
+		this.packageForm.setControl('itinerary', this.fb.array([this.fb.control('', Validators.required)]));
+		this.packageForm.setControl('cancellationPolicies', this.fb.array([
+			this.fb.control('Cancelación gratuita hasta 5 días antes del viaje.'),
+			this.fb.control('50% de reembolso si cancela 48 horas antes.'),
+			this.fb.control('No hay devolución el mismo día del viaje.'),
+		], Validators.required));
+		this.packageForm.setControl('requirements', this.fb.array([
+			this.fb.control('Cédula de ciudadanía obligatoria.'),
+			this.fb.control('Edad mínima: 5 años.'),
+			this.fb.control('Pago completo antes del viaje.'),
+		], Validators.required));
+		this.packageForm.patchValue({ transportType: [] });
+		this.coverPreview = null;
+		this.galleryPreview = [];
+		this.fotoVerticalUrl = '';
+		this.fotoHorizontalUrl = '';
+		this.currentStep = 1;
+		this.newIncluded = '';
+		this.newNotIncluded = '';
+		this.newPolicy = '';
+		this.newRequirement = '';
+	}
+
+	// ITINERARIO
+	addDay() { this.itinerary.push(this.fb.control('', Validators.required)); }
+	removeDay(index: number) { this.itinerary.removeAt(index); }
+
+	// INCLUYE
+	saveIncluded() {
+		if (!this.newIncluded.trim()) return;
+		this.included.push(this.fb.control(this.newIncluded));
+		this.newIncluded = '';
+		this.showIncludedInput = false;
+	}
+	removeIncluded(index: number) { this.included.removeAt(index); }
+
+	// NO INCLUYE
+	saveNotIncluded() {
+		if (!this.newNotIncluded.trim()) return;
+		this.notIncluded.push(this.fb.control(this.newNotIncluded));
+		this.newNotIncluded = '';
+		this.showNotIncludedInput = false;
+	}
+	removeNotIncluded(index: number) { this.notIncluded.removeAt(index); }
+
+	// POLÍTICAS
+	savePolicy() {
+		if (!this.newPolicy.trim()) return;
+		this.cancellationPolicies.push(this.fb.control(this.newPolicy));
+		this.newPolicy = '';
+		this.showPolicyInput = false;
+	}
+	removePolicy(index: number) { this.cancellationPolicies.removeAt(index); }
+
+	// REQUISITOS
+	saveRequirement() {
+		if (!this.newRequirement.trim()) return;
+		this.requirements.push(this.fb.control(this.newRequirement));
+		this.newRequirement = '';
+		this.showRequirementInput = false;
+	}
+	removeRequirement(index: number) { this.requirements.removeAt(index); }
+
+	// TRANSPORTE
+	onTransportChange(event: Event) {
+		const input = event.target as HTMLInputElement;
+		const currentValues = this.packageForm.get('transportType')?.value || [];
+		const updatedValues = input.checked
+			? [...currentValues, input.value]
+			: currentValues.filter((v: string) => v !== input.value);
+		this.packageForm.patchValue({ transportType: updatedValues });
+		this.packageForm.get('transportType')?.markAsTouched();
+	}
 }

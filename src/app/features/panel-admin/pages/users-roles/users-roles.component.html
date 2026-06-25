@@ -90,31 +90,41 @@
 	</div>
 </div>
 
+<!-- PAGINACIÓN -->
+<div class="pagination" *ngIf="totalPages > 1">
+	<button class="page-btn" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 0">
+		<i class="fa-solid fa-chevron-left"></i>
+	</button>
+
+	<button class="page-btn" *ngFor="let p of pages" [class.active]="p === currentPage" (click)="goToPage(p)">
+		{{ p + 1 }}
+	</button>
+
+	<button class="page-btn" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages - 1">
+		<i class="fa-solid fa-chevron-right"></i>
+	</button>
+
+	<span class="page-info">{{ currentPage + 1 }} / {{ totalPages }}</span>
+</div>
+
 <!-- MODAL ELIMINAR -->
 
 <!-- MODAL CAMBIO ESTADO -->
 
-<app-confirm-modal [isOpen]="showStatusModal" [title]="statusAction === 'desactivar'
-		? 'Desactivar usuario'
-		: 'Activar usuario'" [message]="statusAction === 'desactivar'
-		? '¿Estás seguro de que deseas desactivar el usuario ' + selectedUser?.name + '?'
-		: '¿Estás seguro de que deseas activar el usuario ' + selectedUser?.name + '?'" [confirmText]="statusAction === 'desactivar'
-		? 'Desactivar'
-		: 'Activar'" cancelText="Cancelar" [icon]="statusAction === 'desactivar'
-		? 'fa-solid fa-triangle-exclamation'
-		: 'fa-solid fa-circle-check'" [confirmColor]="statusAction === 'desactivar'
-		? '#ff3b3b'
-		: '#3fa2db'" [iconBg]="statusAction === 'desactivar'
-		? 'rgba(255, 59, 59, 0.12)'
-		: 'rgba(63, 162, 219, 0.12)'" [iconColor]="statusAction === 'desactivar'
-		? '#ff3b3b'
-		: '#3fa2db'" (confirmed)="confirmStatusChange()" (closed)="closeStatusModal()">
-
+<app-confirm-modal [isOpen]="showStatusModal"
+	[title]="statusAction === 'desactivar' ? 'Desactivar usuario' : 'Activar usuario'"
+	[message]="statusAction === 'desactivar' ? '¿Estás seguro de que deseas desactivar el usuario ' + selectedUser?.name + '?' : '¿Estás seguro de que deseas activar el usuario ' + selectedUser?.name + '?'"
+	[confirmText]="statusAction === 'desactivar' ? 'Desactivar'	: 'Activar'" cancelText="Cancelar"
+	[icon]="statusAction === 'desactivar' ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-circle-check'"
+	[confirmColor]="statusAction === 'desactivar' ? '#ff3b3b'	: '#3fa2db'"
+	[iconBg]="statusAction === 'desactivar'	? 'rgba(255, 59, 59, 0.12)' : 'rgba(63, 162, 219, 0.12)'"
+	[iconColor]="statusAction === 'desactivar' ? '#ff3b3b' : '#3fa2db'" (confirmed)="confirmStatusChange()"
+	(closed)="closeStatusModal()">
 </app-confirm-modal>
 
 <!-- TOAST -->
 
-<app-toast-notification [show]="showToast" type="success" title="Usuario eliminado"
+<app-toast-notification [show]="showToast" type="success" title="Usuario desactivado"
 	[message]="'El usuario ' + selectedUser?.name + ' fue desactivado correctamente.'">
 </app-toast-notification>
 

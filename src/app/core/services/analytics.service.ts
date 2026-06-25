@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthStatistics, ReservationStatistics, CatalogStatistics } from '../../features/panel-admin/pages/control-panel/models/analytics.model';
+import { AuthStatistics, ReservationStatistics, CatalogStatistics, PackageReservations } from '../../features/panel-admin/pages/control-panel/models/analytics.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -14,20 +14,18 @@ export class AnalyticsService {
 	constructor(private http: HttpClient) { }
 
 	getAuthStatistics(): Observable<AuthStatistics> {
-		return this.http.get<AuthStatistics>(
-			`${this.api}/auth-statistics`
-		);
+		return this.http.get<AuthStatistics>(`${this.api}/auth-statistics`);
 	}
 
 	getReservationStatistics(): Observable<ReservationStatistics> {
-		return this.http.get<ReservationStatistics>(
-			`${this.api}/reservation-statistics`
-		);
+		return this.http.get<ReservationStatistics>(`${this.api}/reservation-statistics`);
 	}
 
 	getCatalogStatistics(): Observable<CatalogStatistics> {
-		return this.http.get<CatalogStatistics>(
-			`${this.api}/catalog-statistics`
-		);
+		return this.http.get<CatalogStatistics>(`${this.api}/catalog-statistics`);
+	}
+
+	getPackageReservations(): Observable<PackageReservations[]> {
+		return this.http.get<PackageReservations[]>(`${this.api}/packages-by-year`);
 	}
 }

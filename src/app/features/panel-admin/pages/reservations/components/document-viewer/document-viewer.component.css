@@ -127,7 +127,7 @@
 .loading i,
 .empty i {
 	font-size: 40px;
-	margin-bottom: 15px;
+	margin: 0 auto 15px;
 	display: block;
 	color: var(--color-primario);
 }

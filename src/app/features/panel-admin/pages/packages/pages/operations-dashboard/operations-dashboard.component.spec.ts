@@ -8,36 +8,36 @@ import { OperacionesService } from '../../../../../../core/services/operaciones.
 import { AuthService } from '../../../../../../core/services/auth.service';
 
 describe('DashboardOperativoComponent', () => {
-  let component: DashboardOperativoComponent;
-  let fixture: ComponentFixture<DashboardOperativoComponent>;
+	let component: DashboardOperativoComponent;
+	let fixture: ComponentFixture<DashboardOperativoComponent>;
 
-  beforeEach(async () => {
-    const operacionesSpy = jasmine.createSpyObj('OperacionesService', [
-      'getAllPaquetes', 'getViajes', 'getDashboard',
-      'crearViaje', 'actualizarViaje', 'eliminarViaje',
-    ]);
-    operacionesSpy.getAllPaquetes.and.returnValue(of([]));
-    operacionesSpy.getViajes.and.returnValue(of([]));
+	beforeEach(async () => {
+		const operacionesSpy = jasmine.createSpyObj('OperacionesService', [
+			'getAllPaquetes', 'getViajes', 'getDashboard',
+			'crearViaje', 'actualizarViaje', 'eliminarViaje',
+		]);
+		operacionesSpy.getAllPaquetes.and.returnValue(of([]));
+		operacionesSpy.getViajes.and.returnValue(of([]));
 
-    const authSpy = jasmine.createSpyObj('AuthService', ['getUser']);
-    authSpy.getUser.and.returnValue(null);
+		const authSpy = jasmine.createSpyObj('AuthService', ['getUser']);
+		authSpy.getUser.and.returnValue(null);
 
-    await TestBed.configureTestingModule({
-      declarations: [DashboardOperativoComponent],
-      imports: [ReactiveFormsModule, RouterTestingModule],
-      providers: [
-        { provide: OperacionesService, useValue: operacionesSpy },
-        { provide: AuthService,        useValue: authSpy },
-      ],
-    })
-    .compileComponents();
+		await TestBed.configureTestingModule({
+			declarations: [DashboardOperativoComponent],
+			imports: [ReactiveFormsModule, RouterTestingModule],
+			providers: [
+				{ provide: OperacionesService, useValue: operacionesSpy },
+				{ provide: AuthService, useValue: authSpy },
+			],
+		})
+			.compileComponents();
 
-    fixture = TestBed.createComponent(DashboardOperativoComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+		fixture = TestBed.createComponent(DashboardOperativoComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

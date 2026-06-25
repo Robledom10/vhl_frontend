@@ -1,5 +1,6 @@
 .admin-layout {
 	display: flex;
+	height: calc(100vh - 92.8px);
 	overflow: hidden;
 }
 
@@ -9,4 +10,5 @@
 	padding-bottom: 120px;
 	overflow-y: auto;
 	overflow-x: hidden;
+	height: 100%;
 }
