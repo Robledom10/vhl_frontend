@@ -1,0 +1,173 @@
+<div class="operaciones-container">
+
+	<div class="page-header">
+		<div>
+			<h2 class="page-title">Centro de <span>Comunicaciones</span></h2>
+			<p class="page-subtitle">Envia mensajes a viajeros de forma grupal o individual</p>
+		</div>
+		<button class="btn-nuevo" (click)="abrir()" [disabled]="!idViajeSeleccionado">
+			<i class="fa-solid fa-paper-plane"></i> Nuevo mensaje
+		</button>
+	</div>
+
+	<!-- FILTROS -->
+	<div class="filtros-bar">
+
+		<!-- FILTRO PAQUETE -->
+		<div class="filtro-group">
+			<label class="filtro-label">
+				<i class="fa-solid fa-box-open"></i> Paquete
+			</label>
+			<select class="filtro-select" (change)="onPaqueteChange($event)">
+				<option value="">Seleccionar paquete...</option>
+				<option *ngFor="let p of paquetes" [value]="p.id">{{ p.titulo }}</option>
+			</select>
+		</div>
+
+		<!-- FILTRO VIAJE (requiere paquete) -->
+		<div class="filtro-group">
+			<label class="filtro-label">
+				<i class="fa-solid fa-plane-departure"></i> Viaje
+			</label>
+			<select class="filtro-select" (change)="onViajeChange($event)" [disabled]="!idPaqueteSeleccionado">
+				<option value="">{{ idPaqueteSeleccionado ? 'Seleccionar viaje...' : 'Primero selecciona un paquete' }}</option>
+				<option *ngFor="let v of viajesFiltrados" [value]="v.id">
+					Viaje #{{ v.id }} &middot; {{ v.fechaSalida | date:'dd/MM/yyyy' }} → {{ v.fechaRegreso | date:'dd/MM/yyyy' }}
+				</option>
+			</select>
+		</div>
+
+		<!-- FILTRO PAGO -->
+		<div class="filtro-group" *ngIf="idViajeSeleccionado">
+			<label class="filtro-label">
+				<i class="fa-solid fa-credit-card"></i> Filtrar correos por pago
+			</label>
+			<div class="pago-chips">
+				<button class="chip" [class.active]="filtroPago === 'todos'" (click)="onFiltroPagoChange('todos')">
+					Todos
+				</button>
+				<button class="chip chip-verde" [class.active]="filtroPago === 'pagados'" (click)="onFiltroPagoChange('pagados')">
+					<i class="fa-solid fa-circle-check"></i> Pagados
+				</button>
+				<button class="chip chip-rojo" [class.active]="filtroPago === 'no_pagados'" (click)="onFiltroPagoChange('no_pagados')">
+					<i class="fa-solid fa-circle-xmark"></i> Sin pago
+				</button>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- RESUMEN EMAILS CARGADOS -->
+	<div class="emails-resumen" *ngIf="idViajeSeleccionado">
+		<div class="resumen-inner">
+			<i class="fa-solid fa-spinner fa-spin" *ngIf="cargandoEmails"></i>
+			<i class="fa-solid fa-envelope" *ngIf="!cargandoEmails"></i>
+			<span *ngIf="cargandoEmails">Cargando correos del viaje...</span>
+			<span *ngIf="!cargandoEmails && reservasViaje.length === 0">No hay reservas registradas para este viaje</span>
+			<span *ngIf="!cargandoEmails && reservasViaje.length > 0">
+				<strong>{{ emailCount }}</strong> correo(s) cargados de
+				<strong>{{ reservasViaje.length }}</strong> reserva(s) —
+				<ng-container [ngSwitch]="filtroPago">
+					<span *ngSwitchCase="'todos'">todos</span>
+					<span *ngSwitchCase="'pagados'">solo pagados</span>
+					<span *ngSwitchCase="'no_pagados'">sin pago</span>
+				</ng-container>
+			</span>
+		</div>
+	</div>
+
+	<div class="section-title">
+		<i class="fa-solid fa-envelope-open-text"></i>
+		<h3>Mensajes enviados</h3>
+		<span class="badge-count">{{ comunicaciones.length }}</span>
+	</div>
+
+	<div class="empty-state" *ngIf="!idViajeSeleccionado">
+		<i class="fa-solid fa-filter"></i>
+		<p>Selecciona un paquete y luego un viaje para ver las comunicaciones.</p>
+	</div>
+
+	<div class="empty-state" *ngIf="idViajeSeleccionado && comunicaciones.length === 0">
+		<i class="fa-solid fa-inbox"></i>
+		<p>No hay mensajes enviados para este viaje.</p>
+	</div>
+
+	<div class="comunicaciones-list" *ngIf="comunicaciones.length > 0">
+		<div class="com-card" *ngFor="let c of comunicaciones">
+			<div class="com-header">
+				<div class="com-icon" [ngClass]="c.canal === 'WHATSAPP' ? 'whatsapp' : 'gmail'">
+					<i [class]="c.canal === 'WHATSAPP' ? 'fa-brands fa-whatsapp' : 'fa-brands fa-google'"></i>
+				</div>
+				<div class="com-meta">
+					<p class="com-asunto">{{ c.asunto }}</p>
+					<p class="com-sub">{{ c.totalDestinatarios }} destinatarios &middot; Viaje #{{ c.idViaje }}</p>
+				</div>
+				<div class="com-right">
+					<span class="com-tipo" [ngClass]="c.canal === 'WHATSAPP' ? 'whatsapp' : 'gmail'">{{ c.canal }}</span>
+					<span class="com-fecha">{{ c.fechaEnvio | date:'dd/MM/yyyy' }}</span>
+				</div>
+				<div class="com-actions">
+					<button class="com-btn-edit" (click)="editar(c)" title="Editar">
+						<i class="fa-solid fa-pen"></i>
+					</button>
+					<button class="com-btn-del" (click)="eliminar(c)" title="Eliminar">
+						<i class="fa-solid fa-trash"></i>
+					</button>
+				</div>
+			</div>
+			<p class="com-mensaje">{{ c.mensaje }}</p>
+
+			<!-- Botón ver respuestas (solo correos) -->
+			<div class="respuestas-toggle" *ngIf="c.canal !== 'WHATSAPP'">
+				<button class="btn-ver-respuestas" (click)="toggleRespuestas(c)">
+					<i class="fa-solid fa-reply"></i>
+					{{ expandidas.has(c.id) ? 'Ocultar respuestas' : 'Ver respuestas' }}
+					<span class="badge-resp" *ngIf="(respuestasMap[c.id]?.length ?? 0) > 0">
+						{{ respuestasMap[c.id]?.length }}
+					</span>
+				</button>
+			</div>
+
+			<!-- Hilo de respuestas -->
+			<div class="respuestas-hilo" *ngIf="expandidas.has(c.id)">
+				<div class="resp-cargando" *ngIf="cargandoRespuestas.has(c.id)">
+					<i class="fa-solid fa-spinner fa-spin"></i> Buscando respuestas...
+				</div>
+				<div class="resp-vacio" *ngIf="!cargandoRespuestas.has(c.id) && !(respuestasMap[c.id]?.length)">
+					<i class="fa-solid fa-inbox"></i> Sin respuestas aún — el sistema revisa cada 2 minutos
+				</div>
+				<div class="resp-item" *ngFor="let r of (respuestasMap[c.id] ?? [])">
+					<div class="resp-cabecera">
+						<i class="fa-solid fa-reply resp-icono"></i>
+						<span class="resp-email">{{ r.remitenteEmail }}</span>
+						<span class="resp-fecha">{{ r.fechaRecibida | date:'dd/MM/yyyy HH:mm' }}</span>
+					</div>
+					<p class="resp-contenido">{{ r.contenido }}</p>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
+		<i class="toast-icon" [class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
+		<span class="toast-msg">{{ toastMsg }}</span>
+	</div>
+
+</div>
+
+<!-- FORMULARIO COMUNICACIÓN -->
+<app-form-communication
+	[isOpen]="showForm"
+	[editando]="editando"
+	[idViajeSeleccionado]="idViajeSeleccionado"
+	[viajesFiltrados]="viajesFiltrados"
+	[paqueteTituloMap]="paqueteTituloMap"
+	[reservasViaje]="reservasViaje"
+	[cargandoEmails]="cargandoEmails"
+	[filtroPago]="filtroPago"
+	(closed)="cerrarForm()"
+	(saved)="onFormSaved($event)"
+	(saveFailed)="onFormFailed($event)"
+	(filtroPagoChange)="onFiltroPagoChange($event)">
+</app-form-communication>

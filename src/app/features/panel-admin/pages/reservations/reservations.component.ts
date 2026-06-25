@@ -64,6 +64,12 @@ export class ReservationsComponent implements OnInit {
 	reservations: Reservation[] = [];
 	filteredReservations: Reservation[] = [];
 
+	// ─── Paginación ───────────────────────────────────────
+	paginaActual = 0;
+	totalPaginas = 0;
+	totalElementos = 0;
+	tamano = 10;
+
 	// ─── Lifecycle ────────────────────────────────────────
 
 	ngOnInit(): void {
@@ -80,9 +86,12 @@ export class ReservationsComponent implements OnInit {
 	loadReservations(): void {
 		this.isLoading = true;
 		this.loadError = false;
-		this.reservationService.getAll().subscribe({
-			next: (data) => {
-				this.reservations = data;
+		this.reservationService.getAllPaginado(this.paginaActual, this.tamano).subscribe({
+			next: (page) => {
+				this.reservations = page.content;
+				this.totalPaginas = page.totalPages;
+				this.totalElementos = page.totalElements;
+				this.paginaActual = page.number;
 				this.isLoading = false;
 				this.buildFilterOptions();
 				this.applyFilters();
@@ -92,6 +101,19 @@ export class ReservationsComponent implements OnInit {
 				this.loadError = true;
 			},
 		});
+	}
+
+	cambiarPagina(n: number): void {
+		if (n < 0 || n >= this.totalPaginas) return;
+		this.paginaActual = n;
+		this.loadReservations();
+	}
+
+	get paginas(): number[] {
+		const delta = 2;
+		const start = Math.max(0, this.paginaActual - delta);
+		const end = Math.min(this.totalPaginas - 1, this.paginaActual + delta);
+		return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 	}
 
 	// ─── Filtros ──────────────────────────────────────────
@@ -263,10 +285,9 @@ export class ReservationsComponent implements OnInit {
 	}
 
 	onReservationCreated(newReservation: Reservation): void {
-		this.reservations.unshift(newReservation);
-		this.buildFilterOptions();
-		this.applyFilters();
 		this.closeCreateModal();
+		this.paginaActual = 0;
+		this.loadReservations();
 		this.triggerToast(
 			'Reserva creada',
 			`La reserva de ${this.getNombre(newReservation)} fue registrada exitosamente.`,

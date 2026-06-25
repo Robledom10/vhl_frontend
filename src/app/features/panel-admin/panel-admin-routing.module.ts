@@ -9,12 +9,12 @@ import { ReservationsComponent } from './pages/reservations/reservations.compone
 import { UsersRolesComponent } from './pages/users-roles/users-roles.component';
 import { ProveedorComponent } from './pages/packages/pages/proveedor/proveedor.component';
 import { GalleryAdminComponent } from './pages/gallery-admin/gallery-admin.component';
-import { DashboardOperativoComponent } from './pages/packages/pages/operations-dashboard/operations-dashboard.component';
-import { AsignarTransporteComponent } from './pages/operaciones/pages/assign-transport/assign-transport.component';
-import { CheckInQrComponent } from './pages/operaciones/pages/check-in-qr/check-in-qr.component';
-import { AsignarAlojamientoComponent } from './pages/operaciones/pages/assign-accommodation/assign-accommodation.component';
-import { InfoMedicaComponent } from './pages/operaciones/pages/medical-info/medical-info.component';
-import { ComunicacionesComponent } from './pages/operaciones/pages/communications/communications.component';
+import { DashboardOperativoComponent } from './pages/operation/pages/operations-dashboard/operations-dashboard.component';
+import { AsignarTransporteComponent } from './pages/operation/pages/assign-transport/assign-transport.component';
+import { CheckInQrComponent } from './pages/operation/pages/check-in-qr/check-in-qr.component';
+import { AsignarAlojamientoComponent } from './pages/operation/pages/assign-accommodation/assign-accommodation.component';
+import { InfoMedicaComponent } from './pages/operation/pages/medical-info/medical-info.component';
+import { ComunicacionesComponent } from './pages/operation/pages/communications/communications.component';
 import { AuthGuard } from '../../core/guards/auth.guard';
 import { roleGuard } from '../../core/guards/role.guard';
 

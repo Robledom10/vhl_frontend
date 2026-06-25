@@ -24,14 +24,21 @@ import { GalleryAdminComponent } from './pages/gallery-admin/gallery-admin.compo
 import { FormProviderComponent } from './pages/packages/pages/proveedor/components/form-provider/form-provider.component';
 import { FormReservationsCreationComponent } from './pages/reservations/components/form-reservations-creation/form-reservations-creation.component';
 import { ReservationDetailSheetComponent } from './pages/reservations/components/reservation-detail-sheet/reservation-detail-sheet.component';
-import { DashboardOperativoComponent } from './pages/packages/pages/operations-dashboard/operations-dashboard.component';
-import { AsignarTransporteComponent } from './pages/operaciones/pages/assign-transport/assign-transport.component';
-import { CheckInQrComponent } from './pages/operaciones/pages/check-in-qr/check-in-qr.component';
-import { AsignarAlojamientoComponent } from './pages/operaciones/pages/assign-accommodation/assign-accommodation.component';
-import { InfoMedicaComponent } from './pages/operaciones/pages/medical-info/medical-info.component';
-import { ComunicacionesComponent } from './pages/operaciones/pages/communications/communications.component';
+import { DashboardOperativoComponent } from './pages/operation/pages/operations-dashboard/operations-dashboard.component';
+import { AsignarTransporteComponent } from './pages/operation/pages/assign-transport/assign-transport.component';
+import { CheckInQrComponent } from './pages/operation/pages/check-in-qr/check-in-qr.component';
+import { AsignarAlojamientoComponent } from './pages/operation/pages/assign-accommodation/assign-accommodation.component';
+import { InfoMedicaComponent } from './pages/operation/pages/medical-info/medical-info.component';
+import { ComunicacionesComponent } from './pages/operation/pages/communications/communications.component';
 import { UploadDocumentModalComponent } from './pages/profile/components/upload-document-modal/upload-document-modal.component';
 import { DocumentViewerComponent } from './pages/reservations/components/document-viewer/document-viewer.component';
+import { FormAssignAccommodationComponent } from './pages/operation/pages/assign-accommodation/components/form-assign-accommodation/form-assign-accommodation.component';
+import { DetailAccommodationComponent } from './pages/operation/pages/assign-accommodation/components/detail-accommodation/detail-accommodation.component';
+import { FormAssignTransportComponent } from './pages/operation/pages/assign-transport/components/form-assign-transport/form-assign-transport.component';
+import { DetailTransportComponent } from './pages/operation/pages/assign-transport/components/detail-transport/detail-transport.component';
+import { FormEmergencyContactComponent } from './pages/operation/pages/emergency-contacts/components/form-emergency-contact/form-emergency-contact.component';
+import { FormMedicalInfoComponent } from './pages/operation/pages/medical-info/components/form-medical-info/form-medical-info.component';
+import { FormCommunicationComponent } from './pages/operation/pages/communications/components/form-communication/form-communication.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { DetalleViajeComponent } from './pages/packages/pages/operations-dashboard/components/detalle-viaje/detalle-viaje.component';
 import { EditViajeFormComponent } from './pages/packages/pages/operations-dashboard/components/edit-viaje-form/edit-viaje-form.component';
@@ -67,6 +74,13 @@ import { ViajeFormComponent } from './pages/packages/pages/operations-dashboard/
 		ComunicacionesComponent,
 		UploadDocumentModalComponent,
 		DocumentViewerComponent,
+		FormAssignAccommodationComponent,
+		DetailAccommodationComponent,
+		FormAssignTransportComponent,
+		DetailTransportComponent,
+		FormEmergencyContactComponent,
+		FormMedicalInfoComponent,
+		FormCommunicationComponent,
 		DetalleViajeComponent,
 		EditViajeFormComponent,
 		ViajeFormComponent,
@@ -78,7 +92,7 @@ import { ViajeFormComponent } from './pages/packages/pages/operations-dashboard/
 		RouterModule,
 		ReactiveFormsModule,
 		FormsModule,
-		NgApexchartsModule
+		NgApexchartsModule,
 	],
 })
 export class PanelAdminModule { }

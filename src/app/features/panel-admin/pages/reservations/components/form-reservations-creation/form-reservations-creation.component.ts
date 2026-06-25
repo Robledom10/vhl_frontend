@@ -3,9 +3,9 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { forkJoin, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Reservation } from '../../models/reservations.models';
-import { ReservationService } from '../../../../../../core/services/reservation.service';
+import { ReservationService, SolicitudReserva } from '../../../../../../core/services/reservation.service';
 import { OperacionesService } from '../../../../../../core/services/operaciones.service';
-import { UsuarioService } from '../../../../../../core/services/usuario.service'; // Ajusta la ruta de tu servicio
+import { UsuarioService } from '../../../../../../core/services/usuario.service';
 
 // ─── Modelos de front ────
 
@@ -155,7 +155,7 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
                 this.buscandoCliente = false;
                 if (usuario && usuario.id) {
                     this.form.idUsuario = usuario.id;
-                    this.nombreClienteSeleccionado = `${usuario.nombre} ${usuario.apellido || ''}`.trim();
+                    this.nombreClienteSeleccionado = `${usuario.firstName ?? usuario.nombre ?? ''} ${usuario.lastName ?? usuario.apellido ?? ''}`.trim();
                 } else {
                     this.errorCliente = true;
                     this.resetDatosCliente();
@@ -343,17 +343,33 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
         this.isSaving = true;
         this.saveError = '';
 
-        const solicitud: ReservationCreateRequest = {
+        const solicitud: SolicitudReserva = {
             idUsuario: Number(this.form.idUsuario),
             idPaquete: viajeSeleccionado.idPaquete,
-            cantidadPasajeros: Number(this.form.personas) || 1,
-            precioTotal: Number(this.form.total) || 0,
-            fechaInicioViaje: this.toLocalDateTime(this.form.fechaSalida),
-            fechaFinViaje: this.toLocalDateTime(this.form.fechaRegreso),
+            personas: Number(this.form.personas) || 1,
+            acompanantes: this.form.acompanantes,
+            contactosEmergencia: this.form.contactosEmergencia.filter(c => c.nombre.trim() !== ''),
+            idViaje: this.form.idViaje !== '' ? Number(this.form.idViaje) : undefined,
+            paqueteNombre: this.form.paqueteNombre,
+            fechaSalida: this.toDate(this.form.fechaSalida),
+            fechaRegreso: this.toDate(this.form.fechaRegreso),
+            tipoHabitacion: this.form.tipoHabitacion,
+            solicitudEspecial: this.form.solicitudEspecial || undefined,
             notas: this.form.notas || undefined,
+            total: Number(this.form.total) || 0,
         };
 
-        // this.reservationService.crear(solicitud).subscribe({ ... });
+        this.reservationService.crear(solicitud).subscribe({
+            next: (reservation) => {
+                this.isSaving = false;
+                this.reservationCreated.emit(reservation);
+                this.closed.emit();
+            },
+            error: (err) => {
+                this.isSaving = false;
+                this.saveError = err?.error?.message || err?.message || 'Error al crear la reserva';
+            }
+        });
     }
 
     cancel(): void {
@@ -366,9 +382,9 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
         }
     }
 
-    private toLocalDateTime(fecha: string): string {
+    private toDate(fecha: string): string {
         if (!fecha) return '';
-        return fecha.includes('T') ? fecha : `${fecha}T00:00:00`;
+        return fecha.includes('T') ? fecha.split('T')[0] : fecha;
     }
 
     private resetForm(): void {

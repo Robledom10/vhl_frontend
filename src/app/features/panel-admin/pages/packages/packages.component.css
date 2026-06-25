@@ -318,3 +318,268 @@ tbody img {
 		width: 100%;
 	}
 }
+
+/* =========================
+	PAGINACIÓN
+========================= */
+
+.pagination-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	flex-wrap: wrap;
+}
+
+.pagination-info {
+	font-size: 13px;
+	color: #6b7280;
+}
+
+.pagination-controls {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.page-btn {
+	min-width: 36px;
+	height: 36px;
+	padding: 0 10px;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	background: #fff;
+	color: #374151;
+	font-size: 13px;
+	cursor: pointer;
+	transition: all 0.15s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.page-btn:hover:not(:disabled) {
+	background: #f0f9ff;
+	border-color: #3fa2db;
+	color: #3fa2db;
+}
+
+.page-btn.active {
+	background: #3fa2db;
+	border-color: #3fa2db;
+	color: #fff;
+	font-weight: 600;
+}
+
+.page-btn:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+@media (max-width: 768px) {
+	.packages-container {
+		gap: 18px;
+		padding-bottom: 70px;
+	}
+
+	.top-bar {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 10px;
+	}
+
+	.search-box {
+		grid-column: 1 / -1;
+		width: 100%;
+		min-width: 0;
+	}
+
+	.filter-wrapper,
+	.filter-btn,
+	.add-btn,
+	.clear-filter {
+		width: 100%;
+	}
+
+	.filter-btn,
+	.add-btn,
+	.clear-filter {
+		justify-content: center;
+	}
+
+	.dropdown {
+		width: 100%;
+		min-width: 0;
+	}
+
+	.table-container {
+		overflow-x: visible;
+	}
+
+	table,
+	thead,
+	tbody,
+	tr,
+	td {
+		display: block;
+		width: 100%;
+	}
+
+	table {
+		min-width: 0;
+		border-spacing: 0;
+	}
+
+	thead {
+		display: none;
+	}
+
+	tbody {
+		display: grid;
+		gap: 14px;
+	}
+
+	tbody tr {
+		display: grid;
+		grid-template-columns: 72px 1fr;
+		gap: 10px 14px;
+		padding: 16px;
+		border-radius: 18px;
+	}
+
+	tbody td {
+		padding: 0;
+		text-align: left;
+		font-size: 14px;
+	}
+
+	tbody td:first-child {
+		grid-row: span 7;
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		border-radius: 0;
+	}
+
+	tbody td:last-child {
+		border-radius: 0;
+	}
+
+	tbody img {
+		width: 58px;
+		height: 58px;
+		border-radius: 16px;
+	}
+
+	tbody td:not(:first-child)::before {
+		display: block;
+		margin-bottom: 3px;
+		font-size: 12px;
+		font-weight: 600;
+		color: var(--color-primario);
+	}
+
+	tbody td:nth-child(2)::before {
+		content: "Paquete";
+	}
+
+	tbody td:nth-child(3)::before {
+		content: "Destino";
+	}
+
+	tbody td:nth-child(4)::before {
+		content: "Duracion";
+	}
+
+	tbody td:nth-child(5)::before {
+		content: "Precio";
+	}
+
+	tbody td:nth-child(6)::before {
+		content: "Cupos";
+	}
+
+	tbody td:nth-child(7)::before {
+		content: "Estado";
+	}
+
+	tbody td:nth-child(8)::before {
+		content: "Acciones";
+	}
+
+	tbody td[colspan] {
+		grid-column: 1 / -1;
+		text-align: center !important;
+		padding: 28px 16px !important;
+	}
+
+	tbody td[colspan]::before {
+		display: none !important;
+	}
+
+	.actions {
+		justify-content: flex-start;
+		flex-wrap: wrap;
+		gap: 8px;
+		white-space: normal;
+	}
+
+	.actions .view {
+		width: 34px;
+		height: 34px;
+	}
+
+	.actions .edit,
+	.actions .delete {
+		padding: 8px 12px;
+	}
+}
+
+@media (max-width: 480px) {
+	.packages-container {
+		gap: 16px;
+	}
+
+	.top-bar {
+		grid-template-columns: 1fr;
+	}
+
+	.search-box,
+	.filter-btn,
+	.add-btn,
+	.clear-filter {
+		height: 40px;
+		border-radius: 18px;
+	}
+
+	.search-box input {
+		font-size: 14px;
+	}
+
+	tbody tr {
+		grid-template-columns: 1fr;
+		padding: 14px;
+		gap: 9px;
+	}
+
+	tbody td:first-child {
+		grid-row: auto;
+		justify-content: flex-start;
+	}
+
+	tbody img {
+		width: 100%;
+		height: 132px;
+		border-radius: 16px;
+	}
+
+	.actions {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.actions .view,
+	.actions .edit,
+	.actions .delete {
+		width: 100%;
+	}
+}

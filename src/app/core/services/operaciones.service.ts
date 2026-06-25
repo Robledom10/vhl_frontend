@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, forkJoin, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { Viaje, Transporte, CheckIn, Alojamiento, InformacionMedica, ContactoEmergencia, Incidente, Notificacion, Dashboard, Restaurante, ReservaApi } from '../../features/panel-admin/models/operaciones.models';
+import { Viaje, Transporte, CheckIn, Alojamiento, InformacionMedica, ContactoEmergencia, Incidente, Notificacion, RespuestaEmail, Dashboard, Restaurante, ReservaApi } from '../../features/panel-admin/models/operaciones.models';
+import { PageResponse } from '../../features/panel-admin/models/package.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -16,7 +17,17 @@ export class OperacionesService {
 
 	// --- Viajes ---
 	getViajes(): Observable<Viaje[]> {
-		return this.http.get<Viaje[]>(`${this.base}/viajes`);
+		const params = new HttpParams().set('pagina', 0).set('tamano', 1000);
+		return this.http.get<PageResponse<Viaje>>(`${this.base}/viajes`, { params }).pipe(
+			map(page => page.content)
+		);
+	}
+
+	getViajesPaginados(pagina: number, tamano: number): Observable<PageResponse<Viaje>> {
+		const params = new HttpParams()
+			.set('pagina', pagina)
+			.set('tamano', tamano);
+		return this.http.get<PageResponse<Viaje>>(`${this.base}/viajes`, { params });
 	}
 
 	crearViaje(body: { idUsuario: number; idPaquete: number; fechaSalida: string; fechaRegreso: string }): Observable<Viaje> {
@@ -51,6 +62,11 @@ export class OperacionesService {
 	// --- Reservas por paquete ---
 	getReservasPorPaquete(idPaquete: number): Observable<ReservaApi[]> {
 		return this.http.get<ReservaApi[]>(`${environment.apiUrl}/v1/reservas/paquete/${idPaquete}`);
+	}
+
+	// --- Reservas por viaje (directo, sin filtrado cliente) ---
+	getReservasPorViaje(idViaje: number): Observable<ReservaApi[]> {
+		return this.http.get<ReservaApi[]>(`${environment.apiUrl}/v1/reservas/viaje/${idViaje}`);
 	}
 
 	// --- Check-in ---
@@ -167,6 +183,10 @@ export class OperacionesService {
 
 	eliminarNotificacion(idViaje: number, id: number): Observable<void> {
 		return this.http.delete<void>(`${this.base}/viajes/${idViaje}/notificaciones/${id}`);
+	}
+
+	getRespuestasNotificacion(idViaje: number, idNotif: number): Observable<RespuestaEmail[]> {
+		return this.http.get<RespuestaEmail[]>(`${this.base}/viajes/${idViaje}/notificaciones/${idNotif}/respuestas`);
 	}
 
 	// --- Dashboard ---

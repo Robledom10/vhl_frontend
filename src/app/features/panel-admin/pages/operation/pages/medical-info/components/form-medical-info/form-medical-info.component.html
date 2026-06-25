@@ -1,0 +1,57 @@
+<div class="modal-backdrop" *ngIf="isOpen" (click)="cerrar()"></div>
+<div class="modal-panel" *ngIf="isOpen">
+	<div class="modal-header">
+		<div class="modal-title-wrap">
+			<div class="modal-icon-wrap med-icon-sm"><i class="fa-solid fa-heart-pulse"></i></div>
+			<h3>{{ editandoMedico ? 'Editar registro médico' : 'Nuevo registro médico' }}</h3>
+		</div>
+		<button class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
+	</div>
+
+	<form [formGroup]="medForm" (ngSubmit)="guardar()">
+		<div class="form-grid">
+			<div class="form-group span-2">
+				<label>Nombre del viajero *</label>
+				<input type="text" formControlName="nombreViajero" placeholder="Ej: Juan Pérez" autocomplete="off">
+				<span class="error" *ngIf="medForm.get('nombreViajero')?.invalid && medForm.get('nombreViajero')?.touched">Campo requerido</span>
+			</div>
+
+			<div class="form-group">
+				<label>Tipo de sangre *</label>
+				<select formControlName="tipoSangre">
+					<option value="">Seleccionar...</option>
+					<option *ngFor="let g of gruposSanguineos" [value]="g">{{ g }}</option>
+				</select>
+				<span class="error" *ngIf="medForm.get('tipoSangre')?.invalid && medForm.get('tipoSangre')?.touched">Campo requerido</span>
+			</div>
+
+			<div class="form-group">
+				<label>Teléfono médico</label>
+				<input type="text" formControlName="telefonoMedico" placeholder="+57 300 000 0000">
+				<span class="error" *ngIf="medForm.get('telefonoMedico')?.invalid && medForm.get('telefonoMedico')?.touched">Formato inválido</span>
+			</div>
+
+			<div class="form-group span-2">
+				<label>Alergias</label>
+				<input type="text" formControlName="alergias" placeholder='Ej: Polen, mariscos o "Ninguna"'>
+			</div>
+
+			<div class="form-group span-2">
+				<label>Medicamentos</label>
+				<input type="text" formControlName="medicamentos" placeholder='Ej: Metformina o "Ninguno"'>
+			</div>
+
+			<div class="form-group span-2">
+				<label>Condiciones médicas</label>
+				<input type="text" formControlName="condiciones" placeholder='Ej: Diabetes tipo 2 o "Ninguna"'>
+			</div>
+		</div>
+
+		<div class="modal-actions">
+			<button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
+			<button type="submit" class="btn-guardar" [disabled]="enviando">
+				{{ enviando ? 'Guardando...' : 'Guardar registro' }}
+			</button>
+		</div>
+	</form>
+</div>
