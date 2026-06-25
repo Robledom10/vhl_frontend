@@ -30,9 +30,11 @@
 				<i class="fa-solid fa-plane-departure"></i> Viaje
 			</label>
 			<select class="filtro-select" (change)="onViajeChange($event)" [disabled]="!idPaqueteSeleccionado">
-				<option value="">{{ idPaqueteSeleccionado ? 'Seleccionar viaje...' : 'Primero selecciona un paquete' }}</option>
+				<option value="">{{ idPaqueteSeleccionado ? 'Seleccionar viaje...' : 'Primero selecciona un paquete' }}
+				</option>
 				<option *ngFor="let v of viajesFiltrados" [value]="v.id">
-					Viaje #{{ v.id }} &middot; {{ v.fechaSalida | date:'dd/MM/yyyy' }} → {{ v.fechaRegreso | date:'dd/MM/yyyy' }}
+					Viaje #{{ v.id }} &middot; {{ v.fechaSalida | date:'dd/MM/yyyy' }} → {{ v.fechaRegreso |
+					date:'dd/MM/yyyy' }}
 				</option>
 			</select>
 		</div>
@@ -46,10 +48,12 @@
 				<button class="chip" [class.active]="filtroPago === 'todos'" (click)="onFiltroPagoChange('todos')">
 					Todos
 				</button>
-				<button class="chip chip-verde" [class.active]="filtroPago === 'pagados'" (click)="onFiltroPagoChange('pagados')">
+				<button class="chip chip-verde" [class.active]="filtroPago === 'pagados'"
+					(click)="onFiltroPagoChange('pagados')">
 					<i class="fa-solid fa-circle-check"></i> Pagados
 				</button>
-				<button class="chip chip-rojo" [class.active]="filtroPago === 'no_pagados'" (click)="onFiltroPagoChange('no_pagados')">
+				<button class="chip chip-rojo" [class.active]="filtroPago === 'no_pagados'"
+					(click)="onFiltroPagoChange('no_pagados')">
 					<i class="fa-solid fa-circle-xmark"></i> Sin pago
 				</button>
 			</div>
@@ -63,7 +67,8 @@
 			<i class="fa-solid fa-spinner fa-spin" *ngIf="cargandoEmails"></i>
 			<i class="fa-solid fa-envelope" *ngIf="!cargandoEmails"></i>
 			<span *ngIf="cargandoEmails">Cargando correos del viaje...</span>
-			<span *ngIf="!cargandoEmails && reservasViaje.length === 0">No hay reservas registradas para este viaje</span>
+			<span *ngIf="!cargandoEmails && reservasViaje.length === 0">No hay reservas registradas para este
+				viaje</span>
 			<span *ngIf="!cargandoEmails && reservasViaje.length > 0">
 				<strong>{{ emailCount }}</strong> correo(s) cargados de
 				<strong>{{ reservasViaje.length }}</strong> reserva(s) —
@@ -103,7 +108,8 @@
 					<p class="com-sub">{{ c.totalDestinatarios }} destinatarios &middot; Viaje #{{ c.idViaje }}</p>
 				</div>
 				<div class="com-right">
-					<span class="com-tipo" [ngClass]="c.canal === 'WHATSAPP' ? 'whatsapp' : 'gmail'">{{ c.canal }}</span>
+					<span class="com-tipo" [ngClass]="c.canal === 'WHATSAPP' ? 'whatsapp' : 'gmail'">{{ c.canal
+						}}</span>
 					<span class="com-fecha">{{ c.fechaEnvio | date:'dd/MM/yyyy' }}</span>
 				</div>
 				<div class="com-actions">
@@ -148,26 +154,20 @@
 
 		</div>
 	</div>
-
-	<div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
-		<i class="toast-icon" [class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
-		<span class="toast-msg">{{ toastMsg }}</span>
-	</div>
-
 </div>
 
 <!-- FORMULARIO COMUNICACIÓN -->
-<app-form-communication
-	[isOpen]="showForm"
-	[editando]="editando"
-	[idViajeSeleccionado]="idViajeSeleccionado"
-	[viajesFiltrados]="viajesFiltrados"
-	[paqueteTituloMap]="paqueteTituloMap"
-	[reservasViaje]="reservasViaje"
-	[cargandoEmails]="cargandoEmails"
-	[filtroPago]="filtroPago"
-	(closed)="cerrarForm()"
-	(saved)="onFormSaved($event)"
-	(saveFailed)="onFormFailed($event)"
-	(filtroPagoChange)="onFiltroPagoChange($event)">
+<app-form-communication [isOpen]="showForm" [editando]="editando" [idViajeSeleccionado]="idViajeSeleccionado"
+	[viajesFiltrados]="viajesFiltrados" [paqueteTituloMap]="paqueteTituloMap" [reservasViaje]="reservasViaje"
+	[cargandoEmails]="cargandoEmails" [filtroPago]="filtroPago" (closed)="cerrarForm()" (saved)="onFormSaved($event)"
+	(saveFailed)="onFormFailed($event)" (filtroPagoChange)="onFiltroPagoChange($event)">
 </app-form-communication>
+
+<app-confirm-modal [isOpen]="showDeleteModal" title="Eliminar comunicación"
+	[message]="comunicacionAEliminar ? ('Esta acción eliminará permanentemente el mensaje &quot;' + comunicacionAEliminar.asunto + '&quot;.') : ''"
+	confirmText="Eliminar" cancelText="Cancelar" icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b"
+	iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b" (confirmed)="confirmarEliminar()"
+	(closed)="cerrarDeleteModal()">
+</app-confirm-modal>
+
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMsg"></app-toast-notification>

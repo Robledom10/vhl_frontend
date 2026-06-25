@@ -72,21 +72,19 @@
 			No hay contactos registrados para este viaje.
 		</div>
 	</div>
-
-	<div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
-		<i class="toast-icon"
-			[class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
-		<span class="toast-msg">{{ toastMsg }}</span>
-	</div>
-
 </div>
 
 <!-- FORMULARIO CONTACTO -->
-<app-form-emergency-contact
-	[isOpen]="showForm"
-	[editando]="editando"
-	[idViajeSeleccionado]="idViajeSeleccionado"
-	(closed)="cerrarForm()"
-	(saved)="onFormSaved($event)"
-	(saveFailed)="onFormFailed($event)">
+<app-form-emergency-contact [isOpen]="showForm" [editando]="editando" [idViajeSeleccionado]="idViajeSeleccionado"
+	(closed)="cerrarForm()" (saved)="onFormSaved($event)" (saveFailed)="onFormFailed($event)">
 </app-form-emergency-contact>
+
+<app-confirm-modal [isOpen]="showDeleteModal" title="Eliminar contacto"
+	[message]="contactoAEliminar ? ('Esta acción eliminará permanentemente el contacto de ' + contactoAEliminar.nombre + '.') : ''"
+	confirmText="Eliminar" cancelText="Cancelar" icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b"
+	iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b" (confirmed)="confirmarEliminar()"
+	(closed)="cerrarDeleteModal()">
+</app-confirm-modal>
+
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMsg">
+</app-toast-notification>

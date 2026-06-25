@@ -16,6 +16,7 @@ export class InfoMedicaComponent implements OnInit {
 	idViajeSeleccionado: number | null = null;
 	paqueteTituloMap: Record<number, string> = {};
 	showToast = false;
+	toastTitle = '';
 	toastMsg = '';
 	toastType: 'success' | 'error' = 'success';
 
@@ -26,6 +27,10 @@ export class InfoMedicaComponent implements OnInit {
 
 	// ── Contactos de Emergencia ───────────────────────────────────────
 	contactos: ContactoEmergencia[] = [];
+
+	// ── Confirmación de eliminar ───────────────────────────────────────
+	showDeleteModal = false;
+	registroAEliminar: InformacionMedica | null = null;
 
 	constructor(private svc: OperacionesService) { }
 
@@ -40,7 +45,9 @@ export class InfoMedicaComponent implements OnInit {
 				}
 				this.cargarTodosContactos();
 			},
-			error: () => { },
+			error: () => {
+				this.mostrarToast('Error', 'No se pudieron cargar los viajes.', 'error');
+			},
 		});
 	}
 
@@ -65,7 +72,10 @@ export class InfoMedicaComponent implements OnInit {
 	cargarTodo(): void {
 		if (!this.idViajeSeleccionado) return;
 		this.svc.getInformacionMedica(this.idViajeSeleccionado).pipe(
-			catchError(() => of([]))
+			catchError(() => {
+				this.mostrarToast('Error', 'No se pudieron cargar los registros médicos.', 'error');
+				return of([]);
+			})
 		).subscribe(medicos => {
 			this.registros = medicos as InformacionMedica[];
 		});
@@ -88,23 +98,48 @@ export class InfoMedicaComponent implements OnInit {
 		this.showFormMedico = false;
 		this.editandoMedico = null;
 		this.cargarTodo();
-		this.mostrarToast(msg);
+		this.mostrarToast('Listo', msg, 'success');
 	}
 
 	onFormMedicoFailed(msg: string): void {
-		this.mostrarToast(msg, 'error');
+		this.mostrarToast('Error', msg, 'error');
 	}
 
+	// ── Eliminar con confirmación ───────────────────────────────────────
 	eliminarMedico(r: InformacionMedica): void {
-		if (!confirm(`¿Eliminar el registro médico de ${r.nombreViajero || 'Viajero #' + r.idViajero}?`)) return;
+		this.registroAEliminar = r;
+		this.showDeleteModal = true;
+	}
+
+	cerrarDeleteModal(): void {
+		this.showDeleteModal = false;
+		this.registroAEliminar = null;
+	}
+
+	confirmarEliminarMedico(): void {
+		if (!this.registroAEliminar) return;
+		const r = this.registroAEliminar;
+		this.showDeleteModal = false;
+		const nombre = r.nombreViajero || 'Viajero #' + r.idViajero;
+
 		this.svc.eliminarInformacionMedica(r.idViajero, r.id).subscribe({
-			next: () => { this.mostrarToast('Registro médico eliminado'); this.cargarTodo(); },
-			error: () => { this.mostrarToast('Error al eliminar', 'error'); },
+			next: () => {
+				this.registroAEliminar = null;
+				this.mostrarToast('Registro eliminado', `Se eliminó el registro médico de ${nombre}.`, 'success');
+				this.cargarTodo();
+			},
+			error: () => {
+				this.registroAEliminar = null;
+				this.mostrarToast('Error al eliminar', `No se pudo eliminar el registro médico de ${nombre}.`, 'error');
+			},
 		});
 	}
 
-	mostrarToast(msg: string, type: 'success' | 'error' = 'success'): void {
-		this.toastMsg = msg; this.toastType = type; this.showToast = true;
+	mostrarToast(title: string, msg: string, type: 'success' | 'error' = 'success'): void {
+		this.toastTitle = title;
+		this.toastMsg = msg;
+		this.toastType = type;
+		this.showToast = true;
 		setTimeout(() => { this.showToast = false; }, 3500);
 	}
 }

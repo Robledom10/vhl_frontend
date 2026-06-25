@@ -156,22 +156,20 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- TOAST -->
-	<div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
-		<i class="toast-icon"
-			[class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
-		<span class="toast-msg">{{ toastMsg }}</span>
-	</div>
-
 </div>
 
 <!-- FORMULARIO INFO MÉDICA -->
-<app-form-medical-info
-	[isOpen]="showFormMedico"
-	[editandoMedico]="editandoMedico"
-	[idViajeSeleccionado]="idViajeSeleccionado"
-	(closed)="cerrarFormMedico()"
-	(saved)="onFormMedicoSaved($event)"
+<app-form-medical-info [isOpen]="showFormMedico" [editandoMedico]="editandoMedico"
+	[idViajeSeleccionado]="idViajeSeleccionado" (closed)="cerrarFormMedico()" (saved)="onFormMedicoSaved($event)"
 	(saveFailed)="onFormMedicoFailed($event)">
 </app-form-medical-info>
+
+<app-confirm-modal [isOpen]="showDeleteModal" title="Eliminar registro médico"
+	[message]="registroAEliminar ? ('Esta acción eliminará permanentemente el registro médico de ' + (registroAEliminar.nombreViajero || 'Viajero #' + registroAEliminar.idViajero) + '.') : ''"
+	confirmText="Eliminar" cancelText="Cancelar" icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b"
+	iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b" (confirmed)="confirmarEliminarMedico()"
+	(closed)="cerrarDeleteModal()">
+</app-confirm-modal>
+
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMsg">
+</app-toast-notification>

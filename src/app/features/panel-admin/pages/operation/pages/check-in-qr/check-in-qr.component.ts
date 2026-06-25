@@ -21,7 +21,12 @@ export class CheckInQrComponent implements OnInit {
 
 	procesando: Record<number, boolean> = {};
 
+	// Confirmación de check-in
+	showConfirmModal = false;
+	reservaSeleccionada: ReservaApi | null = null;
+
 	showToast = false;
+	toastTitle = '';
 	toastMsg = '';
 	toastType: 'success' | 'error' = 'success';
 
@@ -38,7 +43,9 @@ export class CheckInQrComponent implements OnInit {
 					this.cargarDatos();
 				}
 			},
-			error: () => { }
+			error: () => {
+				this.mostrarToast('Error', 'No se pudieron cargar los viajes.', 'error');
+			}
 		});
 	}
 
@@ -55,8 +62,14 @@ export class CheckInQrComponent implements OnInit {
 		if (!this.idViajeSeleccionado || !this.viajeActual) return;
 		const idPaquete = this.viajeActual.idPaquete;
 		forkJoin({
-			reservas: this.svc.getReservasPorPaquete(idPaquete).pipe(catchError(() => of([]))),
-			checkins: this.svc.getCheckIns(this.idViajeSeleccionado).pipe(catchError(() => of([]))),
+			reservas: this.svc.getReservasPorPaquete(idPaquete).pipe(catchError(() => {
+				this.mostrarToast('Error', 'No se pudieron cargar las reservas.', 'error');
+				return of([]);
+			})),
+			checkins: this.svc.getCheckIns(this.idViajeSeleccionado).pipe(catchError(() => {
+				this.mostrarToast('Error', 'No se pudieron cargar los check-ins.', 'error');
+				return of([]);
+			})),
 		}).subscribe(({ reservas, checkins }) => {
 			this.reservas = reservas as ReservaApi[];
 			this.checkinsRealizados = checkins as CheckIn[];
@@ -69,13 +82,36 @@ export class CheckInQrComponent implements OnInit {
 		);
 	}
 
-	registrarCheckIn(reserva: ReservaApi): void {
+	// =========================================
+	// CONFIRMACIÓN DE CHECK-IN
+	// =========================================
+
+	abrirConfirmacionCheckIn(reserva: ReservaApi): void {
+		if (this.yaHizoCheckIn(reserva)) return;
+		this.reservaSeleccionada = reserva;
+		this.showConfirmModal = true;
+	}
+
+	cerrarConfirmacionCheckIn(): void {
+		this.showConfirmModal = false;
+		this.reservaSeleccionada = null;
+	}
+
+	confirmarCheckIn(): void {
+		if (!this.reservaSeleccionada) return;
+		const reserva = this.reservaSeleccionada;
+		this.showConfirmModal = false;
+		this.reservaSeleccionada = null;
+		this.registrarCheckIn(reserva);
+	}
+
+	private registrarCheckIn(reserva: ReservaApi): void {
 		if (!this.idViajeSeleccionado || this.yaHizoCheckIn(reserva)) return;
 		this.procesando[reserva.id] = true;
 
 		const body = {
 			idViajero: reserva.idUsuario,
-			codigoQr:  reserva.numeroReserva,
+			codigoQr: reserva.numeroReserva,
 			idReserva: reserva.id,
 		};
 
@@ -83,11 +119,11 @@ export class CheckInQrComponent implements OnInit {
 			next: (checkIn) => {
 				this.checkinsRealizados.unshift(checkIn);
 				this.procesando[reserva.id] = false;
-				this.mostrarToast(`Check-in registrado: ${reserva.numeroReserva}`);
+				this.mostrarToast('Check-in registrado', `Se registró correctamente el check-in de ${reserva.numeroReserva}.`, 'success');
 			},
 			error: (err) => {
 				this.procesando[reserva.id] = false;
-				this.mostrarToast(err?.error?.mensaje || 'Error al registrar check-in', 'error');
+				this.mostrarToast('Error al registrar', err?.error?.mensaje || 'No se pudo registrar el check-in.', 'error');
 			},
 		});
 	}
@@ -95,8 +131,11 @@ export class CheckInQrComponent implements OnInit {
 	get totalCheckIn(): number { return this.checkinsRealizados.length; }
 	get totalPendientes(): number { return this.reservas.filter(r => !this.yaHizoCheckIn(r)).length; }
 
-	mostrarToast(msg: string, type: 'success' | 'error' = 'success'): void {
-		this.toastMsg = msg; this.toastType = type; this.showToast = true;
+	mostrarToast(title: string, msg: string, type: 'success' | 'error' = 'success'): void {
+		this.toastTitle = title;
+		this.toastMsg = msg;
+		this.toastType = type;
+		this.showToast = true;
 		setTimeout(() => { this.showToast = false; }, 3500);
 	}
 }

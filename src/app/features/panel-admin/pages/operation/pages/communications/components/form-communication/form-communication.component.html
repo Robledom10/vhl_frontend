@@ -1,104 +1,131 @@
 <div class="modal-backdrop" *ngIf="isOpen" (click)="cerrar()"></div>
 <div class="modal-panel" *ngIf="isOpen">
-	<div class="modal-header">
-		<h3>{{ editando ? 'Editar mensaje' : 'Nuevo mensaje' }}</h3>
-		<button class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
+	<div class="modal-scroll">
+		<div class="modal-header">
+			<h3>{{ editando ? 'Editar mensaje' : 'Nuevo mensaje' }}</h3>
+			<button class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
+		</div>
+
+		<form [formGroup]="comForm" (ngSubmit)="enviar()">
+			<div class="form-grid">
+
+				<div class="form-group">
+					<label>Viaje *</label>
+					<select formControlName="idViaje">
+						<option value="">Seleccionar...</option>
+						<option *ngFor="let v of viajesFiltrados" [value]="v.id">
+							{{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} — Viaje #{{ v.id }} · {{
+							v.fechaSalida | date:'dd/MM/yyyy' }}
+						</option>
+					</select>
+					<span class="error" *ngIf="comForm.get('idViaje')?.invalid && comForm.get('idViaje')?.touched">
+						Campo requerido
+					</span>
+				</div>
+
+				<!-- CANAL -->
+				<div class="form-group span-2">
+					<label>Canal de envío</label>
+					<div class="canal-cards">
+						<div class="canal-card selected">
+							<div class="canal-icon-wrap gmail">
+								<i class="fa-brands fa-google"></i>
+							</div>
+							<div class="canal-info">
+								<span class="canal-name">Gmail</span>
+								<span class="canal-desc">Correo electrónico</span>
+							</div>
+							<i class="fa-solid fa-circle-check canal-check"></i>
+						</div>
+					</div>
+				</div>
+
+				<!-- CORREOS con filtro de pago -->
+				<div class="form-group span-2">
+					<div class="contactos-header">
+						<label>Correos electrónicos *</label>
+						<div class="pago-chips pago-chips-sm">
+							<button type="button" class="chip" [class.active]="filtroPago === 'todos'"
+								(click)="onFiltroPagoChange('todos')">Todos</button>
+							<button type="button" class="chip chip-verde" [class.active]="filtroPago === 'pagados'"
+								(click)="onFiltroPagoChange('pagados')">
+								<i class="fa-solid fa-circle-check"></i> Pagados
+							</button>
+							<button type="button" class="chip chip-rojo" [class.active]="filtroPago === 'no_pagados'"
+								(click)="onFiltroPagoChange('no_pagados')">
+								<i class="fa-solid fa-circle-xmark"></i> Sin pago
+							</button>
+						</div>
+					</div>
+					<div class="contactos-wrap">
+						<i class="fa-solid fa-spinner fa-spin contactos-loading" *ngIf="cargandoEmails"></i>
+						<textarea formControlName="contactos"
+							placeholder="Los correos se cargan automáticamente al seleccionar un viaje..."
+							rows="3"></textarea>
+					</div>
+					<span class="hint">
+						<i class="fa-solid fa-circle-info"></i>
+						{{ emailCount }} correo(s) cargados · Puedes editarlos manualmente · Separa con comas
+					</span>
+					<span class="error" *ngIf="comForm.get('contactos')?.invalid && comForm.get('contactos')?.touched">
+						Campo requerido
+					</span>
+				</div>
+
+				<!-- VIAJEROS DEL VIAJE -->
+				<div class="form-group span-2" *ngIf="viajerosSummary.length > 0">
+					<div class="viajeros-header">
+						<i class="fa-solid fa-users"></i>
+						<label>Personas que viajan <span class="badge-count">{{ viajerosSummary.length }}</span></label>
+					</div>
+					<div class="viajeros-lista">
+						<div class="viajero-row" *ngFor="let v of viajerosSummary">
+							<span class="viajero-nombre">{{ v.nombre }}</span>
+							<span class="viajero-reserva">{{ v.reserva }}</span>
+							<span class="viajero-pago" [class.pagado]="v.pagado" [class.sin-pago]="!v.pagado">
+								<i class="fa-solid" [class.fa-circle-check]="v.pagado"
+									[class.fa-circle-xmark]="!v.pagado"></i>
+								{{ v.pagado ? 'Pago verificado' : 'Sin pago' }}
+							</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group span-2">
+					<label>Asunto *</label>
+					<input type="text" formControlName="asunto"
+						placeholder="Ej: Información importante sobre el itinerario">
+					<span class="error" *ngIf="comForm.get('asunto')?.invalid && comForm.get('asunto')?.touched">
+						Asunto requerido (min. 5 caracteres)
+					</span>
+				</div>
+
+				<div class="form-group span-2">
+					<label>Mensaje *</label>
+					<textarea formControlName="mensaje" placeholder="Escribe el mensaje para los viajeros..."
+						rows="5"></textarea>
+					<span class="error" *ngIf="comForm.get('mensaje')?.invalid && comForm.get('mensaje')?.touched">
+						Mensaje requerido (min. 20 caracteres)
+					</span>
+				</div>
+
+			</div>
+
+			<div class="modal-actions">
+				<button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
+				<button type="submit" class="btn-enviar" [disabled]="enviando">
+					<i class="fa-solid fa-spinner spinning" *ngIf="enviando"></i>
+					{{ enviando ? 'Enviando...' : (editando ? 'Actualizar' : 'Enviar mensaje') }}
+				</button>
+			</div>
+		</form>
 	</div>
-
-	<form [formGroup]="comForm" (ngSubmit)="enviar()">
-		<div class="form-grid">
-
-			<div class="form-group">
-				<label>Viaje *</label>
-				<select formControlName="idViaje">
-					<option value="">Seleccionar...</option>
-					<option *ngFor="let v of viajesFiltrados" [value]="v.id">
-						{{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} — Viaje #{{ v.id }} · {{ v.fechaSalida | date:'dd/MM/yyyy' }}
-					</option>
-				</select>
-				<span class="error" *ngIf="comForm.get('idViaje')?.invalid && comForm.get('idViaje')?.touched">Campo requerido</span>
-			</div>
-
-			<!-- CANAL -->
-			<div class="form-group span-2">
-				<label>Canal de envío</label>
-				<div class="canal-cards">
-					<div class="canal-card selected">
-						<div class="canal-icon-wrap gmail">
-							<i class="fa-brands fa-google"></i>
-						</div>
-						<div class="canal-info">
-							<span class="canal-name">Gmail</span>
-							<span class="canal-desc">Correo electrónico</span>
-						</div>
-						<i class="fa-solid fa-circle-check canal-check"></i>
-					</div>
-				</div>
-			</div>
-
-			<!-- CORREOS con filtro de pago -->
-			<div class="form-group span-2">
-				<div class="contactos-header">
-					<label>Correos electrónicos *</label>
-					<div class="pago-chips pago-chips-sm">
-						<button type="button" class="chip" [class.active]="filtroPago === 'todos'" (click)="onFiltroPagoChange('todos')">Todos</button>
-						<button type="button" class="chip chip-verde" [class.active]="filtroPago === 'pagados'" (click)="onFiltroPagoChange('pagados')">
-							<i class="fa-solid fa-circle-check"></i> Pagados
-						</button>
-						<button type="button" class="chip chip-rojo" [class.active]="filtroPago === 'no_pagados'" (click)="onFiltroPagoChange('no_pagados')">
-							<i class="fa-solid fa-circle-xmark"></i> Sin pago
-						</button>
-					</div>
-				</div>
-				<div class="contactos-wrap">
-					<i class="fa-solid fa-spinner fa-spin contactos-loading" *ngIf="cargandoEmails"></i>
-					<textarea formControlName="contactos" placeholder="Los correos se cargan automáticamente al seleccionar un viaje..." rows="3"></textarea>
-				</div>
-				<span class="hint">
-					<i class="fa-solid fa-circle-info"></i>
-					{{ emailCount }} correo(s) cargados · Puedes editarlos manualmente · Separa con comas
-				</span>
-				<span class="error" *ngIf="comForm.get('contactos')?.invalid && comForm.get('contactos')?.touched">Campo requerido</span>
-			</div>
-
-			<!-- VIAJEROS DEL VIAJE -->
-			<div class="form-group span-2" *ngIf="viajerosSummary.length > 0">
-				<div class="viajeros-header">
-					<i class="fa-solid fa-users"></i>
-					<label>Personas que viajan <span class="badge-count">{{ viajerosSummary.length }}</span></label>
-				</div>
-				<div class="viajeros-lista">
-					<div class="viajero-row" *ngFor="let v of viajerosSummary">
-						<span class="viajero-nombre">{{ v.nombre }}</span>
-						<span class="viajero-reserva">{{ v.reserva }}</span>
-						<span class="viajero-pago" [class.pagado]="v.pagado" [class.sin-pago]="!v.pagado">
-							<i class="fa-solid" [class.fa-circle-check]="v.pagado" [class.fa-circle-xmark]="!v.pagado"></i>
-							{{ v.pagado ? 'Pago verificado' : 'Sin pago' }}
-						</span>
-					</div>
-				</div>
-			</div>
-
-			<div class="form-group span-2">
-				<label>Asunto *</label>
-				<input type="text" formControlName="asunto" placeholder="Ej: Información importante sobre el itinerario">
-				<span class="error" *ngIf="comForm.get('asunto')?.invalid && comForm.get('asunto')?.touched">Asunto requerido (min. 5 caracteres)</span>
-			</div>
-
-			<div class="form-group span-2">
-				<label>Mensaje *</label>
-				<textarea formControlName="mensaje" placeholder="Escribe el mensaje para los viajeros..." rows="5"></textarea>
-				<span class="error" *ngIf="comForm.get('mensaje')?.invalid && comForm.get('mensaje')?.touched">Mensaje requerido (min. 20 caracteres)</span>
-			</div>
-
-		</div>
-
-		<div class="modal-actions">
-			<button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
-			<button type="submit" class="btn-enviar" [disabled]="enviando">
-				<i class="fa-solid fa-spinner spinning" *ngIf="enviando"></i>
-				{{ enviando ? 'Enviando...' : (editando ? 'Actualizar' : 'Enviar mensaje') }}
-			</button>
-		</div>
-	</form>
 </div>
+
+<!-- al final del archivo, fuera del <form> pero dentro de .modal-panel o justo después -->
+<app-confirm-modal [isOpen]="showConfirmModal" [title]="editando ? 'Actualizar mensaje' : 'Enviar mensaje'"
+	[message]="editando ? '¿Deseas guardar los cambios de este mensaje?' : ('¿Deseas enviar este mensaje a ' + emailCount + ' correo(s)?')"
+	[confirmText]="editando ? 'Actualizar' : 'Enviar'" cancelText="Cancelar" icon="fa-solid fa-paper-plane"
+	confirmColor="#3fa2db" iconBg="rgba(63, 162, 219, 0.12)" iconColor="#3fa2db" (confirmed)="confirmarEnvio()"
+	(closed)="cerrarConfirmModal()">
+</app-confirm-modal>

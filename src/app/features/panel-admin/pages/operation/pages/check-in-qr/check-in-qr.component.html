@@ -22,21 +22,27 @@
 	<!-- STATS -->
 	<div class="stats-row" *ngIf="idViajeSeleccionado">
 		<div class="stat-card">
-			<div class="stat-icon total-icon"><i class="fa-solid fa-users"></i></div>
+			<div class="stat-icon total-icon">
+				<i class="fa-solid fa-users"></i>
+			</div>
 			<div class="stat-info">
 				<span class="stat-val">{{ reservas.length }}</span>
 				<span class="stat-lbl">Total reservas</span>
 			</div>
 		</div>
 		<div class="stat-card">
-			<div class="stat-icon ok-icon"><i class="fa-solid fa-circle-check"></i></div>
+			<div class="stat-icon ok-icon">
+				<i class="fa-solid fa-circle-check"></i>
+			</div>
 			<div class="stat-info">
 				<span class="stat-val">{{ totalCheckIn }}</span>
 				<span class="stat-lbl">Check-in realizado</span>
 			</div>
 		</div>
 		<div class="stat-card">
-			<div class="stat-icon pend-icon"><i class="fa-solid fa-clock"></i></div>
+			<div class="stat-icon pend-icon">
+				<i class="fa-solid fa-clock"></i>
+			</div>
 			<div class="stat-info">
 				<span class="stat-val">{{ totalPendientes }}</span>
 				<span class="stat-lbl">Pendientes</span>
@@ -68,7 +74,10 @@
 					<tr *ngFor="let r of reservas">
 						<td>
 							<div class="td-viajero">
-								<div class="avatar-sm"><i class="fa-solid fa-user"></i></div>
+								<div class="avatar-sm">
+									<i class="fa-solid fa-user"></i>
+								</div>
+
 								<div class="viajero-data">
 									<span class="viajero-nombre">
 										<ng-container *ngIf="r.viajeros && r.viajeros.length > 0; else soloId">
@@ -76,6 +85,7 @@
 										</ng-container>
 										<ng-template #soloId>Usuario #{{ r.idUsuario }}</ng-template>
 									</span>
+
 									<span class="viajero-email" *ngIf="r.viajeros && r.viajeros.length > 0">
 										{{ r.viajeros[0].email }}
 									</span>
@@ -95,7 +105,8 @@
 							<span class="badge-checkin ok" *ngIf="yaHizoCheckIn(r)">
 								<i class="fa-solid fa-circle-check"></i> Registrado
 							</span>
-							<button class="btn-checkin" *ngIf="!yaHizoCheckIn(r)" (click)="registrarCheckIn(r)"
+
+							<button class="btn-checkin" *ngIf="!yaHizoCheckIn(r)" (click)="abrirConfirmacionCheckIn(r)"
 								[disabled]="procesando[r.id]">
 								<i class="fa-solid fa-spinner spinning" *ngIf="procesando[r.id]"></i>
 								<i class="fa-solid fa-qrcode" *ngIf="!procesando[r.id]"></i>
@@ -110,12 +121,16 @@
 			</table>
 		</div>
 	</div>
-
-	<!-- TOAST -->
-	<div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
-		<i class="toast-icon"
-			[class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
-		<span class="toast-msg">{{ toastMsg }}</span>
-	</div>
-
 </div>
+
+<!-- CONFIRMACIÓN CHECK-IN -->
+<app-confirm-modal [isOpen]="showConfirmModal" title="Registrar check-in"
+	[message]="reservaSeleccionada ? ('¿Confirmas el check-in de la reserva ' + reservaSeleccionada.numeroReserva + '?') : ''"
+	confirmText="Registrar" cancelText="Cancelar" icon="fa-solid fa-qrcode" confirmColor="#3fa2db"
+	iconBg="rgba(63, 162, 219, 0.12)" iconColor="#3fa2db" (confirmed)="confirmarCheckIn()"
+	(closed)="cerrarConfirmacionCheckIn()">
+</app-confirm-modal>
+
+<!-- TOAST -->
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMsg">
+</app-toast-notification>
