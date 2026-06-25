@@ -28,7 +28,8 @@
 				<select class="proveedor-select" (change)="seleccionarProveedorAlojamiento($event)">
 					<option value="">Seleccionar proveedor (opcional)...</option>
 					<option *ngFor="let p of proveedores" [value]="p.id">
-						{{ p.nombre }}{{ p.direccion ? ' · ' + p.direccion : '' }}{{ p.telefono ? ' · Tel: ' + p.telefono : '' }}
+						{{ p.nombre }}{{ p.direccion ? ' · ' + p.direccion : '' }}{{ p.telefono ? ' · Tel: ' +
+						p.telefono : '' }}
 					</option>
 				</select>
 			</div>
@@ -107,3 +108,10 @@
 		</div>
 	</form>
 </div>
+
+<app-confirm-modal [isOpen]="showConfirmModal" [title]="editandoId ? 'Actualizar alojamiento' : 'Asignar alojamiento'"
+	[message]="editandoId ? '¿Deseas guardar los cambios de este alojamiento?' : '¿Deseas asignar este alojamiento al viaje seleccionado?'"
+	[confirmText]="editandoId ? 'Actualizar' : 'Asignar'" cancelText="Cancelar" icon="fa-solid fa-hotel"
+	confirmColor="#3fa2db" iconBg="rgba(63, 162, 219, 0.12)" iconColor="#3fa2db" (confirmed)="confirmarGuardar()"
+	(closed)="cerrarConfirmModal()">
+</app-confirm-modal>
