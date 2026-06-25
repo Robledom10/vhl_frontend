@@ -40,9 +40,9 @@ import { FormEmergencyContactComponent } from './pages/operation/pages/emergency
 import { FormMedicalInfoComponent } from './pages/operation/pages/medical-info/components/form-medical-info/form-medical-info.component';
 import { FormCommunicationComponent } from './pages/operation/pages/communications/components/form-communication/form-communication.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { DetalleViajeComponent } from './pages/packages/pages/operations-dashboard/components/detalle-viaje/detalle-viaje.component';
-import { EditViajeFormComponent } from './pages/packages/pages/operations-dashboard/components/edit-viaje-form/edit-viaje-form.component';
-import { ViajeFormComponent } from './pages/packages/pages/operations-dashboard/components/viaje-form/viaje-form.component';
+import { DetalleViajeComponent } from './pages/operation/pages/operations-dashboard/components/detalle-viaje/detalle-viaje.component';
+import { EditViajeFormComponent } from './pages/operation/pages/operations-dashboard/components/edit-viaje-form/edit-viaje-form.component';
+import { ViajeFormComponent } from './pages/operation/pages/operations-dashboard/components/viaje-form/viaje-form.component';
 
 @NgModule({
 	declarations: [

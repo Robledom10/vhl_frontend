@@ -92,22 +92,30 @@
 
 <!-- PAGINACIÓN -->
 <div class="pagination" *ngIf="totalPages > 1">
-	<button class="page-btn" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 0">
-		<i class="fa-solid fa-chevron-left"></i>
-	</button>
+	<span class="page-info">Página {{ currentPage + 1 }} de {{ totalPages }}</span>
 
-	<button class="page-btn" *ngFor="let p of pages" [class.active]="p === currentPage" (click)="goToPage(p)">
-		{{ p + 1 }}
-	</button>
+	<div class="pagination-controls">
+		<button class="page-btn" (click)="goToPage(0)" [disabled]="currentPage === 0">
+			<i class="fa-solid fa-angles-left"></i>
+		</button>
 
-	<button class="page-btn" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages - 1">
-		<i class="fa-solid fa-chevron-right"></i>
-	</button>
+		<button class="page-btn" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 0">
+			<i class="fa-solid fa-chevron-left"></i>
+		</button>
 
-	<span class="page-info">{{ currentPage + 1 }} / {{ totalPages }}</span>
+		<button class="page-btn" *ngFor="let p of pages" [class.active]="p === currentPage" (click)="goToPage(p)">
+			{{ p + 1 }}
+		</button>
+
+		<button class="page-btn" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages - 1">
+			<i class="fa-solid fa-chevron-right"></i>
+		</button>
+
+		<button class="page-btn" (click)="goToPage(totalPages - 1)" [disabled]="currentPage === totalPages - 1">
+			<i class="fa-solid fa-angles-right"></i>
+		</button>
+	</div>
 </div>
-
-<!-- MODAL ELIMINAR -->
 
 <!-- MODAL CAMBIO ESTADO -->
 

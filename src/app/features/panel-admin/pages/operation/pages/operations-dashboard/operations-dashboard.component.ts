@@ -33,7 +33,7 @@ export class DashboardOperativoComponent implements OnInit {
 	paginaActual = 0;
 	totalPaginas = 0;
 	totalElementos = 0;
-	tamano = 10;
+	tamano = 5;
 
 	get paginas(): number[] {
 		const delta = 2;

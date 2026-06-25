@@ -43,8 +43,9 @@
 				<i class="fa-solid fa-bed"></i>
 			</div>
 			<div class="kpi-info">
-				<span class="kpi-value">{{ alojamientosAsignados }}/{{
-					totalViajesActivos }}</span>
+				<span class="kpi-value">
+					{{ alojamientosAsignados }}/{{ totalViajesActivos }}
+				</span>
 				<span class="kpi-label">Alojamientos asignados</span>
 			</div>
 			<i class="fa-solid fa-arrow-right kpi-arrow"></i>
@@ -87,16 +88,18 @@
 				<tr *ngFor="let fila of filas" [class.fila-sin-viaje]="!fila.tieneViaje">
 					<td>
 						<div class="paquete-nombre">{{ fila.paqueteTitulo }}</div>
-						<small *ngIf="fila.idViaje" class="viaje-id">Viaje #{{ fila.idViaje
-							}}</small>
+						<small *ngIf="fila.idViaje" class="viaje-id">
+							Viaje #{{ fila.idViaje }}
+						</small>
 					</td>
 					<td>{{ fila.paqueteDestino || '—' }}</td>
-					<td>{{ fila.fechaSalida ? (fila.fechaSalida | date:'dd/MM/yyyy') : '—'
-						}}</td>
 					<td>
-						<span *ngIf="fila.tieneViaje" class="badge-num link-cell"
-							(click)="ir('operaciones-check-in')">{{ fila.viajerosRegistrados
-							}}</span>
+						{{ fila.fechaSalida ? (fila.fechaSalida | date:'dd/MM/yyyy') : '—' }}
+					</td>
+					<td>
+						<span *ngIf="fila.tieneViaje" class="badge-num link-cell" (click)="ir('operaciones-check-in')">
+							{{ fila.viajerosRegistrados }}
+						</span>
 						<span *ngIf="!fila.tieneViaje" class="badge-num disabled">—</span>
 					</td>
 					<td>
@@ -118,23 +121,27 @@
 					</td>
 					<td>
 						<span *ngIf="fila.tieneViaje" class="incidente-badge link-cell"
-							[class.con-incidentes]="fila.incidentes > 0" (click)="ir('operaciones-incidentes')">{{
-							fila.incidentes
-							}}</span>
+							[class.con-incidentes]="fila.incidentes > 0" (click)="ir('operaciones-incidentes')">
+							{{fila.incidentes}}
+						</span>
 						<span *ngIf="!fila.tieneViaje" class="incidente-badge disabled">—</span>
 					</td>
 					<td>
-						<span class="status" [class]="getEstadoClass(fila)">{{
-							getEstadoLabel(fila.estado) }}</span>
+						<span class="status" [class]="getEstadoClass(fila)">
+							{{ getEstadoLabel(fila.estado) }}
+						</span>
 					</td>
 					<td>
 						<div class="actions" *ngIf="fila.tieneViaje; else sinAcciones">
-							<button class="ver" (click)="verDetalleViaje(fila)" title="Ver detalle"><i
-									class="fa-solid fa-eye"></i></button>
-							<button class="edit" (click)="editarViaje(fila)" title="Editar"><i
-									class="fa-solid fa-pen"></i></button>
-							<button class="del" (click)="eliminarViajeRow(fila)" title="Eliminar"><i
-									class="fa-solid fa-trash"></i></button>
+							<button class="ver" (click)="verDetalleViaje(fila)" title="Ver detalle">
+								<i class="fa-regular fa-eye"></i>
+							</button>
+							<button class="edit" (click)="editarViaje(fila)" title="Editar">
+								<i class="fa-solid fa-pen"></i>
+							</button>
+							<button class="del" (click)="eliminarViajeRow(fila)" title="Eliminar">
+								<i class="fa-solid fa-trash"></i>
+							</button>
 						</div>
 						<ng-template #sinAcciones><span class="badge-num disabled">—</span></ng-template>
 					</td>
@@ -161,16 +168,16 @@
 			<button class="page-btn" [disabled]="paginaActual === 0" (click)="cambiarPagina(paginaActual - 1)">
 				<i class="fa-solid fa-angle-left"></i>
 			</button>
-			<button *ngFor="let p of paginas"
-				class="page-btn page-number"
-				[class.active]="p === paginaActual"
+			<button *ngFor="let p of paginas" class="page-btn page-number" [class.active]="p === paginaActual"
 				(click)="cambiarPagina(p)">
 				{{ p + 1 }}
 			</button>
-			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1" (click)="cambiarPagina(paginaActual + 1)">
+			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1"
+				(click)="cambiarPagina(paginaActual + 1)">
 				<i class="fa-solid fa-angle-right"></i>
 			</button>
-			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1" (click)="cambiarPagina(totalPaginas - 1)">
+			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1"
+				(click)="cambiarPagina(totalPaginas - 1)">
 				<i class="fa-solid fa-angles-right"></i>
 			</button>
 		</div>
@@ -196,8 +203,9 @@
 	<!-- Eliminación del viaje -->
 	<app-confirm-modal [isOpen]="showConfirmDelete" title="Eliminar viaje"
 		[message]="'¿Desea eliminar el viaje #' + viajePendienteEliminar?.idViaje + '?'" confirmText="Eliminar"
-		cancelText="Cancelar" icon="fa-solid fa-triangle-exclamation" confirmColor="#dc3545" iconBg="rgba(220,53,69,.12)"
-		iconColor="#dc3545" (closed)="cancelarEliminar()" (confirmed)="confirmarEliminar()">
+		cancelText="Cancelar" icon="fa-solid fa-triangle-exclamation" confirmColor="#dc3545"
+		iconBg="rgba(220,53,69,.12)" iconColor="#dc3545" (closed)="cancelarEliminar()"
+		(confirmed)="confirmarEliminar()">
 	</app-confirm-modal>
 
 	<!-- Modal notificación -->

@@ -30,6 +30,7 @@ export class GalleryAdminComponent implements OnInit {
 	showToast = false;
 	toastTitle = '';
 	toastMessage = '';
+	toastType: 'success' | 'error' | 'info' = 'success';
 
 	//   Para eliminar una imagen
 	showDeleteModal = false;
@@ -133,24 +134,13 @@ export class GalleryAdminComponent implements OnInit {
 	}
 
 	closeModal(success: boolean = false) {
-		const wasEditing = !!this.selectedMedia;
-
 		this.showModal = false;
 		this.selectedMedia = null;
 		document.body.style.overflow = '';
 
 		if (success) {
-			this.toastTitle = wasEditing ? 'Archivo actualizado' : 'Archivo agregado';
-
-			this.toastMessage = wasEditing
-				? 'El archivo fue actualizado correctamente.'
-				: 'El archivo fue agregado correctamente.';
-
-			this.showToast = true;
-
-			setTimeout(() => {
-				this.showToast = false;
-			}, 3000);
+			this.loadMedia();
+			return;
 		}
 
 		this.loadMedia();
@@ -231,13 +221,11 @@ export class GalleryAdminComponent implements OnInit {
 				this.showDeleteModal = false;
 				document.body.style.overflow = '';
 
-				this.toastTitle = 'Archivo eliminado';
-				this.toastMessage = 'El archivo fue eliminado correctamente.';
-				this.showToast = true;
-
-				setTimeout(() => {
-					this.showToast = false;
-				}, 3000);
+				this.showToastNotification(
+					'Archivo eliminado',
+					'El archivo fue eliminado correctamente.',
+					'success'
+				);
 
 				this.selectedMediaToDelete = null;
 				this.loadMedia();
@@ -245,8 +233,28 @@ export class GalleryAdminComponent implements OnInit {
 
 			error: (err) => {
 				console.error(err);
+				this.showToastNotification(
+					'Error al eliminar',
+					'No se pudo eliminar el archivo. Intenta nuevamente.',
+					'error'
+				);
 			},
 		});
+	}
+
+	showToastNotification(title: string, message: string, type: 'success' | 'error' | 'info' = 'success'): void {
+		this.toastTitle = title;
+		this.toastMessage = message;
+		this.toastType = type;
+		this.showToast = true;
+
+		setTimeout(() => {
+			this.showToast = false;
+		}, 3000);
+	}
+
+	onMediaNotification(event: { title: string; message: string; type: 'success' | 'error' | 'info' }): void {
+		this.showToastNotification(event.title, event.message, event.type);
 	}
 
 	closeAllDropdowns(): void {
