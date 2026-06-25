@@ -5,6 +5,7 @@ import { minimumAgeValidator } from '../../../../core/validators/custom.validato
 import colombiaData from '../../../../../assets/data/colombia.json';
 import { ReservationService } from '../../../../core/services/reservation.service';
 import { Reservation } from '../reservations/models/reservations.models';
+import { PaymentService } from '../../../../core/services/payments.service.service';
 
 export interface Documento {
 	id?: number;
@@ -66,7 +67,8 @@ export class ProfileComponent implements OnInit {
 	constructor(
 		public authService: AuthService,
 		private fb: FormBuilder,
-		private reservationService: ReservationService
+		private reservationService: ReservationService,
+		private paymentService: PaymentService
 	) { }
 
 	profileForm = this.fb.group({
@@ -341,6 +343,35 @@ export class ProfileComponent implements OnInit {
 		if (docs.some((d: Documento) => d.status === 'en_proceso')) return 'En revisión';
 
 		return 'Enviado';
+	}
+
+	payReservation(reservation: any): void {
+
+		console.log('Reserva:', reservation);
+
+		const user = this.authService.getUser();
+
+		this.paymentService.createPaymentLink({
+
+			accountId: user?.id,
+			packageId: reservation.packageId,
+			installments: 1
+
+		}).subscribe({
+
+			next: (paymentUrl: string) => {
+
+				window.location.href = paymentUrl;
+
+			},
+
+			error: (error) => {
+
+				console.error('Error al generar el pago', error);
+
+			}
+
+		});
 	}
 
 	// =========================
