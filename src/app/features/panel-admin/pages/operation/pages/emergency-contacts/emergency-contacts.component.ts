@@ -32,7 +32,8 @@ export class ContactosEmergenciaComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.authSvc.getAllUsers().subscribe({
-			next: (users: any[]) => {
+			next: (response: any) => {
+				const users: any[] = response?.content ?? (Array.isArray(response) ? response : []);
 				this.usuarios = users.map(u => ({ id: u.id, firstName: u.firstName, lastName: u.lastName }));
 				this.usuarioMap = Object.fromEntries(this.usuarios.map(u => [u.id, `${u.firstName} ${u.lastName}`]));
 			},

@@ -118,12 +118,14 @@ export class AuthService {
 	// USERS
 	// =========================
 
-	getAllUsers() {
-		return this.http.get<any>(`${environment.apiUrl}/admin/users?page=0&size=1000`, {
-			withCredentials: true,
-			headers: { Authorization: `Bearer ${this.getToken()}` },
-		}).pipe(
-			map((response: any) => Array.isArray(response) ? response : (response?.content ?? []))
+	getAllUsers(page: number = 0, size: number = 10) {
+		return this.http.get<{ content: any[]; totalElements: number; totalPages: number; number: number }>(
+			`${environment.apiUrl}/admin/users`,
+			{
+				params: { page: page.toString(), size: size.toString() },
+				withCredentials: true,
+				headers: { Authorization: `Bearer ${this.getToken()}` },
+			}
 		);
 	}
 

@@ -188,11 +188,11 @@
 	</div>
 </div>
 
-<!-- MODAL CONFIRMAR CANCELACIÓN -->
-<app-confirm-modal [isOpen]="showCancelModal" title="Cancelar reserva"
-	message="Esta acción cancelará la reserva del cliente. Podrá reactivarla más adelante."
-	confirmText="Cancelar reserva" cancelText="Volver" icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b"
-	iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b" (confirmed)="confirmCancel()" (closed)="closeCancelModal()">
+<!-- MODAL CONFIRMACIÓN GENÉRICO -->
+<app-confirm-modal [isOpen]="showConfirmModal" [title]="confirmModalTitle" [message]="confirmModalMessage"
+	[confirmText]="confirmModalConfirmText" cancelText="Cancelar" [icon]="confirmModalIcon"
+	[confirmColor]="confirmModalColor" [iconBg]="confirmModalIconBg" [iconColor]="confirmModalIconColor"
+	(confirmed)="executeConfirm()" (closed)="closeConfirmModal()">
 </app-confirm-modal>
 
 <!-- TOAST -->

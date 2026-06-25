@@ -19,14 +19,14 @@ export class PackagesComponent implements OnInit {
 	showToast = false;
 	toastTitle = '';
 	toastMessage = '';
-	toastType: 'success' | 'edit' | 'delete' = 'success';
+	toastType: 'success' | 'edit' | 'delete' | 'error' = 'success';
 	selectedPackage: AdminPackage | null = null;
 	editingPackage: RespuestaPaqueteTuristico | null = null;
 	packages: AdminPackage[] = [];
 	busqueda = '';
 	destinoFiltro = '';
 	duracionFiltro: number | null = null;
-	estadoFiltro = 'Activos';
+	estadoFiltro = 'Todos';
 	cargando = false;
 	private filterChangeTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -73,31 +73,21 @@ export class PackagesComponent implements OnInit {
 		document.body.style.overflow = '';
 	}
 
-	handlePackageSaved(event: { action: 'created' | 'updated'; name: string }): void {
-		if (event.action === 'created') {
-			this.showFeedbackToast(
-				'Paquete creado con éxito',
-				`El paquete "${event.name}" ya está disponible en la lista.`,
-				'success',
-			);
-		} else {
-			this.showFeedbackToast(
-				'Paquete actualizado',
-				`Los cambios de "${event.name}" se guardaron correctamente.`,
-				'edit',
-			);
-		}
-
+	handlePackageSaved(): void {
 		this.cargarPaquetes();
 	}
 
-	private showFeedbackToast(title: string, message: string, type: 'success' | 'edit' | 'delete'): void {
+	private showFeedbackToast(title: string, message: string, type: 'success' | 'edit' | 'delete' | 'error'): void {
 		this.toastTitle = title;
 		this.toastMessage = message;
 		this.toastType = type;
 		this.showToast = true;
 
 		setTimeout(() => { this.showToast = false; }, 3200);
+	}
+
+	private showErrorToast(message: string): void {
+		this.showFeedbackToast('Ocurrió un error', message, 'error');
 	}
 
 	cargarPaquetes(): void {
@@ -120,6 +110,7 @@ export class PackagesComponent implements OnInit {
 			error: (err: any) => {
 				console.error('Error cargando paquetes:', err);
 				this.cargando = false;
+				this.showErrorToast('No se pudieron cargar los paquetes. Intenta de nuevo.');
 			}
 		});
 	}
@@ -160,7 +151,7 @@ export class PackagesComponent implements OnInit {
 		this.busqueda = '';
 		this.destinoFiltro = '';
 		this.duracionFiltro = null;
-		this.estadoFiltro = 'Activos';
+		this.estadoFiltro = 'Todos';
 		this.paginaActual = 0;
 		this.cargarPaquetes();
 	}
@@ -233,15 +224,31 @@ export class PackagesComponent implements OnInit {
 		delete$.subscribe({
 			next: () => {
 				this.showDeleteModal = false;
-				this.showFeedbackToast(
-					isInactive ? 'Paquete eliminado definitivamente' : 'Paquete movido a inactivos',
-					isInactive ? `"${deletedName}" fue eliminado permanentemente.` : `"${deletedName}" ya no aparece entre los paquetes activos.`,
-					'delete',
-				);
+				if (isInactive) {
+					this.showFeedbackToast(
+						'Paquete eliminado',
+						`Se eliminó permanentemente el paquete ${deletedName}.`,
+						'delete',
+					);
+				} else {
+					this.showFeedbackToast(
+						'Paquete desactivado',
+						`El paquete ${deletedName} fue desactivado correctamente.`,
+						'edit',
+					);
+				}
 				this.packages = this.packages.filter(pkg => pkg.id !== this.selectedPackage?.id);
 				this.cargarPaquetes();
 			},
-			error: (err: any) => console.error('Error eliminando paquete:', err)
+			error: (err: any) => {
+				console.error('Error eliminando paquete:', err);
+				this.showDeleteModal = false;
+				this.showErrorToast(
+					isInactive
+						? `No se pudo eliminar el paquete ${deletedName}.`
+						: `No se pudo desactivar el paquete ${deletedName}.`
+				);
+			}
 		});
 	}
 }

@@ -1,0 +1,57 @@
+<div class="modal-backdrop" (click)="cerrar.emit()"></div>
+<div class="modal-panel">
+	<div class="modal-header">
+		<h3>
+			Editar viaje #{{ idViaje }}
+		</h3>
+
+		<button type="button" class="btn-cerrar" (click)="cerrar.emit()">
+			&#10005;
+		</button>
+	</div>
+
+	<form [formGroup]="editForm" (ngSubmit)="abrirConfirmacion()">
+		<div class="form-grid">
+			<div class="form-group">
+				<label>Fecha de salida *</label>
+
+				<input type="datetime-local" formControlName="fechaSalida">
+
+				<span class="error"
+					*ngIf="	editForm.get('fechaSalida')?.invalid &&	editForm.get('fechaSalida')?.touched">
+					Fecha requerida
+				</span>
+			</div>
+
+			<div class="form-group">
+				<label>Fecha final</label>
+
+				<input type="datetime-local" formControlName="fechaRegreso" readonly>
+
+				<small class="auto-date-msg">
+					Se calcula automáticamente según la duración del paquete
+				</small>
+			</div>
+		</div>
+
+		<div class="modal-actions">
+			<button type="button" class="btn-cancelar" (click)="cerrar.emit()">
+				Cancelar
+			</button>
+
+			<button type="submit" class="btn-guardar" [disabled]="enviando">
+				{{ enviando ? 'Guardando...' : 'Guardar cambios' }}
+			</button>
+		</div>
+	</form>
+</div>
+
+<!-- Modales -->
+<app-confirm-modal [isOpen]="showConfirm" title="Actualizar viaje" message="¿Desea guardar los cambios del viaje?"
+	confirmText="Guardar" cancelText="Cancelar" icon="fa-solid fa-pen" (closed)="showConfirm=false"
+	(confirmed)="guardar()">
+</app-confirm-modal>
+
+<!-- Notificación -->
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
+</app-toast-notification>

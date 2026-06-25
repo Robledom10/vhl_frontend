@@ -9,20 +9,35 @@ export interface AuthStatistics {
 	admins: number;
 	clients: number;
 	guides: number;
-
 }
 
 export interface ReservationStatistics {
 	totalReservations: number;
+	blockedReservations: number;
 	pendingReservations: number;
-	approvedReservations: number;
-	rejectedReservations: number;
+	confirmedReservations: number;
 	cancelledReservations: number;
+	completedReservations: number;
+	pastReservations: number;
+	paidReservations: number;
+	unpaidReservations: number;
 }
 
 export interface CatalogStatistics {
 	totalPackages: number;
 	activePackages: number;
 	inactivePackages: number;
-	totalCategories: number;
+	totalProviders: number;
+	activeProviders: number;
+	inactiveProviders: number;
+	averagePrice: number;
+	maxPrice: number;
+	minPrice: number;
+}
+
+export interface PackageReservations {
+	year: number;
+	packageId: number;
+	packageName: string;
+	totalReservations: number;
 }

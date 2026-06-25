@@ -1,0 +1,78 @@
+<div class="modal-backdrop" (click)="cerrarModal()">
+	<div class="modal-panel" (click)="$event.stopPropagation()">
+		<div class="modal-header">
+			<h3>Crear nuevo viaje</h3>
+
+			<button type="button" class="btn-cerrar" (click)="cerrarModal()">
+				&#x2715;
+			</button>
+		</div>
+
+		<form [formGroup]="viajeForm" (ngSubmit)="abrirConfirmacion()">
+			<div class="form-grid">
+				<div class="form-group span-2">
+
+					<label>Paquete turístico *</label>
+
+					<select formControlName="idPaquete">
+						<option value="">
+							Seleccionar paquete...
+						</option>
+
+						<option *ngFor="let p of paquetes" [value]="p.id">
+							{{ p.titulo }} — {{ p.destino }}
+						</option>
+					</select>
+
+					<span class="error"
+						*ngIf="viajeForm.get('idPaquete')?.invalid && viajeForm.get('idPaquete')?.touched">
+						Selecciona un paquete
+					</span>
+				</div>
+
+				<div class="form-group">
+					<label>Fecha de inicio</label>
+
+					<input type="datetime-local" formControlName="fechaSalida">
+
+					<span class="error"
+						*ngIf="viajeForm.get('fechaSalida')?.invalid && viajeForm.get('fechaSalida')?.touched">
+						Selecciona una fecha
+					</span>
+				</div>
+
+				<div class="form-group">
+					<label>Fecha final</label>
+
+					<input type="datetime-local" formControlName="fechaRegreso" readonly>
+
+					<small class="auto-date-msg">
+						Se calcula automáticamente según la duración del paquete
+					</small>
+				</div>
+			</div>
+
+			<div class="modal-actions">
+
+				<button type="button" class="btn-cancelar" (click)="cerrar.emit()">
+					Cancelar
+				</button>
+
+				<button type="submit" class="btn-guardar" [disabled]="enviando">
+					{{ enviando ? 'Creando...' : 'Crear viaje' }}
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<!-- Modales -->
+
+<app-confirm-modal [isOpen]="showConfirm" title="Crear viaje" message="¿Desea crear este viaje?" confirmText="Crear"
+	cancelText="Cancelar" icon="fa-solid fa-route" (closed)="showConfirm=false" (confirmed)="guardar()">
+</app-confirm-modal>
+
+<!-- notificación -->
+
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
+</app-toast-notification>
