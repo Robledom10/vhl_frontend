@@ -67,10 +67,23 @@
 		</div>
 
 		<!-- AGREGAR -->
-		<button class="add-btn" (click)="openCreateModal()">
-			<i class="fa-solid fa-plus"></i>
-			<span>Agregar</span>
-		</button>
+		<div class="add-btn-wrapper" [class.open]="showAddDropdown">
+			<button class="add-btn" (click)="toggleAddDropdown($event)">
+				<i class="fa-solid fa-plus"></i>
+				<span>Agregar</span>
+				<i class="fa-solid fa-chevron-down add-chevron"></i>
+			</button>
+			<div class="add-dropdown">
+				<button (click)="openCreateModal('existing')">
+					<i class="fa-solid fa-user-check"></i>
+					Usuario existente
+				</button>
+				<button (click)="openCreateModal('new')">
+					<i class="fa-solid fa-user-plus"></i>
+					Usuario nuevo
+				</button>
+			</div>
+		</div>
 	</div>
 
 	<!-- TABLA -->
@@ -172,9 +185,16 @@
 <app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
 </app-toast-notification>
 
+<!-- MODAL CREAR USUARIO (para flujo de usuario nuevo) -->
+<app-create-user-modal [isOpen]="showCreateUserModal"
+	(closed)="closeCreateUserModal()"
+	(userCreated)="onUserCreatedForReservation($event)">
+</app-create-user-modal>
+
 <!-- MODAL CREAR RESERVA -->
-<app-form-reservation-creation [isOpen]="showCreateModal" (closed)="closeCreateModal()"
-	(reservationCreated)="onReservationCreated($event)">
+<app-form-reservation-creation [isOpen]="showCreateModal" [mode]="createModalMode"
+	[prefilledDocument]="prefilledDocument"
+	(closed)="closeCreateModal()" (reservationCreated)="onReservationCreated($event)">
 </app-form-reservation-creation>
 
 <!-- DETALLE RESERVA -->

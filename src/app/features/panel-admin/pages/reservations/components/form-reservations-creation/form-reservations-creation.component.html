@@ -33,45 +33,71 @@
 
 				<div *ngIf="currentStep === 1" class="step-content" @fadeStep>
 
-					<div class="form-row">
+					<div class="fields-grid">
 
-						<!-- Documento -->
+						<!-- Nº documento -->
 						<div class="form-group half">
 							<input
 								type="text"
 								id="docUsuario"
 								placeholder=" "
 								[(ngModel)]="documentoBusqueda"
-								(blur)="buscarCliente()"
-								(keyup.enter)="buscarCliente()"
+								[readonly]="mode === 'new'"
+								[attr.disabled]="mode === 'new' ? true : null"
+								(blur)="mode === 'existing' && buscarCliente()"
+								(keyup.enter)="mode === 'existing' && buscarCliente()"
 								[class.invalid]="submitted && !form.idUsuario">
-							<label for="docUsuario">Documento del cliente</label>
-
+							<label for="docUsuario">Número de documento</label>
 							<span *ngIf="buscandoCliente" class="status-msg">
 								<i class="fa-solid fa-spinner fa-spin"></i> Buscando...
 							</span>
-							<span *ngIf="errorCliente" class="error-msg">
-								Cliente no encontrado.
-							</span>
+							<span *ngIf="errorCliente" class="error-msg">Cliente no encontrado.</span>
 							<span *ngIf="submitted && !form.idUsuario && !errorCliente" class="error-msg">
 								Debes seleccionar un cliente válido.
 							</span>
 						</div>
 
-						<!-- Nombre (autocompletado) -->
+						<!-- Tipo de documento -->
 						<div class="form-group half">
-							<input
-								type="text"
-								id="nombreUsuario"
-								placeholder=" "
-								class="readonly-input"
-								[value]="nombreClienteSeleccionado"
-								readonly
-								disabled>
-							<label for="nombreUsuario">Nombre del cliente</label>
+							<input type="text" id="tipoDocUsuario" placeholder=" " class="readonly-input"
+								[value]="tipoDocumentoCliente" readonly disabled>
+							<label for="tipoDocUsuario">Tipo de documento</label>
 						</div>
 
-						<!-- Número de personas -->
+						<!-- Nombre -->
+						<div class="form-group half">
+							<input type="text" id="nombreUsuario" placeholder=" " class="readonly-input"
+								[value]="nombreClienteSeleccionado" readonly disabled>
+							<label for="nombreUsuario">Nombre</label>
+						</div>
+
+						<!-- Apellido -->
+						<div class="form-group half">
+							<input type="text" id="apellidoUsuario" placeholder=" " class="readonly-input"
+								[value]="apellidoCliente" readonly disabled>
+							<label for="apellidoUsuario">Apellido</label>
+						</div>
+
+						<!-- Correo | Teléfono -->
+						<div class="form-group half">
+							<input type="text" id="correoUsuario" placeholder=" " class="readonly-input"
+								[value]="correoCliente" readonly disabled>
+							<label for="correoUsuario">Correo electrónico</label>
+						</div>
+
+						<div class="form-group half">
+							<input type="text" id="telUsuario" placeholder=" " class="readonly-input"
+								[value]="telefonoCliente" readonly disabled>
+							<label for="telUsuario">Teléfono</label>
+						</div>
+
+						<!-- Ciudad | Número de personas -->
+						<div class="form-group half">
+							<input type="text" id="ciudadUsuario" placeholder=" " class="readonly-input"
+								[value]="ciudadCliente" readonly disabled>
+							<label for="ciudadUsuario">Ciudad de residencia</label>
+						</div>
+
 						<div class="form-group half">
 							<select
 								id="personas"
@@ -149,37 +175,56 @@
 				<div *ngIf="currentStep === 2" class="step-content" @fadeStep>
 					<div class="fields-grid">
 
+						<!-- Paquete -->
 						<div class="form-group full">
-							<select id="idViaje" [(ngModel)]="form.idViaje" (ngModelChange)="onViajeChange($event)"
-								[disabled]="cargandoViajes" [class.ng-invalid]="submitted && !form.idViaje">
+							<select id="idPaquete" [(ngModel)]="selectedPaqueteId"
+								(ngModelChange)="onPaqueteChange($event)"
+								[disabled]="cargandoViajes">
 								<option value="" disabled selected>
-									{{ cargandoViajes ? 'Cargando viajes...' : (viajesDisponibles.length === 0 ?
-									'No hay viajes programados' : 'Selecciona un viaje') }}
+									{{ cargandoViajes ? 'Cargando paquetes...' : (paquetesDisponibles.length === 0 ? 'No hay paquetes disponibles' : 'Selecciona un paquete') }}
 								</option>
-								<option *ngFor="let v of viajesDisponibles" [value]="v.id">
-									{{ v.paqueteNombre }} — {{ v.fechaSalida }} → {{ v.fechaRegreso }}
+								<option *ngFor="let p of paquetesDisponibles" [value]="p.id">
+									{{ p.nombre }}
 								</option>
 							</select>
-							<label for="idViaje">Viaje programado</label>
-							<span *ngIf="submitted && !form.idViaje && !errorViajes" class="error-msg">Debes seleccionar un viaje</span>
+							<label for="idPaquete">Paquete turístico</label>
 							<span class="field-hint-error" *ngIf="errorViajes">
-								No se pudieron cargar los viajes.
+								No se pudieron cargar los paquetes.
 								<button type="button" class="retry-link" (click)="cargarViajes()">Reintentar</button>
 							</span>
 						</div>
 
-						<div class="form-group half">
-							<input type="text" id="paqueteNombre" placeholder=" " class="readonly-field"
-								[value]="form.paqueteNombre || ''" readonly>
-							<label for="paqueteNombre">Paquete</label>
+						<!-- Viaje (filtrado por paquete) -->
+						<div class="form-group full">
+							<select id="idViaje" [(ngModel)]="form.idViaje"
+								(ngModelChange)="onViajeChange($event)"
+								[disabled]="!selectedPaqueteId || cargandoViajes"
+								[class.ng-invalid]="submitted && !form.idViaje">
+								<option value="" disabled selected>
+									{{ !selectedPaqueteId ? 'Selecciona primero un paquete' : (viajesFiltrados.length === 0 ? 'No hay viajes para este paquete' : 'Selecciona un viaje') }}
+								</option>
+								<option *ngFor="let v of viajesFiltrados" [value]="v.id">
+									{{ v.fechaSalida }} → {{ v.fechaRegreso }}
+								</option>
+							</select>
+							<label for="idViaje">Fecha de viaje</label>
+							<span *ngIf="submitted && !form.idViaje" class="error-msg">Debes seleccionar un viaje</span>
 						</div>
 
+						<!-- Destino | Duración -->
 						<div class="form-group half">
 							<input type="text" id="destino" placeholder=" " class="readonly-field"
 								[value]="form.destino || ''" readonly>
 							<label for="destino">Destino</label>
 						</div>
 
+						<div class="form-group half">
+							<input type="text" id="duracion" placeholder=" " class="readonly-field"
+								[value]="form.duracion || ''" readonly>
+							<label for="duracion">Duración del viaje</label>
+						</div>
+
+						<!-- Fecha salida | Fecha regreso -->
 						<div class="form-group half">
 							<input type="text" id="fechaSalida" placeholder=" " class="readonly-field"
 								[value]="form.fechaSalida || ''" readonly>
@@ -192,12 +237,7 @@
 							<label for="fechaRegreso">Fecha de regreso</label>
 						</div>
 
-						<div class="form-group half">
-							<input type="text" id="duracion" placeholder=" " class="readonly-field"
-								[value]="form.duracion || ''" readonly>
-							<label for="duracion">Duración del viaje</label>
-						</div>
-
+						<!-- Tipo habitación | Solicitudes especiales -->
 						<div class="form-group half">
 							<select id="tipoHabitacion" [(ngModel)]="form.tipoHabitacion"
 								[class.ng-invalid]="submitted && !form.tipoHabitacion">
@@ -225,6 +265,7 @@
 							<label for="solicitudEspecial">Solicitudes especiales</label>
 						</div>
 
+						<!-- Notas -->
 						<div class="form-group full">
 							<textarea id="notas" placeholder=" " rows="3" [(ngModel)]="form.notas"></textarea>
 							<label for="notas">Notas adicionales</label>

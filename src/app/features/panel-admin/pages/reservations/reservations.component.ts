@@ -62,6 +62,9 @@ export class ReservationsComponent implements OnInit {
 			if (!target.closest('.filter-dropdown')) {
 				this.openFilter = null;
 			}
+			if (!target.closest('.add-btn-wrapper')) {
+				this.showAddDropdown = false;
+			}
 		});
 	}
 
@@ -184,9 +187,39 @@ export class ReservationsComponent implements OnInit {
 
 	// ─── Modal crear ──────────────────────────────────────
 
-	openCreateModal(): void {
+	showAddDropdown = false;
+	createModalMode: 'existing' | 'new' = 'existing';
+	showCreateUserModal = false;
+	prefilledDocument: string | null = null;
+
+	toggleAddDropdown(event: MouseEvent): void {
+		event.stopPropagation();
+		this.showAddDropdown = !this.showAddDropdown;
+	}
+
+	openCreateModal(mode: 'existing' | 'new'): void {
+		this.showAddDropdown = false;
+		if (mode === 'existing') {
+			this.prefilledDocument = null;
+			this.createModalMode = 'existing';
+			this.showCreateModal = true;
+			document.body.style.overflow = 'hidden';
+		} else {
+			this.showCreateUserModal = true;
+			document.body.style.overflow = 'hidden';
+		}
+	}
+
+	onUserCreatedForReservation(data: { firstName: string; lastName: string; documentNumber: string }): void {
+		this.showCreateUserModal = false;
+		this.prefilledDocument = data.documentNumber;
+		this.createModalMode = 'new';
 		this.showCreateModal = true;
-		document.body.style.overflow = 'hidden';
+	}
+
+	closeCreateUserModal(): void {
+		this.showCreateUserModal = false;
+		document.body.style.overflow = '';
 	}
 
 	closeCreateModal(): void {

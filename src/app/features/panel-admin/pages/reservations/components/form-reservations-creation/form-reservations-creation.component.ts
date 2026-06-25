@@ -5,7 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 import { Reservation } from '../../models/reservations.models';
 import { ReservationService } from '../../../../../../core/services/reservation.service';
 import { OperacionesService } from '../../../../../../core/services/operaciones.service';
-import { UsuarioService } from '../../../../../../core/services/usuario.service'; // Ajusta la ruta de tu servicio
+import { UsuarioService } from '../../../../../../core/services/usuario.service';
 
 // ─── Modelos de front ────
 
@@ -102,13 +102,15 @@ const expandDown = trigger('expandDown', [
 export class FormReservationsCreationComponent implements OnChanges, OnInit {
 
     @Input() isOpen = false;
+    @Input() mode: 'existing' | 'new' = 'existing';
+    @Input() prefilledDocument: string | null = null;
     @Output() closed = new EventEmitter<void>();
     @Output() reservationCreated = new EventEmitter<Reservation>();
 
     constructor(
         private reservationService: ReservationService,
         private operacionesService: OperacionesService,
-        private usuarioService: UsuarioService // <-- Inyectado
+        private usuarioService: UsuarioService
     ) { }
 
     currentStep = 1;
@@ -118,12 +120,20 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
     saveError = '';
 
     viajesDisponibles: ViajeOption[] = [];
+    viajesFiltrados: ViajeOption[] = [];
+    paquetesDisponibles: { id: number; nombre: string }[] = [];
+    selectedPaqueteId: number | '' = '';
     cargandoViajes = false;
     errorViajes = false;
 
     // -- Variables para autocompletar cliente --
     documentoBusqueda: string = '';
     nombreClienteSeleccionado: string = '';
+    apellidoCliente: string = '';
+    tipoDocumentoCliente: string = '';
+    telefonoCliente: string = '';
+    ciudadCliente: string = '';
+    correoCliente: string = '';
     buscandoCliente = false;
     errorCliente = false;
     // ------------------------------------------
@@ -137,6 +147,10 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['isOpen']?.currentValue === true) {
             this.resetForm();
+            if (this.mode === 'new' && this.prefilledDocument) {
+                this.documentoBusqueda = this.prefilledDocument;
+                this.buscarCliente();
+            }
         }
     }
 
@@ -155,7 +169,12 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
                 this.buscandoCliente = false;
                 if (usuario && usuario.id) {
                     this.form.idUsuario = usuario.id;
-                    this.nombreClienteSeleccionado = `${usuario.nombre} ${usuario.apellido || ''}`.trim();
+                    this.nombreClienteSeleccionado = usuario.firstName ?? '';
+                    this.apellidoCliente = usuario.lastName ?? '';
+                    this.tipoDocumentoCliente = usuario.documentType ?? '';
+                    this.telefonoCliente = usuario.phone ?? '';
+                    this.ciudadCliente = usuario.city ?? '';
+                    this.correoCliente = usuario.email ?? '';
                 } else {
                     this.errorCliente = true;
                     this.resetDatosCliente();
@@ -172,6 +191,11 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
     private resetDatosCliente(): void {
         this.form.idUsuario = '';
         this.nombreClienteSeleccionado = '';
+        this.apellidoCliente = '';
+        this.tipoDocumentoCliente = '';
+        this.telefonoCliente = '';
+        this.ciudadCliente = '';
+        this.correoCliente = '';
     }
     // ----------------------------------------
 
@@ -212,6 +236,10 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
                                 precio: pkg.precio ?? 0,
                             };
                         });
+                        const seen = new Set<number>();
+                        this.paquetesDisponibles = this.viajesDisponibles
+                            .filter(v => { const ok = !seen.has(v.idPaquete); seen.add(v.idPaquete); return ok; })
+                            .map(v => ({ id: v.idPaquete, nombre: v.paqueteNombre }));
                         this.cargandoViajes = false;
                     },
                     error: () => {
@@ -285,6 +313,20 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
         } else {
             this.form.acompanantes = this.form.acompanantes.slice(0, count);
         }
+    }
+
+    onPaqueteChange(idPaquete: number | ''): void {
+        this.selectedPaqueteId = idPaquete;
+        this.form.idViaje = '';
+        this.form.paqueteNombre = '';
+        this.form.destino = '';
+        this.form.fechaSalida = '';
+        this.form.fechaRegreso = '';
+        this.form.duracion = '';
+        this.form.total = '';
+        this.viajesFiltrados = idPaquete
+            ? this.viajesDisponibles.filter(v => v.idPaquete === Number(idPaquete))
+            : [];
     }
 
     onViajeChange(idViaje: number | ''): void {
@@ -377,10 +419,17 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
         this.submitted = false;
         this.isSaving = false;
         this.saveError = '';
-        this.documentoBusqueda = ''; // Resetea también la búsqueda
+        this.documentoBusqueda = '';
         this.nombreClienteSeleccionado = '';
+        this.apellidoCliente = '';
+        this.tipoDocumentoCliente = '';
+        this.telefonoCliente = '';
+        this.ciudadCliente = '';
+        this.correoCliente = '';
         this.buscandoCliente = false;
         this.errorCliente = false;
+        this.selectedPaqueteId = '';
+        this.viajesFiltrados = [];
     }
 
     private emptyForm(): ReservationForm {
