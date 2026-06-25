@@ -23,15 +23,15 @@
 			</button>
 
 			<div class="dropdown" *ngIf="showFilters">
+				<div class="dropdown-item" (click)="selectEstado('Todos')">Todos</div>
 				<div class="dropdown-item" (click)="selectEstado('Activos')">Activos</div>
 				<div class="dropdown-item" (click)="selectEstado('Inactivos')">Inactivos</div>
-				<div class="dropdown-item" (click)="selectEstado('Todos')">Todos</div>
 			</div>
 		</div>
 
 		<!-- LIMPIAR -->
 		<button class="clear-filter" type="button" (click)="clearFilters()"
-			*ngIf="busqueda || estadoFiltro !== 'Activos'">
+			*ngIf="busqueda || estadoFiltro !== 'Todos'">
 			Limpiar
 		</button>
 
@@ -114,9 +114,9 @@
 	(closed)="closeDetail()"></app-package-detail-sheet>
 
 <app-confirm-modal [isOpen]="showDeleteModal"
-	[title]="isSelectedInactive ? 'Eliminar permanentemente' : 'Eliminar paquete'"
-	[message]="isSelectedInactive ? 'Esta acción eliminará el paquete de forma permanente y no se podrá recuperar.' : 'Esta acción dejará el paquete como inactivo.'"
-	[confirmText]="isSelectedInactive ? 'Eliminar definitivamente' : 'Eliminar'" cancelText="Cancelar"
+	[title]="isSelectedInactive ? 'Eliminar permanentemente' : 'Desactivar paquete'"
+	[message]="isSelectedInactive ? 'Esta acción eliminará el paquete de forma permanente y no se podrá recuperar.' : 'El paquete dejará de mostrarse como activo. Podrás eliminarlo definitivamente más adelante.'"
+	[confirmText]="isSelectedInactive ? 'Eliminar definitivamente' : 'Desactivar'" cancelText="Cancelar"
 	icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b" iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b"
 	(confirmed)="confirmDelete()" (closed)="closeDeleteModal()">
 </app-confirm-modal>
@@ -125,5 +125,5 @@
 </app-toast-notification>
 
 <app-form-package-creation [isOpen]="showCreateModal" [mode]="editingPackage ? 'edit' : 'create'"
-	[editPackage]="editingPackage" (saved)="handlePackageSaved($event)" (closed)="closeCreateModal()">
+	[editPackage]="editingPackage" (saved)="handlePackageSaved()" (closed)="closeCreateModal()">
 </app-form-package-creation>

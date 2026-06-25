@@ -56,11 +56,6 @@
 
 				<div class="divider"></div>
 
-				<div class="success-banner" *ngIf="showSuccessBanner">
-					<i class="fa-solid fa-circle-check"></i>
-					<p>{{ successMessage }}</p>
-				</div>
-
 				<form [formGroup]="packageForm">
 
 					<!-- =========================
@@ -472,3 +467,17 @@
 		</div>
 	</div>
 </div>
+
+<!-- Modales -->
+
+<!-- Confirmación -->
+<app-confirm-modal [isOpen]="showConfirmModal" [title]="mode === 'edit' ? 'Actualizar paquete' : 'Crear paquete'"
+	[message]="mode === 'edit' ? '¿Deseas actualizar este paquete turístico?' : '¿Deseas crear este paquete turístico?'"
+	[confirmText]="mode === 'edit' ? 'Actualizar' : 'Crear'" cancelText="Cancelar" icon="fa-solid fa-circle-question"
+	confirmColor="#3fa2db" iconBg="rgba(63, 162, 219, 0.12)" iconColor="#3fa2db" (confirmed)="confirmSubmit()"
+	(closed)="showConfirmModal = false">
+</app-confirm-modal>
+
+<!-- Toast -->
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
+</app-toast-notification>
