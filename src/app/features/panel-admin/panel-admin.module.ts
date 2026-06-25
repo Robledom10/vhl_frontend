@@ -24,7 +24,7 @@ import { GalleryAdminComponent } from './pages/gallery-admin/gallery-admin.compo
 import { FormProviderComponent } from './pages/packages/pages/proveedor/components/form-provider/form-provider.component';
 import { FormReservationsCreationComponent } from './pages/reservations/components/form-reservations-creation/form-reservations-creation.component';
 import { ReservationDetailSheetComponent } from './pages/reservations/components/reservation-detail-sheet/reservation-detail-sheet.component';
-import { DashboardOperativoComponent } from './pages/operaciones/pages/operations-dashboard/operations-dashboard.component';
+import { DashboardOperativoComponent } from './pages/packages/pages/operations-dashboard/operations-dashboard.component';
 import { AsignarTransporteComponent } from './pages/operaciones/pages/assign-transport/assign-transport.component';
 import { CheckInQrComponent } from './pages/operaciones/pages/check-in-qr/check-in-qr.component';
 import { AsignarAlojamientoComponent } from './pages/operaciones/pages/assign-accommodation/assign-accommodation.component';
