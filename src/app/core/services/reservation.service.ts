@@ -21,7 +21,7 @@ export interface SolicitudReserva {
 	contactosEmergencia?: ContactoEmergenciaRequest[];
 	idViaje?: number;
 	paqueteNombre: string;
-	destino: string;
+	destino?: string;
 	fechaSalida: string;
 	fechaRegreso: string;
 	tipoHabitacion: string;
@@ -42,7 +42,10 @@ export class ReservationService {
 	getAll(): Observable<Reservation[]> {
 		const params = new HttpParams().set('pagina', 0).set('tamano', 1000);
 		return this.http.get<any>(this.base, { params }).pipe(
-			map(page => (page.content as any[]).map(d => this.mapDto(d)))
+			map(page => {
+				const items = Array.isArray(page) ? page : (page?.content ?? []);
+				return (items as any[]).map(d => this.mapDto(d));
+			})
 		);
 	}
 
@@ -52,11 +55,11 @@ export class ReservationService {
 			.set('tamano', tamano);
 		return this.http.get<any>(this.base, { params }).pipe(
 			map(page => ({
-				content: (page.content as any[]).map(d => this.mapDto(d)),
-				totalElements: page.totalElements,
-				totalPages: page.totalPages,
-				number: page.number,
-				size: page.size,
+				content: ((page?.content ?? []) as any[]).map(d => this.mapDto(d)),
+				totalElements: page?.totalElements ?? 0,
+				totalPages: page?.totalPages ?? 0,
+				number: page?.number ?? 0,
+				size: page?.size ?? tamano,
 			}))
 		);
 	}
