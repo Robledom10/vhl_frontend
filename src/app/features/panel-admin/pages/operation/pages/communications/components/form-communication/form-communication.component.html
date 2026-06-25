@@ -10,13 +10,18 @@
 
 			<div class="form-group">
 				<label>Viaje *</label>
-				<select formControlName="idViaje">
+				<select formControlName="idViaje" (change)="onViajeFormChange()">
 					<option value="">Seleccionar...</option>
 					<option *ngFor="let v of viajesFiltrados" [value]="v.id">
 						{{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} — Viaje #{{ v.id }} · {{ v.fechaSalida | date:'dd/MM/yyyy' }}
 					</option>
 				</select>
 				<span class="error" *ngIf="comForm.get('idViaje')?.invalid && comForm.get('idViaje')?.touched">Campo requerido</span>
+			</div>
+
+			<div class="form-group">
+				<label>Paquete</label>
+				<input type="text" [value]="paqueteNombre || '—'" readonly class="input-readonly">
 			</div>
 
 			<!-- CANAL -->
