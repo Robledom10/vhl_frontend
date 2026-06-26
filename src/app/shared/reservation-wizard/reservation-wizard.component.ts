@@ -371,11 +371,11 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 
 				destino: this.package?.destinations ?? '',
 
-				fechaSalida: this.selectedTrip?.fechaSalida ?? '',
+				fechaSalida: this.toDate(this.selectedTrip?.fechaSalida ?? ''),
 
-				fechaRegreso: this.selectedTrip?.fechaRegreso ?? '',
+				fechaRegreso: this.toDate(this.selectedTrip?.fechaRegreso ?? ''),
 
-				tipoHabitacion: this.selectedRoomType,
+				tipoHabitacion: this.selectedRoomType || 'No especificado',
 
 				solicitudEspecial: this.selectedSpecialRequest,
 
@@ -426,5 +426,10 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 		if (!target.closest('.custom-select')) {
 			this.openDropdown = null;
 		}
+	}
+
+	private toDate(fecha: string): string {
+		if (!fecha) return '';
+		return fecha.includes('T') ? fecha.split('T')[0] : fecha.split(' ')[0];
 	}
 }

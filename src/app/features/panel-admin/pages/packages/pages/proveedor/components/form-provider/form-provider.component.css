@@ -17,6 +17,36 @@
 	padding: 40px;
 }
 
+.modal-content {
+	display: flex;
+	flex-direction: column;
+	max-height: 85vh;
+}
+
+.modal-scroll {
+	overflow-y: auto;
+	padding-right: 10px;
+	margin-right: -10px;
+	flex: 1;
+}
+
+.modal-scroll::-webkit-scrollbar {
+	width: 6px;
+}
+
+.modal-scroll::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb {
+	background: #b5e5ff;
+	border-radius: 999px;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb:hover {
+	background: #87d3ff;
+}
+
 .modal-title {
 	text-align: center;
 	font-family: "Outfit";
@@ -39,6 +69,7 @@ form {
 	display: flex;
 	flex-direction: column;
 	gap: 30px;
+	margin: 10px 0;
 }
 
 .form-group {
@@ -137,6 +168,7 @@ select:valid {
 	justify-content: flex-end;
 	gap: 14px;
 	margin-top: 40px;
+	flex-shrink: 0;
 }
 
 .buttons button {
@@ -177,6 +209,7 @@ select:valid {
 		transform: rotate(360deg);
 	}
 }
+
 .section-label {
 	display: flex;
 	align-items: center;
@@ -196,7 +229,9 @@ select:valid {
 }
 
 @media (max-width: 520px) {
-	.form-row { grid-template-columns: 1fr; }
+	.form-row {
+		grid-template-columns: 1fr;
+	}
 }
 
 .error-msg {

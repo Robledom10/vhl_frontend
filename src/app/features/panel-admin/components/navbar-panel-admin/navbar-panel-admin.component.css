@@ -1,11 +1,14 @@
 .sidebar {
 	width: 260px;
-	height: 100vh;
+	height: 100%;
 	padding: 28px 22px;
 	display: flex;
 	flex-direction: column;
 	border-right: 1px solid var(--bordes);
-	position: relative;
+	position: sticky;
+	top: 0;
+	overflow-y: auto;
+	flex-shrink: 0;
 }
 
 /* =========================

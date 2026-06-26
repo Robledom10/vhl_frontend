@@ -46,6 +46,12 @@ export class UsersRolesComponent {
 
 	users: UserItem[] = [];
 
+	// ─── Paginación ──────────────────────────────────────
+	currentPage = 0;
+	pageSize = 5;
+	totalPages = 0;
+	totalElements = 0;
+
 	constructor(private authService: AuthService, private elementRef: ElementRef) { }
 
 	ngOnInit(): void {
@@ -67,31 +73,34 @@ export class UsersRolesComponent {
 	// =========================
 
 	loadUsers(): void {
-		this.authService.getAllUsers().subscribe({
-			next: (response: any[]) => {
-				this.users = response.map((user) => ({
+		this.authService.getAllUsers(this.currentPage, this.pageSize).subscribe({
+			next: (response) => {
+				this.totalPages = response.totalPages;
+				this.totalElements = response.totalElements;
+				this.users = response.content.map((user) => ({
 					id: user.id,
-
-					image:
-						user.image ||
-						`https://ui-avatars.com/api/?name=${user.firstName}&background=3fa2db&color=fff&size=120`,
-
+					image: user.image || `https://ui-avatars.com/api/?name=${user.firstName}&background=3fa2db&color=fff&size=120`,
 					name: `${user.firstName} ${user.lastName}`,
-
 					email: user.email,
-
 					role: this.mapRole(user.role),
-
 					status: user.active ? 'Activo' : 'Inactivo',
-
 					phone: user.phone,
+					documentType: user.documentType,
+					documentNumber: user.documentNumber,
 				}));
 			},
-
-			error: (err) => {
-				console.error(err);
-			},
+			error: (err) => console.error(err),
 		});
+	}
+
+	goToPage(page: number): void {
+		if (page < 0 || page >= this.totalPages) return;
+		this.currentPage = page;
+		this.loadUsers();
+	}
+
+	get pages(): number[] {
+		return Array.from({ length: this.totalPages }, (_, i) => i);
 	}
 
 	// =========================

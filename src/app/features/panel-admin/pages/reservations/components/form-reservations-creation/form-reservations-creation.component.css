@@ -43,10 +43,22 @@
 	scrollbar-gutter: stable;
 }
 
-.modal-scroll::-webkit-scrollbar { width: 6px; }
-.modal-scroll::-webkit-scrollbar-track { background: transparent; }
-.modal-scroll::-webkit-scrollbar-thumb { background: #b5e5ff; border-radius: 999px; }
-.modal-scroll::-webkit-scrollbar-thumb:hover { background: #87d3ff; }
+.modal-scroll::-webkit-scrollbar {
+	width: 6px;
+}
+
+.modal-scroll::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb {
+	background: #b5e5ff;
+	border-radius: 999px;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb:hover {
+	background: #87d3ff;
+}
 
 /* =========================================================
    MODAL CONTENT
@@ -105,7 +117,9 @@
 	transition: 0.25s ease;
 }
 
-.line.active { background: var(--color-primario); }
+.line.active {
+	background: var(--color-primario);
+}
 
 .step-item p {
 	margin-top: 12px;
@@ -133,7 +147,9 @@
 	margin-bottom: 42px;
 }
 
-.modal-title span { color: var(--color-primario); }
+.modal-title span {
+	color: var(--color-primario);
+}
 
 .divider {
 	width: 100%;
@@ -160,8 +176,13 @@
 	font-size: 13px;
 }
 
-.save-error-banner i { font-size: 18px; }
-.save-error-banner p { margin: 0; }
+.save-error-banner i {
+	font-size: 18px;
+}
+
+.save-error-banner p {
+	margin: 0;
+}
 
 /* =========================================================
    STEP CONTENT / GRID
@@ -192,8 +213,13 @@
 	width: 100%;
 }
 
-.form-group.full { grid-column: 1 / -1; }
-.form-group.half { grid-column: span 1; }
+.form-group.full {
+	grid-column: 1 / -1;
+}
+
+.form-group.half {
+	grid-column: span 1;
+}
 
 /* =========================================================
    INPUTS — scoped al modal para no afectar otros componentes
@@ -282,18 +308,18 @@
 	white-space: nowrap;
 }
 
-.form-group textarea + label {
+.form-group textarea+label {
 	top: 24px;
 	transform: none;
 }
 
 /* Label flota cuando el campo tiene contenido o está enfocado */
-.modal-overlay .form-group input:focus + label,
-.modal-overlay .form-group input:not(:placeholder-shown) + label,
-.modal-overlay .form-group textarea:focus + label,
-.modal-overlay .form-group textarea:not(:placeholder-shown) + label,
-.modal-overlay .form-group select:focus + label,
-.modal-overlay .form-group select:valid + label {
+.modal-overlay .form-group input:focus+label,
+.modal-overlay .form-group input:not(:placeholder-shown)+label,
+.modal-overlay .form-group textarea:focus+label,
+.modal-overlay .form-group textarea:not(:placeholder-shown)+label,
+.modal-overlay .form-group select:focus+label,
+.modal-overlay .form-group select:valid+label {
 	top: 0;
 	transform: translateY(-50%);
 	font-size: 11px;
@@ -302,8 +328,8 @@
 }
 
 /* Label siempre flotado en campos readonly/disabled */
-.modal-overlay .form-group input[readonly] + label,
-.modal-overlay .form-group input:disabled + label {
+.modal-overlay .form-group input[readonly]+label,
+.modal-overlay .form-group input:disabled+label {
 	top: 0;
 	transform: translateY(-50%);
 	font-size: 11px;
@@ -342,10 +368,10 @@
 	box-shadow: none !important;
 }
 
-.modal-overlay .form-group input.ng-invalid.ng-touched + label,
-.modal-overlay .form-group select.ng-invalid.ng-touched + label,
-.modal-overlay .form-group input.invalid + label,
-.modal-overlay .form-group select.invalid + label {
+.modal-overlay .form-group input.ng-invalid.ng-touched+label,
+.modal-overlay .form-group select.ng-invalid.ng-touched+label,
+.modal-overlay .form-group input.invalid+label,
+.modal-overlay .form-group select.invalid+label {
 	color: var(--color-error, #e53935);
 }
 
@@ -389,13 +415,17 @@
 	font-family: "Outfit", sans-serif;
 }
 
-.client-found-badge i { font-size: 12px; }
+.client-found-badge i {
+	font-size: 12px;
+}
 
 /* =========================================================
    CHECKBOX SECTION
 ========================================================= */
 
-.checkbox-section { margin-top: 10px; }
+.checkbox-section {
+	margin-top: 10px;
+}
 
 .checkbox-title {
 	margin: 0 0 22px 0;
@@ -416,7 +446,10 @@
 	margin-bottom: 22px;
 }
 
-.companions-header .checkbox-title { margin: 0; flex: 1; }
+.companions-header .checkbox-title {
+	margin: 0;
+	flex: 1;
+}
 
 .companions-badge {
 	width: 24px;
@@ -442,7 +475,9 @@
 	transition: border-color 0.2s ease;
 }
 
-.companion-card:focus-within { border-color: rgba(63, 162, 219, 0.35); }
+.companion-card:focus-within {
+	border-color: rgba(63, 162, 219, 0.35);
+}
 
 .companion-title {
 	display: flex;
@@ -473,8 +508,14 @@
 	color: #3a4055;
 }
 
-.emergency-num { background: rgba(255, 59, 59, 0.12); color: #e53935; }
-.emergency-card .remove-list-btn { margin-left: auto; }
+.emergency-num {
+	background: rgba(255, 59, 59, 0.12);
+	color: #e53935;
+}
+
+.emergency-card .remove-list-btn {
+	margin-left: auto;
+}
 
 /* =========================================================
    BOTÓN ELIMINAR
@@ -492,8 +533,15 @@
 	transition: all 0.25s ease;
 }
 
-.remove-list-btn:hover { background: #ff3b3b; color: #fff; transform: scale(1.05); }
-.remove-list-btn i { font-size: 13px; }
+.remove-list-btn:hover {
+	background: #ff3b3b;
+	color: #fff;
+	transform: scale(1.05);
+}
+
+.remove-list-btn i {
+	font-size: 13px;
+}
 
 /* =========================================================
    ADD BUTTON
@@ -516,8 +564,15 @@
 	font-size: var(--inputs, 14px);
 }
 
-.add-option:hover { background: var(--color-primario); color: white; transform: translateY(-1px); }
-.add-option i { font-size: 13px; }
+.add-option:hover {
+	background: var(--color-primario);
+	color: white;
+	transform: translateY(-1px);
+}
+
+.add-option i {
+	font-size: 13px;
+}
 
 /* =========================================================
    RESUMEN
@@ -536,7 +591,11 @@
 	gap: 14px;
 }
 
-.summary-item { display: flex; flex-direction: column; gap: 3px; }
+.summary-item {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
 
 .summary-item.full {
 	grid-column: 1 / -1;
@@ -593,7 +652,11 @@
 	font-size: 10px;
 }
 
-.custom-check.active { background: var(--color-primario); border-color: var(--color-primario); color: #fff; }
+.custom-check.active {
+	background: var(--color-primario);
+	border-color: var(--color-primario);
+	color: #fff;
+}
 
 .check-item span {
 	font-family: "Outfit", sans-serif;
@@ -601,7 +664,11 @@
 	color: #5a6070;
 }
 
-.check-item span a { color: var(--color-primario); text-decoration: none; font-weight: 500; }
+.check-item span a {
+	color: var(--color-primario);
+	text-decoration: none;
+	font-weight: 500;
+}
 
 .check-error {
 	display: block;
@@ -625,7 +692,11 @@
 	background: #fff;
 }
 
-.right-buttons { display: flex; align-items: center; gap: 14px; }
+.right-buttons {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+}
 
 .buttons button {
 	height: 48px;
@@ -638,22 +709,46 @@
 	font-size: var(--inputs, 14px);
 }
 
-.buttons button:hover { transform: translateY(-1px); }
-.buttons button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.buttons button:hover {
+	transform: translateY(-1px);
+}
 
-.cancel { background: #ff3434; color: #fff; }
-.prev { background: #9c9c9c; color: #fff; }
-.next, .save { background: var(--color-primario); color: #fff; }
+.buttons button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+	transform: none;
+}
+
+.cancel {
+	background: #ff3434;
+	color: #fff;
+}
+
+.prev {
+	background: #9c9c9c;
+	color: #fff;
+}
+
+.next,
+.save {
+	background: var(--color-primario);
+	color: #fff;
+}
 
 .next:hover,
-.save:hover:not(:disabled) { box-shadow: 0 10px 20px rgba(63, 162, 219, 0.22); }
+.save:hover:not(:disabled) {
+	box-shadow: 0 10px 20px rgba(63, 162, 219, 0.22);
+}
 
-.save i.fa-spinner { margin-right: 10px; }
+.save i.fa-spinner {
+	margin-right: 10px;
+}
 
 /* =========================================================
    ANIMATIONS
 ========================================================= */
 
+<<<<<<< HEAD
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 /* =========================================================
@@ -720,33 +815,101 @@
     color: var(--color-texto-secundario);
 }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+=======
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+>>>>>>> main
 
 /* =========================================================
    RESPONSIVE
 ========================================================= */
 
 @media (max-width: 900px) {
-	.modal-container { border-radius: 28px; }
-	.modal-content { padding: 28px 24px; }
-	.line { width: 50px; }
-	.modal-title { font-size: 30px; }
-	.checkbox-title { font-size: 17px; }
+	.modal-container {
+		border-radius: 28px;
+	}
+
+	.modal-content {
+		padding: 28px 24px;
+	}
+
+	.line {
+		width: 50px;
+	}
+
+	.modal-title {
+		font-size: 30px;
+	}
+
+	.checkbox-title {
+		font-size: 17px;
+	}
 }
 
 @media (max-width: 600px) {
-	.modal-overlay { padding: 14px; }
-	.modal-container { border-radius: 20px; }
-	.modal-content { padding: 22px 18px 26px; }
-	.steps-wrapper { transform: scale(0.82); margin-bottom: 24px; }
+	.modal-overlay {
+		padding: 14px;
+	}
+
+	.modal-container {
+		border-radius: 20px;
+	}
+
+	.modal-content {
+		padding: 22px 18px 26px;
+	}
+
+	.steps-wrapper {
+		transform: scale(0.82);
+		margin-bottom: 24px;
+	}
 
 	.fields-grid,
-	.form-row { grid-template-columns: minmax(0, 1fr); }
+	.form-row {
+		grid-template-columns: minmax(0, 1fr);
+	}
 
-	.form-group.half { grid-column: 1 / -1; }
-	.summary-grid { grid-template-columns: 1fr; }
+	.form-group.half {
+		grid-column: 1 / -1;
+	}
 
-	.buttons { flex-direction: column; gap: 14px; padding: 16px 22px 22px; }
-	.right-buttons { width: 100%; flex-direction: column; }
-	.buttons button { width: 100%; }
-	.modal-title { font-size: 26px; }
+	.summary-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.buttons {
+		flex-direction: column;
+		gap: 14px;
+		padding: 16px 22px 22px;
+	}
+
+	.right-buttons {
+		width: 100%;
+		flex-direction: column;
+	}
+
+	.buttons button {
+		width: 100%;
+	}
+
+	.modal-title {
+		font-size: 26px;
+	}
 }

@@ -43,35 +43,76 @@
 			</div>
 		</div>
 
-	</div>
-
-	<!-- Charts -->
-	<div class="charts-row">
-
-		<!-- Usuarios por rol -->
-		<div class="panel-card chart-panel">
-			<div class="panel-header">
-				<h5>Usuarios por Rol</h5>
-				<span class="badge-pill">Total</span>
+		<div class="kpi-card">
+			<div class="icon icon-blue">
+				<i class="fa-solid fa-truck"></i>
 			</div>
-
-			<div class="donut-wrap" *ngIf="!loadingAuth; else loadingTpl">
-				<apx-chart [series]="authChart.series" [chart]="authChart.chart" [labels]="authChart.labels"
-					[colors]="authChart.colors" [dataLabels]="authChart.dataLabels" [stroke]="authChart.stroke"
-					[plotOptions]="authChart.plotOptions" [legend]="authChart.legend">
-				</apx-chart>
-
-				<ul class="legend-list">
-					<li *ngFor="let label of authChart.labels; let i = index">
-						<span class="dot" [ngStyle]="{ background: authChart.colors?.[i] }"></span>
-						{{ label }}
-						<strong>{{ authChart.series[i] }}</strong>
-					</li>
-				</ul>
+			<div class="kpi-text">
+				<small>Proveedores Activos</small>
+				<h2>{{ catalogStatistics?.activeProviders ?? '—' }}</h2>
 			</div>
 		</div>
 
-		<!-- Estado de reservas -->
+		<div class="kpi-card">
+			<div class="icon icon-blue">
+				<i class="fa-solid fa-tag"></i>
+			</div>
+			<div class="kpi-text">
+				<small>Precio Promedio</small>
+				<h2>{{ catalogStatistics?.averagePrice | currency:'COP ':'symbol':'1.0-0' }}</h2>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Paquetes Turísticos / Proveedores -->
+	<div class="bottom-row">
+
+		<div class="panel-card chart-panel wide">
+			<div class="panel-header">
+				<h5>Paquetes Turísticos</h5>
+				<span class="badge-pill">{{ catalogStatistics?.totalPackages ?? 0 }} totales</span>
+			</div>
+
+			<div *ngIf="!loadingCatalog; else loadingTpl">
+				<apx-chart [series]="catalogChart.series" [chart]="catalogChart.chart"
+					[plotOptions]="catalogChart.plotOptions" [colors]="catalogChart.colors" [fill]="catalogChart.fill"
+					[dataLabels]="catalogChart.dataLabels" [grid]="catalogChart.grid" [xaxis]="catalogChart.xaxis">
+				</apx-chart>
+
+				<p class="chart-caption">
+					Distribución de paquetes turísticos según su estado actual: cuántos están
+					<strong>activos</strong> (disponibles para reserva) y cuántos
+					<strong>inactivos</strong> (despublicados o agotados).
+				</p>
+			</div>
+		</div>
+
+		<div class="panel-card chart-panel">
+			<div class="panel-header">
+				<h5>Proveedores</h5>
+				<span class="badge-pill">{{ catalogStatistics?.totalProviders ?? 0 }} totales</span>
+			</div>
+
+			<div *ngIf="!loadingCatalog; else loadingTpl">
+				<apx-chart [series]="providersChart.series" [chart]="providersChart.chart"
+					[plotOptions]="providersChart.plotOptions" [colors]="providersChart.colors"
+					[fill]="providersChart.fill" [dataLabels]="providersChart.dataLabels" [grid]="providersChart.grid"
+					[xaxis]="providersChart.xaxis">
+				</apx-chart>
+
+				<p class="chart-caption">
+					Cantidad de <strong>proveedores activos</strong> e <strong>inactivos</strong> registrados
+					en el sistema, responsables de ofrecer los paquetes turísticos.
+				</p>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Estado de Reservas / Pagos de Reservas -->
+	<div class="charts-row mt-row">
+
 		<div class="panel-card chart-panel">
 			<div class="panel-header">
 				<h5>Estado de Reservas</h5>
@@ -87,7 +128,7 @@
 
 				<ul class="legend-list">
 					<li *ngFor="let label of reservationChart.labels; let i = index">
-						<span class="dot" [ngStyle]="{ background: reservationChart.colors?.[i] }"></span>
+						<span class="dot" [ngStyle]="{ background: reservationChart.colors[i] }"></span>
 						{{ label }}
 						<strong>{{ reservationChart.series[i] }}</strong>
 					</li>
@@ -95,36 +136,58 @@
 			</div>
 		</div>
 
-	</div>
-
-	<div class="bottom-row">
-
-		<!-- Paquetes turísticos -->
-		<div class="panel-card chart-panel wide">
+		<div class="panel-card chart-panel">
 			<div class="panel-header">
-				<h5>Paquetes Turísticos</h5>
-				<span class="badge-pill">{{ catalogStatistics?.totalCategories ?? 0 }} categorías</span>
+				<h5>Pagos de Reservas</h5>
+				<span class="badge-pill">Total</span>
 			</div>
 
-			<div *ngIf="!loadingCatalog; else loadingTpl">
-				<apx-chart [series]="catalogChart.series" [chart]="catalogChart.chart"
-					[plotOptions]="catalogChart.plotOptions" [colors]="catalogChart.colors" [fill]="catalogChart.fill"
-					[dataLabels]="catalogChart.dataLabels" [grid]="catalogChart.grid" [xaxis]="catalogChart.xaxis">
+			<div class="donut-wrap" *ngIf="!loadingReservation; else loadingTpl">
+				<apx-chart [series]="paymentChart.series" [chart]="paymentChart.chart" [labels]="paymentChart.labels"
+					[colors]="paymentChart.colors" [dataLabels]="paymentChart.dataLabels" [stroke]="paymentChart.stroke"
+					[plotOptions]="paymentChart.plotOptions" [legend]="paymentChart.legend">
 				</apx-chart>
 
-				<!-- NUEVO: descripción de la gráfica -->
-				<p class="chart-caption">
-					Distribución de paquetes turísticos según su estado actual: cuántos están
-					<strong>activos</strong> (disponibles para reserva) y cuántos
-					<strong>inactivos</strong> (despublicados o agotados).
-				</p>
+				<ul class="legend-list">
+					<li *ngFor="let label of paymentChart.labels; let i = index">
+						<span class="dot" [ngStyle]="{ background: paymentChart.colors[i] }"></span>
+						{{ label }}
+						<strong>{{ paymentChart.series[i] }}</strong>
+					</li>
+				</ul>
 			</div>
 		</div>
 
-		<!-- Progreso de usuarios activos (estilo "Viajes Totales") -->
+	</div>
+
+	<!-- Usuarios por Rol / Usuarios Activos (progreso) -->
+	<div class="bottom-row mt-row">
+
+		<div class="panel-card chart-panel">
+			<div class="panel-header">
+				<h5>Usuarios por Rol</h5>
+				<span class="badge-pill">Total</span>
+			</div>
+
+			<div class="donut-wrap" *ngIf="!loadingAuth; else loadingTpl">
+				<apx-chart [series]="authChart.series" [chart]="authChart.chart" [labels]="authChart.labels"
+					[colors]="authChart.colors" [dataLabels]="authChart.dataLabels" [stroke]="authChart.stroke"
+					[plotOptions]="authChart.plotOptions" [legend]="authChart.legend">
+				</apx-chart>
+
+				<ul class="legend-list">
+					<li *ngFor="let label of authChart.labels; let i = index">
+						<span class="dot" [ngStyle]="{ background: authChart.colors[i] }"></span>
+						{{ label }}
+						<strong>{{ authChart.series[i] }}</strong>
+					</li>
+				</ul>
+			</div>
+		</div>
+
 		<div class="panel-card progress-panel">
 			<div class="panel-header">
-				<h5>Usuarios Activos</h5>
+				<h5>Indicadores Generales</h5>
 			</div>
 
 			<div class="progress-content">
@@ -149,12 +212,12 @@
 				<span class="progress-percent">{{ activePackagesPercent }}%</span>
 			</div>
 		</div>
+
 	</div>
 
-	<!-- NUEVA FILA: Verificación de usuarios + Estado de usuarios -->
+	<!-- Verificación de Usuarios / Estado de Usuarios -->
 	<div class="charts-row mt-row">
 
-		<!-- Radial bar de verificación -->
 		<div class="panel-card chart-panel">
 			<div class="panel-header">
 				<h5>Verificación de Usuarios</h5>
@@ -170,7 +233,6 @@
 			</div>
 		</div>
 
-		<!-- Bar de estado de usuarios -->
 		<div class="panel-card chart-panel">
 			<div class="panel-header">
 				<h5>Estado de Usuarios</h5>
@@ -185,7 +247,34 @@
 				</apx-chart>
 			</div>
 		</div>
+
 	</div>
+
+	<!-- Reservas por Paquete -->
+	<div class="charts-row mt-row">
+
+		<div class="panel-card chart-panel wide full-width">
+			<div class="panel-header">
+				<h5>Reservas por Paquete</h5>
+				<span class="badge-pill">Ranking</span>
+			</div>
+
+			<div *ngIf="!loadingPackageReservations; else loadingTpl">
+				<apx-chart [series]="packageReservationsChart.series" [chart]="packageReservationsChart.chart"
+					[plotOptions]="packageReservationsChart.plotOptions" [colors]="packageReservationsChart.colors"
+					[fill]="packageReservationsChart.fill" [dataLabels]="packageReservationsChart.dataLabels"
+					[grid]="packageReservationsChart.grid" [xaxis]="packageReservationsChart.xaxis">
+				</apx-chart>
+
+				<p class="chart-caption">
+					Ranking de paquetes turísticos según su número de <strong>reservas</strong> recibidas,
+					útil para identificar los destinos más demandados.
+				</p>
+			</div>
+		</div>
+
+	</div>
+
 </div>
 
 <ng-template #loadingTpl>

@@ -8,111 +8,119 @@
 
 			<div class="divider"></div>
 
-			<form [formGroup]="providerForm">
+			<div class="modal-scroll">
+				<form [formGroup]="providerForm">
 
-				<!-- NOMBRE -->
-				<div class="form-group">
-					<input type="text" placeholder=" " formControlName="nombre"
-						[class.ng-invalid]="providerForm.get('nombre')?.invalid && providerForm.get('nombre')?.touched">
-					<label>Nombre del proveedor</label>
-					<span *ngIf="providerForm.get('nombre')?.touched">
-						<ng-container *ngIf="providerForm.get('nombre')?.errors?.['required']">El nombre es obligatorio</ng-container>
-						<ng-container *ngIf="providerForm.get('nombre')?.errors?.['minlength']">Mínimo 3 caracteres</ng-container>
-						<ng-container *ngIf="providerForm.get('nombre')?.errors?.['maxlength']">Máximo 80 caracteres</ng-container>
-					</span>
-				</div>
-
-				<!-- TIPO -->
-				<div class="form-group">
-					<select formControlName="tipoProveedor"
-						[class.ng-invalid]="providerForm.get('tipoProveedor')?.invalid && providerForm.get('tipoProveedor')?.touched">
-						<option value="" disabled selected></option>
-						<option value="Hotel">Hotel</option>
-						<option value="Transporte">Transporte</option>
-					</select>
-					<label>Tipo de proveedor</label>
-					<span *ngIf="providerForm.get('tipoProveedor')?.errors?.['required'] && providerForm.get('tipoProveedor')?.touched">
-						Seleccione un tipo
-					</span>
-				</div>
-
-				<!-- CORREO -->
-				<div class="form-group">
-					<input type="email" placeholder=" " formControlName="correo"
-						[class.ng-invalid]="providerForm.get('correo')?.invalid && providerForm.get('correo')?.touched">
-					<label>Correo electrónico</label>
-					<span *ngIf="providerForm.get('correo')?.touched">
-						<ng-container *ngIf="providerForm.get('correo')?.errors?.['required']">El correo es obligatorio</ng-container>
-						<ng-container *ngIf="providerForm.get('correo')?.errors?.['email']">Correo inválido</ng-container>
-					</span>
-				</div>
-
-				<!-- TELÉFONO -->
-				<div class="form-group">
-					<input type="text" placeholder=" " formControlName="telefono"
-						[class.ng-invalid]="providerForm.get('telefono')?.invalid && providerForm.get('telefono')?.touched">
-					<label>Teléfono</label>
-					<span *ngIf="providerForm.get('telefono')?.touched">
-						<ng-container *ngIf="providerForm.get('telefono')?.errors?.['required']">El teléfono es obligatorio</ng-container>
-						<ng-container *ngIf="providerForm.get('telefono')?.errors?.['pattern']">Solo números (7-15 dígitos)</ng-container>
-					</span>
-				</div>
-
-				<!-- ===== CAMPOS TRANSPORTE ===== -->
-				<ng-container *ngIf="esTransporte">
-					<div class="section-label">
-						<i class="fa-solid fa-bus"></i> Datos del vehículo
-					</div>
-					<div class="form-row">
-						<div class="form-group">
-							<select formControlName="tipoVehiculo">
-								<option value="" disabled selected></option>
-								<option *ngFor="let t of tiposVehiculo" [value]="t">{{ t }}</option>
-							</select>
-							<label>Tipo de vehículo</label>
-						</div>
-						<div class="form-group">
-							<input type="text" placeholder=" " formControlName="placa">
-							<label>Placa</label>
-						</div>
-					</div>
-					<div class="form-row">
-						<div class="form-group">
-							<input type="text" placeholder=" " formControlName="conductor">
-							<label>Nombre del conductor</label>
-						</div>
-						<div class="form-group">
-							<input type="text" placeholder=" " formControlName="telefonoConductor">
-							<label>Teléfono conductor</label>
-						</div>
-					</div>
+					<!-- NOMBRE -->
 					<div class="form-group">
-						<input type="number" placeholder=" " formControlName="capacidad" min="1">
-						<label>Capacidad (personas)</label>
+						<input type="text" placeholder=" " formControlName="nombre"
+							[class.ng-invalid]="providerForm.get('nombre')?.invalid && providerForm.get('nombre')?.touched">
+						<label>Nombre del proveedor</label>
+						<span *ngIf="providerForm.get('nombre')?.touched">
+							<ng-container *ngIf="providerForm.get('nombre')?.errors?.['required']">El nombre es
+								obligatorio</ng-container>
+							<ng-container *ngIf="providerForm.get('nombre')?.errors?.['minlength']">Mínimo 3
+								caracteres</ng-container>
+							<ng-container *ngIf="providerForm.get('nombre')?.errors?.['maxlength']">Máximo 80
+								caracteres</ng-container>
+						</span>
 					</div>
-				</ng-container>
 
-				<!-- ===== CAMPOS HOTEL ===== -->
-				<ng-container *ngIf="esHotel">
-					<div class="section-label">
-						<i class="fa-solid fa-hotel"></i> Datos del alojamiento
-					</div>
+					<!-- TIPO -->
 					<div class="form-group">
-						<input type="text" placeholder=" " formControlName="direccion">
-						<label>Dirección</label>
+						<select formControlName="tipoProveedor"
+							[class.ng-invalid]="providerForm.get('tipoProveedor')?.invalid && providerForm.get('tipoProveedor')?.touched">
+							<option value="" disabled selected></option>
+							<option value="Hotel">Hotel</option>
+							<option value="Transporte">Transporte</option>
+						</select>
+						<label>Tipo de proveedor</label>
+						<span
+							*ngIf="providerForm.get('tipoProveedor')?.errors?.['required'] && providerForm.get('tipoProveedor')?.touched">
+							Seleccione un tipo
+						</span>
 					</div>
+
+					<!-- CORREO -->
 					<div class="form-group">
-						<input type="text" placeholder=" " formControlName="notas">
-						<label>Notas / Información adicional</label>
+						<input type="email" placeholder=" " formControlName="correo"
+							[class.ng-invalid]="providerForm.get('correo')?.invalid && providerForm.get('correo')?.touched">
+						<label>Correo electrónico</label>
+						<span *ngIf="providerForm.get('correo')?.touched">
+							<ng-container *ngIf="providerForm.get('correo')?.errors?.['required']">El correo es
+								obligatorio</ng-container>
+							<ng-container *ngIf="providerForm.get('correo')?.errors?.['email']">Correo
+								inválido</ng-container>
+						</span>
 					</div>
-				</ng-container>
 
+					<!-- TELÉFONO -->
+					<div class="form-group">
+						<input type="text" placeholder=" " formControlName="telefono"
+							[class.ng-invalid]="providerForm.get('telefono')?.invalid && providerForm.get('telefono')?.touched">
+						<label>Teléfono</label>
+						<span *ngIf="providerForm.get('telefono')?.touched">
+							<ng-container *ngIf="providerForm.get('telefono')?.errors?.['required']">El teléfono es
+								obligatorio</ng-container>
+							<ng-container *ngIf="providerForm.get('telefono')?.errors?.['pattern']">Solo números (7-15
+								dígitos)</ng-container>
+						</span>
+					</div>
 
+					<!-- ===== CAMPOS TRANSPORTE ===== -->
+					<ng-container *ngIf="esTransporte">
+						<div class="section-label">
+							<i class="fa-solid fa-bus"></i> Datos del vehículo
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<select formControlName="tipoVehiculo">
+									<option value="" disabled selected></option>
+									<option *ngFor="let t of tiposVehiculo" [value]="t">{{ t }}</option>
+								</select>
+								<label>Tipo de vehículo</label>
+							</div>
+							<div class="form-group">
+								<input type="text" placeholder=" " formControlName="placa">
+								<label>Placa</label>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<input type="text" placeholder=" " formControlName="conductor">
+								<label>Nombre del conductor</label>
+							</div>
+							<div class="form-group">
+								<input type="text" placeholder=" " formControlName="telefonoConductor">
+								<label>Teléfono conductor</label>
+							</div>
+						</div>
+						<div class="form-group">
+							<input type="number" placeholder=" " formControlName="capacidad" min="1">
+							<label>Capacidad (personas)</label>
+						</div>
+					</ng-container>
 
-			</form>
+					<!-- ===== CAMPOS HOTEL ===== -->
+					<ng-container *ngIf="esHotel">
+						<div class="section-label">
+							<i class="fa-solid fa-hotel"></i> Datos del alojamiento
+						</div>
+						<div class="form-group">
+							<input type="text" placeholder=" " formControlName="direccion">
+							<label>Dirección</label>
+						</div>
+						<div class="form-group">
+							<input type="text" placeholder=" " formControlName="notas">
+							<label>Notas / Información adicional</label>
+						</div>
+					</ng-container>
 
-			<div class="error-msg" *ngIf="errorMsg">
-				<i class="fa-solid fa-circle-exclamation"></i> {{ errorMsg }}
+				</form>
+
+				<div class="error-msg" *ngIf="errorMsg">
+					<i class="fa-solid fa-circle-exclamation"></i> {{ errorMsg }}
+				</div>
 			</div>
 
 			<div class="buttons">
@@ -125,3 +133,10 @@
 		</div>
 	</div>
 </div>
+
+<app-confirm-modal [isOpen]="showConfirmModal" [title]="mode === 'edit' ? 'Actualizar proveedor' : 'Crear proveedor'"
+	[message]="mode === 'edit' ? '¿Deseas guardar los cambios realizados al proveedor?' : '¿Deseas crear este nuevo proveedor?'"
+	[confirmText]="mode === 'edit' ? 'Actualizar' : 'Crear'" cancelText="Cancelar" icon="fa-solid fa-floppy-disk"
+	confirmColor="#3fa2db" iconBg="rgba(63, 162, 219, 0.12)" iconColor="#3fa2db" (confirmed)="confirmSave()"
+	(closed)="showConfirmModal = false">
+</app-confirm-modal>

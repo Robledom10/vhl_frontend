@@ -24,6 +24,7 @@ export class ReservationsComponent implements OnInit {
 	showToast = false;
 	toastTitle = '';
 	toastMessage = '';
+	toastType: 'success' | 'edit' | 'delete' | 'error' = 'success';
 
 	// ─── Estado de carga ──────────────────────────────────
 	isLoading = false;
@@ -39,6 +40,17 @@ export class ReservationsComponent implements OnInit {
 	dateFrom = '';
 	dateTo = '';
 
+	// ─── Confirmaciones ───────────────────────────────────
+	showConfirmModal = false;
+	confirmModalTitle = '';
+	confirmModalMessage = '';
+	confirmModalConfirmText = '';
+	confirmModalColor = '';
+	confirmModalIconBg = '';
+	confirmModalIconColor = '';
+	confirmModalIcon = '';
+	pendingAction: (() => void) | null = null;
+
 	activeFilters: {
 		destino: string | null;
 		personas: string | null;
@@ -51,6 +63,12 @@ export class ReservationsComponent implements OnInit {
 	// ─── Data ─────────────────────────────────────────────
 	reservations: Reservation[] = [];
 	filteredReservations: Reservation[] = [];
+
+	// ─── Paginación ───────────────────────────────────────
+	paginaActual = 0;
+	totalPaginas = 0;
+	totalElementos = 0;
+	tamano = 5;
 
 	// ─── Lifecycle ────────────────────────────────────────
 
@@ -71,9 +89,12 @@ export class ReservationsComponent implements OnInit {
 	loadReservations(): void {
 		this.isLoading = true;
 		this.loadError = false;
-		this.reservationService.getAll().subscribe({
-			next: (data) => {
-				this.reservations = data;
+		this.reservationService.getAllPaginado(this.paginaActual, this.tamano).subscribe({
+			next: (page) => {
+				this.reservations = page.content;
+				this.totalPaginas = page.totalPages;
+				this.totalElementos = page.totalElements;
+				this.paginaActual = page.number;
 				this.isLoading = false;
 				this.buildFilterOptions();
 				this.applyFilters();
@@ -83,6 +104,19 @@ export class ReservationsComponent implements OnInit {
 				this.loadError = true;
 			},
 		});
+	}
+
+	cambiarPagina(n: number): void {
+		if (n < 0 || n >= this.totalPaginas) return;
+		this.paginaActual = n;
+		this.loadReservations();
+	}
+
+	get paginas(): number[] {
+		const delta = 2;
+		const start = Math.max(0, this.paginaActual - delta);
+		const end = Math.min(this.totalPaginas - 1, this.paginaActual + delta);
+		return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 	}
 
 	// ─── Filtros ──────────────────────────────────────────
@@ -130,44 +164,95 @@ export class ReservationsComponent implements OnInit {
 		});
 	}
 
-	// ─── Acciones de fila ─────────────────────────────────
-
-	confirmarReserva(reservation: Reservation): void {
-		this.reservationService.confirmar(reservation.id).subscribe({
-			next: (updated) => {
-				this.replaceReservation(updated);
-				this.triggerToast(
-					'Reserva confirmada',
-					`La reserva de ${this.getNombre(updated)} fue confirmada exitosamente.`
-				);
-			},
-			error: () => this.triggerToast('Error', 'No se pudo confirmar la reserva.'),
-		});
+	// ─── Abrir modal genérico de confirmación ─────────────
+	private openConfirmAction(
+		title: string,
+		message: string,
+		confirmText: string,
+		color: string,
+		iconBg: string,
+		iconColor: string,
+		icon: string,
+		action: () => void
+	): void {
+		this.confirmModalTitle = title;
+		this.confirmModalMessage = message;
+		this.confirmModalConfirmText = confirmText;
+		this.confirmModalColor = color;
+		this.confirmModalIconBg = iconBg;
+		this.confirmModalIconColor = iconColor;
+		this.confirmModalIcon = icon;
+		this.pendingAction = action;
+		this.showConfirmModal = true;
 	}
 
+	closeConfirmModal(): void {
+		this.showConfirmModal = false;
+		this.pendingAction = null;
+	}
+
+	executeConfirm(): void {
+		if (this.pendingAction) this.pendingAction();
+		this.closeConfirmModal();
+	}
+
+	// ─── Confirmar reserva ────────────────────────────────
+	confirmarReserva(reservation: Reservation): void {
+		this.openConfirmAction(
+			'Confirmar reserva',
+			`¿Deseas confirmar la reserva de ${this.getNombre(reservation)}?`,
+			'Confirmar',
+			'#3fa2db',
+			'rgba(63, 162, 219, 0.12)',
+			'#3fa2db',
+			'fa-solid fa-circle-check',
+			() => this.reservationService.confirmar(reservation.id).subscribe({
+				next: (updated) => {
+					this.replaceReservation(updated);
+					this.triggerToast('Reserva confirmada', `La reserva de ${this.getNombre(updated)} fue confirmada exitosamente.`, 'success');
+				},
+				error: () => this.triggerToast('Error', 'No se pudo confirmar la reserva.', 'error'),
+			})
+		);
+	}
+
+	// ─── Reactivar reserva ────────────────────────────────
 	reactivarReserva(reservation: Reservation): void {
-		this.reservationService.reactivar(reservation.id).subscribe({
-			next: (updated) => {
-				this.replaceReservation(updated);
-				this.triggerToast(
-					'Reserva reactivada',
-					`La reserva de ${this.getNombre(updated)} fue reactivada.`
-				);
-			},
-			error: () => this.triggerToast('Error', 'No se pudo reactivar la reserva.'),
-		});
+		this.openConfirmAction(
+			'Reactivar reserva',
+			`¿Deseas reactivar la reserva de ${this.getNombre(reservation)}?`,
+			'Reactivar',
+			'#3fa2db',
+			'rgba(63, 162, 219, 0.12)',
+			'#3fa2db',
+			'fa-solid fa-rotate-left',
+			() => this.reservationService.reactivar(reservation.id).subscribe({
+				next: (updated) => {
+					this.replaceReservation(updated);
+					this.triggerToast('Reserva reactivada', `La reserva de ${this.getNombre(updated)} fue reactivada.`, 'success');
+				},
+				error: () => this.triggerToast('Error', 'No se pudo reactivar la reserva.', 'error'),
+			})
+		);
 	}
 
 	// ─── Modal cancelar ───────────────────────────────────
-
 	openCancelModal(reservation: Reservation): void {
 		this.selectedReservation = reservation;
-		this.showCancelModal = true;
+		this.openConfirmAction(
+			'Cancelar reserva',
+			`Esta acción cancelará la reserva de ${this.getNombre(reservation)}. Podrá reactivarla más adelante.`,
+			'Cancelar reserva',
+			'#ff3b3b',
+			'rgba(255, 59, 59, 0.12)',
+			'#ff3b3b',
+			'fa-solid fa-triangle-exclamation',
+			() => this.confirmCancel()
+		);
 	}
 
-	closeCancelModal(): void {
-		this.showCancelModal = false;
-	}
+	// Ya no necesitas showCancelModal ni closeCancelModal, pero si app-confirm-modal
+	// lo usa en otro lado, puedes dejarlos; si no, elimínalos.
 
 	confirmCancel(): void {
 		if (!this.selectedReservation) return;
@@ -175,14 +260,19 @@ export class ReservationsComponent implements OnInit {
 		this.reservationService.cancelar(this.selectedReservation.id).subscribe({
 			next: (updated) => {
 				this.replaceReservation(updated);
-				this.showCancelModal = false;
-				this.triggerToast('Reserva cancelada', `La reserva de ${nombre} fue cancelada.`);
+				this.triggerToast('Reserva cancelada', `La reserva de ${nombre} fue cancelada.`, 'delete');
 			},
-			error: () => {
-				this.showCancelModal = false;
-				this.triggerToast('Error', 'No se pudo cancelar la reserva.');
-			},
+			error: () => this.triggerToast('Error', 'No se pudo cancelar la reserva.', 'error'),
 		});
+	}
+
+	// ─── Toast ────────────────────────────────────────────
+	private triggerToast(title: string, message: string, type: 'success' | 'edit' | 'delete' | 'error'): void {
+		this.toastTitle = title;
+		this.toastMessage = message;
+		this.toastType = type;
+		this.showToast = true;
+		setTimeout(() => { this.showToast = false; }, 3000);
 	}
 
 	// ─── Modal crear ──────────────────────────────────────
@@ -228,13 +318,13 @@ export class ReservationsComponent implements OnInit {
 	}
 
 	onReservationCreated(newReservation: Reservation): void {
-		this.reservations.unshift(newReservation);
-		this.buildFilterOptions();
-		this.applyFilters();
 		this.closeCreateModal();
+		this.paginaActual = 0;
+		this.loadReservations();
 		this.triggerToast(
 			'Reserva creada',
-			`La reserva de ${this.getNombre(newReservation)} fue registrada exitosamente.`
+			`La reserva de ${this.getNombre(newReservation)} fue registrada exitosamente.`,
+			'success'
 		);
 	}
 
@@ -267,13 +357,6 @@ export class ReservationsComponent implements OnInit {
 		const idx = this.reservations.findIndex(r => r.id === updated.id);
 		if (idx !== -1) this.reservations[idx] = updated;
 		this.applyFilters();
-	}
-
-	private triggerToast(title: string, message: string): void {
-		this.toastTitle = title;
-		this.toastMessage = message;
-		this.showToast = true;
-		setTimeout(() => { this.showToast = false; }, 3000);
 	}
 
 	// Modal documento

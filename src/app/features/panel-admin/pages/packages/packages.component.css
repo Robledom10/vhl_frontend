@@ -319,6 +319,66 @@ tbody img {
 	}
 }
 
+/* =========================
+  PAGINACIÓN
+========================= */
+
+.pagination-bar {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	margin-top: 8px;
+}
+
+.pagination-info {
+	font-size: 13px;
+	color: var(--color-texto-secundario);
+	font-family: "Outfit", sans-serif;
+}
+
+.pagination-controls {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.page-btn {
+	width: 36px;
+	height: 36px;
+	border-radius: 12px;
+	border: 1px solid var(--bordes);
+	background: white;
+	color: var(--color-texto-secundario);
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+}
+
+.page-btn:hover:not(:disabled) {
+	background: rgba(63, 162, 219, 0.08);
+	color: var(--color-primario);
+	border-color: var(--color-primario);
+	transform: translateY(-1px);
+}
+
+.page-btn.active {
+	background: var(--color-primario);
+	color: white;
+	border-color: var(--color-primario);
+}
+
+.page-btn:disabled {
+	opacity: 0.35;
+	cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
 	.packages-container {
 		gap: 18px;

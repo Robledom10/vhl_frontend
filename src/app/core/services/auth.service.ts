@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap, throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../../features/auth/models/auth.model';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
@@ -117,13 +118,15 @@ export class AuthService {
 	// USERS
 	// =========================
 
-	getAllUsers() {
-		return this.http.get<any[]>(`${environment.apiUrl}/admin/users`, {
-			withCredentials: true,
-			headers: {
-				Authorization: `Bearer ${this.getToken()}`,
-			},
-		});
+	getAllUsers(page: number = 0, size: number = 10) {
+		return this.http.get<{ content: any[]; totalElements: number; totalPages: number; number: number }>(
+			`${environment.apiUrl}/admin/users`,
+			{
+				params: { page: page.toString(), size: size.toString() },
+				withCredentials: true,
+				headers: { Authorization: `Bearer ${this.getToken()}` },
+			}
+		);
 	}
 
 	// =========================

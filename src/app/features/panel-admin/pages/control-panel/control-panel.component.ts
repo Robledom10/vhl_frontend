@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ApexNonAxisChartSeries, ApexChart, ApexDataLabels, ApexTitleSubtitle, ApexAxisChartSeries, ApexPlotOptions, ApexXAxis, ApexLegend, ApexStroke, ApexFill, ApexGrid } from 'ng-apexcharts';
+import {
+	ApexNonAxisChartSeries, ApexChart, ApexDataLabels, ApexTitleSubtitle,
+	ApexAxisChartSeries, ApexPlotOptions, ApexXAxis, ApexLegend, ApexStroke,
+	ApexFill, ApexTooltip, ApexYAxis
+} from 'ng-apexcharts';
 import { AnalyticsService } from '../../../../core/services/analytics.service';
 
 export type PieChartOptions = {
@@ -26,7 +30,6 @@ export type BarChartOptions = {
 	grid: any;
 };
 
-// NUEVO: tipo para el radial bar de verificación
 export type RadialChartOptions = {
 	series: ApexNonAxisChartSeries;
 	chart: ApexChart;
@@ -35,6 +38,21 @@ export type RadialChartOptions = {
 	plotOptions: any;
 	legend: ApexLegend;
 	stroke: ApexStroke;
+};
+
+// FIX: tooltip y yaxis ya no son opcionales (?)
+export type AreaChartOptions = {
+	series: ApexAxisChartSeries;
+	chart: ApexChart;
+	xaxis: ApexXAxis;
+	yaxis: ApexYAxis;
+	colors: string[];
+	fill: ApexFill;
+	stroke: ApexStroke;
+	dataLabels: ApexDataLabels;
+	grid: any;
+	tooltip: ApexTooltip;
+	title: ApexTitleSubtitle;
 };
 
 const PALETTE = ['#1f8fe0', '#5fb6e8', '#9fd6f2', '#c9e9f8', '#0d6efd'];
@@ -53,9 +71,12 @@ export class ControlPanelComponent implements OnInit {
 	loadingAuth = true;
 	loadingReservation = true;
 	loadingCatalog = true;
+	loadingPackageReservations = true;
 
 	authChart: PieChartOptions = this.buildEmptyDonut();
 	reservationChart: PieChartOptions = this.buildEmptyDonut();
+	verificationChart: RadialChartOptions = this.buildEmptyRadial();
+	paymentChart: PieChartOptions = this.buildEmptyDonut();
 
 	catalogChart: BarChartOptions = {
 		series: [{ name: 'Paquetes', data: [] }],
@@ -72,25 +93,45 @@ export class ControlPanelComponent implements OnInit {
 		title: { text: '' }
 	};
 
-	// NUEVO: radial bar de verificación de usuarios
-	verificationChart: RadialChartOptions = this.buildEmptyRadial();
-
-	// NUEVO: bar chart de estado de usuarios (activos / inactivos / bloqueados)
 	userStatusChart: BarChartOptions = {
 		series: [{ name: 'Usuarios', data: [] }],
 		chart: { type: 'bar', height: 260, toolbar: { show: false }, fontFamily: 'inherit' },
-		plotOptions: {
-			bar: {
-				horizontal: false,
-				borderRadius: 10,
-				columnWidth: '45%',
-				distributed: true
-			}
-		},
+		plotOptions: { bar: { horizontal: false, borderRadius: 10, columnWidth: '45%', distributed: true } },
 		colors: [PALETTE[0], PALETTE[1], '#e74c5c'],
 		fill: { type: 'solid' },
 		dataLabels: { enabled: true, style: { fontWeight: 600 } },
 		grid: { borderColor: '#eef2f7', xaxis: { lines: { show: false } }, yaxis: { lines: { show: true } } },
+		xaxis: { categories: [] },
+		title: { text: '' }
+	};
+
+
+	packageReservationsChart: BarChartOptions = {
+		series: [{ name: 'Reservas', data: [] }],
+		chart: { type: 'bar', height: 280, toolbar: { show: false }, fontFamily: 'inherit' },
+		plotOptions: { bar: { horizontal: true, borderRadius: 10, barHeight: '50%' } },
+		colors: [PALETTE[0]],
+		fill: {
+			type: 'gradient',
+			gradient: { shade: 'light', type: 'horizontal', gradientToColors: [PALETTE[1]], opacityFrom: 1, opacityTo: 1 }
+		},
+		dataLabels: { enabled: true, style: { fontWeight: 600 } },
+		grid: { borderColor: '#eef2f7', xaxis: { lines: { show: true } }, yaxis: { lines: { show: false } } },
+		xaxis: { categories: [] },
+		title: { text: '' }
+	};
+
+	providersChart: BarChartOptions = {
+		series: [{ name: 'Proveedores', data: [] }],
+		chart: { type: 'bar', height: 240, toolbar: { show: false }, fontFamily: 'inherit' },
+		plotOptions: { bar: { horizontal: true, borderRadius: 10, barHeight: '45%' } },
+		colors: [PALETTE[4]],
+		fill: {
+			type: 'gradient',
+			gradient: { shade: 'light', type: 'horizontal', gradientToColors: [PALETTE[1]], opacityFrom: 1, opacityTo: 1 }
+		},
+		dataLabels: { enabled: true, style: { fontWeight: 600 } },
+		grid: { borderColor: '#eef2f7', xaxis: { lines: { show: true } }, yaxis: { lines: { show: false } } },
 		xaxis: { categories: [] },
 		title: { text: '' }
 	};
@@ -101,6 +142,7 @@ export class ControlPanelComponent implements OnInit {
 		this.loadAuthStatistics();
 		this.loadReservationStatistics();
 		this.loadCatalogStatistics();
+		this.loadPackageReservations();
 	}
 
 	private buildEmptyDonut(): PieChartOptions {
@@ -128,7 +170,6 @@ export class ControlPanelComponent implements OnInit {
 		};
 	}
 
-	// NUEVO
 	private buildEmptyRadial(): RadialChartOptions {
 		return {
 			series: [],
@@ -136,12 +177,7 @@ export class ControlPanelComponent implements OnInit {
 			labels: [],
 			colors: [PALETTE[0], PALETTE[1], '#0d6efd'],
 			stroke: { lineCap: 'round' },
-			legend: {
-				show: true,
-				position: 'bottom',
-				fontSize: '13px',
-				labels: { colors: '#4a5a6a' }
-			},
+			legend: { show: true, position: 'bottom', fontSize: '13px', labels: { colors: '#4a5a6a' } },
 			plotOptions: {
 				radialBar: {
 					hollow: { size: '38%' },
@@ -167,7 +203,6 @@ export class ControlPanelComponent implements OnInit {
 						labels: ['Administradores', 'Clientes', 'Guías']
 					};
 
-					// NUEVO: radial bar con % de verificación sobre el total de usuarios
 					const total = response.totalUsers || 1;
 					this.verificationChart = {
 						...this.buildEmptyRadial(),
@@ -179,13 +214,9 @@ export class ControlPanelComponent implements OnInit {
 						labels: ['Emails Verificados', 'Teléfonos Verificados', 'Perfiles Completos']
 					};
 
-					// NUEVO: bar chart de estado de usuarios
 					this.userStatusChart = {
 						...this.userStatusChart,
-						series: [{
-							name: 'Usuarios',
-							data: [response.activeUsers, response.inactiveUsers, response.lockedUsers]
-						}],
+						series: [{ name: 'Usuarios', data: [response.activeUsers, response.inactiveUsers, response.lockedUsers] }],
 						xaxis: { categories: ['Activos', 'Inactivos', 'Bloqueados'] }
 					};
 
@@ -199,18 +230,25 @@ export class ControlPanelComponent implements OnInit {
 		this.analyticsService.getReservationStatistics()
 			.subscribe({
 				next: response => {
-					console.log('RESERVATION RESPONSE:', response);
 					this.reservationStatistics = response;
 
 					this.reservationChart = {
 						...this.buildEmptyDonut(),
 						series: [
-							response.pendingReservations ?? 0,
-							response.approvedReservations ?? 0,
-							response.rejectedReservations ?? 0,
-							response.cancelledReservations ?? 0
+							response.pendingReservations,
+							response.confirmedReservations,
+							response.completedReservations,
+							response.cancelledReservations,
+							response.blockedReservations
 						],
-						labels: ['Pendientes', 'Aprobadas', 'Rechazadas', 'Canceladas']
+						labels: ['Pendientes', 'Confirmadas', 'Completadas', 'Canceladas', 'Bloqueadas']
+					};
+
+					// NUEVO: pagadas vs no pagadas
+					this.paymentChart = {
+						...this.buildEmptyDonut(),
+						series: [response.paidReservations, response.unpaidReservations],
+						labels: ['Pagadas', 'No Pagadas']
 					};
 
 					this.loadingReservation = false;
@@ -234,9 +272,35 @@ export class ControlPanelComponent implements OnInit {
 						xaxis: { categories: ['Activos', 'Inactivos'] }
 					};
 
+					// NUEVO: proveedores activos/inactivos
+					this.providersChart = {
+						...this.providersChart,
+						series: [{ name: 'Proveedores', data: [response.activeProviders, response.inactiveProviders] }],
+						xaxis: { categories: ['Activos', 'Inactivos'] }
+					};
+
 					this.loadingCatalog = false;
 				},
 				error: () => this.loadingCatalog = false
+			});
+	}
+
+	loadPackageReservations() {
+		this.analyticsService.getPackageReservations()
+			.subscribe({
+				next: response => {
+					this.packageReservationsChart = {
+						...this.packageReservationsChart,
+						series: [{ name: 'Reservas', data: response.map(item => item.totalReservations) }],
+						xaxis: { categories: response.map(item => item.packageName) }
+					};
+
+					this.loadingPackageReservations = false;
+				},
+				error: (err) => {
+					console.error('PACKAGE RESERVATIONS ERROR:', err);
+					this.loadingPackageReservations = false;
+				}
 			});
 	}
 

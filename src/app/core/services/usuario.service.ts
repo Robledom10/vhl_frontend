@@ -7,11 +7,15 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class UsuarioService {
+<<<<<<< HEAD
   private apiUrl = `${environment.apiUrl}/admin/users`;
+=======
+  private base = `${environment.apiUrl}/admin/users`;
+>>>>>>> main
 
   constructor(private http: HttpClient) { }
 
   getUsuarioByDocumento(documento: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/documento/${documento}`);
+    return this.http.get<any>(`${this.base}/documento/${documento}`);
   }
 }

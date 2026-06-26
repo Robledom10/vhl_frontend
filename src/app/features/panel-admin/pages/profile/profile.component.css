@@ -398,6 +398,23 @@
 	overflow-y: auto;
 }
 
+.custom-select-dropdown::-webkit-scrollbar {
+	width: 6px;
+}
+
+.custom-select-dropdown::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.custom-select-dropdown::-webkit-scrollbar-thumb {
+	background: #b5e5ff;
+	border-radius: 999px;
+}
+
+.custom-select-dropdown::-webkit-scrollbar-thumb:hover {
+	background: #87d3ff;
+}
+
 .custom-option {
 	padding: 14px 18px;
 	font-size: 13px;
@@ -627,6 +644,7 @@ tbody td:last-child {
 }
 
 @media (max-width: 1279px) {
+
 	.content,
 	.reservations-content {
 		padding: 32px;
@@ -648,6 +666,7 @@ tbody td:last-child {
 }
 
 @media (max-width: 920px) {
+
 	.content,
 	.reservations-content {
 		padding: 28px;
@@ -672,6 +691,7 @@ tbody td:last-child {
 }
 
 @media (max-width: 768px) {
+
 	.content,
 	.reservations-content {
 		padding: 24px;
@@ -793,6 +813,7 @@ tbody td:last-child {
 }
 
 @media (max-width: 480px) {
+
 	.content,
 	.reservations-content {
 		padding: 18px;

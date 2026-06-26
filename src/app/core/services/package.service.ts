@@ -58,12 +58,31 @@ export class PackageService {
 	// --- Proveedores ---
 	private proveedoresUrl = `${environment.apiUrl}/proveedores`;
 
-	getProveedores(): Observable<RespuestaProveedor[]> {
-		return this.http.get<RespuestaProveedor[]>(this.proveedoresUrl);
+	getProveedores(tipo?: string): Observable<RespuestaProveedor[]> {
+		let params = new HttpParams();
+		if (tipo) params = params.set('tipo', tipo);
+		return this.http.get<RespuestaProveedor[]>(this.proveedoresUrl, { params });
 	}
 
 	getProveedoresByTipo(tipo: string): Observable<RespuestaProveedor[]> {
-		return this.http.get<RespuestaProveedor[]>(`${this.proveedoresUrl}?tipo=${tipo}`);
+		return this.getProveedores(tipo);
+	}
+
+	getProveedoresPaginado(params?: {
+		tipo?: string;
+		busqueda?: string;
+		pagina?: number;
+		tamano?: number;
+	}): Observable<PageResponse<RespuestaPaqueteTuristico>> {
+		let httpParams = new HttpParams();
+		if (params?.tipo) httpParams = httpParams.set('tipo', params.tipo);
+		if (params?.busqueda) httpParams = httpParams.set('busqueda', params.busqueda);
+		if (params?.pagina !== undefined) httpParams = httpParams.set('pagina', params.pagina);
+		if (params?.tamano !== undefined) httpParams = httpParams.set('tamano', params.tamano);
+		return this.http.get<PageResponse<RespuestaPaqueteTuristico>>(
+			`${this.proveedoresUrl}/paginado`,
+			{ params: httpParams }
+		);
 	}
 
 	crearProveedor(body: SolicitudProveedor): Observable<RespuestaProveedor> {
