@@ -26,6 +26,7 @@ export class FormAssignAccommodationComponent implements OnChanges {
 	enviando = false;
 	showCalendarCheckIn = false;
 	showCalendarCheckOut = false;
+	usuarioSeleccionadoId: number | null = null;
 
 	alojamientoForm = this.fb.group({
 		idViaje: [''],
@@ -47,6 +48,7 @@ export class FormAssignAccommodationComponent implements OnChanges {
 		if (changes['isOpen'] && this.isOpen) {
 			this.showCalendarCheckIn = false;
 			this.showCalendarCheckOut = false;
+			this.usuarioSeleccionadoId = null;
 			this.alojamientoForm.reset();
 
 			if (this.viajeSeleccionado?.alojamientoAsignado) {
@@ -62,6 +64,21 @@ export class FormAssignAccommodationComponent implements OnChanges {
 			} else if (this.preloadData) {
 				this.alojamientoForm.patchValue(this.preloadData);
 			}
+		}
+	}
+
+	onUsuarioChange(idStr: string): void {
+		const id = idStr ? +idStr : null;
+		this.usuarioSeleccionadoId = id;
+		if (!id) {
+			this.alojamientoForm.patchValue({ nombreViajero: '' });
+			return;
+		}
+		const usuario = this.usuarios.find(u => u.id === id);
+		if (usuario) {
+			this.alojamientoForm.patchValue({
+				nombreViajero: `${usuario.firstName} ${usuario.lastName}`.trim()
+			});
 		}
 	}
 
@@ -105,14 +122,7 @@ export class FormAssignAccommodationComponent implements OnChanges {
 			return;
 		}
 
-		const nombreDigitado = (v.nombreViajero || '').trim().toLowerCase();
-		const encontrado = nombreDigitado
-			? this.usuarios.find(u =>
-				`${u.firstName} ${u.lastName}`.toLowerCase() === nombreDigitado ||
-				u.firstName.toLowerCase() === nombreDigitado
-			)
-			: null;
-		const idViajero = encontrado?.id ?? (this.authSvc.getUser()?.id ?? 1);
+		const idViajero = this.usuarioSeleccionadoId ?? (this.authSvc.getUser()?.id ?? 1);
 		const nombreViajero = (v.nombreViajero || '').trim() || null;
 
 		const body = {

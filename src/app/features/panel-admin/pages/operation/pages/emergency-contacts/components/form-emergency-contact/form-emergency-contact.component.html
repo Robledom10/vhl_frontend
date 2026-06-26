@@ -7,10 +7,18 @@
 
 	<form [formGroup]="contactoForm" (ngSubmit)="guardar()">
 		<div class="form-grid">
-			<div class="form-group span-2">
-				<label>Nombre del viajero *</label>
-				<input type="text" formControlName="nombreViajero" placeholder="Ej: Juan Pérez" autocomplete="off">
-				<span class="error" *ngIf="contactoForm.get('nombreViajero')?.invalid && contactoForm.get('nombreViajero')?.touched">Campo requerido</span>
+			<div class="form-group span-2" *ngIf="!editando">
+				<label>Usuario *</label>
+				<select (change)="onUsuarioChange($any($event.target).value)" [disabled]="cargandoUsuarios">
+					<option value="">{{ cargandoUsuarios ? 'Cargando usuarios...' : 'Seleccionar usuario...' }}</option>
+					<option *ngFor="let u of usuarios" [value]="u.id">{{ u.nombre }}</option>
+				</select>
+				<span class="error" *ngIf="contactoForm.get('nombreViajero')?.invalid && contactoForm.get('nombreViajero')?.touched">Selecciona un usuario</span>
+			</div>
+
+			<div class="form-group span-2" *ngIf="editando">
+				<label>Nombre del viajero</label>
+				<input type="text" formControlName="nombreViajero" class="input-readonly" readonly>
 			</div>
 
 			<div class="form-group span-2">
