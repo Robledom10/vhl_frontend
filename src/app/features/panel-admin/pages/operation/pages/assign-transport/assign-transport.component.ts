@@ -17,6 +17,7 @@ export class AsignarTransporteComponent implements OnInit {
 	showDetalle = false;
 	viajeDetalle: ViajeTransporteDisplay | null = null;
 	showToast = false;
+	toastTitle = '';
 	toastMsg = '';
 	toastType: 'success' | 'error' = 'success';
 
@@ -27,9 +28,24 @@ export class AsignarTransporteComponent implements OnInit {
 		conductor: string; telefonoConductor: string; capacidad: string;
 	}> | null = null;
 
-	search = '';
+	// Reemplaza: search = '';
+	private _search = '';
+
+	get search(): string {
+		return this._search;
+	}
+
+	set search(val: string) {
+		this._search = val;
+		this.paginaActual = 0;      // resetea al filtrar
+	}
+
 	viajes: ViajeTransporteDisplay[] = [];
 	proveedoresTransporte: RespuestaProveedor[] = [];
+
+	// Confirmación de eliminar
+	showDeleteModal = false;
+	viajeAEliminar: ViajeTransporteDisplay | null = null;
 
 	get viajesFiltrados(): ViajeTransporteDisplay[] {
 		const texto = this.search?.toLowerCase() || '';
@@ -41,16 +57,51 @@ export class AsignarTransporteComponent implements OnInit {
 			);
 	}
 
+	// ─── Paginación ───────────────────────────────────────────
+	pageSize = 5;
+	paginaActual = 0;
+
+	get totalElementos(): number {
+		return this.viajesFiltrados.length;
+	}
+
+	get totalPaginas(): number {
+		return Math.ceil(this.totalElementos / this.pageSize);
+	}
+
+	get paginas(): number[] {
+		const total = this.totalPaginas;
+		const actual = this.paginaActual;
+		const rango: number[] = [];
+
+		let inicio = Math.max(0, actual - 2);
+		let fin = Math.min(total - 1, inicio + 4);
+		if (fin - inicio < 4) inicio = Math.max(0, fin - 4);
+
+		for (let i = inicio; i <= fin; i++) rango.push(i);
+		return rango;
+	}
+
+	get viajesPaginados(): ViajeTransporteDisplay[] {
+		const inicio = this.paginaActual * this.pageSize;
+		return this.viajesFiltrados.slice(inicio, inicio + this.pageSize);
+	}
+
+	cambiarPagina(pagina: number): void {
+		if (pagina < 0 || pagina >= this.totalPaginas) return;
+		this.paginaActual = pagina;
+	}
+
 	constructor(
 		private svc: OperacionesService,
 		private pkgSvc: PackageService,
-	) {}
+	) { }
 
 	ngOnInit(): void {
 		this.cargarViajes();
 		this.pkgSvc.getProveedoresByTipo('Transporte').subscribe({
 			next: (items) => { this.proveedoresTransporte = items; },
-			error: () => {},
+			error: () => { },
 		});
 	}
 
@@ -86,7 +137,9 @@ export class AsignarTransporteComponent implements OnInit {
 			})
 		).subscribe({
 			next: items => { this.viajes = [...items]; },
-			error: () => {},
+			error: () => {
+				this.mostrarToast('Error', 'No se pudieron cargar los viajes y transportes.', 'error');
+			},
 		});
 	}
 
@@ -153,11 +206,11 @@ export class AsignarTransporteComponent implements OnInit {
 		this.editandoTransporteId = null;
 		this.formPreload = null;
 		this.cargarViajes();
-		this.mostrarToast(msg);
+		this.mostrarToast('Listo', msg, 'success');
 	}
 
 	onFormFailed(msg: string): void {
-		this.mostrarToast(msg, 'error');
+		this.mostrarToast('Error', msg, 'error');
 	}
 
 	// ─── Detalle ──────────────────────────────────────────────
@@ -172,22 +225,40 @@ export class AsignarTransporteComponent implements OnInit {
 		this.viajeDetalle = null;
 	}
 
-	// ─── Eliminar ─────────────────────────────────────────────
+	// ─── Eliminar con confirmación ──────────────────────────────
 
 	eliminar(viaje: ViajeTransporteDisplay): void {
 		if (!viaje.id || !viaje.transportes.length) return;
-		if (!confirm(`¿Eliminar el transporte asignado a ${viaje.titulo}?`)) return;
+		this.viajeAEliminar = viaje;
+		this.showDeleteModal = true;
+	}
+
+	cerrarDeleteModal(): void {
+		this.showDeleteModal = false;
+		this.viajeAEliminar = null;
+	}
+
+	confirmarEliminar(): void {
+		const viaje = this.viajeAEliminar;
+		if (!viaje || !viaje.id || !viaje.transportes.length) return;
+		this.showDeleteModal = false;
 		const id = viaje.transportes[0].id;
+
 		this.svc.eliminarTransporte(viaje.id, id).subscribe({
 			next: () => {
-				this.mostrarToast('Transporte eliminado');
+				this.viajeAEliminar = null;
+				this.mostrarToast('Transporte eliminado', `Se eliminó el transporte asignado a ${viaje.titulo}.`, 'success');
 				this.cargarViajes();
 			},
-			error: () => this.mostrarToast('Error al eliminar el transporte', 'error'),
+			error: () => {
+				this.viajeAEliminar = null;
+				this.mostrarToast('Error al eliminar', `No se pudo eliminar el transporte de ${viaje.titulo}.`, 'error');
+			},
 		});
 	}
 
-	mostrarToast(msg: string, type: 'success' | 'error' = 'success'): void {
+	mostrarToast(title: string, msg: string, type: 'success' | 'error' = 'success'): void {
+		this.toastTitle = title;
 		this.toastMsg = msg;
 		this.toastType = type;
 		this.showToast = true;

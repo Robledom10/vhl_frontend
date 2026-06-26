@@ -37,13 +37,8 @@
 
 						<!-- Nº documento -->
 						<div class="form-group half">
-							<input
-								type="text"
-								id="docUsuario"
-								placeholder=" "
-								[(ngModel)]="documentoBusqueda"
-								[readonly]="mode === 'new'"
-								[attr.disabled]="mode === 'new' ? true : null"
+							<input type="text" id="docUsuario" placeholder=" " [(ngModel)]="documentoBusqueda"
+								[readonly]="mode === 'new'" [attr.disabled]="mode === 'new' ? true : null"
 								(blur)="mode === 'existing' && buscarCliente()"
 								(keyup.enter)="mode === 'existing' && buscarCliente()"
 								[class.invalid]="submitted && !form.idUsuario">
@@ -203,12 +198,12 @@
 
 						<!-- Viaje (filtrado por paquete) -->
 						<div class="form-group full">
-							<select id="idViaje" [(ngModel)]="form.idViaje"
-								(ngModelChange)="onViajeChange($event)"
+							<select id="idViaje" [(ngModel)]="form.idViaje" (ngModelChange)="onViajeChange($event)"
 								[attr.disabled]="(!selectedPaqueteId || cargandoViajes) ? true : null"
 								[class.ng-invalid]="submitted && !form.idViaje">
 								<option value="" disabled selected>
-									{{ !selectedPaqueteId ? 'Selecciona primero un paquete' : (viajesFiltrados.length === 0 ? 'No hay viajes para este paquete' : 'Selecciona un viaje') }}
+									{{ !selectedPaqueteId ? 'Selecciona primero un paquete' : (viajesFiltrados.length
+									=== 0 ? 'No hay viajes para este paquete' : 'Selecciona un viaje') }}
 								</option>
 								<option *ngFor="let v of viajesFiltrados" [value]="v.id">
 									{{ v.fechaSalida }} → {{ v.fechaRegreso }}
@@ -403,9 +398,7 @@
 							Debes aceptar ambas condiciones para continuar.
 						</span>
 					</div>
-
 				</div>
-
 			</div>
 		</div>
 
