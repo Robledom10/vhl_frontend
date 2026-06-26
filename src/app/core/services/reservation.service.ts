@@ -97,6 +97,7 @@ export class ReservationService {
 		return {
 			id: dto.id,
 			idUsuario: dto.idUsuario ?? 0,
+			packageId: dto.idPaquete ?? dto.packageId,
 			datosUsuario: dto.datosUsuario ? {
 				id: dto.datosUsuario.id,
 				nombre: dto.datosUsuario.nombre ?? '',

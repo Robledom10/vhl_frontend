@@ -347,17 +347,29 @@ export class ProfileComponent implements OnInit {
 
 	payReservation(reservation: any): void {
 
-		console.log('Reserva:', reservation);
-
 		const user = this.authService.getUser();
 
-		this.paymentService.createPaymentLink({
+		console.log('[Pago] Usuario completo:', user);
+		console.log('[Pago] Reserva completa:', reservation);
 
+		if (!reservation.packageId) {
+			console.error('[Pago] Sin packageId en la reserva. Campos disponibles:', Object.keys(reservation));
+			this.errorMessage = 'No se puede procesar el pago: falta el ID del paquete.';
+			this.showErrorModal = true;
+			document.body.style.overflow = 'hidden';
+			return;
+		}
+
+		const payload = {
 			accountId: user?.id,
 			packageId: reservation.packageId,
+			paymentMethod: 'TARJETA',
 			installments: 1
+		};
 
-		}).subscribe({
+		console.log('[Pago] Payload enviado:', payload);
+
+		this.paymentService.createPaymentLink(payload).subscribe({
 
 			next: (paymentUrl: string) => {
 
@@ -367,7 +379,9 @@ export class ProfileComponent implements OnInit {
 
 			error: (error) => {
 
-				console.error('Error al generar el pago', error);
+				console.error('[Pago] Error 403 - status:', error.status);
+				console.error('[Pago] Error body:', error.error);
+				console.error('[Pago] HttpErrorResponse completo:', error);
 
 			}
 
