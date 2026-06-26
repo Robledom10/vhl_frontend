@@ -23,6 +23,9 @@ export class FormEmergencyContactComponent implements OnChanges {
 	usuarios: { id: number; nombre: string }[] = [];
 	usuarioSeleccionadoId: number | null = null;
 
+	// Confirmación de guardado
+	showConfirmModal = false;
+
 	contactoForm = this.fb.group({
 		nombreViajero: ['', Validators.required],
 		nombreContacto: ['', [Validators.required, Validators.minLength(3)]],
@@ -82,8 +85,28 @@ export class FormEmergencyContactComponent implements OnChanges {
 
 	cerrar(): void { this.closed.emit(); }
 
+	// =========================================
+	// VALIDAR Y ABRIR CONFIRMACIÓN
+	// =========================================
+
 	guardar(): void {
-		if (this.contactoForm.invalid) { this.contactoForm.markAllAsTouched(); return; }
+		if (this.contactoForm.invalid) {
+			this.contactoForm.markAllAsTouched();
+			return;
+		}
+		this.showConfirmModal = true;
+	}
+
+	cerrarConfirmModal(): void {
+		this.showConfirmModal = false;
+	}
+
+	confirmarGuardar(): void {
+		this.showConfirmModal = false;
+		this.enviarFormulario();
+	}
+
+	private enviarFormulario(): void {
 		this.enviando = true;
 
 		const v = this.contactoForm.value;
@@ -105,7 +128,11 @@ export class FormEmergencyContactComponent implements OnChanges {
 		request$.subscribe({
 			next: () => {
 				this.enviando = false;
-				this.saved.emit('Contacto de emergencia guardado correctamente');
+				this.saved.emit(
+					this.editando
+						? 'Contacto de emergencia actualizado correctamente'
+						: 'Contacto de emergencia guardado correctamente'
+				);
 			},
 			error: (err) => {
 				this.enviando = false;

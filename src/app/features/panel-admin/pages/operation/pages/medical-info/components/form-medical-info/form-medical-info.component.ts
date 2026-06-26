@@ -24,6 +24,9 @@ export class FormMedicalInfoComponent implements OnChanges {
 	usuarioSeleccionadoId: number | null = null;
 	gruposSanguineos = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
+	// Confirmación de guardado
+	showConfirmModal = false;
+
 	medForm = this.fb.group({
 		nombreViajero: ['', Validators.required],
 		tipoSangre: ['', Validators.required],
@@ -85,9 +88,32 @@ export class FormMedicalInfoComponent implements OnChanges {
 
 	cerrar(): void { this.closed.emit(); }
 
+	// =========================================
+	// VALIDAR Y ABRIR CONFIRMACIÓN
+	// =========================================
+
 	guardar(): void {
-		if (this.medForm.invalid) { this.medForm.markAllAsTouched(); return; }
-		if (!this.idViajeSeleccionado) { this.saveFailed.emit('Selecciona un viaje'); return; }
+		if (this.medForm.invalid) {
+			this.medForm.markAllAsTouched();
+			return;
+		}
+		if (!this.idViajeSeleccionado) {
+			this.saveFailed.emit('Selecciona un viaje');
+			return;
+		}
+		this.showConfirmModal = true;
+	}
+
+	cerrarConfirmModal(): void {
+		this.showConfirmModal = false;
+	}
+
+	confirmarGuardar(): void {
+		this.showConfirmModal = false;
+		this.enviarFormulario();
+	}
+
+	private enviarFormulario(): void {
 		this.enviando = true;
 		const v = this.medForm.value;
 		const body = {
@@ -106,7 +132,9 @@ export class FormMedicalInfoComponent implements OnChanges {
 		req$.subscribe({
 			next: () => {
 				this.enviando = false;
-				this.saved.emit('Información médica guardada');
+				this.saved.emit(
+					this.editandoMedico ? 'Registro médico actualizado correctamente' : 'Registro médico guardado correctamente'
+				);
 			},
 			error: (err) => {
 				this.enviando = false;

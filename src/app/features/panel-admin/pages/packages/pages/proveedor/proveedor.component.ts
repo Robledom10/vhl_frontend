@@ -33,12 +33,31 @@ export class ProveedorComponent implements OnInit {
 		'Transporte',
 	];
 
+	// ─── Paginación ───────────────────────────────────────
+	paginaActual = 0;
+	totalPaginas = 0;
+	totalElementos = 0;
+	readonly tamano = 5;
+
 	constructor(
 		private providerService: ProviderService,
 		private elementRef: ElementRef,
 	) { }
 
 	ngOnInit(): void {
+		this.loadProviders();
+	}
+
+	get paginas(): number[] {
+		const delta = 2;
+		const start = Math.max(0, this.paginaActual - delta);
+		const end = Math.min(this.totalPaginas - 1, this.paginaActual + delta);
+		return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+	}
+
+	cambiarPagina(n: number): void {
+		if (n < 0 || n >= this.totalPaginas) return;
+		this.paginaActual = n;
 		this.loadProviders();
 	}
 
@@ -52,9 +71,17 @@ export class ProveedorComponent implements OnInit {
 	}
 
 	loadProviders(): void {
-		this.providerService.getProviders().subscribe({
-			next: (response) => {
-				this.providers = response;
+		this.providerService.getProvidersPaginado({
+			tipo: this.selectedType !== 'Todos' ? this.selectedType : undefined,
+			busqueda: this.search || undefined,
+			pagina: this.paginaActual,
+			tamano: this.tamano,
+		}).subscribe({
+			next: (page) => {
+				this.providers = page.content;
+				this.totalPaginas = page.totalPages;
+				this.totalElementos = page.totalElements;
+				this.paginaActual = page.number;
 			},
 			error: (error) => {
 				console.error(error);
@@ -70,25 +97,17 @@ export class ProveedorComponent implements OnInit {
 	selectType(type: string): void {
 		this.selectedType = type;
 		this.dropdownOpen = false;
+		this.paginaActual = 0;
+		this.loadProviders();
+	}
+
+	onSearchChange(): void {
+		this.paginaActual = 0;
+		this.loadProviders();
 	}
 
 	get filteredProviders() {
-		return this.providers.filter(provider => {
-			const allowedType = this.types.includes(provider.tipoProveedor);
-
-			const matchesSearch =
-				provider.nombre
-					.toLowerCase()
-					.includes(this.search.toLowerCase()) ||
-
-				provider.correo
-					?.toLowerCase()
-					.includes(this.search.toLowerCase());
-
-			const matchesType = this.selectedType === 'Todos' || provider.tipoProveedor === this.selectedType;
-
-			return allowedType && matchesSearch && matchesType;
-		});
+		return this.providers;
 	}
 
 	openCreateModal(): void {

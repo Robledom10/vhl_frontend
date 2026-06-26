@@ -30,13 +30,17 @@
 					<option value="">Seleccionar...</option>
 					<option *ngFor="let g of gruposSanguineos" [value]="g">{{ g }}</option>
 				</select>
-				<span class="error" *ngIf="medForm.get('tipoSangre')?.invalid && medForm.get('tipoSangre')?.touched">Campo requerido</span>
+				<span class="error"
+					*ngIf="medForm.get('tipoSangre')?.invalid && medForm.get('tipoSangre')?.touched">Campo
+					requerido</span>
 			</div>
 
 			<div class="form-group">
 				<label>Teléfono médico</label>
 				<input type="text" formControlName="telefonoMedico" placeholder="+57 300 000 0000">
-				<span class="error" *ngIf="medForm.get('telefonoMedico')?.invalid && medForm.get('telefonoMedico')?.touched">Formato inválido</span>
+				<span class="error"
+					*ngIf="medForm.get('telefonoMedico')?.invalid && medForm.get('telefonoMedico')?.touched">Formato
+					inválido</span>
 			</div>
 
 			<div class="form-group span-2">
@@ -63,3 +67,11 @@
 		</div>
 	</form>
 </div>
+
+<app-confirm-modal [isOpen]="showConfirmModal"
+	[title]="editandoMedico ? 'Actualizar registro médico' : 'Crear registro médico'"
+	[message]="editandoMedico ? '¿Deseas guardar los cambios de este registro médico?' : '¿Deseas registrar esta información médica?'"
+	[confirmText]="editandoMedico ? 'Actualizar' : 'Crear'" cancelText="Cancelar" icon="fa-solid fa-heart-pulse"
+	confirmColor="#3fa2db" iconBg="rgba(63, 162, 219, 0.12)" iconColor="#3fa2db" (confirmed)="confirmarGuardar()"
+	(closed)="cerrarConfirmModal()">
+</app-confirm-modal>

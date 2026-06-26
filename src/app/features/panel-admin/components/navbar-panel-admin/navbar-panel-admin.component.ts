@@ -128,6 +128,11 @@ export class NavbarPanelAdminComponent {
 					roles: ['ADMIN', 'GUIDE']
 				},
 				{
+					label: 'Contactos de Emergencia',
+					route: '/panel-admin/operaciones-contactos-emergencia',
+					roles: ['ADMIN', 'GUIDE']
+				},
+				{
 					label: 'Comunicaciones',
 					route: '/panel-admin/operaciones-comunicaciones',
 					roles: ['ADMIN', 'GUIDE']
@@ -140,13 +145,13 @@ export class NavbarPanelAdminComponent {
 			route: '/panel-admin/reservations',
 			roles: ['ADMIN', 'GUIDE']
 		},
-		
+
 		{
 			icon: 'fa-regular fa-image',
 			label: 'Galería',
 			route: '/panel-admin/gallery-admin',
 			roles: ['ADMIN', 'GUIDE']
 		},
-		
+
 	];
 }

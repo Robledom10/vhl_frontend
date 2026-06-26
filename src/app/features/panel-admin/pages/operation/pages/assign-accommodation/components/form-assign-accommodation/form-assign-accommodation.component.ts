@@ -28,6 +28,9 @@ export class FormAssignAccommodationComponent implements OnChanges {
 	showCalendarCheckOut = false;
 	usuarioSeleccionadoId: number | null = null;
 
+	// Confirmación de guardado
+	showConfirmModal = false;
+
 	alojamientoForm = this.fb.group({
 		idViaje: [''],
 		nombreViajero: [''],
@@ -42,7 +45,7 @@ export class FormAssignAccommodationComponent implements OnChanges {
 		private fb: FormBuilder,
 		private svc: OperacionesService,
 		private authSvc: AuthService,
-	) {}
+	) { }
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes['isOpen'] && this.isOpen) {
@@ -107,20 +110,39 @@ export class FormAssignAccommodationComponent implements OnChanges {
 		this.closed.emit();
 	}
 
+	// =========================================
+	// VALIDAR Y ABRIR CONFIRMACIÓN
+	// =========================================
+
 	guardar(): void {
 		if (this.alojamientoForm.invalid) {
 			this.alojamientoForm.markAllAsTouched();
 			return;
 		}
+
+		const idViaje = this.viajeSeleccionado?.id || Number(this.alojamientoForm.value.idViaje);
+		if (!idViaje) {
+			this.saveFailed.emit('Selecciona un viaje');
+			return;
+		}
+
+		this.showConfirmModal = true;
+	}
+
+	cerrarConfirmModal(): void {
+		this.showConfirmModal = false;
+	}
+
+	confirmarGuardar(): void {
+		this.showConfirmModal = false;
+		this.enviarFormulario();
+	}
+
+	private enviarFormulario(): void {
 		this.enviando = true;
 
 		const v = this.alojamientoForm.value;
 		const idViaje = this.viajeSeleccionado?.id || Number(v.idViaje);
-		if (!idViaje) {
-			this.enviando = false;
-			this.saveFailed.emit('Selecciona un viaje');
-			return;
-		}
 
 		const idViajero = this.usuarioSeleccionadoId ?? (this.authSvc.getUser()?.id ?? 1);
 		const nombreViajero = (v.nombreViajero || '').trim() || null;

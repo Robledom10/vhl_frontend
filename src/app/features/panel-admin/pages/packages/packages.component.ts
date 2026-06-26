@@ -34,7 +34,7 @@ export class PackagesComponent implements OnInit {
 	paginaActual = 0;
 	totalPaginas = 0;
 	totalElementos = 0;
-	tamano = 12;
+	tamano = 5;
 
 	get paginas(): number[] {
 		const delta = 2;

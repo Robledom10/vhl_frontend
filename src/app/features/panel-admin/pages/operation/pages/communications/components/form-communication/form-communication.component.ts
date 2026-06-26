@@ -27,11 +27,14 @@ export class FormCommunicationComponent implements OnChanges {
 	cargandoEmailsInterno = false;
 	paqueteNombre = '';
 
+	// Confirmación de envío
+	showConfirmModal = false;
+
 	comForm = this.fb.group({
-		idViaje:   ['', Validators.required],
-		asunto:    ['', [Validators.required, Validators.minLength(5)]],
-		mensaje:   ['', [Validators.required, Validators.minLength(20)]],
-		canal:     ['EMAIL'],
+		idViaje: ['', Validators.required],
+		asunto: ['', [Validators.required, Validators.minLength(5)]],
+		mensaje: ['', [Validators.required, Validators.minLength(20)]],
+		canal: ['EMAIL'],
 		contactos: ['', Validators.required],
 	});
 
@@ -65,10 +68,10 @@ export class FormCommunicationComponent implements OnChanges {
 		if (changes['isOpen']?.currentValue === true) {
 			if (this.editando) {
 				this.comForm.patchValue({
-					idViaje:   String(this.editando.idViaje),
-					asunto:    this.editando.asunto,
-					mensaje:   this.editando.mensaje,
-					canal:     this.editando.canal,
+					idViaje: String(this.editando.idViaje),
+					asunto: this.editando.asunto,
+					mensaje: this.editando.mensaje,
+					canal: this.editando.canal,
 					contactos: '',
 				});
 				this.actualizarPaqueteNombre(this.editando.idViaje);
@@ -134,19 +137,39 @@ export class FormCommunicationComponent implements OnChanges {
 
 	cerrar(): void { this.closed.emit(); }
 
+	// =========================================
+	// VALIDAR Y ABRIR CONFIRMACIÓN
+	// =========================================
+
 	enviar(): void {
-		if (this.comForm.invalid) { this.comForm.markAllAsTouched(); return; }
+		if (this.comForm.invalid) {
+			this.comForm.markAllAsTouched();
+			return;
+		}
+		this.showConfirmModal = true;
+	}
+
+	cerrarConfirmModal(): void {
+		this.showConfirmModal = false;
+	}
+
+	confirmarEnvio(): void {
+		this.showConfirmModal = false;
+		this.enviarFormulario();
+	}
+
+	private enviarFormulario(): void {
 		this.enviando = true;
 
 		const v = this.comForm.value;
 		const idViaje = Number(v.idViaje);
 		const contactosList = (v.contactos || '').split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
 		const body = {
-			asunto:        v.asunto || '',
-			mensaje:       v.mensaje || '',
-			canal:         v.canal || 'EMAIL',
+			asunto: v.asunto || '',
+			mensaje: v.mensaje || '',
+			canal: v.canal || 'EMAIL',
 			destinatarios: [] as string[],
-			contactos:     contactosList,
+			contactos: contactosList,
 		};
 
 		if (this.editando) {
