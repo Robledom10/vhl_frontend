@@ -11,7 +11,7 @@
 
 				<div class="form-group">
 					<label>Viaje *</label>
-					<select formControlName="idViaje">
+					<select formControlName="idViaje" (change)="onViajeFormChange()">
 						<option value="">Seleccionar...</option>
 						<option *ngFor="let v of viajesFiltrados" [value]="v.id">
 							{{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} — Viaje #{{ v.id }} · {{
@@ -21,6 +21,11 @@
 					<span class="error" *ngIf="comForm.get('idViaje')?.invalid && comForm.get('idViaje')?.touched">
 						Campo requerido
 					</span>
+				</div>
+
+				<div class="form-group">
+					<label>Paquete</label>
+					<input type="text" [value]="paqueteNombre || '—'" readonly class="input-readonly">
 				</div>
 
 				<!-- CANAL -->
@@ -122,7 +127,6 @@
 	</div>
 </div>
 
-<!-- al final del archivo, fuera del <form> pero dentro de .modal-panel o justo después -->
 <app-confirm-modal [isOpen]="showConfirmModal" [title]="editando ? 'Actualizar mensaje' : 'Enviar mensaje'"
 	[message]="editando ? '¿Deseas guardar los cambios de este mensaje?' : ('¿Deseas enviar este mensaje a ' + emailCount + ' correo(s)?')"
 	[confirmText]="editando ? 'Actualizar' : 'Enviar'" cancelText="Cancelar" icon="fa-solid fa-paper-plane"

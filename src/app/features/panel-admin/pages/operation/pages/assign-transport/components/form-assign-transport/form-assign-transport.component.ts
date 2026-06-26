@@ -97,6 +97,13 @@ export class FormAssignTransportComponent implements OnChanges {
 		return cap >= cant;
 	}
 
+	private toLocalDateTime(fecha: string): string {
+		if (!fecha) return '';
+		if (fecha.length === 10) return fecha + 'T00:00:00';
+		if (fecha.length === 16) return fecha + ':00';
+		return fecha;
+	}
+
 	cerrar(): void {
 		this.closed.emit();
 	}
@@ -125,7 +132,7 @@ export class FormAssignTransportComponent implements OnChanges {
 			telefonoConductor: v.telefonoConductor,
 			capacidad: Number(v.capacidad),
 			cantidadViajeros: Number(v.cantidadViajeros),
-			fechaSalida: rawFecha.length === 16 ? rawFecha + ':00' : rawFecha,
+			fechaSalida: this.toLocalDateTime(rawFecha),
 		};
 
 		const request$ = this.editandoTransporteId

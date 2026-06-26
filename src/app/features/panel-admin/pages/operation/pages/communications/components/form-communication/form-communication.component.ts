@@ -24,6 +24,8 @@ export class FormCommunicationComponent implements OnChanges {
 	@Output() filtroPagoChange = new EventEmitter<'todos' | 'pagados' | 'no_pagados'>();
 
 	enviando = false;
+	cargandoEmailsInterno = false;
+	paqueteNombre = '';
 
 	// Confirmación de envío
 	showConfirmModal = false;
@@ -72,18 +74,49 @@ export class FormCommunicationComponent implements OnChanges {
 					canal: this.editando.canal,
 					contactos: '',
 				});
+				this.actualizarPaqueteNombre(this.editando.idViaje);
 			} else {
 				this.comForm.reset({
 					canal: 'EMAIL',
 					idViaje: this.idViajeSeleccionado?.toString() || '',
 					contactos: ''
 				});
+				this.actualizarPaqueteNombre(this.idViajeSeleccionado);
 				this.aplicarEmails();
 			}
 		}
 		if ((changes['filtroPago'] || changes['reservasViaje']) && this.isOpen && !this.editando) {
 			this.aplicarEmails();
 		}
+	}
+
+	onViajeFormChange(): void {
+		const idViaje = Number(this.comForm.get('idViaje')?.value);
+		this.actualizarPaqueteNombre(idViaje || null);
+		if (!idViaje) {
+			this.comForm.patchValue({ contactos: '' });
+			return;
+		}
+		this.cargandoEmailsInterno = true;
+		this.comForm.patchValue({ contactos: '' });
+		this.svc.getReservasPorViaje(idViaje).subscribe({
+			next: (reservas) => {
+				this.cargandoEmailsInterno = false;
+				const emails = new Set<string>();
+				reservas.forEach((r: any) => {
+					if (r.datosUsuario?.email) emails.add(r.datosUsuario.email);
+					(r.viajeros || []).forEach((v: any) => { if (v.email) emails.add(v.email); });
+				});
+				this.comForm.patchValue({ contactos: Array.from(emails).join(', ') });
+			},
+			error: () => { this.cargandoEmailsInterno = false; }
+		});
+	}
+
+	private actualizarPaqueteNombre(idViaje: number | null): void {
+		if (!idViaje) { this.paqueteNombre = ''; return; }
+		const viaje = this.viajesFiltrados.find(v => v.id === idViaje);
+		this.paqueteNombre = viaje ? (this.paqueteTituloMap[viaje.idPaquete] || '') : '';
 	}
 
 	onFiltroPagoChange(tipo: 'todos' | 'pagados' | 'no_pagados'): void {
