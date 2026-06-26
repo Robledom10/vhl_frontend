@@ -18,9 +18,17 @@
 				</select>
 			</div>
 
-			<div class="form-group span-2">
+			<div class="form-group span-2" *ngIf="!editandoId">
+				<label>Usuario</label>
+				<select (change)="onUsuarioChange($any($event.target).value)">
+					<option value="">Seleccionar usuario (opcional)...</option>
+					<option *ngFor="let u of usuarios" [value]="u.id">{{ u.firstName }} {{ u.lastName }}</option>
+				</select>
+			</div>
+
+			<div class="form-group span-2" *ngIf="editandoId">
 				<label>Nombre del viajero</label>
-				<input type="text" formControlName="nombreViajero" placeholder="Ej: Juan Pérez" autocomplete="off">
+				<input type="text" formControlName="nombreViajero" class="input-readonly" readonly>
 			</div>
 
 			<div class="form-group span-2" *ngIf="proveedores.length > 0">

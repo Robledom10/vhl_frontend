@@ -103,6 +103,12 @@
 	letter-spacing: 0.01em;
 }
 
+.input-readonly {
+	background: #f8f8f8 !important;
+	color: var(--color-texto-secundario) !important;
+	cursor: default;
+}
+
 .form-group input,
 .form-group select {
 	height: 42px;
