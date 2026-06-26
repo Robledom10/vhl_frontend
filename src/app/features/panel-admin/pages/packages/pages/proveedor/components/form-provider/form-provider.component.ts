@@ -51,7 +51,15 @@ export class FormProviderComponent implements OnChanges {
 	get esHotel(): boolean { return this.tipo === 'Hotel'; }
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if (changes['provider'] && this.provider) {
+		// Cuando se abre en modo create → limpiar siempre
+		if (changes['isOpen'] && this.isOpen && this.mode === 'create') {
+			this.providerForm.reset();
+			this.errorMsg = '';
+			this.pendingRequest = null;
+		}
+
+		// Cuando llega un proveedor para editar → cargar datos
+		if (changes['provider'] && this.provider && this.mode !== 'create') {
 			this.providerForm.patchValue({
 				nombre: this.provider.nombre,
 				tipoProveedor: this.provider.tipoProveedor,
@@ -65,20 +73,24 @@ export class FormProviderComponent implements OnChanges {
 				direccion: this.provider.direccion ?? '',
 				notas: this.provider.notas ?? '',
 			});
+			this.errorMsg = '';
 		}
 
-		if (changes['mode'] && this.mode === 'create') {
-			this.providerForm.reset();
-		}
-
-		if (this.mode === 'view') {
-			this.providerForm.disable();
-		} else {
-			this.providerForm.enable();
+		// Modo view → deshabilitar; otros → habilitar
+		if (changes['mode']) {
+			if (this.mode === 'view') {
+				this.providerForm.disable();
+			} else {
+				this.providerForm.enable();
+			}
 		}
 	}
 
 	closeModal(): void {
+		this.providerForm.reset();
+		this.errorMsg = '';
+		this.pendingRequest = null;
+		this.showConfirmModal = false;
 		this.closed.emit();
 	}
 

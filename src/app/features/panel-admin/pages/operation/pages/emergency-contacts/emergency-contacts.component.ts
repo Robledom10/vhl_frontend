@@ -13,6 +13,7 @@ interface Usuario { id: number; firstName: string; lastName: string; }
 export class ContactosEmergenciaComponent implements OnInit {
 	showForm = false;
 	showToast = false;
+	toastTitle = '';
 	toastMsg = '';
 	toastType: 'success' | 'error' = 'success';
 	editando: ContactoEmergencia | null = null;
@@ -23,6 +24,35 @@ export class ContactosEmergenciaComponent implements OnInit {
 	usuarios: Usuario[] = [];
 	usuarioMap: Record<number, string> = {};
 	paqueteTituloMap: Record<number, string> = {};
+
+	// Confirmación de eliminar
+	showDeleteModal = false;
+	contactoAEliminar: ContactoEmergencia | null = null;
+
+	// ─── Paginación contactos ─────────────────────────────
+	paginaContactos = 0;
+	readonly tamanoContactos = 4;
+
+	get contactosPaginados(): ContactoEmergencia[] {
+		const start = this.paginaContactos * this.tamanoContactos;
+		return this.contactos.slice(start, start + this.tamanoContactos);
+	}
+
+	get totalPaginasContactos(): number {
+		return Math.ceil(this.contactos.length / this.tamanoContactos);
+	}
+
+	get paginasContactos(): number[] {
+		const delta = 2;
+		const start = Math.max(0, this.paginaContactos - delta);
+		const end = Math.min(this.totalPaginasContactos - 1, this.paginaContactos + delta);
+		return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+	}
+
+	cambiarPaginaContactos(n: number): void {
+		if (n < 0 || n >= this.totalPaginasContactos) return;
+		this.paginaContactos = n;
+	}
 
 	constructor(private svc: OperacionesService, private authSvc: AuthService) { }
 
@@ -49,7 +79,9 @@ export class ContactosEmergenciaComponent implements OnInit {
 					this.cargarContactos();
 				}
 			},
-			error: () => { }
+			error: () => {
+				this.mostrarToast('Error', 'No se pudieron cargar los viajes.', 'error');
+			}
 		});
 	}
 
@@ -62,9 +94,12 @@ export class ContactosEmergenciaComponent implements OnInit {
 
 	cargarContactos(): void {
 		if (!this.idViajeSeleccionado) return;
+		this.paginaContactos = 0;
 		this.svc.getContactos(this.idViajeSeleccionado).subscribe({
 			next: (items) => { this.contactos = items; },
-			error: () => { }
+			error: () => {
+				this.mostrarToast('Error', 'No se pudieron cargar los contactos.', 'error');
+			}
 		});
 	}
 
@@ -84,26 +119,50 @@ export class ContactosEmergenciaComponent implements OnInit {
 		this.showForm = false;
 		this.editando = null;
 		this.cargarContactos();
-		this.mostrarToast(msg);
+		this.mostrarToast('Listo', msg, 'success');
 	}
 
 	onFormFailed(msg: string): void {
-		this.mostrarToast(msg, 'error');
+		this.mostrarToast('Error', msg, 'error');
 	}
 
+	// =========================================
+	// ELIMINAR CON CONFIRMACIÓN
+	// =========================================
+
 	eliminar(c: ContactoEmergencia): void {
-		if (!confirm(`¿Eliminar el contacto "${c.nombre}"?`)) return;
+		this.contactoAEliminar = c;
+		this.showDeleteModal = true;
+	}
+
+	cerrarDeleteModal(): void {
+		this.showDeleteModal = false;
+		this.contactoAEliminar = null;
+	}
+
+	confirmarEliminar(): void {
+		if (!this.contactoAEliminar) return;
+		const c = this.contactoAEliminar;
+		this.showDeleteModal = false;
+
 		this.svc.eliminarContacto(c.idViajero, c.id).subscribe({
 			next: () => {
 				this.contactos = this.contactos.filter(x => x.id !== c.id);
-				this.mostrarToast('Contacto eliminado');
+				this.contactoAEliminar = null;
+				this.mostrarToast('Contacto eliminado', `Se eliminó correctamente el contacto ${c.nombre}.`, 'success');
 			},
-			error: () => this.mostrarToast('Error al eliminar el contacto', 'error')
+			error: () => {
+				this.contactoAEliminar = null;
+				this.mostrarToast('Error al eliminar', `No se pudo eliminar el contacto ${c.nombre}.`, 'error');
+			}
 		});
 	}
 
-	mostrarToast(msg: string, type: 'success' | 'error' = 'success'): void {
-		this.toastMsg = msg; this.toastType = type; this.showToast = true;
+	mostrarToast(title: string, msg: string, type: 'success' | 'error' = 'success'): void {
+		this.toastTitle = title;
+		this.toastMsg = msg;
+		this.toastType = type;
+		this.showToast = true;
 		setTimeout(() => { this.showToast = false; }, 3500);
 	}
 }

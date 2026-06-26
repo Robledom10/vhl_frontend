@@ -13,6 +13,7 @@ export class ComunicacionesComponent implements OnInit {
 	showForm = false;
 	editando: Notificacion | null = null;
 	showToast = false;
+	toastTitle = '';
 	toastMsg = '';
 	toastType: 'success' | 'error' = 'success';
 
@@ -32,6 +33,10 @@ export class ComunicacionesComponent implements OnInit {
 	expandidas: Set<number> = new Set();
 	cargandoRespuestas: Set<number> = new Set();
 
+	// Confirmación de eliminar
+	showDeleteModal = false;
+	comunicacionAEliminar: Notificacion | null = null;
+
 	get emailCount(): number {
 		let filtradas = this.reservasViaje;
 		if (this.filtroPago === 'pagados') filtradas = filtradas.filter(r => r.pagoVerificado);
@@ -42,6 +47,31 @@ export class ComunicacionesComponent implements OnInit {
 			r.viajeros?.forEach(v => { if (v.email) emails.add(v.email); });
 		});
 		return emails.size;
+	}
+
+	// ─── Paginación comunicaciones ────────────────────────
+	paginaCom = 0;
+	readonly tamanoCom = 5;
+
+	get comunicacionesPaginadas(): Notificacion[] {
+		const start = this.paginaCom * this.tamanoCom;
+		return this.comunicaciones.slice(start, start + this.tamanoCom);
+	}
+
+	get totalPaginasCom(): number {
+		return Math.ceil(this.comunicaciones.length / this.tamanoCom);
+	}
+
+	get paginasCom(): number[] {
+		const delta = 2;
+		const start = Math.max(0, this.paginaCom - delta);
+		const end = Math.min(this.totalPaginasCom - 1, this.paginaCom + delta);
+		return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+	}
+
+	cambiarPaginaCom(n: number): void {
+		if (n < 0 || n >= this.totalPaginasCom) return;
+		this.paginaCom = n;
 	}
 
 	constructor(private svc: OperacionesService) { }
@@ -56,7 +86,9 @@ export class ComunicacionesComponent implements OnInit {
 				this.paquetes = paquetes;
 				this.svc.getPaqueteTituloMap(viajes).subscribe(m => { this.paqueteTituloMap = m; });
 			},
-			error: () => { }
+			error: () => {
+				this.mostrarToast('Error', 'No se pudieron cargar los viajes y paquetes.', 'error');
+			}
 		});
 	}
 
@@ -91,9 +123,12 @@ export class ComunicacionesComponent implements OnInit {
 
 	cargarNotificaciones(): void {
 		if (!this.idViajeSeleccionado) return;
+		this.paginaCom = 0;
 		this.svc.getNotificaciones(this.idViajeSeleccionado).subscribe({
 			next: (items) => { this.comunicaciones = items; },
-			error: () => { }
+			error: () => {
+				this.mostrarToast('Error', 'No se pudieron cargar las comunicaciones.', 'error');
+			}
 		});
 	}
 
@@ -102,7 +137,10 @@ export class ComunicacionesComponent implements OnInit {
 		this.cargandoEmails = true;
 		this.svc.getReservasPorViaje(this.idViajeSeleccionado).subscribe({
 			next: (reservas) => { this.reservasViaje = reservas; this.cargandoEmails = false; },
-			error: () => { this.cargandoEmails = false; }
+			error: () => {
+				this.cargandoEmails = false;
+				this.mostrarToast('Error', 'No se pudieron cargar los correos del viaje.', 'error');
+			}
 		});
 	}
 
@@ -123,21 +161,39 @@ export class ComunicacionesComponent implements OnInit {
 		this.showForm = false;
 		this.editando = null;
 		this.cargarNotificaciones();
-		this.mostrarToast(msg);
+		this.mostrarToast('Listo', msg, 'success');
 	}
 
 	onFormFailed(msg: string): void {
-		this.mostrarToast(msg, 'error');
+		this.mostrarToast('Error', msg, 'error');
 	}
 
+	// ── Eliminar con confirmación ───────────────────────────────────────
 	eliminar(c: Notificacion): void {
-		if (!confirm(`¿Eliminar la comunicación "${c.asunto}"?`)) return;
+		this.comunicacionAEliminar = c;
+		this.showDeleteModal = true;
+	}
+
+	cerrarDeleteModal(): void {
+		this.showDeleteModal = false;
+		this.comunicacionAEliminar = null;
+	}
+
+	confirmarEliminar(): void {
+		if (!this.comunicacionAEliminar) return;
+		const c = this.comunicacionAEliminar;
+		this.showDeleteModal = false;
+
 		this.svc.eliminarNotificacion(c.idViaje, c.id).subscribe({
 			next: () => {
 				this.comunicaciones = this.comunicaciones.filter(x => x.id !== c.id);
-				this.mostrarToast('Comunicación eliminada');
+				this.comunicacionAEliminar = null;
+				this.mostrarToast('Comunicación eliminada', `Se eliminó correctamente "${c.asunto}".`, 'success');
 			},
-			error: () => this.mostrarToast('Error al eliminar', 'error')
+			error: () => {
+				this.comunicacionAEliminar = null;
+				this.mostrarToast('Error al eliminar', `No se pudo eliminar "${c.asunto}".`, 'error');
+			}
 		});
 	}
 
@@ -157,8 +213,11 @@ export class ComunicacionesComponent implements OnInit {
 			});
 	}
 
-	mostrarToast(msg: string, type: 'success' | 'error' = 'success'): void {
-		this.toastMsg = msg; this.toastType = type; this.showToast = true;
+	mostrarToast(title: string, msg: string, type: 'success' | 'error' = 'success'): void {
+		this.toastTitle = title;
+		this.toastMsg = msg;
+		this.toastType = type;
+		this.showToast = true;
 		setTimeout(() => { this.showToast = false; }, 3500);
 	}
 }

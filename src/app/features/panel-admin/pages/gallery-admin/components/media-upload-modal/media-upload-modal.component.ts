@@ -10,12 +10,14 @@ import { MediaResponse, MediaService } from '../../../../../../core/services/med
 export class MediaUploadModalComponent implements OnChanges {
 	@Input() isOpen = false;
 	@Output() closed = new EventEmitter<boolean>();
+	@Output() notify = new EventEmitter<{ title: string; message: string; type: 'success' | 'error' | 'info' }>();
 	@Input() media: MediaResponse | null = null;
 	previews: string[] = [];
 	selectedFiles: File[] = [];
 	loading = false;
 	currentYear = new Date().getFullYear();
 	years: number[] = [];
+	showConfirmModal = false;
 
 	constructor(
 		private fb: FormBuilder,
@@ -91,26 +93,36 @@ export class MediaUploadModalComponent implements OnChanges {
 		});
 	}
 
-	submit() {
+	// =========================================
+	// VALIDAR Y ABRIR CONFIRMACIÓN
+	// =========================================
+
+	requestSubmit() {
 		if (this.mediaForm.invalid) {
 			this.mediaForm.markAllAsTouched();
 			return;
 		}
 
-		// =========================================
-		// VALIDAR ARCHIVO SOLO EN CREACIÓN
-		// =========================================
-
 		if (!this.media && !this.selectedFiles.length) {
+			this.mediaForm.markAsTouched();
 			return;
 		}
 
+		this.showConfirmModal = true;
+	}
+
+	closeConfirmModal() {
+		this.showConfirmModal = false;
+	}
+
+	confirmSubmit() {
+		this.showConfirmModal = false;
+		this.submit();
+	}
+
+	private submit() {
 		this.loading = true;
 		const formData = new FormData();
-
-		// =========================================
-		// SOLO ENVÍA FILE SI EXISTE
-		// =========================================
 
 		if (this.selectedFiles.length) {
 			formData.append('file', this.selectedFiles[0]);
@@ -136,12 +148,22 @@ export class MediaUploadModalComponent implements OnChanges {
 				next: () => {
 					this.loading = false;
 					this.resetModal();
+					this.notify.emit({
+						title: 'Archivo actualizado',
+						message: 'El archivo fue actualizado correctamente.',
+						type: 'success',
+					});
 					this.closed.emit(true);
 				},
 
 				error: (err) => {
 					console.error(err);
 					this.loading = false;
+					this.notify.emit({
+						title: 'Error al actualizar',
+						message: 'No se pudo actualizar el archivo. Intenta nuevamente.',
+						type: 'error',
+					});
 				},
 			});
 
@@ -165,12 +187,22 @@ export class MediaUploadModalComponent implements OnChanges {
 				next: () => {
 					this.loading = false;
 					this.resetModal();
+					this.notify.emit({
+						title: 'Archivo agregado',
+						message: 'El archivo fue subido correctamente.',
+						type: 'success',
+					});
 					this.closed.emit(true);
 				},
 
 				error: (err) => {
 					console.error(err);
 					this.loading = false;
+					this.notify.emit({
+						title: 'Error de subida',
+						message: 'No se pudo subir el archivo. Intenta nuevamente.',
+						type: 'error',
+					});
 				},
 			});
 		}
@@ -179,20 +211,11 @@ export class MediaUploadModalComponent implements OnChanges {
 	removeFile(index: number, event: Event) {
 		event.stopPropagation();
 
-		// =========================================
-		// SI ES ARCHIVO NUEVO
-		// =========================================
-
 		if (this.selectedFiles.length) {
 			this.selectedFiles.splice(index, 1);
 		}
 
 		this.previews.splice(index, 1);
-
-		// =========================================
-		// SI NO HAY NUEVOS ARCHIVOS
-		// Y TAMPOCO MEDIA ORIGINAL
-		// =========================================
 
 		if (!this.selectedFiles.length && !this.media) {
 			this.mediaForm.patchValue({
@@ -200,10 +223,6 @@ export class MediaUploadModalComponent implements OnChanges {
 			});
 		}
 	}
-
-	// =========================================
-	// LIMPIAR MODAL
-	// =========================================
 
 	resetModal() {
 		this.previews = [];

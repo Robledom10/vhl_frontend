@@ -40,7 +40,7 @@
 	background: white;
 	border-radius: 18px;
 	padding: 18px 22px;
-	box-shadow: 0 3px 14px rgba(0,0,0,0.07);
+	box-shadow: 0 3px 14px rgba(0, 0, 0, 0.07);
 }
 
 .filtro-group {
@@ -75,8 +75,15 @@
 	cursor: pointer;
 }
 
-.filtro-select:focus { border-color: var(--color-primario); }
-.filtro-select:disabled { background: #f9f9f9; color: #bbb; cursor: not-allowed; }
+.filtro-select:focus {
+	border-color: var(--color-primario);
+}
+
+.filtro-select:disabled {
+	background: #f9f9f9;
+	color: #bbb;
+	cursor: not-allowed;
+}
 
 /* chips pago */
 .pago-chips {
@@ -109,18 +116,30 @@
 }
 
 .chip.active,
-.chip:hover { border-color: var(--color-primario); color: var(--color-primario); background: rgba(63,162,219,0.08); }
+.chip:hover {
+	border-color: var(--color-primario);
+	color: var(--color-primario);
+	background: rgba(63, 162, 219, 0.08);
+}
 
 .chip-verde.active,
-.chip-verde:hover { border-color: #22a06b; color: #22a06b; background: rgba(34,160,107,0.08); }
+.chip-verde:hover {
+	border-color: #22a06b;
+	color: #22a06b;
+	background: rgba(34, 160, 107, 0.08);
+}
 
 .chip-rojo.active,
-.chip-rojo:hover { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.08); }
+.chip-rojo:hover {
+	border-color: #ef4444;
+	color: #ef4444;
+	background: rgba(239, 68, 68, 0.08);
+}
 
 /* resumen emails */
 .emails-resumen {
-	background: rgba(63,162,219,0.06);
-	border: 1.5px solid rgba(63,162,219,0.2);
+	background: rgba(63, 162, 219, 0.06);
+	border: 1.5px solid rgba(63, 162, 219, 0.2);
 	border-radius: 12px;
 	padding: 10px 18px;
 }
@@ -133,8 +152,13 @@
 	color: var(--color-texto-secundario);
 }
 
-.resumen-inner i { color: var(--color-primario); }
-.resumen-inner strong { color: var(--color-primario); }
+.resumen-inner i {
+	color: var(--color-primario);
+}
+
+.resumen-inner strong {
+	color: var(--color-primario);
+}
 
 /* contactos header in modal */
 .contactos-header {
@@ -271,8 +295,15 @@
 	flex-shrink: 0;
 }
 
-.com-icon.gmail    { background: #fce8e6; color: #ea4335; }
-.com-icon.whatsapp { background: #e8f5e9; color: #25d366; }
+.com-icon.gmail {
+	background: #fce8e6;
+	color: #ea4335;
+}
+
+.com-icon.whatsapp {
+	background: #e8f5e9;
+	color: #25d366;
+}
 
 .com-meta {
 	flex: 1;
@@ -313,8 +344,15 @@
 	color: var(--color-texto-secundario);
 }
 
-.com-tipo.gmail    { background: #fce8e6; color: #ea4335; }
-.com-tipo.whatsapp { background: #e8f5e9; color: #25d366; }
+.com-tipo.gmail {
+	background: #fce8e6;
+	color: #ea4335;
+}
+
+.com-tipo.whatsapp {
+	background: #e8f5e9;
+	color: #25d366;
+}
 
 .com-actions {
 	display: flex;
@@ -337,11 +375,23 @@
 	transition: all 0.2s;
 }
 
-.com-btn-edit { background: rgba(63,162,219,0.1); color: var(--color-primario); }
-.com-btn-edit:hover { background: rgba(63,162,219,0.2); }
+.com-btn-edit {
+	background: rgba(63, 162, 219, 0.1);
+	color: var(--color-primario);
+}
 
-.com-btn-del { background: rgba(239,68,68,0.1); color: #ef4444; }
-.com-btn-del:hover { background: rgba(239,68,68,0.2); }
+.com-btn-edit:hover {
+	background: rgba(63, 162, 219, 0.2);
+}
+
+.com-btn-del {
+	background: rgba(239, 68, 68, 0.1);
+	color: #ef4444;
+}
+
+.com-btn-del:hover {
+	background: rgba(239, 68, 68, 0.2);
+}
 
 .com-fecha {
 	font-size: 12px;
@@ -385,10 +435,23 @@
 	scrollbar-color: var(--color-primario) transparent;
 	box-shadow: 0 16px 48px rgba(0, 0, 0, 0.14);
 }
-.modal-panel::-webkit-scrollbar { width: 4px; }
-.modal-panel::-webkit-scrollbar-track { background: transparent; }
-.modal-panel::-webkit-scrollbar-thumb { background: var(--color-primario); border-radius: 999px; }
-.modal-panel::-webkit-scrollbar-thumb:hover { background: rgba(63,162,219,0.7); }
+
+.modal-panel::-webkit-scrollbar {
+	width: 4px;
+}
+
+.modal-panel::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.modal-panel::-webkit-scrollbar-thumb {
+	background: var(--color-primario);
+	border-radius: 999px;
+}
+
+.modal-panel::-webkit-scrollbar-thumb:hover {
+	background: rgba(63, 162, 219, 0.7);
+}
 
 .modal-header {
 	display: flex;
@@ -825,7 +888,7 @@
 	border-left: 3px solid #3fa2db;
 	border-radius: 6px;
 	padding: 10px 14px;
-	box-shadow: 0 1px 4px rgba(18,56,98,0.07);
+	box-shadow: 0 1px 4px rgba(18, 56, 98, 0.07);
 }
 
 .resp-cabecera {
@@ -858,6 +921,61 @@
 	margin: 0;
 	line-height: 1.6;
 	white-space: pre-wrap;
+}
+
+/* ── PAGINACIÓN COMUNICACIONES ───────────────────────── */
+.pag-info-inline {
+	font-size: 12px;
+	color: var(--color-texto-secundario);
+	font-family: "Outfit", sans-serif;
+	margin-left: auto;
+}
+
+.pagination-com {
+	display: flex;
+	justify-content: center;
+	padding-top: 4px;
+}
+
+.pag-controls {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.pag-btn {
+	width: 32px;
+	height: 32px;
+	border-radius: 10px;
+	border: 1px solid var(--bordes);
+	background: white;
+	color: var(--color-texto-secundario);
+	font-family: "Outfit", sans-serif;
+	font-size: 13px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+}
+
+.pag-btn:hover:not(:disabled) {
+	background: rgba(63, 162, 219, 0.08);
+	color: var(--color-primario);
+	border-color: var(--color-primario);
+}
+
+.pag-btn.active {
+	background: var(--color-primario);
+	color: white;
+	border-color: var(--color-primario);
+}
+
+.pag-btn:disabled {
+	opacity: 0.35;
+	cursor: not-allowed;
 }
 
 @media (max-width: 600px) {

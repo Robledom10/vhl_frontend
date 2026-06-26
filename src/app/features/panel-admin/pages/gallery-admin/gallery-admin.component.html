@@ -165,7 +165,7 @@
 
 	<!-- MODAL -->
 
-	<app-media-upload-modal [isOpen]="showModal" [media]="selectedMedia" (closed)="closeModal($event)">
+	<app-media-upload-modal [isOpen]="showModal" [media]="selectedMedia" (closed)="closeModal($event)" (notify)="onMediaNotification($event)">
 	</app-media-upload-modal>
 
 	<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">

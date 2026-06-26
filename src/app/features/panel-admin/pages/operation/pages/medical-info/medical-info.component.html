@@ -23,6 +23,7 @@
 	<!-- ═══════════════════════════════════════════════════════════════ -->
 	<!-- SECCIÓN 1: INFORMACIÓN MÉDICA                                   -->
 	<!-- ═══════════════════════════════════════════════════════════════ -->
+	<!-- SECCIÓN 1: INFO MÉDICA -->
 	<div class="section-block">
 		<div class="section-header">
 			<div class="section-title">
@@ -32,9 +33,14 @@
 					<p>Tipo de sangre, alergias, medicamentos y condiciones</p>
 				</div>
 			</div>
-			<button class="btn-agregar" (click)="abrirNuevoMedico()">
-				<i class="fa-solid fa-plus"></i> Nuevo registro
-			</button>
+			<div class="section-header-right">
+				<span class="pag-info-inline" *ngIf="totalPaginasRegistros > 1">
+					Página {{ paginaRegistros + 1 }} de {{ totalPaginasRegistros }} · {{ registros.length }} registros
+				</span>
+				<button class="btn-agregar" (click)="abrirNuevoMedico()">
+					<i class="fa-solid fa-plus"></i> Nuevo registro
+				</button>
+			</div>
 		</div>
 
 		<div class="table-container">
@@ -50,7 +56,8 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr *ngFor="let r of registros">
+					<!-- Cambiar registros por registrosPaginados -->
+					<tr *ngFor="let r of registrosPaginados">
 						<td class="td-viajero">
 							<div class="avatar-sm"><i class="fa-solid fa-user"></i></div>
 							{{ r.nombreViajero || ('Viajero #' + r.idViajero) }}
@@ -82,14 +89,36 @@
 				</tbody>
 			</table>
 		</div>
+
+		<!-- PAGINACIÓN REGISTROS -->
+		<div class="pagination-bar" *ngIf="totalPaginasRegistros > 1">
+			<div class="pag-controls">
+				<button class="pag-btn" [disabled]="paginaRegistros === 0" (click)="cambiarPaginaRegistros(0)">
+					<i class="fa-solid fa-angles-left"></i>
+				</button>
+				<button class="pag-btn" [disabled]="paginaRegistros === 0"
+					(click)="cambiarPaginaRegistros(paginaRegistros - 1)">
+					<i class="fa-solid fa-chevron-left"></i>
+				</button>
+				<button *ngFor="let p of paginasRegistros" class="pag-btn" [class.active]="p === paginaRegistros"
+					(click)="cambiarPaginaRegistros(p)">
+					{{ p + 1 }}
+				</button>
+				<button class="pag-btn" [disabled]="paginaRegistros === totalPaginasRegistros - 1"
+					(click)="cambiarPaginaRegistros(paginaRegistros + 1)">
+					<i class="fa-solid fa-chevron-right"></i>
+				</button>
+				<button class="pag-btn" [disabled]="paginaRegistros === totalPaginasRegistros - 1"
+					(click)="cambiarPaginaRegistros(totalPaginasRegistros - 1)">
+					<i class="fa-solid fa-angles-right"></i>
+				</button>
+			</div>
+		</div>
 	</div>
 
-	<!-- DIVISOR -->
 	<div class="seccion-divider"></div>
 
-	<!-- ═══════════════════════════════════════════════════════════════ -->
-	<!-- SECCIÓN 2: CONTACTOS DE EMERGENCIA                              -->
-	<!-- ═══════════════════════════════════════════════════════════════ -->
+	<!-- SECCIÓN 2: CONTACTOS -->
 	<div class="section-block">
 		<div class="section-header">
 			<div class="section-title">
@@ -99,12 +128,14 @@
 					<p>Se registran automáticamente desde las reservas del viaje</p>
 				</div>
 			</div>
+			<span class="pag-info-inline" *ngIf="totalPaginasContactos > 1">
+				Página {{ paginaContactos + 1 }} de {{ totalPaginasContactos }} · {{ contactos.length }} contactos
+			</span>
 		</div>
 
 		<div class="contactos-grid">
-			<div class="contacto-card" *ngFor="let c of contactos">
-
-				<!-- Cabecera: avatar + viajero + parentesco -->
+			<!-- Cambiar contactos por contactosPaginados -->
+			<div class="contacto-card" *ngFor="let c of contactosPaginados">
 				<div class="cc-top">
 					<div class="cc-avatar"><i class="fa-solid fa-user"></i></div>
 					<div class="cc-viajero">
@@ -113,10 +144,7 @@
 					</div>
 					<span class="cc-viaje-tag">Viaje #{{ c.idViaje }}</span>
 				</div>
-
 				<div class="cc-divider"></div>
-
-				<!-- Filas de detalle -->
 				<div class="cc-body">
 					<div class="cc-row">
 						<div class="cc-row-left">
@@ -147,7 +175,6 @@
 						<span class="cc-row-value">{{ c.correo }}</span>
 					</div>
 				</div>
-
 			</div>
 
 			<div class="contactos-empty" *ngIf="contactos.length === 0">
@@ -155,23 +182,46 @@
 				<p>No hay contactos de emergencia registrados.</p>
 			</div>
 		</div>
-	</div>
 
-	<!-- TOAST -->
-	<div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
-		<i class="toast-icon"
-			[class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
-		<span class="toast-msg">{{ toastMsg }}</span>
+		<!-- PAGINACIÓN CONTACTOS -->
+		<div class="pagination-bar" *ngIf="totalPaginasContactos > 1">
+			<div class="pag-controls">
+				<button class="pag-btn" [disabled]="paginaContactos === 0" (click)="cambiarPaginaContactos(0)">
+					<i class="fa-solid fa-angles-left"></i>
+				</button>
+				<button class="pag-btn" [disabled]="paginaContactos === 0"
+					(click)="cambiarPaginaContactos(paginaContactos - 1)">
+					<i class="fa-solid fa-chevron-left"></i>
+				</button>
+				<button *ngFor="let p of paginasContactos" class="pag-btn" [class.active]="p === paginaContactos"
+					(click)="cambiarPaginaContactos(p)">
+					{{ p + 1 }}
+				</button>
+				<button class="pag-btn" [disabled]="paginaContactos === totalPaginasContactos - 1"
+					(click)="cambiarPaginaContactos(paginaContactos + 1)">
+					<i class="fa-solid fa-chevron-right"></i>
+				</button>
+				<button class="pag-btn" [disabled]="paginaContactos === totalPaginasContactos - 1"
+					(click)="cambiarPaginaContactos(totalPaginasContactos - 1)">
+					<i class="fa-solid fa-angles-right"></i>
+				</button>
+			</div>
+		</div>
 	</div>
-
 </div>
 
 <!-- FORMULARIO INFO MÉDICA -->
-<app-form-medical-info
-	[isOpen]="showFormMedico"
-	[editandoMedico]="editandoMedico"
-	[idViajeSeleccionado]="idViajeSeleccionado"
-	(closed)="cerrarFormMedico()"
-	(saved)="onFormMedicoSaved($event)"
+<app-form-medical-info [isOpen]="showFormMedico" [editandoMedico]="editandoMedico"
+	[idViajeSeleccionado]="idViajeSeleccionado" (closed)="cerrarFormMedico()" (saved)="onFormMedicoSaved($event)"
 	(saveFailed)="onFormMedicoFailed($event)">
 </app-form-medical-info>
+
+<app-confirm-modal [isOpen]="showDeleteModal" title="Eliminar registro médico"
+	[message]="registroAEliminar ? ('Esta acción eliminará permanentemente el registro médico de ' + (registroAEliminar.nombreViajero || 'Viajero #' + registroAEliminar.idViajero) + '.') : ''"
+	confirmText="Eliminar" cancelText="Cancelar" icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b"
+	iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b" (confirmed)="confirmarEliminarMedico()"
+	(closed)="cerrarDeleteModal()">
+</app-confirm-modal>
+
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMsg">
+</app-toast-notification>

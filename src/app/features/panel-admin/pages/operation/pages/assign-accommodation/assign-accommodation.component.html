@@ -19,7 +19,8 @@
 				<div class="pc-icon-wrap pc-hotel"><i class="fa-solid fa-hotel"></i></div>
 				<div class="pc-info">
 					<div class="pc-nombre">{{ p.nombre }}</div>
-					<div class="pc-detalle" *ngIf="p.direccion"><i class="fa-solid fa-location-dot"></i> {{ p.direccion }}</div>
+					<div class="pc-detalle" *ngIf="p.direccion"><i class="fa-solid fa-location-dot"></i> {{ p.direccion
+						}}</div>
 					<div class="pc-detalle" *ngIf="p.telefono"><i class="fa-solid fa-phone"></i> {{ p.telefono }}</div>
 					<div class="pc-detalle" *ngIf="p.correo"><i class="fa-regular fa-envelope"></i> {{ p.correo }}</div>
 					<div class="pc-detalle" *ngIf="p.notas"><i class="fa-solid fa-note-sticky"></i> {{ p.notas }}</div>
@@ -58,8 +59,7 @@
 					<td>{{ viaje.tieneViaje ? (viaje.habitacion || '—') : '—' }}</td>
 					<td>{{ viaje.tieneViaje ? (viaje.direccion || '—') : '—' }}</td>
 					<td>
-						<span *ngIf="viaje.tieneViaje" class="estado-dot"
-							[class.ok]="viaje.alojamientoAsignado"
+						<span *ngIf="viaje.tieneViaje" class="estado-dot" [class.ok]="viaje.alojamientoAsignado"
 							[class.pendiente]="!viaje.alojamientoAsignado">
 							{{ viaje.alojamientoAsignado ? 'Asignado' : 'Pendiente' }}
 						</span>
@@ -70,7 +70,8 @@
 							<button class="ver" *ngIf="viaje.alojamientoAsignado" (click)="verDetalle(viaje)">
 								<i class="fa-solid fa-eye"></i>
 							</button>
-							<button [class]="viaje.alojamientoAsignado ? 'edit' : 'assign'" (click)="seleccionarViaje(viaje)">
+							<button [class]="viaje.alojamientoAsignado ? 'edit' : 'assign'"
+								(click)="seleccionarViaje(viaje)">
 								{{ viaje.alojamientoAsignado ? 'Editar' : 'Asignar' }}
 							</button>
 							<button class="del" *ngIf="viaje.alojamientoAsignado" (click)="eliminar(viaje)">
@@ -86,32 +87,24 @@
 			</tbody>
 		</table>
 	</div>
-
-	<div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
-		<i class="toast-icon"
-			[class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
-		<span class="toast-msg">{{ toastMsg }}</span>
-	</div>
-
 </div>
 
 <!-- FORMULARIO MODAL -->
-<app-form-assign-accommodation
-	[isOpen]="showForm"
-	[viajes]="viajes"
-	[viajeSeleccionado]="viajeSeleccionado"
-	[editandoId]="editandoId"
-	[proveedores]="proveedoresAlojamiento"
-	[usuarios]="usuarios"
-	[preloadData]="formPreload"
-	(closed)="cerrarForm()"
-	(saved)="onFormSaved($event)"
-	(saveFailed)="onFormFailed($event)">
+<app-form-assign-accommodation [isOpen]="showForm" [viajes]="viajes" [viajeSeleccionado]="viajeSeleccionado"
+	[editandoId]="editandoId" [proveedores]="proveedoresAlojamiento" [usuarios]="usuarios" [preloadData]="formPreload"
+	(closed)="cerrarForm()" (saved)="onFormSaved($event)" (saveFailed)="onFormFailed($event)">
 </app-form-assign-accommodation>
 
 <!-- MODAL DETALLE -->
-<app-detail-accommodation
-	[isOpen]="showDetalle"
-	[viaje]="viajeDetalle"
-	(closed)="cerrarDetalle()">
+<app-detail-accommodation [isOpen]="showDetalle" [viaje]="viajeDetalle" (closed)="cerrarDetalle()">
 </app-detail-accommodation>
+
+<app-confirm-modal [isOpen]="showDeleteModal" title="Eliminar alojamiento"
+	[message]="viajeAEliminar ? ('Esta acción eliminará permanentemente el alojamiento asignado a ' + viajeAEliminar.titulo + '.') : ''"
+	confirmText="Eliminar" cancelText="Cancelar" icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b"
+	iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b" (confirmed)="confirmarEliminar()"
+	(closed)="cerrarDeleteModal()">
+</app-confirm-modal>
+
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMsg">
+</app-toast-notification>

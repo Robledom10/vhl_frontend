@@ -68,11 +68,27 @@
 		</div>
 	</div>
 
-	<!-- Botón ver todos (solo en home) -->
+	<!-- Botón ver todos (home) -->
 	<div class="view-all-wrap" *ngIf="!showAll">
-		<a class="btn-view-all" routerLink="/packages">Ver todos los destinos</a>
+		<a class="btn-view-all" routerLink="/packages">
+			Ver todos los destinos <i class="fa-solid fa-arrow-right"></i>
+		</a>
+	</div>
+
+	<!-- Botón ver más (página paquetes) -->
+	<div class="view-all-wrap" *ngIf="showAll && hayMas">
+		<button class="btn-view-all" (click)="cargarMas()" [disabled]="isLoadingMore">
+			<span *ngIf="!isLoadingMore">Ver más paquetes <i class="fa-solid fa-chevron-down"></i></span>
+			<span *ngIf="isLoadingMore"><i class="fa-solid fa-spinner fa-spin"></i> Cargando...</span>
+		</button>
+	</div>
+
+	<!-- Mensaje cuando ya no hay más -->
+	<div class="view-all-wrap" *ngIf="showAll && !hayMas && displayedPackages.length > 0 && !isLoading">
+		<p class="all-loaded">Has visto todos los paquetes disponibles ({{ totalElementos }})</p>
 	</div>
 </section>
+
 <!-- Bottom Sheet -->
 <app-package-detail-sheet [isOpen]="sheetOpen" [package]="selectedPackageDetail"
 	(closed)="closeDetail()"></app-package-detail-sheet>

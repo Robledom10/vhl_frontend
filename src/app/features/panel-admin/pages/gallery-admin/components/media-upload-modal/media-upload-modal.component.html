@@ -129,16 +129,27 @@
 				<!-- BUTTONS -->
 
 				<div class="buttons">
-					<button class="cancel" type="button" (click)="close()">
-						Cancelar
-					</button>
+					<!-- BUTTONS -->
 
-					<button class="save" type="button" [disabled]="loading" (click)="submit()">
-						{{ loading? (media ? 'Actualizando...' : 'Subiendo...') :
-						(media ? 'Actualizar archivo' : 'Subir archivo')}}
-					</button>
+					<div class="buttons">
+						<button class="cancel" type="button" (click)="close()">
+							Cancelar
+						</button>
+
+						<button class="save" type="button" [disabled]="loading" (click)="requestSubmit()">
+							{{ loading? (media ? 'Actualizando...' : 'Subiendo...') :
+							(media ? 'Actualizar archivo' : 'Subir archivo')}}
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<app-confirm-modal [isOpen]="showConfirmModal" [title]="media ? 'Actualizar archivo' : 'Subir archivo'"
+	[message]="media ? '¿Deseas guardar los cambios realizados en este archivo?' : '¿Deseas subir este archivo a la galería?'"
+	[confirmText]="media ? 'Actualizar' : 'Subir'" cancelText="Cancelar" icon="fa-solid fa-cloud-arrow-up"
+	confirmColor="#3fa2db" iconBg="rgba(63, 162, 219, 0.12)" iconColor="#3fa2db" (confirmed)="confirmSubmit()"
+	(closed)="closeConfirmModal()">
+</app-confirm-modal>

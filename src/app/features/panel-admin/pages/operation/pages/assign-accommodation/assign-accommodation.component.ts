@@ -18,6 +18,7 @@ export class AsignarAlojamientoComponent implements OnInit {
 	showDetalle = false;
 	viajeDetalle: ViajeAlojamientoDisplay | null = null;
 	showToast = false;
+	toastTitle = '';
 	toastMsg = '';
 	toastType: 'success' | 'error' = 'success';
 
@@ -29,11 +30,15 @@ export class AsignarAlojamientoComponent implements OnInit {
 	usuarios: UsuarioDisplay[] = [];
 	proveedoresAlojamiento: RespuestaProveedor[] = [];
 
+	// Confirmación de eliminar
+	showDeleteModal = false;
+	viajeAEliminar: ViajeAlojamientoDisplay | null = null;
+
 	constructor(
 		private svc: OperacionesService,
 		private authSvc: AuthService,
 		private pkgSvc: PackageService,
-	) {}
+	) { }
 
 	ngOnInit(): void {
 		this.authSvc.getAllUsers().subscribe({
@@ -41,11 +46,11 @@ export class AsignarAlojamientoComponent implements OnInit {
 				const users: any[] = response?.content ?? (Array.isArray(response) ? response : []);
 				this.usuarios = users.map(u => ({ id: u.id, firstName: u.firstName, lastName: u.lastName }));
 			},
-			error: () => {},
+			error: () => { },
 		});
 		this.pkgSvc.getProveedoresByTipo('Hotel').subscribe({
 			next: (items) => { this.proveedoresAlojamiento = items; },
-			error: () => {},
+			error: () => { },
 		});
 		this.cargarViajes();
 	}
@@ -82,7 +87,9 @@ export class AsignarAlojamientoComponent implements OnInit {
 			})
 		).subscribe({
 			next: items => { this.viajes = [...items]; },
-			error: () => {},
+			error: () => {
+				this.mostrarToast('Error', 'No se pudieron cargar los viajes y alojamientos.', 'error');
+			},
 		});
 	}
 
@@ -146,11 +153,11 @@ export class AsignarAlojamientoComponent implements OnInit {
 		this.editandoId = null;
 		this.formPreload = null;
 		this.cargarViajes();
-		this.mostrarToast(msg);
+		this.mostrarToast('Listo', msg, 'success');
 	}
 
 	onFormFailed(msg: string): void {
-		this.mostrarToast(msg, 'error');
+		this.mostrarToast('Error', msg, 'error');
 	}
 
 	// ─── Detalle ──────────────────────────────────────────────
@@ -165,21 +172,39 @@ export class AsignarAlojamientoComponent implements OnInit {
 		this.viajeDetalle = null;
 	}
 
-	// ─── Eliminar ─────────────────────────────────────────────
+	// ─── Eliminar con confirmación ──────────────────────────────
 
 	eliminar(viaje: ViajeAlojamientoDisplay): void {
 		if (!viaje.id || !viaje.alojamientoId) return;
-		if (!confirm(`¿Eliminar el alojamiento asignado a ${viaje.titulo}?`)) return;
+		this.viajeAEliminar = viaje;
+		this.showDeleteModal = true;
+	}
+
+	cerrarDeleteModal(): void {
+		this.showDeleteModal = false;
+		this.viajeAEliminar = null;
+	}
+
+	confirmarEliminar(): void {
+		const viaje = this.viajeAEliminar;
+		if (!viaje || !viaje.id || !viaje.alojamientoId) return;
+		this.showDeleteModal = false;
+
 		this.svc.eliminarAlojamiento(viaje.id, viaje.alojamientoId).subscribe({
 			next: () => {
-				this.mostrarToast('Alojamiento eliminado');
+				this.viajeAEliminar = null;
+				this.mostrarToast('Alojamiento eliminado', `Se eliminó el alojamiento asignado a ${viaje.titulo}.`, 'success');
 				this.cargarViajes();
 			},
-			error: () => this.mostrarToast('Error al eliminar el alojamiento', 'error'),
+			error: () => {
+				this.viajeAEliminar = null;
+				this.mostrarToast('Error al eliminar', `No se pudo eliminar el alojamiento de ${viaje.titulo}.`, 'error');
+			},
 		});
 	}
 
-	mostrarToast(msg: string, type: 'success' | 'error' = 'success'): void {
+	mostrarToast(title: string, msg: string, type: 'success' | 'error' = 'success'): void {
+		this.toastTitle = title;
 		this.toastMsg = msg;
 		this.toastType = type;
 		this.showToast = true;
