@@ -5,11 +5,8 @@ import { catchError, map } from 'rxjs/operators';
 import { Reservation } from '../../models/reservations.models';
 import { ReservationService, SolicitudReserva } from '../../../../../../core/services/reservation.service';
 import { OperacionesService } from '../../../../../../core/services/operaciones.service';
-import { UsuarioService } from '../../../../../../core/services/usuario.service';
-<<<<<<< HEAD
+import { AuthService } from '../../../../../../core/services/auth.service';
 import { PackageService } from '../../../../../../core/services/package.service';
-=======
->>>>>>> main
 
 // ─── Modelos de front ────
 
@@ -104,7 +101,7 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
     constructor(
         private reservationService: ReservationService,
         private operacionesService: OperacionesService,
-        private usuarioService: UsuarioService,
+        private authService: AuthService,
         private packageService: PackageService
     ) { }
 
@@ -162,21 +159,17 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
         this.buscandoCliente = true;
         this.errorCliente = false;
 
-        this.usuarioService.getUsuarioByDocumento(this.documentoBusqueda).subscribe({
+        this.authService.getUserByDocumento(this.documentoBusqueda.trim()).subscribe({
             next: (usuario: any) => {
                 this.buscandoCliente = false;
                 if (usuario && usuario.id) {
                     this.form.idUsuario = usuario.id;
-<<<<<<< HEAD
-                    this.nombreClienteSeleccionado = usuario.firstName ?? '';
+                    this.nombreClienteSeleccionado = `${usuario.firstName ?? ''} ${usuario.lastName ?? ''}`.trim();
                     this.apellidoCliente = usuario.lastName ?? '';
                     this.tipoDocumentoCliente = usuario.documentType ?? '';
                     this.telefonoCliente = usuario.phone ?? '';
                     this.ciudadCliente = usuario.city ?? '';
                     this.correoCliente = usuario.email ?? '';
-=======
-                    this.nombreClienteSeleccionado = `${usuario.firstName ?? usuario.nombre ?? ''} ${usuario.lastName ?? usuario.apellido ?? ''}`.trim();
->>>>>>> main
                 } else {
                     this.errorCliente = true;
                     this.resetDatosCliente();
@@ -393,24 +386,14 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
         const solicitud: SolicitudReserva = {
             idUsuario: Number(this.form.idUsuario),
             idPaquete: viajeSeleccionado.idPaquete,
-<<<<<<< HEAD
             idViaje: Number(this.form.idViaje),
             personas: Number(this.form.personas) || 1,
             acompanantes: this.form.acompanantes,
-            contactosEmergencia: this.form.contactosEmergencia,
+            contactosEmergencia: this.form.contactosEmergencia.filter(c => c.nombre.trim() !== ''),
             paqueteNombre: this.form.paqueteNombre,
             destino: this.form.destino,
             fechaSalida: this.toLocalDateTime(this.form.fechaSalida),
             fechaRegreso: this.toLocalDateTime(this.form.fechaRegreso),
-=======
-            personas: Number(this.form.personas) || 1,
-            acompanantes: this.form.acompanantes,
-            contactosEmergencia: this.form.contactosEmergencia.filter(c => c.nombre.trim() !== ''),
-            idViaje: this.form.idViaje !== '' ? Number(this.form.idViaje) : undefined,
-            paqueteNombre: this.form.paqueteNombre,
-            fechaSalida: this.toDate(this.form.fechaSalida),
-            fechaRegreso: this.toDate(this.form.fechaRegreso),
->>>>>>> main
             tipoHabitacion: this.form.tipoHabitacion,
             solicitudEspecial: this.form.solicitudEspecial || undefined,
             notas: this.form.notas || undefined,
@@ -423,17 +406,10 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
                 this.reservationCreated.emit(reservation);
                 this.closed.emit();
             },
-<<<<<<< HEAD
-            error: () => {
-                this.isSaving = false;
-                this.saveError = 'Ocurrió un error al crear la reserva. Intenta de nuevo.';
-            },
-=======
             error: (err) => {
                 this.isSaving = false;
-                this.saveError = err?.error?.message || err?.message || 'Error al crear la reserva';
+                this.saveError = err?.error?.message || err?.message || 'Ocurrió un error al crear la reserva. Intenta de nuevo.';
             }
->>>>>>> main
         });
     }
 
@@ -447,9 +423,24 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
         }
     }
 
-    private toDate(fecha: string): string {
+    /**
+     * Convierte un valor de fecha (input date/datetime-local, p.ej. "2026-07-01" o
+     * "2026-07-01T14:30") al formato LocalDateTime ISO ("2026-07-01T14:30:00")
+     * que espera el backend.
+     */
+    private toLocalDateTime(fecha: string): string {
         if (!fecha) return '';
-        return fecha.includes('T') ? fecha.split('T')[0] : fecha;
+        if (fecha.includes('T')) {
+            // Asegura que tenga segundos: "2026-07-01T14:30" -> "2026-07-01T14:30:00"
+            const [datePart, timePart] = fecha.split('T');
+            const timeSegments = timePart.split(':');
+            while (timeSegments.length < 3) {
+                timeSegments.push('00');
+            }
+            return `${datePart}T${timeSegments.join(':')}`;
+        }
+        // Solo fecha, sin hora -> media noche
+        return `${fecha}T00:00:00`;
     }
 
     private resetForm(): void {

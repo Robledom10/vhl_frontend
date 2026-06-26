@@ -128,13 +128,8 @@ export class DashboardOperativoComponent implements OnInit {
 					return;
 				}
 
-<<<<<<< HEAD:src/app/features/panel-admin/pages/packages/pages/operations-dashboard/operations-dashboard.component.ts
-				const dashboardCalls = viajes.map(v =>
-					this.svc.getDashboard(v.id).pipe(timeout(8000), catchError(() => of(null)))
-=======
 				const dashboardCalls = viajes.map((v: any) =>
-					this.svc.getDashboard(v.id).pipe(catchError(() => of(null)))
->>>>>>> main:src/app/features/panel-admin/pages/operation/pages/operations-dashboard/operations-dashboard.component.ts
+					this.svc.getDashboard(v.id).pipe(timeout(8000), catchError(() => of(null)))
 				);
 
 				forkJoin(dashboardCalls).subscribe({

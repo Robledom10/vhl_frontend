@@ -132,7 +132,7 @@
 					<i class="fa-solid fa-reply"></i>
 					{{ expandidas.has(c.id) ? 'Ocultar respuestas' : 'Ver respuestas' }}
 					<span class="badge-resp" *ngIf="(respuestasMap[c.id]?.length ?? 0) > 0">
-						{{ respuestasMap[c.id]?.length }}
+						{{ respuestasMap[c.id].length }}
 					</span>
 				</button>
 			</div>

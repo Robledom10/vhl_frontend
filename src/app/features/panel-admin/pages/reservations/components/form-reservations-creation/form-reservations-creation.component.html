@@ -32,16 +32,11 @@
 				========================= -->
 
 				<div *ngIf="currentStep === 1" class="step-content" @fadeStep>
-<<<<<<< HEAD
 
 					<div class="fields-grid">
-=======
-					<div class="form-row">
->>>>>>> main
 
 						<!-- Nº documento -->
 						<div class="form-group half">
-<<<<<<< HEAD
 							<input
 								type="text"
 								id="docUsuario"
@@ -51,10 +46,6 @@
 								[attr.disabled]="mode === 'new' ? true : null"
 								(blur)="mode === 'existing' && buscarCliente()"
 								(keyup.enter)="mode === 'existing' && buscarCliente()"
-=======
-							<input type="text" id="docUsuario" placeholder=" " [(ngModel)]="documentoBusqueda"
-								(blur)="buscarCliente()" (keyup.enter)="buscarCliente()"
->>>>>>> main
 								[class.invalid]="submitted && !form.idUsuario">
 							<label for="docUsuario">Número de documento</label>
 							<span *ngIf="buscandoCliente" class="status-msg">
@@ -68,7 +59,6 @@
 
 						<!-- Tipo de documento -->
 						<div class="form-group half">
-<<<<<<< HEAD
 							<input type="text" id="tipoDocUsuario" placeholder=" " class="readonly-input"
 								[value]="tipoDocumentoCliente" readonly disabled>
 							<label for="tipoDocUsuario">Tipo de documento</label>
@@ -106,11 +96,6 @@
 							<input type="text" id="ciudadUsuario" placeholder=" " class="readonly-input"
 								[value]="ciudadCliente" readonly disabled>
 							<label for="ciudadUsuario">Ciudad de residencia</label>
-=======
-							<input type="text" id="nombreUsuario" placeholder=" " class="readonly-input"
-								[value]="nombreClienteSeleccionado" readonly disabled>
-							<label for="nombreUsuario">Nombre del cliente</label>
->>>>>>> main
 						</div>
 
 						<div class="form-group half">
@@ -209,14 +194,7 @@
 									{{ p.nombre }}
 								</option>
 							</select>
-<<<<<<< HEAD
 							<label for="idPaquete">Paquete turístico</label>
-=======
-							<label for="idViaje">Viaje programado</label>
-							<span *ngIf="submitted && !form.idViaje && !errorViajes" class="error-msg">
-								Debes seleccionar un viaje
-							</span>
->>>>>>> main
 							<span class="field-hint-error" *ngIf="errorViajes">
 								No se pudieron cargar los paquetes.
 								<button type="button" class="retry-link" (click)="cargarViajes()">Reintentar</button>
@@ -429,6 +407,12 @@
 				</div>
 
 			</div>
+		</div>
+
+		<!-- ERROR VISIBLE DESDE CUALQUIER PASO -->
+		<div class="save-error-bar" *ngIf="saveError">
+			<i class="fa-solid fa-circle-exclamation"></i>
+			{{ saveError }}
 		</div>
 
 		<!-- BUTTONS -->
