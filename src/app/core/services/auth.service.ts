@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap, throwError } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../../features/auth/models/auth.model';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
@@ -183,6 +182,20 @@ export class AuthService {
 
 			return null;
 		}
+	}
+
+	// =========================
+	// BUSCAR USUARIO POR DOCUMENTO
+	// =========================
+
+	getUserByDocumento(documentNumber: string) {
+		return this.http.get<any>(
+			`${environment.apiUrl}/admin/users/documento/${documentNumber}`,
+			{
+				withCredentials: true,
+				headers: { Authorization: `Bearer ${this.getToken()}` },
+			}
+		);
 	}
 
 	// =========================

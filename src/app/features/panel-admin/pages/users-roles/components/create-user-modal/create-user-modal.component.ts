@@ -12,6 +12,7 @@ export class CreateUserModalComponent {
 	@Input() isOpen = false;
 	@Output() closed = new EventEmitter<void>();
 	@Output() created = new EventEmitter<void>();
+	@Output() userCreated = new EventEmitter<{ firstName: string; lastName: string; documentNumber: string }>();
 	currentStep = 1;
 	step1Submitted = false;
 	step2Submitted = false;
@@ -144,6 +145,11 @@ export class CreateUserModalComponent {
 				this.isLoading = false;
 				this.showToast = true;
 				this.created.emit();
+				this.userCreated.emit({
+					firstName: formValue.firstName!,
+					lastName: formValue.lastName!,
+					documentNumber: formValue.documentNumber!,
+				});
 
 				setTimeout(() => {
 					this.showToast = false;

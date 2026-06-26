@@ -13,7 +13,7 @@ export class PaymentService {
 
   createPaymentLink(request: any): Observable<string> {
     const headers = new HttpHeaders({
-      'indempotency-key': crypto.randomUUID()
+      'idempotency-key': crypto.randomUUID()
     });
 
     return this.http.post(`${this.apiUrl}/create-link`, request, {

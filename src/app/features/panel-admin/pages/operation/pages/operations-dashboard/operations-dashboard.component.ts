@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { OperacionesService } from '../../../../../../core/services/operaciones.service';
 import { Dashboard } from '../../../../models/operaciones.models';
 import { forkJoin, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, timeout } from 'rxjs/operators';
 
 interface FilaDashboard {
 	idPaquete: number;
@@ -129,7 +129,7 @@ export class DashboardOperativoComponent implements OnInit {
 				}
 
 				const dashboardCalls = viajes.map((v: any) =>
-					this.svc.getDashboard(v.id).pipe(catchError(() => of(null)))
+					this.svc.getDashboard(v.id).pipe(timeout(8000), catchError(() => of(null)))
 				);
 
 				forkJoin(dashboardCalls).subscribe({

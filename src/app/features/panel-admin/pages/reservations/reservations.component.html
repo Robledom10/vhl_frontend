@@ -67,10 +67,21 @@
 		</div>
 
 		<!-- AGREGAR -->
-		<button class="add-btn" (click)="openCreateModal()">
-			<i class="fa-solid fa-plus"></i>
-			<span>Agregar</span>
-		</button>
+		<div class="add-btn-wrapper" [class.open]="showAddDropdown">
+			<button class="add-btn" (click)="toggleAddDropdown($event)">
+				<i class="fa-solid fa-plus"></i>
+				<span>Agregar</span>
+				<i class="fa-solid fa-chevron-down chevron"></i>
+			</button>
+			<div class="add-dropdown">
+				<button (click)="openCreateModal('existing')">
+					<i class="fa-solid fa-user"></i> Usuario existente
+				</button>
+				<button (click)="openCreateModal('new')">
+					<i class="fa-solid fa-user-plus"></i> Usuario nuevo
+				</button>
+			</div>
+		</div>
 	</div>
 
 	<!-- TABLA -->
@@ -145,15 +156,7 @@
 
 				<tr *ngIf="!isLoading && loadError">
 					<td colspan="7" class="empty-state empty-state--error">
-						<i class="fa-solid fa-triangle-exclamation"></i>
 						<span>No se pudieron cargar las reservas</span>
-					</td>
-				</tr>
-
-				<tr *ngIf="!isLoading && !loadError && filteredReservations.length === 0">
-					<td colspan="7" class="empty-state">
-						<i class="fa-regular fa-calendar-xmark"></i>
-						<span>No se encontraron reservas</span>
 					</td>
 				</tr>
 			</tbody>
@@ -199,9 +202,16 @@
 <app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
 </app-toast-notification>
 
+<!-- MODAL CREAR USUARIO (para flujo de usuario nuevo) -->
+<app-create-user-modal [isOpen]="showCreateUserModal"
+	(closed)="closeCreateUserModal()"
+	(userCreated)="onUserCreatedForReservation($event)">
+</app-create-user-modal>
+
 <!-- MODAL CREAR RESERVA -->
-<app-form-reservation-creation [isOpen]="showCreateModal" (closed)="closeCreateModal()"
-	(reservationCreated)="onReservationCreated($event)">
+<app-form-reservation-creation [isOpen]="showCreateModal" [mode]="createModalMode"
+	[prefilledDocument]="prefilledDocument"
+	(closed)="closeCreateModal()" (reservationCreated)="onReservationCreated($event)">
 </app-form-reservation-creation>
 
 <!-- DETALLE RESERVA -->

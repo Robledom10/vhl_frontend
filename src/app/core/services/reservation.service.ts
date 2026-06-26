@@ -66,7 +66,12 @@ export class ReservationService {
 
 	crear(solicitud: SolicitudReserva): Observable<Reservation> {
 		return this.http.post<any>(this.base, solicitud).pipe(
-			map(dto => this.mapDto(dto))
+			map(dto => {
+				if (!dto || typeof dto !== 'object') {
+					throw new Error('El servidor no devolvió datos de la reserva creada.');
+				}
+				return this.mapDto(dto);
+			})
 		);
 	}
 
@@ -92,6 +97,7 @@ export class ReservationService {
 		return {
 			id: dto.id,
 			idUsuario: dto.idUsuario ?? 0,
+			packageId: dto.idPaquete ?? dto.packageId,
 			datosUsuario: dto.datosUsuario ? {
 				id: dto.datosUsuario.id,
 				nombre: dto.datosUsuario.nombre ?? '',

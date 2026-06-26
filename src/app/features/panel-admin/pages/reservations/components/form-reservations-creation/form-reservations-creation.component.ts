@@ -5,7 +5,8 @@ import { catchError, map } from 'rxjs/operators';
 import { Reservation } from '../../models/reservations.models';
 import { ReservationService, SolicitudReserva } from '../../../../../../core/services/reservation.service';
 import { OperacionesService } from '../../../../../../core/services/operaciones.service';
-import { UsuarioService } from '../../../../../../core/services/usuario.service';
+import { AuthService } from '../../../../../../core/services/auth.service';
+import { PackageService } from '../../../../../../core/services/package.service';
 
 // ─── Modelos de front ────
 
@@ -52,16 +53,6 @@ export interface ViajeOption {
     precio: number;
 }
 
-export interface ReservationCreateRequest {
-    idUsuario: number;
-    idPaquete: number;
-    cantidadPasajeros: number;
-    precioTotal: number;
-    fechaInicioViaje: string;
-    fechaFinViaje: string;
-    notas?: string;
-}
-
 // ─── Animaciones ─────────────────────────────────────────────
 
 const slideIn = trigger('slideIn', [
@@ -102,13 +93,16 @@ const expandDown = trigger('expandDown', [
 export class FormReservationsCreationComponent implements OnChanges, OnInit {
 
     @Input() isOpen = false;
+    @Input() mode: 'existing' | 'new' = 'existing';
+    @Input() prefilledDocument: string | null = null;
     @Output() closed = new EventEmitter<void>();
     @Output() reservationCreated = new EventEmitter<Reservation>();
 
     constructor(
         private reservationService: ReservationService,
         private operacionesService: OperacionesService,
-        private usuarioService: UsuarioService // <-- Inyectado
+        private authService: AuthService,
+        private packageService: PackageService
     ) { }
 
     currentStep = 1;
@@ -118,12 +112,20 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
     saveError = '';
 
     viajesDisponibles: ViajeOption[] = [];
+    viajesFiltrados: ViajeOption[] = [];
+    paquetesDisponibles: { id: number; nombre: string }[] = [];
+    selectedPaqueteId: number | '' = '';
     cargandoViajes = false;
     errorViajes = false;
 
     // -- Variables para autocompletar cliente --
     documentoBusqueda: string = '';
     nombreClienteSeleccionado: string = '';
+    apellidoCliente: string = '';
+    tipoDocumentoCliente: string = '';
+    telefonoCliente: string = '';
+    ciudadCliente: string = '';
+    correoCliente: string = '';
     buscandoCliente = false;
     errorCliente = false;
     // ------------------------------------------
@@ -137,6 +139,13 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['isOpen']?.currentValue === true) {
             this.resetForm();
+            if (this.paquetesDisponibles.length === 0 || this.errorViajes) {
+                this.cargarViajes();
+            }
+            if (this.mode === 'new' && this.prefilledDocument) {
+                this.documentoBusqueda = this.prefilledDocument;
+                this.buscarCliente();
+            }
         }
     }
 
@@ -150,12 +159,17 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
         this.buscandoCliente = true;
         this.errorCliente = false;
 
-        this.usuarioService.getUsuarioByDocumento(this.documentoBusqueda).subscribe({
+        this.authService.getUserByDocumento(this.documentoBusqueda.trim()).subscribe({
             next: (usuario: any) => {
                 this.buscandoCliente = false;
                 if (usuario && usuario.id) {
                     this.form.idUsuario = usuario.id;
-                    this.nombreClienteSeleccionado = `${usuario.firstName ?? usuario.nombre ?? ''} ${usuario.lastName ?? usuario.apellido ?? ''}`.trim();
+                    this.nombreClienteSeleccionado = `${usuario.firstName ?? ''} ${usuario.lastName ?? ''}`.trim();
+                    this.apellidoCliente = usuario.lastName ?? '';
+                    this.tipoDocumentoCliente = usuario.documentType ?? '';
+                    this.telefonoCliente = usuario.phone ?? '';
+                    this.ciudadCliente = usuario.city ?? '';
+                    this.correoCliente = usuario.email ?? '';
                 } else {
                     this.errorCliente = true;
                     this.resetDatosCliente();
@@ -172,6 +186,11 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
     private resetDatosCliente(): void {
         this.form.idUsuario = '';
         this.nombreClienteSeleccionado = '';
+        this.apellidoCliente = '';
+        this.tipoDocumentoCliente = '';
+        this.telefonoCliente = '';
+        this.ciudadCliente = '';
+        this.correoCliente = '';
     }
     // ----------------------------------------
 
@@ -179,46 +198,53 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
         this.cargandoViajes = true;
         this.errorViajes = false;
 
-        this.operacionesService.getViajes().pipe(
-            map(viajes => viajes.filter(v => {
-                const e = (v.estado ?? '').toUpperCase();
-                return e !== 'CANCELADO' && e !== 'FINALIZADO';
-            })),
-            catchError(() => of([]))
-        ).subscribe({
-            next: (viajes) => {
-                if (viajes.length === 0) {
-                    this.viajesDisponibles = [];
+        forkJoin({
+            viajes: this.operacionesService.getViajes().pipe(
+                map((res: any) => Array.isArray(res) ? res : (res?.content ?? [])),
+                catchError(() => of([]))
+            ),
+            paquetes: this.packageService.getPackages({ tamano: 100 }).pipe(
+                map((res: any) => Array.isArray(res) ? res : (res?.content ?? [])),
+                catchError(() => of([]))
+            ),
+        }).subscribe({
+            next: ({ viajes, paquetes }) => {
+                try {
+                    const viajesArray: any[] = Array.isArray(viajes) ? viajes : [];
+                    const paquetesArray: any[] = Array.isArray(paquetes) ? paquetes : [];
+
+                    const filtrados = viajesArray.filter(v => {
+                        const e = (v?.estado ?? '').toUpperCase();
+                        return e !== 'CANCELADO' && e !== 'FINALIZADO';
+                    });
+
+                    const paqueteMap = new Map(paquetesArray.map(p => [p.id, p]));
+
+                    this.viajesDisponibles = filtrados.map(v => {
+                        const pkg = (paqueteMap.get(v.idPaquete) ?? {}) as any;
+                        return {
+                            id: v.id,
+                            idPaquete: v.idPaquete,
+                            paqueteNombre: pkg.titulo ?? `Paquete ${v.idPaquete}`,
+                            destino: pkg.destino ?? '',
+                            fechaSalida: v.fechaSalida,
+                            fechaRegreso: v.fechaRegreso,
+                            precio: pkg.precio ?? 0,
+                        };
+                    });
+
+                    this.paquetesDisponibles = paquetesArray.map(p => ({
+                        id: p.id,
+                        nombre: p.titulo,
+                    }));
+
+                    console.log('[ReservaForm] Paquetes cargados:', this.paquetesDisponibles.length);
+                    console.log('[ReservaForm] Viajes cargados:', this.viajesDisponibles.length);
+                } catch (err) {
+                    console.error('[ReservaForm] Error procesando datos:', err);
+                } finally {
                     this.cargandoViajes = false;
-                    return;
                 }
-                const uniqueIds = [...new Set(viajes.map(v => v.idPaquete))];
-                forkJoin(
-                    uniqueIds.map(id =>
-                        this.operacionesService.getPaquete(id).pipe(catchError(() => of({ titulo: `Paquete ${id}`, destino: '', precio: 0 })))
-                    )
-                ).subscribe({
-                    next: (paquetes) => {
-                        const paqueteMap = new Map(uniqueIds.map((id, i) => [id, paquetes[i] as any]));
-                        this.viajesDisponibles = viajes.map(v => {
-                            const pkg = paqueteMap.get(v.idPaquete) ?? {};
-                            return {
-                                id: v.id,
-                                idPaquete: v.idPaquete,
-                                paqueteNombre: pkg.titulo ?? `Paquete ${v.idPaquete}`,
-                                destino: pkg.destino ?? '',
-                                fechaSalida: v.fechaSalida,
-                                fechaRegreso: v.fechaRegreso,
-                                precio: pkg.precio ?? 0,
-                            };
-                        });
-                        this.cargandoViajes = false;
-                    },
-                    error: () => {
-                        this.cargandoViajes = false;
-                        this.errorViajes = true;
-                    },
-                });
             },
             error: () => {
                 this.cargandoViajes = false;
@@ -287,6 +313,20 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
         }
     }
 
+    onPaqueteChange(idPaquete: number | ''): void {
+        this.selectedPaqueteId = idPaquete;
+        this.form.idViaje = '';
+        this.form.paqueteNombre = '';
+        this.form.destino = '';
+        this.form.fechaSalida = '';
+        this.form.fechaRegreso = '';
+        this.form.duracion = '';
+        this.form.total = '';
+        this.viajesFiltrados = idPaquete
+            ? this.viajesDisponibles.filter(v => v.idPaquete === Number(idPaquete))
+            : [];
+    }
+
     onViajeChange(idViaje: number | ''): void {
         if (!idViaje) {
             this.form.paqueteNombre = '';
@@ -346,13 +386,14 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
         const solicitud: SolicitudReserva = {
             idUsuario: Number(this.form.idUsuario),
             idPaquete: viajeSeleccionado.idPaquete,
+            idViaje: Number(this.form.idViaje),
             personas: Number(this.form.personas) || 1,
             acompanantes: this.form.acompanantes,
             contactosEmergencia: this.form.contactosEmergencia.filter(c => c.nombre.trim() !== ''),
-            idViaje: this.form.idViaje !== '' ? Number(this.form.idViaje) : undefined,
             paqueteNombre: this.form.paqueteNombre,
-            fechaSalida: this.toDate(this.form.fechaSalida),
-            fechaRegreso: this.toDate(this.form.fechaRegreso),
+            destino: this.form.destino,
+            fechaSalida: this.toLocalDateTime(this.form.fechaSalida),
+            fechaRegreso: this.toLocalDateTime(this.form.fechaRegreso),
             tipoHabitacion: this.form.tipoHabitacion,
             solicitudEspecial: this.form.solicitudEspecial || undefined,
             notas: this.form.notas || undefined,
@@ -367,7 +408,7 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
             },
             error: (err) => {
                 this.isSaving = false;
-                this.saveError = err?.error?.message || err?.message || 'Error al crear la reserva';
+                this.saveError = err?.error?.message || err?.message || 'Ocurrió un error al crear la reserva. Intenta de nuevo.';
             }
         });
     }
@@ -382,9 +423,24 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
         }
     }
 
-    private toDate(fecha: string): string {
+    /**
+     * Convierte un valor de fecha (input date/datetime-local, p.ej. "2026-07-01" o
+     * "2026-07-01T14:30") al formato LocalDateTime ISO ("2026-07-01T14:30:00")
+     * que espera el backend.
+     */
+    private toLocalDateTime(fecha: string): string {
         if (!fecha) return '';
-        return fecha.includes('T') ? fecha.split('T')[0] : fecha;
+        if (fecha.includes('T')) {
+            // Asegura que tenga segundos: "2026-07-01T14:30" -> "2026-07-01T14:30:00"
+            const [datePart, timePart] = fecha.split('T');
+            const timeSegments = timePart.split(':');
+            while (timeSegments.length < 3) {
+                timeSegments.push('00');
+            }
+            return `${datePart}T${timeSegments.join(':')}`;
+        }
+        // Solo fecha, sin hora -> media noche
+        return `${fecha}T00:00:00`;
     }
 
     private resetForm(): void {
@@ -393,10 +449,17 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
         this.submitted = false;
         this.isSaving = false;
         this.saveError = '';
-        this.documentoBusqueda = ''; // Resetea también la búsqueda
+        this.documentoBusqueda = '';
         this.nombreClienteSeleccionado = '';
+        this.apellidoCliente = '';
+        this.tipoDocumentoCliente = '';
+        this.telefonoCliente = '';
+        this.ciudadCliente = '';
+        this.correoCliente = '';
         this.buscandoCliente = false;
         this.errorCliente = false;
+        this.selectedPaqueteId = '';
+        this.viajesFiltrados = [];
     }
 
     private emptyForm(): ReservationForm {

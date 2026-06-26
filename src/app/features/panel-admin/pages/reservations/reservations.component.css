@@ -197,6 +197,61 @@
 	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
+.add-btn .add-chevron {
+	font-size: 11px;
+	transition: transform 0.2s ease;
+}
+
+.add-btn-wrapper {
+	position: relative;
+}
+
+.add-btn-wrapper.open .add-chevron {
+	transform: rotate(180deg);
+}
+
+.add-dropdown {
+	position: absolute;
+	top: calc(100% + 8px);
+	right: 0;
+	background: white;
+	border: 1px solid #e5e5e5;
+	border-radius: 14px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+	padding: 8px;
+	min-width: 190px;
+	z-index: 100;
+	display: none;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.add-btn-wrapper.open .add-dropdown {
+	display: flex;
+}
+
+.add-dropdown button {
+	width: 100%;
+	padding: 10px 14px;
+	border: none;
+	background: transparent;
+	border-radius: 10px;
+	text-align: left;
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	color: var(--color-texto-secundario);
+	cursor: pointer;
+	transition: background 0.15s ease;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.add-dropdown button:hover {
+	background: var(--color-fondo-iconos);
+	color: var(--color-primario);
+}
+
 /* =========================
 	TABLA
 ========================= */
