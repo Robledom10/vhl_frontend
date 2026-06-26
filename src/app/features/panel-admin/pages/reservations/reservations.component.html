@@ -156,13 +156,40 @@
 			</tbody>
 		</table>
 	</div>
+
+	<!-- PAGINACIÓN -->
+	<div class="pagination-bar" *ngIf="totalPaginas > 1">
+		<span class="pagination-info">
+			{{ totalElementos }} reservas · Página {{ paginaActual + 1 }} de {{ totalPaginas }}
+		</span>
+		<div class="pagination-controls">
+			<button class="page-btn" [disabled]="paginaActual === 0" (click)="cambiarPagina(0)">
+				<i class="fa-solid fa-angles-left"></i>
+			</button>
+			<button class="page-btn" [disabled]="paginaActual === 0" (click)="cambiarPagina(paginaActual - 1)">
+				<i class="fa-solid fa-angle-left"></i>
+			</button>
+			<button *ngFor="let p of paginas"
+				class="page-btn page-number"
+				[class.active]="p === paginaActual"
+				(click)="cambiarPagina(p)">
+				{{ p + 1 }}
+			</button>
+			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1" (click)="cambiarPagina(paginaActual + 1)">
+				<i class="fa-solid fa-angle-right"></i>
+			</button>
+			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1" (click)="cambiarPagina(totalPaginas - 1)">
+				<i class="fa-solid fa-angles-right"></i>
+			</button>
+		</div>
+	</div>
 </div>
 
-<!-- MODAL CONFIRMAR CANCELACIÓN -->
-<app-confirm-modal [isOpen]="showCancelModal" title="Cancelar reserva"
-	message="Esta acción cancelará la reserva del cliente. Podrá reactivarla más adelante."
-	confirmText="Cancelar reserva" cancelText="Volver" icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b"
-	iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b" (confirmed)="confirmCancel()" (closed)="closeCancelModal()">
+<!-- MODAL CONFIRMACIÓN GENÉRICO -->
+<app-confirm-modal [isOpen]="showConfirmModal" [title]="confirmModalTitle" [message]="confirmModalMessage"
+	[confirmText]="confirmModalConfirmText" cancelText="Cancelar" [icon]="confirmModalIcon"
+	[confirmColor]="confirmModalColor" [iconBg]="confirmModalIconBg" [iconColor]="confirmModalIconColor"
+	(confirmed)="executeConfirm()" (closed)="closeConfirmModal()">
 </app-confirm-modal>
 
 <!-- TOAST -->

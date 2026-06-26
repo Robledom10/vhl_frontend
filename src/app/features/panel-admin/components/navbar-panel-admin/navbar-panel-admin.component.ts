@@ -65,6 +65,12 @@ export class NavbarPanelAdminComponent {
 			route: '/panel-admin/control-panel',
 			roles: ['ADMIN', 'GUIDE']
 		},
+		{
+			icon: 'fa-solid fa-users',
+			label: 'Usuario y Roles',
+			route: '/panel-admin/users-roles',
+			roles: ['ADMIN', 'GUIDE']
+		},
 		// 🔥 MENU DESPLEGABLE
 		{
 			icon: 'fa-solid fa-briefcase',
@@ -78,7 +84,7 @@ export class NavbarPanelAdminComponent {
 					roles: ['ADMIN', 'GUIDE']
 				},
 				{
-					label: 'Asignar Viaje',
+					label: 'Viajes',
 					route: '/panel-admin/packages-viajes',
 					roles: ['ADMIN', 'GUIDE']
 				},
@@ -94,24 +100,6 @@ export class NavbarPanelAdminComponent {
 					roles: ['ADMIN', 'GUIDE']
 				},
 			],
-		},
-		{
-			icon: 'fa-solid fa-check',
-			label: 'Reservas',
-			route: '/panel-admin/reservations',
-			roles: ['ADMIN', 'GUIDE']
-		},
-		{
-			icon: 'fa-solid fa-users',
-			label: 'Usuario y Roles',
-			route: '/panel-admin/users-roles',
-			roles: ['ADMIN', 'GUIDE']
-		},
-		{
-			icon: 'fa-regular fa-image',
-			label: 'Galería',
-			route: '/panel-admin/gallery-admin',
-			roles: ['ADMIN', 'GUIDE']
 		},
 		{
 			icon: 'fa-solid fa-route',
@@ -140,11 +128,30 @@ export class NavbarPanelAdminComponent {
 					roles: ['ADMIN', 'GUIDE']
 				},
 				{
+					label: 'Contactos de Emergencia',
+					route: '/panel-admin/operaciones-contactos-emergencia',
+					roles: ['ADMIN', 'GUIDE']
+				},
+				{
 					label: 'Comunicaciones',
 					route: '/panel-admin/operaciones-comunicaciones',
 					roles: ['ADMIN', 'GUIDE']
 				},
 			],
 		},
+		{
+			icon: 'fa-solid fa-check',
+			label: 'Reservas',
+			route: '/panel-admin/reservations',
+			roles: ['ADMIN', 'GUIDE']
+		},
+
+		{
+			icon: 'fa-regular fa-image',
+			label: 'Galería',
+			route: '/panel-admin/gallery-admin',
+			roles: ['ADMIN', 'GUIDE']
+		},
+
 	];
 }

@@ -17,43 +17,38 @@ export class PackagesCardComponent implements OnInit {
 
 	sheetOpen = false;
 	selectedPackageDetail: PackageDetail | null = null;
-	isLoading = true;
+	isLoading = false;
+	isLoadingMore = false;
 	errorMsg = '';
 
 	displayedPackages: TravelPackage[] = [];
 	likedPackages: Set<number> = new Set();
+
+	// Paginación
+	paginaActual = 0;
+	totalPaginas = 0;
+	totalElementos = 0;
+	readonly tamano = 6;
 
 	private apiPackages: RespuestaPaqueteTuristico[] = [];
 
 	constructor(private packageService: PackageService) { }
 
 	ngOnInit(): void {
-		this.packageService.getPackages({ activo: true, tamano: 100 }).subscribe({
+		if (this.showAll) {
+			this.cargarPagina(0);
+		} else {
+			this.cargarHome();
+		}
+	}
+
+	// ─── Home: carga fija de 6 con rating ─────────────────
+	private cargarHome(): void {
+		this.isLoading = true;
+		this.packageService.getPackages({ activo: true, tamano: 6 }).subscribe({
 			next: page => {
-
 				this.apiPackages = page.content;
-
-				const requests = page.content.map(paquete =>
-
-					this.packageService.getComments(paquete.id).pipe(
-
-						map(comments => {
-							const travelPackage = mapToTravelPackage(paquete);
-							if (comments.length > 0) {
-								const promedio = comments.reduce((suma, c) => suma + c.puntaje, 0) / comments.length;
-								travelPackage.rating = Number(promedio.toFixed(1));
-							} else {
-								travelPackage.rating = 0;
-							}
-							return travelPackage;
-						})
-					)
-				);
-
-				forkJoin(requests).subscribe(result => {
-					this.displayedPackages = this.showAll ? result : result.slice(0, 6);
-					this.isLoading = false;
-				});
+				this.cargarRatings(page.content, false);
 			},
 			error: () => {
 				this.errorMsg = 'No se pudieron cargar los paquetes.';
@@ -62,26 +57,87 @@ export class PackagesCardComponent implements OnInit {
 		});
 	}
 
+	// ─── Paquetes: paginado ───────────────────────────────
+	cargarPagina(pagina: number): void {
+		if (pagina === 0) {
+			this.isLoading = true;
+			this.displayedPackages = [];
+		} else {
+			this.isLoadingMore = true;
+		}
+
+		this.packageService.getPackages({ activo: true, pagina, tamano: this.tamano }).subscribe({
+			next: page => {
+				this.apiPackages = [...this.apiPackages, ...page.content];
+				this.paginaActual = page.number;
+				this.totalPaginas = page.totalPages;
+				this.totalElementos = page.totalElements;
+				this.cargarRatings(page.content, true);
+			},
+			error: () => {
+				this.errorMsg = 'No se pudieron cargar los paquetes.';
+				this.isLoading = false;
+				this.isLoadingMore = false;
+			},
+		});
+	}
+
+	private cargarRatings(paquetes: RespuestaPaqueteTuristico[], append: boolean): void {
+		const requests = paquetes.map(p =>
+			this.packageService.getComments(p.id).pipe(
+				map(comments => {
+					const pkg = mapToTravelPackage(p);
+					if (comments.length > 0) {
+						const promedio = comments.reduce((s, c) => s + c.puntaje, 0) / comments.length;
+						pkg.rating = Number(promedio.toFixed(1));
+					} else {
+						pkg.rating = 0;
+					}
+					return pkg;
+				})
+			)
+		);
+
+		forkJoin(requests).subscribe({
+			next: result => {
+				if (append) {
+					this.displayedPackages = [...this.displayedPackages, ...result];
+				} else {
+					this.displayedPackages = result;
+				}
+				this.isLoading = false;
+				this.isLoadingMore = false;
+			},
+			error: () => {
+				this.isLoading = false;
+				this.isLoadingMore = false;
+			}
+		});
+	}
+
+	get hayMas(): boolean {
+		return this.paginaActual < this.totalPaginas - 1;
+	}
+
+	cargarMas(): void {
+		if (!this.hayMas || this.isLoadingMore) return;
+		this.cargarPagina(this.paginaActual + 1);
+	}
+
 	openDetail(pkg: TravelPackage): void {
-		const api = this.apiPackages.find((p) => p.id === pkg.id);
+		const api = this.apiPackages.find(p => p.id === pkg.id);
 		this.selectedPackageDetail = api ? mapToPackageDetail(api) : mapToPackageDetailFallback(pkg);
 		this.sheetOpen = true;
 	}
 
-	closeDetail(): void {
-		this.sheetOpen = false;
-	}
+	closeDetail(): void { this.sheetOpen = false; }
 
 	toggleLike(id: number, event: Event): void {
 		event.stopPropagation();
-		this.likedPackages.has(id)
-			? this.likedPackages.delete(id)
-			: this.likedPackages.add(id);
+		this.likedPackages.has(id) ? this.likedPackages.delete(id) : this.likedPackages.add(id);
 	}
 
-	isLiked(id: number): boolean {
-		return this.likedPackages.has(id);
-	}
+	isLiked(id: number): boolean { return this.likedPackages.has(id); }
 
 	onImgError(event: Event): void {
 		const img = event.target as HTMLImageElement;

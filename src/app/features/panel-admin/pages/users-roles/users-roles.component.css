@@ -156,10 +156,26 @@
 
 .table-container {
 	width: 100%;
+	overflow-x: auto;
+	padding-bottom: 8px;
+}
+
+.table-container::-webkit-scrollbar {
+	height: 6px;
+}
+
+.table-container::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+	background: rgba(63, 162, 219, 0.28);
+	border-radius: 999px;
 }
 
 table {
 	width: 100%;
+	min-width: 880px;
 	border-collapse: separate;
 	border-spacing: 0 14px;
 }
@@ -289,6 +305,72 @@ tbody img {
 }
 
 /* =========================
+  PAGINACIÓN
+========================= */
+
+.pagination {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	padding-top: 8px;
+}
+
+.pagination-controls {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.page-info {
+	font-size: 13px;
+	color: var(--color-texto-secundario);
+	font-family: "Outfit", sans-serif;
+}
+
+.page-btn {
+	width: 36px;
+	height: 36px;
+	border-radius: 12px;
+	border: 1px solid var(--bordes);
+	background: white;
+	color: var(--color-texto-secundario);
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.page-btn:hover:not(:disabled) {
+	background: rgba(63, 162, 219, 0.08);
+	color: var(--color-primario);
+	border-color: var(--color-primario);
+	transform: translateY(-1px);
+}
+
+.page-btn.active {
+	background: var(--color-primario);
+	color: white;
+	border-color: var(--color-primario);
+}
+
+.page-btn:disabled {
+	opacity: 0.35;
+	cursor: not-allowed;
+}
+
+.page-info {
+	font-size: 14px;
+	color: var(--color-texto-secundario);
+	font-family: "Outfit", sans-serif;
+	margin-left: 4px;
+}
+
+/* =========================
 	ANIMATIONS
 ========================= */
 
@@ -301,5 +383,244 @@ tbody img {
 	to {
 		opacity: 1;
 		transform: translateY(0);
+	}
+}
+
+@media (max-width: 1279px) {
+	.users-container {
+		gap: 22px;
+	}
+
+	.top-bar {
+		gap: 14px;
+	}
+
+	.search-box {
+		min-width: 280px;
+	}
+
+	.filter-btn,
+	.add-btn {
+		padding: 0 18px;
+	}
+
+	table {
+		min-width: 820px;
+	}
+
+	thead th {
+		font-size: 14px;
+		padding: 0 12px;
+	}
+
+	tbody td {
+		font-size: 15px;
+		padding: 14px 12px;
+	}
+
+	.actions {
+		gap: 8px;
+		justify-content: center;
+	}
+
+	.actions .edit,
+	.actions .delete {
+		width: auto;
+		padding: 9px 13px;
+	}
+}
+
+@media (max-width: 920px) {
+	.top-bar {
+		display: grid;
+		grid-template-columns: 1fr auto auto;
+		align-items: center;
+	}
+
+	.search-box {
+		min-width: 0;
+		width: 100%;
+	}
+
+	.filter-btn,
+	.add-btn {
+		white-space: nowrap;
+	}
+
+	table {
+		min-width: 780px;
+	}
+}
+
+@media (max-width: 768px) {
+	.top-bar {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.search-box {
+		grid-column: 1 / -1;
+	}
+
+	.filter-wrapper,
+	.filter-btn,
+	.add-btn {
+		width: 100%;
+	}
+
+	.filter-btn,
+	.add-btn {
+		justify-content: center;
+	}
+
+	.table-container {
+		overflow-x: visible;
+	}
+
+	table,
+	thead,
+	tbody,
+	tr,
+	td {
+		display: block;
+		width: 100%;
+	}
+
+	table {
+		min-width: 0;
+		border-spacing: 0;
+	}
+
+	thead {
+		display: none;
+	}
+
+	tbody {
+		display: grid;
+		gap: 14px;
+	}
+
+	tbody tr {
+		display: grid;
+		grid-template-columns: 64px 1fr;
+		gap: 12px 16px;
+		padding: 16px;
+		border-radius: 18px;
+	}
+
+	tbody td {
+		padding: 0;
+		text-align: left;
+		font-size: 14px;
+	}
+
+	tbody td:first-child {
+		grid-row: span 5;
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		border-radius: 0;
+	}
+
+	tbody td:not(:first-child)::before {
+		content: "";
+		display: block;
+		margin-bottom: 3px;
+		font-size: 12px;
+		font-weight: 600;
+		color: var(--color-primario);
+	}
+
+	tbody td:nth-child(2)::before {
+		content: "Nombre";
+	}
+
+	tbody td:nth-child(3)::before {
+		content: "Correo Electronico";
+	}
+
+	tbody td:nth-child(4)::before {
+		content: "Rol";
+	}
+
+	tbody td:nth-child(5)::before {
+		content: "Estado";
+	}
+
+	tbody td:nth-child(6)::before {
+		content: "Acciones";
+	}
+
+	tbody td:last-child {
+		grid-column: 2;
+		border-radius: 0;
+	}
+
+	.actions {
+		justify-content: flex-start;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.actions .view {
+		width: 34px;
+		height: 34px;
+	}
+
+	.actions .edit,
+	.actions .delete {
+		width: auto;
+		padding: 8px 12px;
+	}
+}
+
+@media (max-width: 480px) {
+	.users-container {
+		gap: 18px;
+	}
+
+	.top-bar {
+		grid-template-columns: 1fr;
+		gap: 10px;
+	}
+
+	.search-box,
+	.filter-btn,
+	.add-btn {
+		height: 40px;
+		border-radius: 18px;
+	}
+
+	.search-box input {
+		font-size: 14px;
+	}
+
+	.add-btn span {
+		display: inline;
+	}
+
+	tbody td {
+		font-size: 14px;
+	}
+
+	tbody img {
+		width: 44px;
+		height: 44px;
+	}
+
+	tbody tr {
+		grid-template-columns: 54px 1fr;
+		padding: 14px;
+		gap: 10px 12px;
+	}
+
+	.actions {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.actions .view,
+	.actions .edit,
+	.actions .delete {
+		width: 100%;
 	}
 }

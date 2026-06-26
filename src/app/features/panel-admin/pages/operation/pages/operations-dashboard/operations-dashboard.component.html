@@ -1,0 +1,214 @@
+<div class="operaciones-container">
+
+	<div class="page-header">
+		<div>
+			<h2 class="page-title">Dashboard <span>Operativo</span></h2>
+			<p class="page-subtitle">Resumen del estado operativo de todos los
+				paquetes turísticos</p>
+		</div>
+		<div class="header-actions">
+			<button class="btn-nuevo-viaje" (click)="abrirNuevoViaje()">
+				<i class="fa-solid fa-plus"></i> Nuevo viaje
+			</button>
+		</div>
+	</div>
+
+	<!-- KPI CARDS -->
+	<div class="kpi-grid">
+		<div class="kpi-card kpi-clickable" (click)="ir('operaciones-check-in')" title="Ver check-ins">
+			<div class="kpi-icon blue">
+				<i class="fa-solid fa-users"></i>
+			</div>
+			<div class="kpi-info">
+				<span class="kpi-value">{{ totalViajeros }}</span>
+				<span class="kpi-label">Viajeros totales</span>
+			</div>
+			<i class="fa-solid fa-arrow-right kpi-arrow"></i>
+		</div>
+
+		<div class="kpi-card kpi-clickable" (click)="ir('operaciones-transporte')" title="Gestionar transporte">
+			<div class="kpi-icon green">
+				<i class="fa-solid fa-bus-simple"></i>
+			</div>
+			<div class="kpi-info">
+				<span class="kpi-value">{{ transportesAsignados }}/{{ totalViajesActivos
+					}}</span>
+				<span class="kpi-label">Transportes asignados</span>
+			</div>
+			<i class="fa-solid fa-arrow-right kpi-arrow"></i>
+		</div>
+
+		<div class="kpi-card kpi-clickable" (click)="ir('operaciones-alojamiento')" title="Gestionar alojamiento">
+			<div class="kpi-icon teal">
+				<i class="fa-solid fa-bed"></i>
+			</div>
+			<div class="kpi-info">
+				<span class="kpi-value">
+					{{ alojamientosAsignados }}/{{ totalViajesActivos }}
+				</span>
+				<span class="kpi-label">Alojamientos asignados</span>
+			</div>
+			<i class="fa-solid fa-arrow-right kpi-arrow"></i>
+		</div>
+
+		<div class="kpi-card kpi-clickable" (click)="ir('operaciones-incidentes')" title="Ver incidentes">
+			<div class="kpi-icon red">
+				<i class="fa-solid fa-triangle-exclamation"></i>
+			</div>
+			<div class="kpi-info">
+				<span class="kpi-value">{{ totalIncidentes }}</span>
+				<span class="kpi-label">Incidentes registrados</span>
+			</div>
+			<i class="fa-solid fa-arrow-right kpi-arrow"></i>
+		</div>
+	</div>
+
+	<!-- TABLA PAQUETES + VIAJES -->
+	<div class="section-title">
+		<i class="fa-solid fa-route"></i>
+		<h3>Paquetes turísticos y seguimiento operativo</h3>
+	</div>
+
+	<div class="table-container">
+		<table>
+			<thead>
+				<tr>
+					<th>Paquete</th>
+					<th>Destino</th>
+					<th>Fecha salida</th>
+					<th>Viajeros</th>
+					<th>Transporte</th>
+					<th>Alojamiento</th>
+					<th>Incidentes</th>
+					<th>Estado</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let fila of filas" [class.fila-sin-viaje]="!fila.tieneViaje">
+					<td>
+						<div class="paquete-nombre">{{ fila.paqueteTitulo }}</div>
+						<small *ngIf="fila.idViaje" class="viaje-id">
+							Viaje #{{ fila.idViaje }}
+						</small>
+					</td>
+					<td>{{ fila.paqueteDestino || '—' }}</td>
+					<td>
+						{{ fila.fechaSalida ? (fila.fechaSalida | date:'dd/MM/yyyy') : '—' }}
+					</td>
+					<td>
+						<span *ngIf="fila.tieneViaje" class="badge-num link-cell" (click)="ir('operaciones-check-in')">
+							{{ fila.viajerosRegistrados }}
+						</span>
+						<span *ngIf="!fila.tieneViaje" class="badge-num disabled">—</span>
+					</td>
+					<td>
+						<span *ngIf="fila.tieneViaje" class="estado-dot link-cell"
+							[class.ok]="fila.transportesAsignados > 0"
+							[class.pendiente]="fila.transportesAsignados === 0" (click)="ir('operaciones-transporte')">
+							{{ fila.transportesAsignados > 0 ? 'Asignado' : 'Pendiente' }}
+						</span>
+						<span *ngIf="!fila.tieneViaje" class="estado-dot disabled">—</span>
+					</td>
+					<td>
+						<span *ngIf="fila.tieneViaje" class="estado-dot link-cell"
+							[class.ok]="fila.alojamientosAsignados > 0"
+							[class.pendiente]="fila.alojamientosAsignados === 0"
+							(click)="ir('operaciones-alojamiento')">
+							{{ fila.alojamientosAsignados > 0 ? 'Asignado' : 'Pendiente' }}
+						</span>
+						<span *ngIf="!fila.tieneViaje" class="estado-dot disabled">—</span>
+					</td>
+					<td>
+						<span *ngIf="fila.tieneViaje" class="incidente-badge link-cell"
+							[class.con-incidentes]="fila.incidentes > 0" (click)="ir('operaciones-incidentes')">
+							{{fila.incidentes}}
+						</span>
+						<span *ngIf="!fila.tieneViaje" class="incidente-badge disabled">—</span>
+					</td>
+					<td>
+						<span class="status" [class]="getEstadoClass(fila)">
+							{{ getEstadoLabel(fila.estado) }}
+						</span>
+					</td>
+					<td>
+						<div class="actions" *ngIf="fila.tieneViaje; else sinAcciones">
+							<button class="ver" (click)="verDetalleViaje(fila)" title="Ver detalle">
+								<i class="fa-regular fa-eye"></i>
+							</button>
+							<button class="edit" (click)="editarViaje(fila)" title="Editar">
+								<i class="fa-solid fa-pen"></i>
+							</button>
+							<button class="del" (click)="eliminarViajeRow(fila)" title="Eliminar">
+								<i class="fa-solid fa-trash"></i>
+							</button>
+						</div>
+						<ng-template #sinAcciones><span class="badge-num disabled">—</span></ng-template>
+					</td>
+				</tr>
+				<tr *ngIf="filas.length === 0 && !cargando">
+					<td colspan="9" class="empty">No hay viajes registrados.</td>
+				</tr>
+				<tr *ngIf="cargando">
+					<td colspan="9" class="empty">Cargando...</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- PAGINACIÓN -->
+	<div class="pagination-bar" *ngIf="totalPaginas > 1">
+		<span class="pagination-info">
+			{{ totalElementos }} viajes · Página {{ paginaActual + 1 }} de {{ totalPaginas }}
+		</span>
+		<div class="pagination-controls">
+			<button class="page-btn" [disabled]="paginaActual === 0" (click)="cambiarPagina(0)">
+				<i class="fa-solid fa-angles-left"></i>
+			</button>
+			<button class="page-btn" [disabled]="paginaActual === 0" (click)="cambiarPagina(paginaActual - 1)">
+				<i class="fa-solid fa-angle-left"></i>
+			</button>
+			<button *ngFor="let p of paginas" class="page-btn page-number" [class.active]="p === paginaActual"
+				(click)="cambiarPagina(p)">
+				{{ p + 1 }}
+			</button>
+			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1"
+				(click)="cambiarPagina(paginaActual + 1)">
+				<i class="fa-solid fa-angle-right"></i>
+			</button>
+			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1"
+				(click)="cambiarPagina(totalPaginas - 1)">
+				<i class="fa-solid fa-angles-right"></i>
+			</button>
+		</div>
+	</div>
+
+	<!-- Modales -->
+
+	<!-- Creación de viaje -->
+	<app-viaje-form *ngIf="showViajeForm" [visible]="showViajeForm" [paquetes]="paquetes" (crear)="guardarViaje()"
+		(cerrar)="showViajeForm=false">
+	</app-viaje-form>
+
+	<!-- Detalle del viaje -->
+	<app-detalle-viaje *ngIf="showDetalle" [viaje]="viajeDetalle" (cerrar)="cerrarDetalle()">
+	</app-detalle-viaje>
+
+	<!-- Editar viaje -->
+	<app-edit-viaje-form *ngIf="showEditViaje" [idViaje]="editandoViajeId!" [idPaquete]="filaEditando!.idPaquete"
+		[fechaSalida]="filaEditando!.fechaSalida!" [duracionDias]="duracionPaquete" (guardarCambios)="actualizarViaje()"
+		(cerrar)="cerrarEditViaje()">
+	</app-edit-viaje-form>
+
+	<!-- Eliminación del viaje -->
+	<app-confirm-modal [isOpen]="showConfirmDelete" title="Eliminar viaje"
+		[message]="'¿Desea eliminar el viaje #' + viajePendienteEliminar?.idViaje + '?'" confirmText="Eliminar"
+		cancelText="Cancelar" icon="fa-solid fa-triangle-exclamation" confirmColor="#dc3545"
+		iconBg="rgba(220,53,69,.12)" iconColor="#dc3545" (closed)="cancelarEliminar()"
+		(confirmed)="confirmarEliminar()">
+	</app-confirm-modal>
+
+	<!-- Modal notificación -->
+	<app-toast-notification [show]="showToast" [title]="toastType === 'success' ? 'Operación exitosa' : 'Error'"
+		[message]="toastMsg">
+	</app-toast-notification>

@@ -1,0 +1,156 @@
+.modal-backdrop {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.35);
+	z-index: 998;
+}
+
+.modal-panel {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 999;
+	background: white;
+	border-radius: 22px;
+	padding: 24px 28px;
+	box-shadow: 0 16px 48px rgba(0, 0, 0, 0.14);
+}
+
+.detalle-panel {
+	width: min(500px, 92vw);
+}
+
+.modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 20px;
+}
+
+.modal-header h3 {
+	font-size: 17px;
+	font-weight: 500;
+	color: var(--color-texto-principal);
+	margin: 0;
+}
+
+.btn-cerrar {
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	border: 1px solid var(--bordes);
+	background: white;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--color-texto-secundario);
+	transition: all 0.2s;
+}
+
+.btn-cerrar:hover {
+	background: #fee2e2;
+	border-color: #fca5a5;
+	color: #ef4444;
+}
+
+.detalle-paquete {
+	background: rgba(63, 162, 219, 0.07);
+	border-radius: 16px;
+	padding: 16px 20px;
+	margin-bottom: 28px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.detalle-titulo {
+	font-size: 15px;
+	font-weight: 500;
+	color: var(--color-texto-principal);
+}
+
+.detalle-viaje-id {
+	font-size: 13px;
+	color: var(--color-primario);
+	font-weight: 500;
+	background: rgba(63, 162, 219, 0.15);
+	padding: 3px 12px;
+	border-radius: 999px;
+}
+
+.detalle-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;
+}
+
+.detalle-item {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.detalle-item.span-2 {
+	grid-column: span 2;
+}
+
+.detalle-label {
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--color-texto-secundario);
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.detalle-label i {
+	color: var(--color-primario);
+	font-size: 12px;
+}
+
+.detalle-valor {
+	font-size: 15px;
+	font-weight: 400;
+	color: var(--color-texto-principal);
+	background: #f9f9f9;
+	border-radius: 12px;
+	padding: 10px 16px;
+}
+
+.detalle-actions {
+	margin-top: 32px;
+	display: flex;
+	justify-content: flex-end;
+}
+
+.btn-cerrar-detalle {
+	height: 44px;
+	padding: 0 28px;
+	border-radius: 25px;
+	border: none;
+	background: var(--color-primario);
+	color: white;
+	cursor: pointer;
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	transition: all 0.2s;
+}
+
+.btn-cerrar-detalle:hover {
+	opacity: 0.88;
+}
+
+@media (max-width: 600px) {
+	.detalle-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.detalle-item.span-2 {
+		grid-column: span 1;
+	}
+}

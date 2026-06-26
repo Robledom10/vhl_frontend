@@ -5,7 +5,8 @@
 
 		<!-- SEARCH -->
 		<div class="search-box">
-			<input type="text" placeholder="Buscar proveedor..." [(ngModel)]="search" />
+			<input type="text" placeholder="Buscar proveedor..." [(ngModel)]="search"
+				(ngModelChange)="onSearchChange()" />
 			<button>
 				<i class="fa-solid fa-magnifying-glass"></i>
 			</button>
@@ -58,7 +59,8 @@
 
 					<!-- TIPO BADGE -->
 					<td>
-						<span class="tipo-badge" [ngClass]="'tipo-' + proveedor.tipoProveedor.toLowerCase().replace('í','i')">
+						<span class="tipo-badge"
+							[ngClass]="'tipo-' + proveedor.tipoProveedor.toLowerCase().replace('í','i')">
 							<i [class]="typeIcon(proveedor.tipoProveedor)"></i>
 							{{ proveedor.tipoProveedor }}
 						</span>
@@ -84,6 +86,8 @@
 
 					<!-- ACCIONES -->
 					<td>
+						<!-- ACCIONES -->
+					<td>
 						<div class="actions">
 							<button class="view" (click)="openViewModal(proveedor)" title="Ver proveedor">
 								<i class="fa-regular fa-eye"></i>
@@ -91,7 +95,8 @@
 							<button class="edit" (click)="openEditModal(proveedor)" [disabled]="!proveedor.activo">
 								Editar
 							</button>
-							<button class="delete" [class.activate]="!proveedor.activo" (click)="deleteProvider(proveedor)">
+							<button class="delete" [class.activate]="!proveedor.activo"
+								(click)="openDeleteModal(proveedor)">
 								{{ proveedor.activo ? 'Desactivar' : 'Activar' }}
 							</button>
 						</div>
@@ -104,8 +109,46 @@
 			</tbody>
 		</table>
 	</div>
+
+	<div class="pagination-bar" *ngIf="totalPaginas > 1">
+		<span class="pagination-info">
+			Página {{ paginaActual + 1 }} de {{ totalPaginas }} · {{ totalElementos }} proveedores
+		</span>
+		<div class="pagination-controls">
+			<button class="page-btn" [disabled]="paginaActual === 0" (click)="cambiarPagina(0)">
+				<i class="fa-solid fa-angles-left"></i>
+			</button>
+			<button class="page-btn" [disabled]="paginaActual === 0" (click)="cambiarPagina(paginaActual - 1)">
+				<i class="fa-solid fa-chevron-left"></i>
+			</button>
+			<button *ngFor="let p of paginas" class="page-btn" [class.active]="p === paginaActual"
+				(click)="cambiarPagina(p)">
+				{{ p + 1 }}
+			</button>
+			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1"
+				(click)="cambiarPagina(paginaActual + 1)">
+				<i class="fa-solid fa-chevron-right"></i>
+			</button>
+			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1"
+				(click)="cambiarPagina(totalPaginas - 1)">
+				<i class="fa-solid fa-angles-right"></i>
+			</button>
+		</div>
+	</div>
 </div>
 
-<app-form-provider [isOpen]="showModal" [mode]="modalMode" [provider]="selectedProvider"
-	(closed)="showModal = false" (saved)="loadProviders()">
+<app-form-provider [isOpen]="showModal" [mode]="modalMode" [provider]="selectedProvider" (closed)="closeModal()"
+	(saved)="handleProviderSaved($event)">
 </app-form-provider>
+
+<app-confirm-modal [isOpen]="showDeleteModal" [title]="isTogglingActive ? 'Desactivar proveedor' : 'Activar proveedor'"
+	[message]="isTogglingActive ? 'El proveedor dejará de estar disponible para asignarse a paquetes.' : 'El proveedor volverá a estar disponible para asignarse a paquetes.'"
+	[confirmText]="isTogglingActive ? 'Desactivar' : 'Activar'" cancelText="Cancelar"
+	icon="fa-solid fa-triangle-exclamation" [confirmColor]="isTogglingActive ? '#ff3b3b' : '#3fa2db'"
+	[iconBg]="isTogglingActive ? 'rgba(255, 59, 59, 0.12)' : 'rgba(63, 162, 219, 0.12)'"
+	[iconColor]="isTogglingActive ? '#ff3b3b' : '#3fa2db'" (confirmed)="confirmToggleProvider()"
+	(closed)="closeDeleteModal()">
+</app-confirm-modal>
+
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
+</app-toast-notification>

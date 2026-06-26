@@ -8,8 +8,21 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class NavbarComponent {
 	dropdownOpen = false;
+	menuOpen = false;
 
 	constructor(public authService: AuthService) { }
+
+	toggleMobileMenu(event: Event) {
+		event.stopPropagation();
+		this.menuOpen = !this.menuOpen;
+		if (!this.menuOpen) {
+			this.dropdownOpen = false;
+		}
+	}
+
+	closeMobileMenu() {
+		this.menuOpen = false;
+	}
 
 	toggleDropdown(event: Event) {
 		event.stopPropagation();
@@ -51,5 +64,6 @@ export class NavbarComponent {
 	@HostListener('document:click')
 	closeDropdown() {
 		this.dropdownOpen = false;
+		this.menuOpen = false;
 	}
 }

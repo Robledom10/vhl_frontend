@@ -1,0 +1,117 @@
+<div class="modal-backdrop" *ngIf="isOpen" (click)="cerrar()"></div>
+<div class="modal-panel" *ngIf="isOpen" (click)="$event.stopPropagation()">
+	<div class="modal-header">
+		<h3>Asignar alojamiento<span *ngIf="viajeSeleccionado"> &mdash; {{ viajeSeleccionado.titulo }}</span></h3>
+		<button class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
+	</div>
+
+	<form [formGroup]="alojamientoForm" (ngSubmit)="guardar()">
+		<div class="form-grid">
+			<div class="form-group span-2" *ngIf="!viajeSeleccionado">
+				<label>Viaje *</label>
+				<select formControlName="idViaje">
+					<option value="">Seleccionar viaje...</option>
+					<ng-container *ngFor="let v of viajes">
+						<option *ngIf="v.tieneViaje" [value]="v.id">{{ v.nombre }}</option>
+						<option *ngIf="!v.tieneViaje" disabled>{{ v.titulo }} — (Sin viaje creado)</option>
+					</ng-container>
+				</select>
+			</div>
+
+			<div class="form-group span-2">
+				<label>Nombre del viajero</label>
+				<input type="text" formControlName="nombreViajero" placeholder="Ej: Juan Pérez" autocomplete="off">
+			</div>
+
+			<div class="form-group span-2" *ngIf="proveedores.length > 0">
+				<label>Proveedor registrado</label>
+				<select class="proveedor-select" (change)="seleccionarProveedorAlojamiento($event)">
+					<option value="">Seleccionar proveedor (opcional)...</option>
+					<option *ngFor="let p of proveedores" [value]="p.id">
+						{{ p.nombre }}{{ p.direccion ? ' · ' + p.direccion : '' }}{{ p.telefono ? ' · Tel: ' +
+						p.telefono : '' }}
+					</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label>Hotel / Hospedaje *</label>
+				<input type="text" formControlName="nombreHotel" placeholder="Ej: Hotel Caribe Royal">
+				<span class="error"
+					*ngIf="alojamientoForm.get('nombreHotel')?.invalid && alojamientoForm.get('nombreHotel')?.touched">
+					Campo requerido (min. 3 caracteres)
+				</span>
+			</div>
+
+			<div class="form-group">
+				<label>Tipo de habitacion *</label>
+				<input type="text" formControlName="habitacion" placeholder="Ej: Doble, Suite, Individual">
+				<span class="error"
+					*ngIf="alojamientoForm.get('habitacion')?.invalid && alojamientoForm.get('habitacion')?.touched">
+					Campo requerido
+				</span>
+			</div>
+
+			<div class="form-group">
+				<label>Direccion *</label>
+				<input type="text" formControlName="direccion" placeholder="Ej: Cra. 1 # 17-21, Santa Marta">
+				<span class="error"
+					*ngIf="alojamientoForm.get('direccion')?.invalid && alojamientoForm.get('direccion')?.touched">
+					Campo requerido
+				</span>
+			</div>
+
+			<div class="form-group">
+				<label>Check-in *</label>
+				<div class="cal-wrap">
+					<input type="text" readonly placeholder="Seleccionar fecha"
+						[value]="alojamientoForm.get('checkIn')?.value | date:'dd/MM/yyyy'"
+						(click)="showCalendarCheckIn = !showCalendarCheckIn; $event.stopPropagation()"
+						class="cal-trigger">
+					<i class="fa-regular fa-calendar cal-icon"></i>
+					<app-custom-calendar *ngIf="showCalendarCheckIn" [isOpen]="showCalendarCheckIn"
+						[selectedDate]="alojamientoForm.get('checkIn')?.value || ''"
+						(dateSelected)="onCheckInSelected($event)" (closed)="showCalendarCheckIn = false">
+					</app-custom-calendar>
+				</div>
+				<span class="error"
+					*ngIf="alojamientoForm.get('checkIn')?.invalid && alojamientoForm.get('checkIn')?.touched">
+					Fecha requerida
+				</span>
+			</div>
+
+			<div class="form-group">
+				<label>Check-out *</label>
+				<div class="cal-wrap cal-wrap-right">
+					<input type="text" readonly placeholder="Seleccionar fecha"
+						[value]="alojamientoForm.get('checkOut')?.value | date:'dd/MM/yyyy'"
+						(click)="showCalendarCheckOut = !showCalendarCheckOut; $event.stopPropagation()"
+						class="cal-trigger">
+					<i class="fa-regular fa-calendar cal-icon"></i>
+					<app-custom-calendar *ngIf="showCalendarCheckOut" [isOpen]="showCalendarCheckOut"
+						[selectedDate]="alojamientoForm.get('checkOut')?.value || ''"
+						(dateSelected)="onCheckOutSelected($event)" (closed)="showCalendarCheckOut = false">
+					</app-custom-calendar>
+				</div>
+				<span class="error"
+					*ngIf="alojamientoForm.get('checkOut')?.invalid && alojamientoForm.get('checkOut')?.touched">
+					Fecha requerida
+				</span>
+			</div>
+		</div>
+
+		<div class="modal-actions">
+			<button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
+			<button type="submit" class="btn-guardar" [disabled]="enviando">
+				{{ enviando ? 'Guardando...' : 'Guardar asignacion' }}
+			</button>
+		</div>
+	</form>
+</div>
+
+<app-confirm-modal [isOpen]="showConfirmModal" [title]="editandoId ? 'Actualizar alojamiento' : 'Asignar alojamiento'"
+	[message]="editandoId ? '¿Deseas guardar los cambios de este alojamiento?' : '¿Deseas asignar este alojamiento al viaje seleccionado?'"
+	[confirmText]="editandoId ? 'Actualizar' : 'Asignar'" cancelText="Cancelar" icon="fa-solid fa-hotel"
+	confirmColor="#3fa2db" iconBg="rgba(63, 162, 219, 0.12)" iconColor="#3fa2db" (confirmed)="confirmarGuardar()"
+	(closed)="cerrarConfirmModal()">
+</app-confirm-modal>

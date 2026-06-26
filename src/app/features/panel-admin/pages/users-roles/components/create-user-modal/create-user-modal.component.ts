@@ -155,7 +155,7 @@ export class CreateUserModalComponent {
 				console.error(err);
 				this.isLoading = false;
 				this.errorMessage =
-					err?.error?.message || 'No se pudo crear el usuario';
+					err?.message || err?.error?.message || 'No se pudo crear el usuario';
 
 				this.showErrorModal = true;
 			},
