@@ -7,7 +7,6 @@ import { InteractiveMapComponent } from './components/interactive-map/interactiv
 import { FormsModule } from '@angular/forms';
 import { SliderWorkTeamComponent } from './components/slider-work-team/slider-work-team.component';
 
-
 @NgModule({
 	declarations: [
 		HomeComponent,
@@ -18,7 +17,7 @@ import { SliderWorkTeamComponent } from './components/slider-work-team/slider-wo
 		CommonModule,
 		HomeRoutingModule,
 		SharedModule,
-		FormsModule
+		FormsModule,
 	]
 })
 export class HomeModule { }

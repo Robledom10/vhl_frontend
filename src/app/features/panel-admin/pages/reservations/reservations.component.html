@@ -71,16 +71,14 @@
 			<button class="add-btn" (click)="toggleAddDropdown($event)">
 				<i class="fa-solid fa-plus"></i>
 				<span>Agregar</span>
-				<i class="fa-solid fa-chevron-down add-chevron"></i>
+				<i class="fa-solid fa-chevron-down chevron"></i>
 			</button>
-			<div class="add-dropdown">
+			<div class="dropdown-menu">
 				<button (click)="openCreateModal('existing')">
-					<i class="fa-solid fa-user-check"></i>
-					Usuario existente
+					<i class="fa-solid fa-user"></i> Usuario existente
 				</button>
 				<button (click)="openCreateModal('new')">
-					<i class="fa-solid fa-user-plus"></i>
-					Usuario nuevo
+					<i class="fa-solid fa-user-plus"></i> Usuario nuevo
 				</button>
 			</div>
 		</div>

@@ -34,7 +34,8 @@ import { StatsSectionComponent } from './stats-section/stats-section.component';
 		FooterComponent,
 		PackageDetailSheetComponent,
 		CustomCalendarComponent,
-		ReservationWizardComponent
+		ReservationWizardComponent,
+		StatsSectionComponent
 	],
 })
 export class SharedModule { }
