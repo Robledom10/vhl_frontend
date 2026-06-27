@@ -111,12 +111,26 @@ export class InfoMedicaComponent implements OnInit {
 	cargarTodosContactos(): void {
 		if (this.viajes.length === 0) return;
 		this.paginaRegistros = 0;
-		forkJoin(
-			this.viajes.map(v => this.svc.getContactos(v.id).pipe(catchError(() => of([]))))
-		).pipe(
-			map(results => (results as ContactoEmergencia[][]).flat())
-		).subscribe(contactos => {
-			this.contactos = contactos;
+		forkJoin([
+			forkJoin(this.viajes.map(v => this.svc.getContactos(v.id).pipe(catchError(() => of([]))))).pipe(
+				map(results => (results as ContactoEmergencia[][]).flat())
+			),
+			forkJoin(this.viajes.map(v => this.svc.getContactosDesdeReservas(v.id).pipe(catchError(() => of([]))))).pipe(
+				map(results => (results as any[][]).flat().map(c => ({
+					id: c.id,
+					idViaje: 0,
+					idViajero: 0,
+					nombre: c.nombre,
+					parentesco: c.parentesco,
+					telefono: c.telefono,
+					correo: c.correo ?? '',
+					fechaRegistro: '',
+					nombreViajero: 'Desde reserva',
+					fromReserva: true
+				} as ContactoEmergencia)))
+			)
+		]).subscribe(([deOperacion, deReserva]) => {
+			this.contactos = [...deOperacion, ...deReserva];
 		});
 	}
 
