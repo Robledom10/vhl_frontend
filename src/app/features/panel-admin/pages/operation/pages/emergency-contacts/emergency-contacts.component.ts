@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { OperacionesService } from '../../../../../../core/services/operaciones.service';
 import { AuthService } from '../../../../../../core/services/auth.service';
 import { Viaje, ContactoEmergencia } from '../../../../models/operaciones.models';
@@ -95,11 +97,24 @@ export class ContactosEmergenciaComponent implements OnInit {
 	cargarContactos(): void {
 		if (!this.idViajeSeleccionado) return;
 		this.paginaContactos = 0;
-		this.svc.getContactos(this.idViajeSeleccionado).subscribe({
-			next: (items) => { this.contactos = items; },
-			error: () => {
-				this.mostrarToast('Error', 'No se pudieron cargar los contactos.', 'error');
-			}
+		const id = this.idViajeSeleccionado;
+		forkJoin([
+			this.svc.getContactos(id).pipe(catchError(() => of([]))),
+			this.svc.getContactosDesdeReservas(id).pipe(catchError(() => of([])))
+		]).subscribe(([deOperacion, deReserva]) => {
+			const contactosReserva: ContactoEmergencia[] = (deReserva as any[]).map(c => ({
+				id: c.id,
+				idViaje: id,
+				idViajero: 0,
+				nombre: c.nombre,
+				parentesco: c.parentesco,
+				telefono: c.telefono,
+				correo: c.correo ?? '',
+				fechaRegistro: '',
+				nombreViajero: 'Desde reserva',
+				fromReserva: true
+			}));
+			this.contactos = [...(deOperacion as ContactoEmergencia[]), ...contactosReserva];
 		});
 	}
 
