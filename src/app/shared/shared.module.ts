@@ -10,6 +10,9 @@ import { PackageDetailSheetComponent } from './package-detail-sheet/package-deta
 import { CustomCalendarComponent } from './custom-calendar/custom-calendar.component';
 import { ReservationWizardComponent } from './reservation-wizard/reservation-wizard.component';
 import { StatsSectionComponent } from './stats-section/stats-section.component';
+import { ToastNotificationComponent } from './toast-notification/toast-notification.component';
+import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
+import { PanelAdminModule } from '../features/panel-admin/panel-admin.module';
 
 @NgModule({
 	declarations: [
@@ -20,12 +23,14 @@ import { StatsSectionComponent } from './stats-section/stats-section.component';
 		PackageDetailSheetComponent,
 		CustomCalendarComponent,
 		ReservationWizardComponent,
-		StatsSectionComponent
+		StatsSectionComponent,
+		ToastNotificationComponent,
+		ConfirmModalComponent
 	],
 	imports: [
 		CommonModule,
 		RouterModule,
-		FormsModule
+		FormsModule,
 	],
 	exports: [
 		NavbarComponent,
@@ -35,7 +40,9 @@ import { StatsSectionComponent } from './stats-section/stats-section.component';
 		PackageDetailSheetComponent,
 		CustomCalendarComponent,
 		ReservationWizardComponent,
-		StatsSectionComponent
+		StatsSectionComponent,
+		ToastNotificationComponent,
+		ConfirmModalComponent
 	],
 })
 export class SharedModule { }
