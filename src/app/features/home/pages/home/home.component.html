@@ -21,7 +21,9 @@
 				</div>
 				<div>
 					<span class="search-label">Destino</span>
-					<span class="search-value">Excursion grado 11</span>
+					<span class="search-value">
+						{{ nombrePaquete || 'Cargando...' }}
+					</span>
 				</div>
 			</div>
 
@@ -33,11 +35,15 @@
 				</div>
 				<div>
 					<span class="search-label">Próxima salida</span>
-					<span class="search-value">17/03/2026</span>
+					<span class="search-value">
+						{{ fechaSalida || '—' }}
+					</span>
 				</div>
 			</div>
 
-			<button class="search-btn">Más Info</button>
+			<button class="search-btn" (click)="irAlPaquete()" [disabled]="!proximoViaje">
+				Más Info
+			</button>
 		</div>
 	</div>
 
