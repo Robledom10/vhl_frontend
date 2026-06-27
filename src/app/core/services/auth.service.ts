@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
 import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../../features/auth/models/auth.model';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
@@ -9,6 +9,12 @@ import { Router } from '@angular/router';
 	providedIn: 'root',
 })
 export class AuthService {
+
+	// 🔄 1. Creamos el Subject reactivo con el valor inicial del localStorage
+	private currentUserSubject = new BehaviorSubject<any>(this.getInitialUser());
+
+	// 📡 2. Exponemos el observable para que los componentes se suscriban
+	public currentUser$ = this.currentUserSubject.asObservable();
 	private apiUrl = `${environment.apiUrl}/auth`;
 
 	constructor(
@@ -16,20 +22,31 @@ export class AuthService {
 		private router: Router,
 	) { }
 
+	private getInitialUser(): any {
+		const user = localStorage.getItem('user');
+		if (!user || user === 'undefined') return null;
+		try {
+			return JSON.parse(user);
+		} catch {
+			return null;
+		}
+	}
+
 	// =========================
 	// LOGIN
 	// =========================
 	login(request: LoginRequest) {
 		return this.http
 			.post<LoginResponse>(`${this.apiUrl}/login`, request, {
-				withCredentials: true, // 🔴 IMPORTANTE
+				withCredentials: true,
 			})
 			.pipe(
 				tap((response) => {
 					localStorage.setItem('token', response.accessToken);
-
 					if (response.user) {
 						localStorage.setItem('user', JSON.stringify(response.user));
+						// 🔔 Notificar el cambio a toda la app
+						this.currentUserSubject.next(response.user);
 					}
 				}),
 				catchError(this.handleError),
@@ -40,9 +57,7 @@ export class AuthService {
 		return this.http.post<{ accessToken: string }>(
 			`${this.apiUrl}/tokens/refresh`,
 			{},
-			{
-				withCredentials: true, // 🔴 ENVÍA COOKIE
-			},
+			{ withCredentials: true },
 		);
 	}
 
@@ -62,26 +77,15 @@ export class AuthService {
 	// =========================
 	logout() {
 		return this.http
-			.post(
-				`${this.apiUrl}/tokens/logout`,
-				{},
-				{
-					withCredentials: true,
-					responseType: 'text',
-					headers: {
-						Authorization: `Bearer ${this.getToken()}`,
-					},
-				},
-			)
+			.post(`${this.apiUrl}/tokens/logout`, {}, {
+				withCredentials: true,
+				responseType: 'text',
+				headers: { Authorization: `Bearer ${this.getToken()}` },
+			})
 			.pipe(
-				tap(() => {
-					this.clearSession();
-				}),
+				tap(() => this.clearSession()),
 				catchError((error) => {
-					// aunque falle el backend
-					// limpiamos sesión local
 					this.clearSession();
-
 					return throwError(() => error);
 				}),
 			);
@@ -91,12 +95,17 @@ export class AuthService {
 	// GET PROFILE
 	// =========================
 	getProfile() {
-		return this.http.get(`${this.apiUrl}/profile`, {
+		return this.http.get<any>(`${this.apiUrl}/profile`, {
 			withCredentials: true,
-			headers: {
-				Authorization: `Bearer ${this.getToken()}`,
-			},
-		});
+			headers: { Authorization: `Bearer ${this.getToken()}` },
+		}).pipe(
+			tap(user => {
+				// 🔔 Si consultas el perfil actualizado, refresca el estado
+				localStorage.setItem('user', JSON.stringify(user));
+				this.currentUserSubject.next(user);
+			}),
+			catchError(this.handleError)
+		);
 	}
 
 	// =========================
@@ -104,13 +113,18 @@ export class AuthService {
 	// =========================
 	updateProfile(data: any) {
 		return this.http
-			.put(`${this.apiUrl}/profile/update`, data, {
+			.put<any>(`${this.apiUrl}/profile/update`, data, {
 				withCredentials: true,
-				headers: {
-					Authorization: `Bearer ${this.getToken()}`,
-				},
+				headers: { Authorization: `Bearer ${this.getToken()}` },
 			})
-			.pipe(catchError(this.handleError));
+			.pipe(
+				tap(updatedUser => {
+					// 🔔 Cuando el perfil se actualice con éxito, emite el nuevo usuario
+					localStorage.setItem('user', JSON.stringify(updatedUser));
+					this.currentUserSubject.next(updatedUser);
+				}),
+				catchError(this.handleError)
+			);
 	}
 
 	// =========================
@@ -135,9 +149,7 @@ export class AuthService {
 	assignRole(data: any) {
 		return this.http.post(`${environment.apiUrl}/admin/roles/assign`, data, {
 			withCredentials: true,
-			headers: {
-				Authorization: `Bearer ${this.getToken()}`,
-			},
+			headers: { Authorization: `Bearer ${this.getToken()}` },
 		});
 	}
 
@@ -147,7 +159,8 @@ export class AuthService {
 	clearSession(): void {
 		localStorage.clear();
 		sessionStorage.clear();
-
+		// 🔔 Limpiar el flujo reactivo poniendo al usuario en null
+		this.currentUserSubject.next(null);
 		this.router.navigate(['/']);
 	}
 
@@ -159,29 +172,12 @@ export class AuthService {
 	}
 
 	isAuthenticated(): boolean {
-		const token = this.getToken();
-		const user = this.getUser();
-
-		return !!token && !!user;
+		return !!this.getToken() && !!this.getUser();
 	}
 
-	// Obtener usuario del localStorage
+	// Retorna el valor síncrono actual por si se necesita puntualmente
 	getUser() {
-		const user = localStorage.getItem('user');
-
-		if (!user || user === 'undefined') {
-			return null;
-		}
-
-		try {
-			return JSON.parse(user);
-		} catch (error) {
-			console.error('Error parseando usuario:', error);
-
-			localStorage.removeItem('user');
-
-			return null;
-		}
+		return this.currentUserSubject.value;
 	}
 
 	// =========================
@@ -203,16 +199,10 @@ export class AuthService {
 	// =========================
 
 	disableUser(userId: number) {
-		return this.http.put(
-			`${environment.apiUrl}/admin/users/${userId}/disable`,
-			{},
-			{
-				withCredentials: true,
-				headers: {
-					Authorization: `Bearer ${this.getToken()}`,
-				},
-			},
-		);
+		return this.http.put(`${environment.apiUrl}/admin/users/${userId}/disable`, {}, {
+			withCredentials: true,
+			headers: { Authorization: `Bearer ${this.getToken()}` },
+		});
 	}
 
 	// =========================
@@ -220,16 +210,10 @@ export class AuthService {
 	// =========================
 
 	enableUser(userId: number) {
-		return this.http.put(
-			`${environment.apiUrl}/admin/users/${userId}/enable`,
-			{},
-			{
-				withCredentials: true,
-				headers: {
-					Authorization: `Bearer ${this.getToken()}`,
-				},
-			},
-		);
+		return this.http.put(`${environment.apiUrl}/admin/users/${userId}/enable`, {}, {
+			withCredentials: true,
+			headers: { Authorization: `Bearer ${this.getToken()}` },
+		});
 	}
 
 	// =========================
@@ -238,27 +222,15 @@ export class AuthService {
 
 	googleLogin(idToken: string) {
 		return this.http
-			.post<LoginResponse>(
-				`${this.apiUrl}/google-login`,
-				{
-					idToken
-				},
-				{
-					withCredentials: true
-				}
-			)
+			.post<LoginResponse>(`${this.apiUrl}/google-login`, { idToken }, {
+				withCredentials: true
+			})
 			.pipe(
 				tap((response) => {
-					localStorage.setItem(
-						'token',
-						response.accessToken
-					);
-
+					localStorage.setItem('token', response.accessToken);
 					if (response.user) {
-						localStorage.setItem(
-							'user',
-							JSON.stringify(response.user)
-						);
+						localStorage.setItem('user', JSON.stringify(response.user));
+						this.currentUserSubject.next(response.user);
 					}
 				}),
 				catchError(this.handleError)
@@ -270,16 +242,10 @@ export class AuthService {
 	// =========================
 	private handleError(error: any) {
 		console.error('AuthService Error:', error);
-
 		let errorMessage = 'Error desconocido';
-
-		if (error.error?.message) {
-			errorMessage = error.error.message;
-		} else if (error.error?.error) {
-			errorMessage = error.error.error;
-		} else if (error.message) {
-			errorMessage = error.message;
-		}
+		if (error.error?.message) errorMessage = error.error.message;
+		else if (error.error?.error) errorMessage = error.error.error;
+		else if (error.message) errorMessage = error.message;
 
 		return throwError(() => ({
 			message: errorMessage,

@@ -1,10 +1,6 @@
 <section class="stats-section">
-  <div
-    class="stat-card"
-    #statCard
-    *ngFor="let stat of stats"
-  >
-    <p class="stat-number">{{ stat.current }} {{ stat.suffix }}</p>
-    <p class="stat-label">{{ stat.label }}</p>
-  </div>
+	<div class="stat-card" #statCard *ngFor="let stat of stats">
+		<p class="stat-number">{{ stat.current }} {{ stat.suffix }}</p>
+		<p class="stat-label">{{ stat.label }}</p>
+	</div>
 </section>

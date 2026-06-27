@@ -172,6 +172,13 @@ export class CreateUserModalComponent {
 		this.showConfirmCreateModal = false;
 	}
 
+	togglePasswordVisibility(inputId: string): void {
+		const input = document.getElementById(inputId) as HTMLInputElement;
+		if (input) {
+			input.type = input.type === 'password' ? 'text' : 'password';
+		}
+	}
+
 	// =========================
 	// DROPDOWN
 	// =========================

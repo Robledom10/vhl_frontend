@@ -38,8 +38,9 @@
 		</div>
 
 		<div class="user-dropdown" *ngIf="dropdownOpen">
-			<a routerLink="/panel-admin">Mi perfil</a>
-			<a routerLink="/settings">Configuración</a>
+			<a routerLink="/panel-admin/control-panel" (click)="closeMobileMenu()">
+				{{ isAdminOrGuide ? 'Panel Administrativo' : 'Mi perfil' }}
+			</a>
 			<button (click)="logout()">Salir</button>
 		</div>
 	</div>
