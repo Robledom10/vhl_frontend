@@ -8,15 +8,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 export class PackagesComponent implements OnInit, OnDestroy {
 
 	heroImages: string[] = [
-		'https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1777919816/D%C3%ADa3-26_wxkcpo.jpg',
-		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782601660/Medellin01_i5basv.jpg',
-		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782601746/SanAndres03_a8pebk.jpg',
-		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782601704/Cocora01_ifve7z.jpg',
-		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782601618/Cartagena03_nqbhwa.jpg',
-		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782601711/Salento03_nh1ajk.jpg',
-		'https://res.cloudinary.com/dqcviyp18/image/upload/v1778019081/neidygirado21-cartagena-de-indias-4788526.jpg_pt4jpn.jpg',
-		'https://res.cloudinary.com/dqcviyp18/image/upload/v1781206500/Medellin03_zsvagf.jpg',
-		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782601720/Salento04_o5zm4l.jpg',
+		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782623845/pexels-beach-1852945_jrrpig.jpg',
+		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782623914/makalu-colombia-4938090_y9hhv7.jpg',
+		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782625597/herney-island-2056892_w5h2fm.jpg',
+		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782623932/graphicalbrain-cartagena-de-indias-674706_y8bglf.jpg',
+		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782623857/nitovic-quindio-3977049_1920_igyzz6.jpg',
+		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782623873/schaferle-island-2482200_uefsbo.jpg',
+		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782623949/bergslay-guatape-4298658_tj9jvo.jpg',
+		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782625645/frarthega0-paipa-4931315_m9815y.jpg',
+		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782625561/ma_frank-croatia-8123037_gluepl.jpg',
 	];
 
 	currentHeroIndex = 0;

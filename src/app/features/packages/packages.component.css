@@ -29,7 +29,7 @@
 	object-fit: cover;
 	object-position: center;
 	opacity: 0;
-	transition: opacity 1.8s ease-in-out;
+	transition: opacity 1s ease-in-out;
 	will-change: opacity;
 }
 
