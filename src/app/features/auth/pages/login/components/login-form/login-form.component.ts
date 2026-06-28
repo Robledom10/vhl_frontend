@@ -54,7 +54,7 @@ export class LoginFormComponent {
 				this.isLoading = false;
 
 				// Redirigir al dashboard o home
-				this.router.navigate(['/home']); // Ajusta la ruta según tu aplicación
+				this.redirectUserByRole();
 			},
 			error: (err) => {
 				console.error('Error en el login:', err);
@@ -64,6 +64,25 @@ export class LoginFormComponent {
 				this.loginError = true;
 			}
 		});
+	}
+
+	// Login con Google
+	loginGoogle() {
+		this.googleService.loginPopup();
+	}
+
+	/**
+	 * Centraliza la lógica de redirección evaluando el rol del usuario autenticado
+	 */
+	private redirectUserByRole() {
+		const user = this.authService.getUser();
+		const role = user?.role;
+
+		if (role === 'ADMIN' || role === 'GUIDE') {
+			this.router.navigate(['/panel-admin/control-panel']);
+		} else {
+			this.router.navigate(['/home']);
+		}
 	}
 
 	// Función para mostrar/ocultar contraseña
@@ -77,10 +96,5 @@ export class LoginFormComponent {
 	// Getter para acceder fácilmente a los controles del formulario
 	get f() {
 		return this.loginForm.controls;
-	}
-
-	// Login con Google
-	loginGoogle() {
-		this.googleService.loginPopup();
 	}
 }

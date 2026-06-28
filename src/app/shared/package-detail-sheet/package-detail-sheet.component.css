@@ -1102,6 +1102,64 @@
 	line-height: 1.5;
 }
 
+/* ===== Sin disponibilidad ===== */
+.no-availability {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	padding: 24px 16px;
+	background: #fff8f0;
+	border: 1.5px solid #fcd9a8;
+	border-radius: 20px;
+	text-align: center;
+}
+
+.no-availability-icon {
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	background: #fef0d8;
+	color: #f59e0b;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
+}
+
+.no-availability-title {
+	margin: 0;
+	font-size: 17px;
+	font-weight: 700;
+	color: #92400e;
+}
+
+.no-availability-desc {
+	margin: 0;
+	font-size: 14px;
+	color: #b45309;
+	line-height: 1.5;
+}
+
+/* ===== Botón registrarse ===== */
+.reserve-btn.register-btn {
+	background: #0f4c81;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	font-size: 20px;
+}
+
+.reserve-btn.register-btn:hover {
+	background: #123862;
+	box-shadow: 0 8px 18px rgba(18, 56, 98, .25);
+}
+
+.reserve-btn.register-btn i {
+	font-size: 18px;
+}
+
 /* ── Responsive ────────────────────────────────────────── */
 @media (max-width: 768px) {
 	.top-section {

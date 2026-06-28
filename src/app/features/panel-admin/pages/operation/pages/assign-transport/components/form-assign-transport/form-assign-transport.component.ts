@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { OperacionesService } from '../../../../../../../../core/services/operaciones.service';
-import { PackageService } from '../../../../../../../../core/services/package.service';
 import { RespuestaProveedor } from '../../../../../../models/package.model';
 import { ViajeTransporteDisplay } from '../../../../models/operaciones-display.models';
 
@@ -27,6 +26,9 @@ export class FormAssignTransportComponent implements OnChanges {
 
 	enviando = false;
 
+	// Confirmación de guardado
+	showConfirmModal = false;
+
 	transporteForm = this.fb.group({
 		idViaje: [''],
 		empresa: ['', [Validators.required, Validators.minLength(3)]],
@@ -39,10 +41,7 @@ export class FormAssignTransportComponent implements OnChanges {
 		placa: ['', [Validators.required, Validators.minLength(5)]],
 	});
 
-	constructor(
-		private fb: FormBuilder,
-		private svc: OperacionesService,
-	) {}
+	constructor(private fb: FormBuilder, private svc: OperacionesService,) { }
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes['isOpen'] && this.isOpen) {
@@ -108,20 +107,39 @@ export class FormAssignTransportComponent implements OnChanges {
 		this.closed.emit();
 	}
 
+	// =========================================
+	// VALIDAR Y ABRIR CONFIRMACIÓN
+	// =========================================
+
 	guardar(): void {
 		if (this.transporteForm.invalid) {
 			this.transporteForm.markAllAsTouched();
 			return;
 		}
+
+		const idViaje = this.viajeSeleccionado?.id || Number(this.transporteForm.value.idViaje);
+		if (!idViaje) {
+			this.saveFailed.emit('Selecciona un viaje');
+			return;
+		}
+
+		this.showConfirmModal = true;
+	}
+
+	cerrarConfirmModal(): void {
+		this.showConfirmModal = false;
+	}
+
+	confirmarGuardar(): void {
+		this.showConfirmModal = false;
+		this.enviarFormulario();
+	}
+
+	private enviarFormulario(): void {
 		this.enviando = true;
 
 		const v = this.transporteForm.value;
 		const idViaje = this.viajeSeleccionado?.id || Number(v.idViaje);
-		if (!idViaje) {
-			this.enviando = false;
-			this.saveFailed.emit('Selecciona un viaje');
-			return;
-		}
 
 		const rawFecha = v.horarioSalida || '';
 		const body = {
@@ -138,7 +156,6 @@ export class FormAssignTransportComponent implements OnChanges {
 		const request$ = this.editandoTransporteId
 			? this.svc.actualizarTransporte(idViaje, this.editandoTransporteId, body)
 			: this.svc.asignarTransporte(idViaje, body);
-
 		const mensajeOk = this.editandoTransporteId
 			? 'Transporte actualizado correctamente'
 			: 'Transporte asignado correctamente';
@@ -151,8 +168,7 @@ export class FormAssignTransportComponent implements OnChanges {
 			error: (err) => {
 				this.enviando = false;
 				const campos = err?.error?.campos;
-				const detalle = campos && Object.keys(campos).length > 0
-					? ': ' + Object.values(campos).join(', ') : '';
+				const detalle = campos && Object.keys(campos).length > 0 ? ': ' + Object.values(campos).join(', ') : '';
 				this.saveFailed.emit(
 					(err?.error?.mensaje || err?.error?.message || 'Error al guardar transporte') + detalle
 				);

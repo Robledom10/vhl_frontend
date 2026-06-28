@@ -4,6 +4,7 @@ import { RespuestaComentarioPaquete } from './models/comments.model';
 import { AuthService } from '../../core/services/auth.service';
 import { OperacionesService } from '../../core/services/operaciones.service';
 import { Viaje } from '../../features/panel-admin/models/operaciones.models';
+import { Router } from '@angular/router';
 
 export interface InfoRow {
 	label: string;
@@ -70,10 +71,10 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 	viajeSeleccionado: Viaje | null = null;
 
 	constructor(
-		private elementRef: ElementRef,
 		private packageService: PackageService,
 		private authService: AuthService,
-		private operacionesService: OperacionesService
+		private operacionesService: OperacionesService,
+		private router: Router
 	) { }
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -412,6 +413,16 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 
 			return null;
 		}
+	}
+
+	/** Sin cupos O sin viajes disponibles */
+	get sinDisponibilidad(): boolean {
+		return (this.package?.spotsAvailable ?? 0) === 0 || this.viajesDisponibles.length === 0;
+	}
+
+	irARegistro(): void {
+		this.close();
+		this.router.navigate(['/auth/register']);
 	}
 
 	// HostListener

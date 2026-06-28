@@ -219,72 +219,79 @@
 							<span>Selecciona cuántas personas viajarán</span>
 						</div>
 
-						<div class="travelers-selector">
-							<button class="qty-btn" (click)="decreaseTravelers()" [disabled]="travelers === 1">
-								<i class="fa-solid fa-minus"></i>
-							</button>
-
-							<div class="qty-info">
-								<span class="qty-number">
-									{{ travelers }}
-								</span>
-								<span class="qty-label">
-									{{ travelers === 1 ? 'Viajero' : 'Viajeros' }}
-								</span>
+						<!-- Sin disponibilidad -->
+						<div class="no-availability" *ngIf="sinDisponibilidad">
+							<div class="no-availability-icon">
+								<i class="fa-solid fa-calendar-xmark"></i>
 							</div>
-
-							<button class="qty-btn" (click)="increaseTravelers()"
-								[disabled]="travelers >= package!.spotsAvailable">
-								<i class="fa-solid fa-plus"></i>
-							</button>
+							<p class="no-availability-title">Sin fechas disponibles</p>
+							<p class="no-availability-desc">
+								Este paquete no tiene viajes programados en este momento. Contáctanos para más
+								información.
+							</p>
 						</div>
 
-						<div class="travel-date-selector">
+						<!-- Con disponibilidad -->
+						<ng-container *ngIf="!sinDisponibilidad">
 
-							<label>Fecha disponible</label>
-
-							<div class="custom-trip-dropdown" #tripDropdown>
-								<div class="trip-selected" (click)="toggleTripDropdown()">
-									<span>{{ selectedTripLabel }}</span>
-									<i class="fa-solid fa-chevron-down arrow" [class.open]="tripDropdownOpen"></i>
+							<div class="travelers-selector">
+								<button class="qty-btn" (click)="decreaseTravelers()" [disabled]="travelers === 1">
+									<i class="fa-solid fa-minus"></i>
+								</button>
+								<div class="qty-info">
+									<span class="qty-number">{{ travelers }}</span>
+									<span class="qty-label">{{ travelers === 1 ? 'Viajero' : 'Viajeros' }}</span>
 								</div>
+								<button class="qty-btn" (click)="increaseTravelers()"
+									[disabled]="travelers >= package!.spotsAvailable">
+									<i class="fa-solid fa-plus"></i>
+								</button>
+							</div>
 
-								<div class="trip-options" *ngIf="tripDropdownOpen">
-									<div class="trip-option" (click)="selectTrip(null)">
-										<p> Selecciona una fecha</p>
+							<div class="travel-date-selector">
+								<label>Fecha disponible</label>
+								<div class="custom-trip-dropdown" #tripDropdown>
+									<div class="trip-selected" (click)="toggleTripDropdown()">
+										<span>{{ selectedTripLabel }}</span>
+										<i class="fa-solid fa-chevron-down arrow" [class.open]="tripDropdownOpen"></i>
 									</div>
-
-									<div class="trip-option" *ngFor="let viaje of viajesDisponibles"
-										(click)="selectTrip(viaje)">
-
-										<div class="trip-date">
-											{{ viaje.fechaSalida | date:'dd/MM/yyyy' }}
-
-											<i class="fa-solid fa-arrow-right-long"></i>
-
-											{{ viaje.fechaRegreso | date:'dd/MM/yyyy' }}
+									<div class="trip-options" *ngIf="tripDropdownOpen">
+										<div class="trip-option" (click)="selectTrip(null)">
+											<p>Selecciona una fecha</p>
+										</div>
+										<div class="trip-option" *ngFor="let viaje of viajesDisponibles"
+											(click)="selectTrip(viaje)">
+											<div class="trip-date">
+												{{ viaje.fechaSalida | date:'dd/MM/yyyy' }}
+												<i class="fa-solid fa-arrow-right-long"></i>
+												{{ viaje.fechaRegreso | date:'dd/MM/yyyy' }}
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
 
-						<div class="reservation-price">
-							<div class="reservation-total">
-								<span>Total estimado</span>
-								<strong>
-									${{ totalPrice | number:'1.0-0' }}
-								</strong>
+							<div class="reservation-price">
+								<div class="reservation-total">
+									<span>Total estimado</span>
+									<strong>${{ totalPrice | number:'1.0-0' }}</strong>
+								</div>
+								<small>${{ package.price | number:'1.0-0' }} por persona</small>
 							</div>
 
-							<small>
-								${{ package.price | number:'1.0-0' }} por persona
-							</small>
-						</div>
+							<!-- Usuario logueado -->
+							<button class="reserve-btn" *ngIf="isLogged" (click)="openReservationWizard()"
+								[disabled]="!viajeSeleccionado">
+								Continuar reserva
+							</button>
 
-						<button class="reserve-btn" (click)="openReservationWizard()" [disabled]="!viajeSeleccionado">
-							Continuar reserva
-						</button>
+							<!-- Usuario NO logueado -->
+							<button class="reserve-btn register-btn" *ngIf="!isLogged" (click)="irARegistro()">
+								<i class="fa-solid fa-user-plus"></i>
+								Regístrate para reservar
+							</button>
+
+						</ng-container>
 					</div>
 
 					<div class="cancel-card">
