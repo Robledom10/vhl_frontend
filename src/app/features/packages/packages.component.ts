@@ -12,7 +12,6 @@ export class PackagesComponent implements OnInit, OnDestroy {
 		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782623914/makalu-colombia-4938090_y9hhv7.jpg',
 		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782625597/herney-island-2056892_w5h2fm.jpg',
 		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782623932/graphicalbrain-cartagena-de-indias-674706_y8bglf.jpg',
-		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782623857/nitovic-quindio-3977049_1920_igyzz6.jpg',
 		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782623873/schaferle-island-2482200_uefsbo.jpg',
 		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782623949/bergslay-guatape-4298658_tj9jvo.jpg',
 		'https://res.cloudinary.com/dqcviyp18/image/upload/v1782625645/frarthega0-paipa-4931315_m9815y.jpg',
