@@ -183,7 +183,9 @@
 								(ngModelChange)="onPaqueteChange($event)"
 								[attr.disabled]="cargandoViajes ? true : null">
 								<option value="" disabled selected>
-									{{ cargandoViajes ? 'Cargando paquetes...' : (paquetesDisponibles.length === 0 ? 'No hay paquetes disponibles' : 'Selecciona un paquete') }}
+									{{ cargandoViajes ? 'Cargando paquetes...' :
+									(paquetesDisponibles.length === 0 ?
+									'No hay paquetes disponibles' : 'Selecciona un paquete') }}
 								</option>
 								<option *ngFor="let p of paquetesDisponibles" [value]="p.id">
 									{{ p.nombre }}
@@ -380,7 +382,8 @@
 								<i class="fa-solid fa-check" *ngIf="form.aceptaTerminos"></i>
 							</div>
 							<span>
-								Acepto los <a href="#" (click)="$event.preventDefault()">términos y condiciones</a> del servicio
+								Acepto los <a href="#" (click)="$event.preventDefault()">términos y condiciones</a> del
+								servicio
 							</span>
 						</label>
 
@@ -431,3 +434,15 @@
 		</div>
 	</div>
 </div>
+
+<!-- CONFIRMACIÓN CREAR RESERVA -->
+<app-confirm-modal [isOpen]="showConfirmModal" title="Confirmar reserva"
+	[message]="'¿Deseas confirmar la reserva de ' + form.paqueteNombre + ' para ' + form.personas + ' persona(s)?'"
+	confirmText="Crear reserva" cancelText="Revisar" icon="fa-solid fa-calendar-check" confirmColor="#3fa2db"
+	iconBg="rgba(63, 162, 219, 0.12)" iconColor="#3fa2db" (confirmed)="confirmarGuardado()"
+	(closed)="cerrarConfirmModal()">
+</app-confirm-modal>
+
+<!-- TOAST -->
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMsg">
+</app-toast-notification>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { OperacionesService } from '../../../../../../core/services/operaciones.service';
@@ -24,6 +24,10 @@ export class ComunicacionesComponent implements OnInit {
 	idViajeSeleccionado: number | null = null;
 	comunicaciones: Notificacion[] = [];
 	paqueteTituloMap: Record<number, string> = {};
+
+	// ── Custom selects ──────────────────────────────────────
+	paqueteDropdownOpen = false;
+	viajeDropdownOpen = false;
 
 	reservasViaje: ReservaApi[] = [];
 	filtroPago: 'todos' | 'pagados' | 'no_pagados' = 'todos';
@@ -76,6 +80,12 @@ export class ComunicacionesComponent implements OnInit {
 
 	constructor(private svc: OperacionesService) { }
 
+	@HostListener('document:click')
+	closeDropdowns(): void {
+		this.paqueteDropdownOpen = false;
+		this.viajeDropdownOpen = false;
+	}
+
 	ngOnInit(): void {
 		forkJoin({
 			viajes: this.svc.getViajes(),
@@ -92,29 +102,59 @@ export class ComunicacionesComponent implements OnInit {
 		});
 	}
 
-	onPaqueteChange(event: Event): void {
-		const id = Number((event.target as HTMLSelectElement).value);
-		this.idPaqueteSeleccionado = id || null;
+	// ── Custom select: paquete ───────────────────────────────
+	togglePaqueteDropdown(event: Event): void {
+		event.stopPropagation();
+		this.viajeDropdownOpen = false;
+		this.paqueteDropdownOpen = !this.paqueteDropdownOpen;
+	}
+
+	seleccionarPaquete(id: number | null): void {
+		this.idPaqueteSeleccionado = id;
+		this.paqueteDropdownOpen = false;
 		this.idViajeSeleccionado = null;
 		this.comunicaciones = [];
 		this.reservasViaje = [];
 
-		if (this.idPaqueteSeleccionado) {
-			this.viajesFiltrados = this.viajes.filter(v => v.idPaquete === this.idPaqueteSeleccionado);
-		} else {
-			this.viajesFiltrados = [];
-		}
+		this.viajesFiltrados = id ? this.viajes.filter(v => v.idPaquete === id) : [];
 	}
 
-	onViajeChange(event: Event): void {
-		const id = Number((event.target as HTMLSelectElement).value);
-		this.idViajeSeleccionado = id || null;
+	get paqueteSeleccionadoLabel(): string {
+		if (!this.idPaqueteSeleccionado) return 'Seleccionar paquete...';
+		const p = this.paquetes.find(x => x.id === this.idPaqueteSeleccionado);
+		return p ? p.titulo : 'Seleccionar paquete...';
+	}
+
+	// ── Custom select: viaje ─────────────────────────────────
+	toggleViajeDropdown(event: Event): void {
+		event.stopPropagation();
+		if (!this.idPaqueteSeleccionado) return;
+		this.paqueteDropdownOpen = false;
+		this.viajeDropdownOpen = !this.viajeDropdownOpen;
+	}
+
+	seleccionarViaje(id: number | null): void {
+		this.viajeDropdownOpen = false;
+		this.idViajeSeleccionado = id;
 		this.comunicaciones = [];
 		this.reservasViaje = [];
 		if (this.idViajeSeleccionado) {
 			this.cargarNotificaciones();
 			this.cargarEmailsViaje();
 		}
+	}
+
+	get viajeSeleccionadoLabel(): string {
+		if (!this.idPaqueteSeleccionado) return 'Primero selecciona un paquete';
+		if (!this.idViajeSeleccionado) return 'Seleccionar viaje...';
+		const v = this.viajesFiltrados.find(x => x.id === this.idViajeSeleccionado);
+		return v ? this.getViajeLabel(v) : 'Seleccionar viaje...';
+	}
+
+	getViajeLabel(v: Viaje): string {
+		const salida = v.fechaSalida ? new Date(v.fechaSalida).toLocaleDateString('es-CO') : 'Sin fecha';
+		const regreso = v.fechaRegreso ? new Date(v.fechaRegreso).toLocaleDateString('es-CO') : 'Sin fecha';
+		return `Viaje #${v.id} · ${salida} → ${regreso}`;
 	}
 
 	onFiltroPagoChange(filtro: 'todos' | 'pagados' | 'no_pagados'): void {

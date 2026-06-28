@@ -130,6 +130,16 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 	errorCliente = false;
 	// ------------------------------------------
 
+	// ─── Confirmación ─────────────────────────────────────
+	showConfirmModal = false;
+	pendingSolicitud: SolicitudReserva | null = null;
+
+	// ─── Toast ────────────────────────────────────────────
+	showToast = false;
+	toastTitle = '';
+	toastMsg = '';
+	toastType: 'success' | 'error' = 'success';
+
 	form: ReservationForm = this.emptyForm();
 
 	ngOnInit(): void {
@@ -374,16 +384,13 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 		if (!this.validateStep(3)) return;
 
 		const viajeSeleccionado = this.viajesDisponibles.find(v => v.id === Number(this.form.idViaje));
-
 		if (!viajeSeleccionado) {
 			this.saveError = 'Selecciona un viaje válido antes de confirmar.';
 			return;
 		}
 
-		this.isSaving = true;
-		this.saveError = '';
-
-		const solicitud: SolicitudReserva = {
+		// Armar solicitud y abrir confirmación en vez de guardar directo
+		this.pendingSolicitud = {
 			idUsuario: Number(this.form.idUsuario),
 			idPaquete: viajeSeleccionado.idPaquete,
 			idViaje: Number(this.form.idViaje),
@@ -400,17 +407,47 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 			total: Number(this.form.total) || 0,
 		};
 
+		this.showConfirmModal = true;
+	}
+
+	confirmarGuardado(): void {
+		if (!this.pendingSolicitud) return;
+		const solicitud = this.pendingSolicitud;
+		this.showConfirmModal = false;
+		this.isSaving = true;
+		this.saveError = '';
+
 		this.reservationService.crear(solicitud).subscribe({
 			next: (reservation) => {
 				this.isSaving = false;
-				this.reservationCreated.emit(reservation);
-				this.closed.emit();
+				this.pendingSolicitud = null;
+				this.mostrarToast('Reserva creada', `La reserva de ${this.form.paqueteNombre} fue registrada exitosamente.`, 'success');
+				setTimeout(() => {
+					this.reservationCreated.emit(reservation);
+					this.closed.emit();
+				}, 1200);
 			},
 			error: (err) => {
 				this.isSaving = false;
-				this.saveError = err?.error?.message || err?.message || 'Ocurrió un error al crear la reserva. Intenta de nuevo.';
+				this.pendingSolicitud = null;
+				const msg = err?.error?.message || err?.message || 'Ocurrió un error al crear la reserva. Intenta de nuevo.';
+				this.saveError = msg;
+				this.mostrarToast('Error al crear reserva', msg, 'error');
 			}
 		});
+	}
+
+	cerrarConfirmModal(): void {
+		this.showConfirmModal = false;
+		this.pendingSolicitud = null;
+	}
+
+	mostrarToast(title: string, msg: string, type: 'success' | 'error' = 'success'): void {
+		this.toastTitle = title;
+		this.toastMsg = msg;
+		this.toastType = type;
+		this.showToast = true;
+		setTimeout(() => { this.showToast = false; }, 3500);
 	}
 
 	cancel(): void {
@@ -460,6 +497,10 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 		this.errorCliente = false;
 		this.selectedPaqueteId = '';
 		this.viajesFiltrados = [];
+		this.showConfirmModal = false;
+		this.pendingSolicitud = null;
+		this.showToast = false;
+		this.saveError = '';
 	}
 
 	private emptyForm(): ReservationForm {
