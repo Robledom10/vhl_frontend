@@ -83,16 +83,16 @@
 					</div>
 				</div>
 				<div class="cc-divider"></div>
-				<div class="card-actions">
-					<button class="edit" (click)="abrir(c)">
-						<i class="fa-solid fa-pen"></i><span>Editar</span>
-					</button>
-					<button class="del" (click)="eliminar(c)">
-						<i class="fa-solid fa-trash"></i><span>Eliminar</span>
-					</button>
+				<div class="card-actions" *ngIf="!c.fromReserva">
+					<button class="edit" (click)="abrir(c)">Editar</button>
+					<button class="del" (click)="eliminar(c)">Eliminar</button>
+				</div>
+
+				<div *ngIf="c.fromReserva"
+					style="padding: 10px 16px; font-size: 12px; color: #3fa2db; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+					<i class="fa-solid fa-bookmark"></i> Registrado en reserva
 				</div>
 			</div>
-
 			<div class="contactos-empty" *ngIf="contactos.length === 0">
 				<i class="fa-solid fa-phone-slash"></i>
 				<p>No hay contactos registrados para este viaje.</p>
