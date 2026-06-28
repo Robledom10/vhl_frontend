@@ -400,9 +400,7 @@
 	content: '';
 	position: absolute;
 	inset: 0;
-	background: linear-gradient(to bottom,
-			transparent 55%,
-			color-mix(in srgb, var(--color-fondo) 60%, transparent));
+	background: linear-gradient(to bottom, transparent 55%, color-mix(in srgb, var(--color-fondo) 60%, transparent));
 	pointer-events: none;
 }
 
