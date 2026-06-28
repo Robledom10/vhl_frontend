@@ -34,6 +34,59 @@ export class AsignarAlojamientoComponent implements OnInit {
 	showDeleteModal = false;
 	viajeAEliminar: ViajeAlojamientoDisplay | null = null;
 
+	// ─── Búsqueda ─────────────────────────────────────────────
+	private _search = '';
+	get search(): string { return this._search; }
+	set search(val: string) {
+		this._search = val;
+		this.paginaActual = 0;
+	}
+
+	// ─── Paginación ───────────────────────────────────────────
+	pageSize = 5;
+	paginaActual = 0;
+
+	get viajesFiltrados(): ViajeAlojamientoDisplay[] {
+		const texto = this._search?.toLowerCase() || '';
+		return this.viajes
+			.filter(v => v.tieneViaje)
+			.filter(v =>
+				v.titulo.toLowerCase().includes(texto) ||
+				(`${v.id}`).includes(texto)
+			);
+	}
+
+	get totalElementos(): number {
+		return this.viajesFiltrados.length;
+	}
+
+	get totalPaginas(): number {
+		return Math.ceil(this.totalElementos / this.pageSize);
+	}
+
+	get paginas(): number[] {
+		const total = this.totalPaginas;
+		const actual = this.paginaActual;
+		const rango: number[] = [];
+
+		let inicio = Math.max(0, actual - 2);
+		let fin = Math.min(total - 1, inicio + 4);
+		if (fin - inicio < 4) inicio = Math.max(0, fin - 4);
+
+		for (let i = inicio; i <= fin; i++) rango.push(i);
+		return rango;
+	}
+
+	get viajesPaginados(): ViajeAlojamientoDisplay[] {
+		const inicio = this.paginaActual * this.pageSize;
+		return this.viajesFiltrados.slice(inicio, inicio + this.pageSize);
+	}
+
+	cambiarPagina(pagina: number): void {
+		if (pagina < 0 || pagina >= this.totalPaginas) return;
+		this.paginaActual = pagina;
+	}
+
 	constructor(
 		private svc: OperacionesService,
 		private authSvc: AuthService,

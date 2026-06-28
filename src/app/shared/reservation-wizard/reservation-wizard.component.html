@@ -6,7 +6,6 @@
 			<div class="modal-content">
 
 				<!-- STEPPER -->
-
 				<div class="steps-wrapper">
 					<div class="step-item">
 						<div class="step" [class.active]="currentStep >= 1">
@@ -15,9 +14,7 @@
 						</div>
 						<p [class.active]="currentStep === 1">Viajeros</p>
 					</div>
-
 					<div class="line" [class.active]="currentStep >= 2"></div>
-
 					<div class="step-item">
 						<div class="step" [class.active]="currentStep >= 2">
 							<i class="fa-solid fa-check" *ngIf="currentStep > 2"></i>
@@ -25,9 +22,7 @@
 						</div>
 						<p [class.active]="currentStep === 2">Solicitudes</p>
 					</div>
-
 					<div class="line" [class.active]="currentStep >= 3"></div>
-
 					<div class="step-item">
 						<div class="step" [class.active]="currentStep >= 3">
 							<i class="fa-solid fa-check" *ngIf="currentStep > 3"></i>
@@ -35,9 +30,7 @@
 						</div>
 						<p [class.active]="currentStep === 3">Emergencia</p>
 					</div>
-
 					<div class="line" [class.active]="currentStep >= 4"></div>
-
 					<div class="step-item">
 						<div class="step" [class.active]="currentStep >= 4">
 							<i class="fa-solid fa-check" *ngIf="currentStep > 4"></i>
@@ -53,9 +46,8 @@
 
 				<div class="divider"></div>
 
+				<!-- PASO 1: VIAJEROS -->
 				<div *ngIf="currentStep === 1" class="step-content">
-
-					<!-- TITULAR -->
 
 					<div class="section-card">
 						<div class="section-title">
@@ -65,18 +57,26 @@
 
 						<div class="form-grid">
 							<div class="form-group">
-								<input type="text" placeholder=" " [(ngModel)]="holder.firstName">
+								<input type="text" placeholder=" " [(ngModel)]="holder.firstName"
+									[class.invalid]="holderFieldInvalid('firstName')">
 								<label>Nombre</label>
+								<span class="error" *ngIf="holderFieldInvalid('firstName')">
+									Mínimo 3 letras, solo texto
+								</span>
 							</div>
 
 							<div class="form-group">
-								<input type="text" placeholder=" " [(ngModel)]="holder.lastName">
+								<input type="text" placeholder=" " [(ngModel)]="holder.lastName"
+									[class.invalid]="holderFieldInvalid('lastName')">
 								<label>Apellido</label>
+								<span class="error" *ngIf="holderFieldInvalid('lastName')">
+									Mínimo 3 letras, solo texto</span>
 							</div>
 
 							<div class="form-group custom-select-group">
 								<div class="custom-select" [class.open]="openDropdown === 'holderDocument'"
 									[class.selected]="holder.documentType"
+									[class.invalid]="holderFieldInvalid('documentType')"
 									(click)="toggleDropdown('holderDocument', $event)">
 
 									<div class="custom-select-value">
@@ -87,7 +87,6 @@
 
 									<div class="custom-select-dropdown" *ngIf="openDropdown === 'holderDocument'"
 										(click)="$event.stopPropagation()">
-
 										<div class="custom-option" *ngFor="let option of documentTypes"
 											(click)="selectHolderDocument($event, option.value)">
 											{{ option.label }}
@@ -95,30 +94,42 @@
 									</div>
 								</div>
 
-								<label [class.active]="holder.documentType">
-									Tipo de documento
-								</label>
+								<label [class.active]="holder.documentType">Tipo de documento</label>
+								<span class="error" *ngIf="holderFieldInvalid('documentType')">
+									Selecciona un tipo de documento
+								</span>
 							</div>
 
 							<div class="form-group">
-								<input type="text" placeholder=" " [(ngModel)]="holder.documentNumber">
+								<input type="text" placeholder=" " [(ngModel)]="holder.documentNumber"
+									oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+									[class.invalid]="holderFieldInvalid('documentNumber')">
 								<label>Número de documento</label>
+								<span class="error" *ngIf="holderFieldInvalid('documentNumber')">
+									Entre 6 y 11 dígitos
+								</span>
 							</div>
 
 							<div class="form-group">
-								<input type="text" placeholder=" " [(ngModel)]="holder.phone">
+								<input type="text" placeholder=" " [(ngModel)]="holder.phone"
+									oninput="this.value = this.value.replace(/[^0-9+\-\s]/g, '')"
+									[class.invalid]="holderFieldInvalid('phone')">
 								<label>Teléfono</label>
+								<span class="error" *ngIf="holderFieldInvalid('phone')">
+									Teléfono inválido (7-20 caracteres)
+								</span>
 							</div>
 
 							<div class="form-group">
-								<input type="text" placeholder=" " [(ngModel)]="holder.city">
+								<input type="text" placeholder=" " [(ngModel)]="holder.city"
+									[class.invalid]="holderFieldInvalid('city')">
 								<label>Ciudad de residencia</label>
+								<span class="error" *ngIf="holderFieldInvalid('city')">Mínimo 2 letras</span>
 							</div>
 						</div>
 					</div>
 
 					<!-- ACOMPAÑANTES -->
-
 					<div class="traveler-card" *ngFor="let traveler of companions; let i = index">
 
 						<div class="section-title">
@@ -128,18 +139,41 @@
 
 						<div class="form-grid">
 							<div class="form-group">
-								<input type="text" placeholder=" " [(ngModel)]="traveler.name">
+								<input type="text" placeholder=" " [(ngModel)]="traveler.name"
+									[class.invalid]="companionFieldInvalid(traveler, 'name')">
 								<label>Nombre completo</label>
+								<span class="error" *ngIf="companionFieldInvalid(traveler, 'name')">
+									Mínimo 3 letras, solo texto
+								</span>
 							</div>
 
+							<!-- FECHA DE NACIMIENTO CON CUSTOM CALENDAR -->
 							<div class="form-group">
-								<input type="date" [(ngModel)]="traveler.birthDate">
-								<label>Fecha de nacimiento</label>
+								<div class="cal-wrap">
+									<input type="text" readonly placeholder=" "
+										[value]="traveler.birthDate ? (traveler.birthDate | date:'dd/MM/yyyy') : ''"
+										[class.invalid]="companionFieldInvalid(traveler, 'birthDate')"
+										(click)="toggleCalendarCompanion(i, $event)" class="cal-trigger">
+									<label [class.active]="traveler.birthDate">Fecha de nacimiento</label>
+									<i class="fa-regular fa-calendar cal-icon"></i>
+
+									<app-custom-calendar *ngIf="showCalendarCompanion === i"
+										[isOpen]="showCalendarCompanion === i"
+										[selectedDate]="traveler.birthDate || maxBirthDate" [disableFutureDates]="true"
+										[maxSelectableDate]="maxBirthDate"
+										(dateSelected)="onCompanionBirthDateSelected(i, $event)"
+										(closed)="closeCalendarCompanion()">
+									</app-custom-calendar>
+								</div>
+								<span class="error" *ngIf="companionFieldInvalid(traveler, 'birthDate')">
+									Campo requerido
+								</span>
 							</div>
 
 							<div class="form-group custom-select-group">
 								<div class="custom-select" [class.open]="openDropdown === 'companionDocument' + i"
 									[class.selected]="traveler.documentType"
+									[class.invalid]="companionFieldInvalid(traveler, 'documentType')"
 									(click)="toggleDropdown('companionDocument' + i, $event)">
 
 									<div class="custom-select-value">
@@ -150,7 +184,6 @@
 
 									<div class="custom-select-dropdown" *ngIf="openDropdown === 'companionDocument' + i"
 										(click)="$event.stopPropagation()">
-
 										<div class="custom-option" *ngFor="let option of documentTypes"
 											(click)="selectCompanionDocument($event, traveler, option.value)">
 											{{ option.label }}
@@ -158,19 +191,26 @@
 									</div>
 								</div>
 
-								<label [class.active]="traveler.documentType">
-									Tipo de documento
-								</label>
+								<label [class.active]="traveler.documentType">Tipo de documento</label>
+								<span class="error" *ngIf="companionFieldInvalid(traveler, 'documentType')">
+									Selecciona un tipo
+								</span>
 							</div>
 
 							<div class="form-group">
-								<input type="text" placeholder=" " [(ngModel)]="traveler.documentNumber">
+								<input type="text" placeholder=" " [(ngModel)]="traveler.documentNumber"
+									oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+									[class.invalid]="companionFieldInvalid(traveler, 'documentNumber')">
 								<label>Número de documento</label>
+								<span class="error" *ngIf="companionFieldInvalid(traveler, 'documentNumber')">
+									Entre 6 y 11 dígitos
+								</span>
 							</div>
 						</div>
 					</div>
 				</div>
 
+				<!-- PASO 2: SOLICITUDES -->
 				<div *ngIf="currentStep === 2" class="step-content">
 					<div class="section-card">
 						<div class="section-title">
@@ -180,76 +220,60 @@
 
 						<div class="form-grid">
 							<div class="form-group custom-select-group">
-
 								<div class="custom-select" [class.open]="openDropdown === 'request'"
 									[class.selected]="selectedSpecialRequest"
+									[class.invalid]="requestFieldInvalid('specialRequest')"
 									(click)="toggleDropdown('request', $event)">
 
-									<div class="custom-select-value">
-										{{ selectedSpecialRequest }}
-									</div>
-
+									<div class="custom-select-value">{{ selectedSpecialRequest || 'Seleccionar' }}</div>
 									<i class="fa-solid fa-angle-down select-icon"></i>
 
 									<div class="custom-select-dropdown" *ngIf="openDropdown === 'request'"
 										(click)="$event.stopPropagation()">
-
 										<div class="custom-option" *ngFor="let option of specialRequests"
-											(click)="selectOption($event,option, 'request')">
-
+											(click)="selectOption($event, option, 'request')">
 											{{ option }}
-
 										</div>
-
 									</div>
-
 								</div>
-
-								<label [class.active]="selectedSpecialRequest">
-									Solicitud Especial
-								</label>
-
+								<label [class.active]="selectedSpecialRequest">Solicitud Especial</label>
+								<span class="error" *ngIf="requestFieldInvalid('specialRequest')">
+									Por favor selecciona una opción válida
+								</span>
 							</div>
 
 							<div class="form-group custom-select-group">
-
 								<div class="custom-select" [class.open]="openDropdown === 'room'"
-									[class.selected]="selectedRoomType" (click)="toggleDropdown('room', $event)">
+									[class.selected]="selectedRoomType"
+									[class.invalid]="requestFieldInvalid('roomType')"
+									(click)="toggleDropdown('room', $event)">
 
-									<div class="custom-select-value">
-										{{ selectedRoomType }}
-									</div>
-
+									<div class="custom-select-value">{{ selectedRoomType || 'Seleccionar' }}</div>
 									<i class="fa-solid fa-angle-down select-icon"></i>
 
 									<div class="custom-select-dropdown" *ngIf="openDropdown === 'room'"
 										(click)="$event.stopPropagation()">
-
 										<div class="custom-option" *ngFor="let option of roomTypes"
-											(click)="selectOption($event,option, 'room')">
-
+											(click)="selectOption($event, option, 'room')">
 											{{ option }}
-
 										</div>
-
 									</div>
-
 								</div>
-
-								<label [class.active]="selectedRoomType">
-									Tipo de habitación
-								</label>
-
+								<label [class.active]="selectedRoomType">Tipo de habitación</label>
+								<span class="error" *ngIf="requestFieldInvalid('roomType')">
+									Por favor selecciona un tipo de habitación
+								</span>
 							</div>
 
 							<div class="form-group full-width">
 								<textarea placeholder=" " [(ngModel)]="additionalNotes"></textarea>
-								<label>Notas adicionales</label>
+								<label>Notas adicionales (opcional)</label>
 							</div>
 						</div>
 					</div>
 				</div>
 
+				<!-- PASO 3: EMERGENCIA -->
 				<div *ngIf="currentStep === 3" class="step-content">
 					<div class="emergency-card" *ngFor="let contact of emergencyContacts; let i = index">
 						<div class="card-header">
@@ -266,26 +290,47 @@
 
 						<div class="form-grid">
 							<div class="form-group">
-								<input type="text" placeholder=" " [(ngModel)]="contact.fullName">
+								<input type="text" placeholder=" " [(ngModel)]="contact.fullName"
+									[class.invalid]="emergencyFieldInvalid(contact, 'fullName')">
 								<label>Nombre completo</label>
+								<span class="error" *ngIf="emergencyFieldInvalid(contact, 'fullName')">
+									Mínimo 3 letras, solo texto
+								</span>
 							</div>
 
 							<div class="form-group">
-								<input type="text" placeholder=" " [(ngModel)]="contact.relationship">
+								<input type="text" placeholder=" " [(ngModel)]="contact.relationship"
+									[class.invalid]="emergencyFieldInvalid(contact, 'relationship')">
 								<label>Parentesco</label>
+								<span class="error" *ngIf="emergencyFieldInvalid(contact, 'relationship')">
+									Mínimo 2 letras
+								</span>
 							</div>
 
 							<div class="form-group">
-								<input type="text" placeholder=" " [(ngModel)]="contact.phone">
+								<input type="text" placeholder=" " [(ngModel)]="contact.phone"
+									oninput="this.value = this.value.replace(/[^0-9+\-\s]/g, '')"
+									[class.invalid]="emergencyFieldInvalid(contact, 'phone')">
 								<label>Teléfono</label>
+								<span class="error" *ngIf="emergencyFieldInvalid(contact, 'phone')">
+									Teléfono inválido (7-20 caracteres)
+								</span>
 							</div>
 
 							<div class="form-group">
-								<input type="email" placeholder=" " [(ngModel)]="contact.alternatePhone">
-								<label>Correo electrónico</label>
+								<input type="email" placeholder=" " [(ngModel)]="contact.alternatePhone"
+									[class.invalid]="emergencyFieldInvalid(contact, 'alternatePhone')">
+								<label>Correo electrónico (opcional)</label>
+								<span class="error" *ngIf="emergencyFieldInvalid(contact, 'alternatePhone')">
+									Correo inválido
+								</span>
 							</div>
 						</div>
 					</div>
+
+					<span class="error step-error" *ngIf="attempted[3] && !isStep3Valid()">
+						Completa correctamente todos los campos obligatorios del contacto de emergencia
+					</span>
 
 					<button type="button" class="add-contact-btn" (click)="addEmergencyContact()">
 						<i class="fa-solid fa-plus"></i>
@@ -293,53 +338,40 @@
 					</button>
 				</div>
 
+				<!-- PASO 4: RESUMEN -->
 				<div *ngIf="currentStep === 4">
 					<div class="summary-card">
-
 						<h3>Resumen de la reserva</h3>
 
 						<div class="summary-grid">
 							<div class="summary-item">
 								<span>Cliente</span>
-								<strong>
-									{{ holder.firstName }} {{ holder.lastName }}
-								</strong>
+								<strong>{{ holder.firstName }} {{ holder.lastName }}</strong>
 							</div>
-
 							<div class="summary-item">
 								<span>Destino</span>
 								<strong>{{ package?.destinations }}</strong>
 							</div>
-
 							<div class="summary-item">
 								<span>Paquete</span>
 								<strong>{{ package?.title }}</strong>
 							</div>
-
 							<div class="summary-item">
 								<span>Personas</span>
 								<strong>{{ travelers }}</strong>
 							</div>
-
 							<div class="summary-item">
 								<span>Fecha de salida</span>
-								<strong>
-									{{ selectedTrip?.fechaSalida | date:'dd/MM/yyyy' }}
-								</strong>
+								<strong>{{ selectedTrip?.fechaSalida | date:'dd/MM/yyyy' }}</strong>
 							</div>
-
 							<div class="summary-item">
 								<span>Fecha de regreso</span>
-								<strong>
-									{{ selectedTrip?.fechaRegreso | date:'dd/MM/yyyy' }}
-								</strong>
+								<strong>{{ selectedTrip?.fechaRegreso | date:'dd/MM/yyyy' }}</strong>
 							</div>
-
 							<div class="summary-item">
 								<span>Duración</span>
 								<strong>{{ package?.duration }}</strong>
 							</div>
-
 							<div class="summary-item">
 								<span>Lugar de Salida</span>
 								<strong>{{ package?.departurePlace }}</strong>
@@ -348,9 +380,7 @@
 
 						<div class="total-highlight">
 							<span>Total</span>
-							<strong>
-								${{ totalPrice | number:'1.0-0' }}
-							</strong>
+							<strong>${{ totalPrice | number:'1.0-0' }}</strong>
 						</div>
 					</div>
 
@@ -366,6 +396,10 @@
 							<span class="custom-checkbox"></span>
 							Acepto la política de cancelación.
 						</label>
+
+						<span class="error" *ngIf="attempted[4] && !isStep4Valid()">
+							Debes aceptar ambas condiciones para continuar
+						</span>
 					</div>
 
 					<app-terms-modal [isOpen]="showTerms" (closed)="showTerms = false"></app-terms-modal>
@@ -382,11 +416,30 @@
 						Siguiente
 					</button>
 
-					<button *ngIf="currentStep === 4" class="btn-primary" (click)="confirmReservation()">
-						Confirmar reserva
+					<button *ngIf="currentStep === 4" class="btn-primary" (click)="confirmReservation()"
+						[disabled]="isSubmitting">
+						{{ isSubmitting ? 'Procesando...' : 'Confirmar reserva' }}
 					</button>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<app-confirm-modal [isOpen]="showConfirmModal" title="Confirmar reserva"
+	message="¿Estás seguro de que deseas confirmar esta reserva? Se enviará la información registrada."
+	confirmText="Confirmar" cancelText="Cancelar" icon="fa-solid fa-circle-question" confirmColor="#3fa2db"
+	iconBg="rgba(63, 162, 219, 0.12)" iconColor="#3fa2db" (confirmed)="executeReservation()"
+	(closed)="closeConfirmModal()">
+</app-confirm-modal>
+
+<app-confirm-modal [isOpen]="showSuccessModal" title="Reserva creada"
+	message="Tu reserva fue creada exitosamente. Puedes ver el detalle en tu perfil." confirmText="Aceptar"
+	cancelText="" icon="fa-solid fa-circle-check" confirmColor="#3fa2db" iconBg="rgba(63, 162, 219, 0.12)"
+	iconColor="#3fa2db" (confirmed)="closeSuccessModal()" (closed)="closeSuccessModal()">
+</app-confirm-modal>
+
+<app-confirm-modal [isOpen]="showErrorModal" title="Error" [message]="errorMessage" confirmText="Entendido"
+	cancelText="" icon="fa-solid fa-circle-xmark" confirmColor="#ff3b3b" iconBg="rgba(255, 59, 59, 0.12)"
+	iconColor="#ff3b3b" (confirmed)="closeErrorModal()" (closed)="closeErrorModal()">
+</app-confirm-modal>

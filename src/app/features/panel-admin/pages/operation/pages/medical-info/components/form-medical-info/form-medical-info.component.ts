@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { OperacionesService } from '../../../../../../../../core/services/operaciones.service';
+import { AuthService } from '../../../../../../../../core/services/auth.service';
 import { InformacionMedica } from '../../../../../../models/operaciones.models';
 
 @Component({
@@ -18,6 +19,9 @@ export class FormMedicalInfoComponent implements OnChanges {
 	@Output() saveFailed = new EventEmitter<string>();
 
 	enviando = false;
+	cargandoUsuarios = false;
+	usuarios: { id: number; nombre: string }[] = [];
+	usuarioSeleccionadoId: number | null = null;
 	gruposSanguineos = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
 	// Confirmación de guardado
@@ -32,7 +36,7 @@ export class FormMedicalInfoComponent implements OnChanges {
 		telefonoMedico: ['', Validators.pattern(/^\+?[\d\s\-]{7,20}$/)],
 	});
 
-	constructor(private fb: FormBuilder, private svc: OperacionesService) { }
+	constructor(private fb: FormBuilder, private svc: OperacionesService, private authSvc: AuthService) { }
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes['isOpen']?.currentValue === true) {
@@ -47,7 +51,38 @@ export class FormMedicalInfoComponent implements OnChanges {
 				});
 			} else {
 				this.medForm.reset();
+				this.usuarioSeleccionadoId = null;
+				this.cargarUsuarios();
 			}
+		}
+	}
+
+	private cargarUsuarios(): void {
+		if (this.usuarios.length > 0) return;
+		this.cargandoUsuarios = true;
+		this.authSvc.getAllUsers(0, 200).subscribe({
+			next: (response: any) => {
+				const users: any[] = response?.content ?? (Array.isArray(response) ? response : []);
+				this.usuarios = users.map(u => ({
+					id: u.id,
+					nombre: `${u.firstName || ''} ${u.lastName || ''}`.trim()
+				}));
+				this.cargandoUsuarios = false;
+			},
+			error: () => { this.cargandoUsuarios = false; }
+		});
+	}
+
+	onUsuarioChange(idStr: string): void {
+		const id = idStr ? +idStr : null;
+		this.usuarioSeleccionadoId = id;
+		if (!id) {
+			this.medForm.patchValue({ nombreViajero: '' });
+			return;
+		}
+		const usuario = this.usuarios.find(u => u.id === id);
+		if (usuario) {
+			this.medForm.patchValue({ nombreViajero: usuario.nombre });
 		}
 	}
 
@@ -90,7 +125,7 @@ export class FormMedicalInfoComponent implements OnChanges {
 			telefonoMedico: v.telefonoMedico || undefined,
 			nombreViajero: v.nombreViajero || '',
 		};
-		const idViajero = this.editandoMedico ? this.editandoMedico.idViajero : 1;
+		const idViajero = this.editandoMedico ? this.editandoMedico.idViajero : (this.usuarioSeleccionadoId ?? 1);
 		const req$ = this.editandoMedico
 			? this.svc.actualizarInformacionMedica(this.editandoMedico.idViajero, this.editandoMedico.id, body)
 			: this.svc.registrarInformacionMedica(idViajero, body);

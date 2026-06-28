@@ -102,6 +102,12 @@
 	border-color: var(--color-primario);
 }
 
+.input-readonly {
+	background: #f8f8f8 !important;
+	color: var(--color-texto-secundario) !important;
+	cursor: default;
+}
+
 .cal-wrap {
 	position: relative;
 }

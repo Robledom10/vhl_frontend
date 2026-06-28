@@ -35,7 +35,7 @@ import { TermsModalComponent } from './terms-modal/terms-modal.component';
 	imports: [
 		CommonModule,
 		RouterModule,
-		FormsModule
+		FormsModule,
 	],
 	exports: [
 		NavbarComponent,

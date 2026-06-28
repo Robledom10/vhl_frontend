@@ -1,11 +1,17 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { PackageDetail } from '../package-detail-sheet/package-detail-sheet.component';
 import { PackageService } from '../../core/services/package.service';
 import { RespuestaPaqueteTuristico } from '../../features/panel-admin/models/package.model';
 import { TravelPackage, mapToTravelPackage, mapToPackageDetail, mapToPackageDetailFallback } from '../utils/package-mapper';
 import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
-export { TravelPackage };
+
+interface FiltrosActivos {
+	destino?: string;
+	fecha?: string;      // YYYY-MM-DD — se usa para duracionDias si el API no acepta fecha directa
+	personas?: number;
+}
 
 @Component({
 	selector: 'app-packages-card',
@@ -24,28 +30,56 @@ export class PackagesCardComponent implements OnInit {
 	displayedPackages: TravelPackage[] = [];
 	likedPackages: Set<number> = new Set();
 
-	// Paginación
 	paginaActual = 0;
 	totalPaginas = 0;
 	totalElementos = 0;
 	readonly tamano = 6;
 
 	private apiPackages: RespuestaPaqueteTuristico[] = [];
+	private autoOpenPackageId: number | null = null;
+	private filtros: FiltrosActivos = {};
 
-	constructor(private packageService: PackageService) { }
+	hayFiltrosActivos = false;
+
+	constructor(
+		private packageService: PackageService,
+		private route: ActivatedRoute
+	) { }
 
 	ngOnInit(): void {
-		if (this.showAll) {
-			this.cargarPagina(0);
-		} else {
-			this.cargarHome();
-		}
+		this.route.queryParams.subscribe(params => {
+			// Auto-abrir paquete (flujo hero)
+			const openId = params['openPackage'];
+			this.autoOpenPackageId = openId ? +openId : null;
+
+			// Filtros
+			this.filtros = {};
+			if (params['destino']) this.filtros.destino = params['destino'];
+			if (params['fecha']) this.filtros.fecha = params['fecha'];
+			if (params['personas']) this.filtros.personas = +params['personas'];
+
+			this.hayFiltrosActivos = !!(params['destino'] || params['fecha'] || params['personas']);
+
+			// Recargar siempre que cambien los params
+			this.apiPackages = [];
+			this.displayedPackages = [];
+
+			if (this.showAll) {
+				this.cargarPagina(0);
+			} else {
+				this.cargarHome();
+			}
+		});
 	}
 
-	// ─── Home: carga fija de 6 con rating ─────────────────
+	// ─── Home: muestra solo 6 ─────────────────────────────
 	private cargarHome(): void {
 		this.isLoading = true;
-		this.packageService.getPackages({ activo: true, tamano: 6 }).subscribe({
+		this.packageService.getPackages({
+			activo: true,
+			tamano: 6,
+			busqueda: this.filtros.destino,
+		}).subscribe({
 			next: page => {
 				this.apiPackages = page.content;
 				this.cargarRatings(page.content, false);
@@ -57,22 +91,33 @@ export class PackagesCardComponent implements OnInit {
 		});
 	}
 
-	// ─── Paquetes: paginado ───────────────────────────────
+	// ─── Paquetes: paginado con filtros ──────────────────
 	cargarPagina(pagina: number): void {
 		if (pagina === 0) {
 			this.isLoading = true;
 			this.displayedPackages = [];
+			this.apiPackages = [];
 		} else {
 			this.isLoadingMore = true;
 		}
 
-		this.packageService.getPackages({ activo: true, pagina, tamano: this.tamano }).subscribe({
+		this.packageService.getPackages({
+			activo: true,
+			pagina,
+			tamano: this.tamano,
+			busqueda: this.filtros.destino,
+		}).subscribe({
 			next: page => {
-				this.apiPackages = [...this.apiPackages, ...page.content];
+				// Filtro local por personas (spotsAvailable)
+				const contenido = this.filtros.personas
+					? page.content.filter(p => p.cupo >= this.filtros.personas!)
+					: page.content;
+
+				this.apiPackages = [...this.apiPackages, ...contenido];
 				this.paginaActual = page.number;
 				this.totalPaginas = page.totalPages;
 				this.totalElementos = page.totalElements;
-				this.cargarRatings(page.content, true);
+				this.cargarRatings(contenido, pagina > 0);
 			},
 			error: () => {
 				this.errorMsg = 'No se pudieron cargar los paquetes.';
@@ -83,6 +128,13 @@ export class PackagesCardComponent implements OnInit {
 	}
 
 	private cargarRatings(paquetes: RespuestaPaqueteTuristico[], append: boolean): void {
+		if (paquetes.length === 0) {
+			if (!append) this.displayedPackages = [];
+			this.isLoading = false;
+			this.isLoadingMore = false;
+			return;
+		}
+
 		const requests = paquetes.map(p =>
 			this.packageService.getComments(p.id).pipe(
 				map(comments => {
@@ -100,18 +152,40 @@ export class PackagesCardComponent implements OnInit {
 
 		forkJoin(requests).subscribe({
 			next: result => {
-				if (append) {
-					this.displayedPackages = [...this.displayedPackages, ...result];
-				} else {
-					this.displayedPackages = result;
-				}
+				this.displayedPackages = append
+					? [...this.displayedPackages, ...result]
+					: result;
 				this.isLoading = false;
 				this.isLoadingMore = false;
+
+				if (this.autoOpenPackageId !== null) {
+					this.tryAutoOpen();
+				}
 			},
 			error: () => {
 				this.isLoading = false;
 				this.isLoadingMore = false;
 			}
+		});
+	}
+
+	private tryAutoOpen(): void {
+		const id = this.autoOpenPackageId!;
+		this.autoOpenPackageId = null;
+
+		const apiPkg = this.apiPackages.find(p => p.id === id);
+		if (apiPkg) {
+			this.selectedPackageDetail = mapToPackageDetail(apiPkg);
+			this.sheetOpen = true;
+			return;
+		}
+
+		this.packageService.getPackageById(id).subscribe({
+			next: pkg => {
+				this.selectedPackageDetail = mapToPackageDetail(pkg);
+				this.sheetOpen = true;
+			},
+			error: err => console.error('No se pudo abrir el paquete automáticamente:', err)
 		});
 	}
 

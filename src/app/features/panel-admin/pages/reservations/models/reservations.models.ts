@@ -21,9 +21,10 @@ export interface ContactoEmergencia {
 export interface Reservation {
 	id: number;
 	idUsuario: number;
+	packageId?: number;
 	datosUsuario?: DatosUsuario;
 	contactosEmergencia?: ContactoEmergencia[];
-	documentos?: Documento[]; 
+	documentos?: Documento[];
 	destino: string;
 	personas: number;
 	fechaViaje: string;

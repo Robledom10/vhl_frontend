@@ -10,7 +10,7 @@
 	<div class="alert-capacidad"
 		*ngIf="!capacidadSuficiente() && transporteForm.get('capacidad')?.value && transporteForm.get('cantidadViajeros')?.value">
 		<i class="fa-solid fa-triangle-exclamation"></i>
-		La capacidad del vehiculo es menor a la cantidad de viajeros.
+		La capacidad del vehículo es menor a la cantidad de viajeros.
 	</div>
 
 	<form [formGroup]="transporteForm" (ngSubmit)="guardar()">
@@ -31,7 +31,8 @@
 				<select class="proveedor-select" (change)="seleccionarProveedorTransporte($event)">
 					<option value>Seleccionar proveedor (opcional)...</option>
 					<option *ngFor="let p of proveedores" [value]="p.id">
-						{{ p.nombre }}{{ p.tipoVehiculo ? ' · ' + p.tipoVehiculo : '' }}{{ p.placa ? ' · Placa: ' + p.placa : '' }}{{ p.conductor ? ' · ' + p.conductor : '' }}
+						{{ p.nombre }}{{ p.tipoVehiculo ? ' · ' + p.tipoVehiculo : '' }}{{ p.placa ? ' · Placa: ' +
+						p.placa : '' }}{{ p.conductor ? ' · ' + p.conductor : '' }}
 					</option>
 				</select>
 			</div>
@@ -101,11 +102,9 @@
 
 			<div class="form-group">
 				<label>Fecha de salida</label>
-				<input type="text" class="readonly-field"
-					[value]="transporteForm.get('horarioSalida')?.value
+				<input type="text" class="readonly-field" [value]="transporteForm.get('horarioSalida')?.value
 						? (transporteForm.get('horarioSalida')?.value | date:'dd/MM/yyyy')
-						: 'Seleccione un viaje para visualizar la fecha'"
-					readonly>
+						: 'Seleccione un viaje para visualizar la fecha'" readonly>
 				<small class="field-info">Esta fecha proviene del viaje programado.</small>
 			</div>
 		</div>
@@ -118,3 +117,11 @@
 		</div>
 	</form>
 </div>
+
+<app-confirm-modal [isOpen]="showConfirmModal"
+	[title]="editandoTransporteId ? 'Actualizar transporte' : 'Asignar transporte'"
+	[message]="editandoTransporteId ? '¿Deseas guardar los cambios de este transporte?' : '¿Deseas asignar este transporte al viaje seleccionado?'"
+	[confirmText]="editandoTransporteId ? 'Actualizar' : 'Asignar'" cancelText="Cancelar" icon="fa-solid fa-bus"
+	confirmColor="#3fa2db" iconBg="rgba(63, 162, 219, 0.12)" iconColor="#3fa2db" (confirmed)="confirmarGuardar()"
+	(closed)="cerrarConfirmModal()">
+</app-confirm-modal>

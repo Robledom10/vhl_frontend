@@ -72,6 +72,7 @@ export interface ContactoEmergencia {
 	fechaRegistro: string;
 	mensaje?: string;
 	nombreViajero?: string;
+	fromReserva?: boolean;
 }
 
 export interface Incidente {
