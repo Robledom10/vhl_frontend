@@ -2,7 +2,12 @@
 
 <section class="explore-section">
 	<div class="explore-container">
-		<img src="https://res.cloudinary.com/dqcviyp18/image/upload/q_auto/f_auto/v1777919816/D%C3%ADa3-26_wxkcpo.jpg" alt="">
+		<img
+			*ngFor="let img of heroImages; let i = index"
+			[src]="img"
+			[class.active]="i === currentHeroIndex"
+			class="hero-slide"
+			alt="Destino turístico">
 	</div>
 
 	<!-- Filtro fuera del contenedor para que ocupe más ancho -->
