@@ -88,7 +88,7 @@
 					<td>
 						<div class="actions" *ngIf="viaje.tieneViaje">
 							<button class="ver" *ngIf="viaje.alojamientoAsignado" (click)="verDetalle(viaje)">
-								<i class="fa-solid fa-eye"></i>
+								<i class="fa-regular fa-eye"></i>
 							</button>
 							<button [class]="viaje.alojamientoAsignado ? 'edit' : 'assign'"
 								(click)="seleccionarViaje(viaje)">

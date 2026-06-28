@@ -639,8 +639,8 @@ tbody td:last-child {
 .empty-state i {
 	font-size: 32px;
 	display: block;
-	margin-bottom: 12px;
 	color: var(--color-iconos);
+	margin: 0 auto 12px;
 }
 
 @media (max-width: 1279px) {
