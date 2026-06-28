@@ -50,12 +50,25 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 	private scrollY = 0;
 	private closeTimer: ReturnType<typeof setTimeout> | null = null;
 
+	readonly maxPalabras = 250;
+
 	selectedRating = 5;
 	newComment = '';
 	editingCommentId: number | null = null;
 	editCommentText = '';
 	editRating = 5;
 	savingEdit = false;
+	deletingCommentId: number | null = null;
+
+	// Modal de confirmación de borrado
+	showDeleteModal = false;
+	commentToDelete: RespuestaComentarioPaquete | null = null;
+
+	// Toast de feedback
+	showToast = false;
+	toastTitle = '';
+	toastMessage = '';
+	private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
 	// Modal de reserva
 	wizardOpen = false;
@@ -106,6 +119,10 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 
 	ngOnDestroy(): void {
 		this.restoreScroll();
+
+		if (this.toastTimer) {
+			clearTimeout(this.toastTimer);
+		}
 	}
 
 	loadTrips(): void {
@@ -291,6 +308,10 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 			return;
 		}
 
+		if (this.newCommentWords > this.maxPalabras) {
+			return;
+		}
+
 		const request = {
 			comentario: this.newComment,
 			puntaje: this.selectedRating
@@ -334,6 +355,10 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 			return;
 		}
 
+		if (this.editCommentWords > this.maxPalabras) {
+			return;
+		}
+
 		this.savingEdit = true;
 
 		this.packageService
@@ -358,6 +383,79 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 					console.error(error);
 				}
 			});
+	}
+
+	askDeleteComment(comment: RespuestaComentarioPaquete): void {
+		if (this.deletingCommentId !== null) {
+			return;
+		}
+
+		this.commentToDelete = comment;
+		this.showDeleteModal = true;
+	}
+
+	closeDeleteModal(): void {
+		this.showDeleteModal = false;
+		this.commentToDelete = null;
+	}
+
+	confirmDeleteComment(): void {
+		const comment = this.commentToDelete;
+
+		if (!this.package?.id || !comment) {
+			return;
+		}
+
+		this.showDeleteModal = false;
+		this.deletingCommentId = comment.id;
+
+		this.packageService
+			.deleteComment(this.package.id, comment.id)
+			.subscribe({
+				next: () => {
+					this.comments = this.comments.filter(item => item.id !== comment.id);
+
+					if (this.editingCommentId === comment.id) {
+						this.cancelEditComment();
+					}
+
+					this.deletingCommentId = null;
+					this.commentToDelete = null;
+					this.showFeedbackToast('Comentario eliminado', 'Tu comentario se eliminó correctamente.');
+				},
+				error: error => {
+					this.deletingCommentId = null;
+					this.commentToDelete = null;
+					console.error(error);
+					this.showFeedbackToast('Ocurrió un error', 'No se pudo eliminar tu comentario, inténtalo de nuevo.');
+				}
+			});
+	}
+
+	private showFeedbackToast(title: string, message: string): void {
+		this.toastTitle = title;
+		this.toastMessage = message;
+		this.showToast = true;
+
+		if (this.toastTimer) {
+			clearTimeout(this.toastTimer);
+		}
+
+		this.toastTimer = setTimeout(() => { this.showToast = false; }, 3200);
+	}
+
+	private contarPalabras(texto: string): number {
+		const limpio = texto.trim();
+
+		return limpio ? limpio.split(/\s+/).length : 0;
+	}
+
+	get newCommentWords(): number {
+		return this.contarPalabras(this.newComment);
+	}
+
+	get editCommentWords(): number {
+		return this.contarPalabras(this.editCommentText);
 	}
 
 	canEditComment(comment: RespuestaComentarioPaquete): boolean {

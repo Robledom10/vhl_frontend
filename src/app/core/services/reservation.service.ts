@@ -115,14 +115,27 @@ export class ReservationService {
 					correo: c.correo,
 				}))
 				: [],
-			destino: dto.destino ?? '',
+			destino: dto.destino ?? dto.nombrePaquete ?? '',
 			personas: dto.personas ?? dto.cantidadPasajeros ?? 1,
-			fechaViaje: dto.fechaViaje ?? '',
-			fechaReserva: dto.fechaReserva ?? '',
-			estado: (dto.estadoDescripcion ?? 'Pendiente') as Reservation['estado'],
-			paqueteNombre: dto.paqueteNombre ?? '',
+			fechaViaje: dto.fechaViaje ?? dto.fechaInicioViaje ?? '',
+			fechaReserva: dto.fechaReserva ?? dto.fechaCreacion ?? '',
+			estado: (dto.estadoDescripcion ?? this.mapEstado(dto.estado) ?? 'Pendiente') as Reservation['estado'],
+			paqueteNombre: dto.paqueteNombre ?? dto.nombrePaquete ?? '',
 			total: dto.total ?? dto.precioTotal ?? 0,
 			notas: dto.notas,
 		};
+	}
+
+	private mapEstado(estado: string | undefined): string {
+		if (!estado) return 'Pendiente';
+		const map: Record<string, string> = {
+			'CONFIRMADA': 'Confirmada',
+			'PENDIENTE': 'Pendiente',
+			'CANCELADA': 'Cancelada',
+			'PASADA': 'Pasada',
+			'COMPLETADA': 'Completada',
+			'BLOQUEADA': 'Bloqueada',
+		};
+		return map[estado.toUpperCase()] ?? estado;
 	}
 }

@@ -55,6 +55,8 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 
 	acceptCancellation = false;
 
+	showTerms = false;
+
 	// Dropdowns
 
 	openDropdown: string | null = null;

@@ -69,6 +69,12 @@
 	<!-- Línea y copyright -->
 	<div class="footer-bottom">
 		<hr class="footer-divider" />
-		<p class="footer-copy">&copy; 2026 Hernando Lopera. Todos los derechos reservados.</p>
+		<p class="footer-copy">
+			&copy; 2026 Hernando Lopera. Todos los derechos reservados.
+			<span class="footer-separator">·</span>
+			<button class="terms-link" (click)="showTerms = true">Términos y Condiciones</button>
+		</p>
 	</div>
 </footer>
+
+<app-terms-modal [isOpen]="showTerms" (closed)="showTerms = false"></app-terms-modal>

@@ -110,6 +110,7 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
     submitted = false;
     isSaving = false;
     saveError = '';
+    showTerms = false;
 
     viajesDisponibles: ViajeOption[] = [];
     viajesFiltrados: ViajeOption[] = [];

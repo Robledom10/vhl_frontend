@@ -385,7 +385,7 @@
 								<i class="fa-solid fa-check" *ngIf="form.aceptaTerminos"></i>
 							</div>
 							<span>
-								Acepto los <a href="#" (click)="$event.preventDefault()">términos y condiciones</a> del servicio
+								Acepto los <button type="button" class="terms-link-btn" (click)="showTerms = true">términos y condiciones</button> del servicio
 							</span>
 						</label>
 
@@ -438,3 +438,5 @@
 		</div>
 	</div>
 </div>
+
+<app-terms-modal [isOpen]="showTerms" (closed)="showTerms = false"></app-terms-modal>

@@ -7,6 +7,7 @@ import { Component } from '@angular/core';
 })
 export class FooterComponent {
 	email: string = '';
+	showTerms = false;
 
 	onSubscribe(): void {
 		if (this.email && this.email.includes('@')) {

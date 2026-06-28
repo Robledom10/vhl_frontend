@@ -10,8 +10,9 @@
 
 		<h1 class="hero-title">Tu próxima aventura comienza con <strong>Hernando Lopera</strong></h1>
 
-		<p class="hero-description">Explora lo mejor de Colombia, descubre destinos increíbles y vive experiencias
-			únicas, viajando fácil, seguro y sin complicaciones.</p>
+		<p class="hero-description">
+			Explora lo mejor de Colombia, descubre destinos increíbles y vive experiencias únicas, viajando fácil, seguro y sin complicaciones.
+		</p>
 
 		<div class="hero-search">
 			<div class="search-item">
@@ -20,7 +21,9 @@
 				</div>
 				<div>
 					<span class="search-label">Destino</span>
-					<span class="search-value">Excursion grado 11</span>
+					<span class="search-value">
+						{{ nombrePaquete || 'Cargando...' }}
+					</span>
 				</div>
 			</div>
 
@@ -32,11 +35,15 @@
 				</div>
 				<div>
 					<span class="search-label">Próxima salida</span>
-					<span class="search-value">17/03/2026</span>
+					<span class="search-value">
+						{{ fechaSalida || '—' }}
+					</span>
 				</div>
 			</div>
 
-			<button class="search-btn">Más Info</button>
+			<button class="search-btn" (click)="irAlPaquete()" [disabled]="!proximoViaje">
+				Más Info
+			</button>
 		</div>
 	</div>
 
@@ -103,10 +110,11 @@
 
 		<h2 class="destinos-title"><strong>Destinos increíbles</strong> pensados para que viajes a tu manera</h2>
 
-		<p class="destinos-description">Reunimos destinos que conectan con distintos estilos de viaje, desde planes
-			tranquilos hasta aventuras inolvidables.</p>
+		<p class="destinos-description">
+			Reunimos destinos que conectan con distintos estilos de viaje, desde planes tranquilos hasta aventuras inolvidables.
+		</p>
 
-	<app-stats-section></app-stats-section>
+		<app-stats-section></app-stats-section>
 	</div>
 </section>
 
@@ -163,8 +171,8 @@
 		</h1>
 
 		<!-- Descripción -->
-		<p class="explore-description">Descubre lugares increíbles, disfruta de nuevas aventuras y vive experiencias
-			inolvidables mientras exploras destinos turísticos llenos de cultura, paisajes y momentos únicos.
+		<p class="explore-description">
+			Descubre lugares increíbles, disfruta de nuevas aventuras y vive experiencias inolvidables mientras exploras destinos turísticos llenos de cultura, paisajes y momentos únicos.
 		</p>
 	</div>
 
@@ -192,26 +200,8 @@
 			<strong>Inspira a otros</strong> con tu experiencia
 		</h2>
 
-		<!-- Card testimonio -->
-		<div class="testimonial-card">
-			<span class="quote-icon">❞</span>
-			<div class="testimonial-header">
-				<div class="testimonial-header-img">
-					<img src="https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1777933201/Día_7-37_zgbob5.jpg"
-						alt="Manuel Quintero" />
-				</div>
-				<div>
-					<p class="testimonial-name">Manuel Quintero</p>
-					<p class="testimonial-role">Excursionista 2025</p>
-				</div>
-			</div>
-			<p class="testimonial-text">Una experiencia inolvidable, llena de momentos únicos, paisajes increíbles y
-				recuerdos que quedarán para siempre.
-			</p>
-			<div class="stars">
-				<span *ngFor="let s of [1,2,3,4,5]"><i class="fa-solid fa-star"></i></span>
-			</div>
-		</div>
+		<!-- Componente de comentarios (slider de testimonios reales) -->
+		<app-testimonial-slider></app-testimonial-slider>
 	</div>
 
 	<!-- Columna derecha: imagen única -->
@@ -233,8 +223,8 @@
 		<h1 class="work-title">Profesionales que hacen <strong>posible cada experiencia</strong></h1>
 
 		<!-- Descripción -->
-		<p class="work-description">Contamos con guías turísticos, personal médico, apoyo psicológico, fotógrafos,
-			paramédicos y equipo de seguridad para acompañarte en cada viaje.</p>
+		<p class="work-description">
+			Contamos con guías turísticos, personal médico, apoyo psicológico, fotógrafos, paramédicos y equipo de seguridad para acompañarte en cada viaje.</p>
 	</div>
 
 	<app-slider-work-team></app-slider-work-team>
