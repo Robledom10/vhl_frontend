@@ -1,4 +1,4 @@
-<div class="modal-backdrop" *ngIf="isOpen" (click)="cerrar()"></div>
+<div class="modal-overlay" *ngIf="isOpen" (click)="cerrar()">
 <div class="modal-panel" *ngIf="isOpen" (click)="onModalClick($event)">
 
 	<!-- HEADER -->
@@ -134,6 +134,7 @@
 			</button>
 		</div>
 	</form>
+</div>
 </div>
 
 <app-confirm-modal [isOpen]="showConfirmModal"

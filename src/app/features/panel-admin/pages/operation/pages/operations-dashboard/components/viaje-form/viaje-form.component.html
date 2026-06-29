@@ -1,149 +1,152 @@
-<div class="modal-backdrop" (click)="cerrarModal()"></div>
-<div class="modal-panel" (click)="onPanelClick($event)">
+<div class="modal-overlay" (click)="cerrarModal()">
+	<div class="modal-panel" (click)="onPanelClick($event)">
 
-	<div class="modal-header">
-		<h3 class="modal-title">Crear <span> nuevo viaje</span></h3>
-		<button type="button" class="btn-cerrar" (click)="cerrarModal()">&#x2715;</button>
+		<div class="modal-header">
+			<h3 class="modal-title">Crear <span> nuevo viaje</span></h3>
+			<button type="button" class="btn-cerrar" (click)="cerrarModal()">&#x2715;</button>
+		</div>
+
+		<form [formGroup]="viajeForm" (ngSubmit)="abrirConfirmacion()">
+			<div class="form-grid">
+
+				<!-- PAQUETE -->
+				<div class="form-group span-2">
+					<div class="custom-select-group">
+						<div class="custom-select" [class.open]="paqueteDropdownOpen"
+							[class.selected]="selectedPaqueteId"
+							[class.invalid]="viajeForm.get('idPaquete')?.invalid && viajeForm.get('idPaquete')?.touched"
+							(click)="togglePaqueteDropdown($event)">
+							<div class="custom-select-value">
+								{{ selectedPaqueteId ? getPaqueteLabel(selectedPaqueteId) : '' }}
+							</div>
+							<i class="fa-solid fa-angle-down select-icon"></i>
+							<div class="custom-select-dropdown" *ngIf="paqueteDropdownOpen"
+								(click)="$event.stopPropagation()">
+								<div class="custom-option" *ngFor="let p of paquetes"
+									[class.active]="selectedPaqueteId === p.id"
+									(click)="selectPaqueteOption(p); $event.stopPropagation()">
+									{{ p.titulo }} — {{ p.destino }}
+								</div>
+							</div>
+						</div>
+						<label [class.active]="selectedPaqueteId || paqueteDropdownOpen"
+							[class.label-error]="viajeForm.get('idPaquete')?.invalid && viajeForm.get('idPaquete')?.touched">
+							Paquete turístico *
+						</label>
+						<span class="field-error"
+							*ngIf="viajeForm.get('idPaquete')?.invalid && viajeForm.get('idPaquete')?.touched">
+							Selecciona un paquete
+						</span>
+					</div>
+				</div>
+
+				<!-- FECHA DE SALIDA -->
+				<div class="form-group">
+					<div class="field-wrapper">
+						<div class="cal-wrap" [class.cal-open]="showCalendarioSalida">
+							<input type="text" readonly placeholder="Fecha de salida"
+								[value]="viajeForm.get('fechaSalida')?.value | date:'dd/MM/yyyy'"
+								(click)="toggleCalendarioSalida($event)" class="cal-trigger"
+								[class.filled]="viajeForm.get('fechaSalida')?.value"
+								[class.ng-invalid]="viajeForm.get('fechaSalida')?.invalid && viajeForm.get('fechaSalida')?.touched"
+								[class.ng-touched]="viajeForm.get('fechaSalida')?.touched" />
+							<label [class.active]="viajeForm.get('fechaSalida')?.value"
+								[class.label-error]="viajeForm.get('fechaSalida')?.invalid && viajeForm.get('fechaSalida')?.touched">
+								Fecha de salida *
+							</label>
+							<i class="fa-regular fa-calendar cal-icon"
+								[class.cal-icon-error]="viajeForm.get('fechaSalida')?.invalid && viajeForm.get('fechaSalida')?.touched"></i>
+							<app-custom-calendar *ngIf="showCalendarioSalida" [isOpen]="showCalendarioSalida"
+								[selectedDate]="viajeForm.get('fechaSalida')?.value || ''"
+								(dateSelected)="onFechaSalidaSelected($event)" (closed)="showCalendarioSalida = false">
+							</app-custom-calendar>
+						</div>
+						<span class="field-error"
+							*ngIf="viajeForm.get('fechaSalida')?.invalid && viajeForm.get('fechaSalida')?.touched">
+							Fecha requerida
+						</span>
+					</div>
+				</div>
+
+				<!-- HORA DE SALIDA -->
+				<div class="form-group">
+					<div class="field-wrapper">
+						<div class="hora-wrap" [class.hora-open]="horaDropdownOpen"
+							(click)="toggleHoraDropdown($event)">
+							<div class="hora-display" [class.filled]="viajeForm.get('horaSalida')?.value"
+								[class.invalid]="viajeForm.get('horaSalida')?.invalid && viajeForm.get('horaSalida')?.touched">
+								{{ getHoraSalidaDisplay() }}
+							</div>
+							<label [class.active]="viajeForm.get('horaSalida')?.value"
+								[class.label-error]="viajeForm.get('horaSalida')?.invalid && viajeForm.get('horaSalida')?.touched">
+								Hora de salida *
+							</label>
+							<i class="fa-regular fa-clock hora-icon"
+								[class.hora-icon-error]="viajeForm.get('horaSalida')?.invalid && viajeForm.get('horaSalida')?.touched"></i>
+
+							<div class="hora-dropdown" *ngIf="horaDropdownOpen" (click)="$event.stopPropagation()">
+								<div class="hora-cols">
+									<div class="hora-col">
+										<div class="hora-col-label">H</div>
+										<div class="hora-scroll">
+											<div class="hora-option" *ngFor="let h of horasDisponibles"
+												[class.active]="horaSeleccionada === h"
+												(click)="seleccionarHora(h); $event.stopPropagation()">
+												{{ h }}
+											</div>
+										</div>
+									</div>
+									<div class="hora-sep">:</div>
+									<div class="hora-col">
+										<div class="hora-col-label">MM</div>
+										<div class="hora-scroll">
+											<div class="hora-option" *ngFor="let m of minutosDisponibles"
+												[class.active]="minutoSeleccionado === m"
+												(click)="seleccionarMinuto(m); $event.stopPropagation()">
+												{{ m }}
+											</div>
+										</div>
+									</div>
+									<div class="hora-col hora-col-periodo">
+										<div class="hora-col-label">&nbsp;</div>
+										<div class="hora-scroll hora-scroll-periodo">
+											<div class="hora-option" *ngFor="let p of periodosDisponibles"
+												[class.active]="periodoSeleccionado === p"
+												(click)="seleccionarPeriodo(p); $event.stopPropagation()">
+												{{ p }}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<span class="field-error"
+							*ngIf="viajeForm.get('horaSalida')?.invalid && viajeForm.get('horaSalida')?.touched">
+							Hora requerida
+						</span>
+					</div>
+				</div>
+
+				<!-- FECHA DE REGRESO (calculada) -->
+				<div class="form-group span-2">
+					<div class="field-wrapper">
+						<input type="text" readonly placeholder="Fecha de regreso" [value]="fechaRegresoDisplay"
+							class="input-readonly" />
+						<label [class.active]="fechaRegresoDisplay">Fecha de regreso</label>
+						<small class="auto-date-msg">Se calcula automáticamente según la duración del paquete</small>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="modal-actions">
+				<button type="button" class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+				<button type="submit" class="btn-guardar" [disabled]="enviando">
+					{{ enviando ? 'Creando...' : 'Crear viaje' }}
+				</button>
+			</div>
+		</form>
 	</div>
-
-	<form [formGroup]="viajeForm" (ngSubmit)="abrirConfirmacion()">
-		<div class="form-grid">
-
-			<!-- PAQUETE -->
-			<div class="form-group span-2">
-				<div class="custom-select-group">
-					<div class="custom-select" [class.open]="paqueteDropdownOpen" [class.selected]="selectedPaqueteId"
-						[class.invalid]="viajeForm.get('idPaquete')?.invalid && viajeForm.get('idPaquete')?.touched"
-						(click)="togglePaqueteDropdown($event)">
-						<div class="custom-select-value">
-							{{ selectedPaqueteId ? getPaqueteLabel(selectedPaqueteId) : '' }}
-						</div>
-						<i class="fa-solid fa-angle-down select-icon"></i>
-						<div class="custom-select-dropdown" *ngIf="paqueteDropdownOpen"
-							(click)="$event.stopPropagation()">
-							<div class="custom-option" *ngFor="let p of paquetes"
-								[class.active]="selectedPaqueteId === p.id"
-								(click)="selectPaqueteOption(p); $event.stopPropagation()">
-								{{ p.titulo }} — {{ p.destino }}
-							</div>
-						</div>
-					</div>
-					<label [class.active]="selectedPaqueteId || paqueteDropdownOpen"
-						[class.label-error]="viajeForm.get('idPaquete')?.invalid && viajeForm.get('idPaquete')?.touched">
-						Paquete turístico *
-					</label>
-					<span class="field-error"
-						*ngIf="viajeForm.get('idPaquete')?.invalid && viajeForm.get('idPaquete')?.touched">
-						Selecciona un paquete
-					</span>
-				</div>
-			</div>
-
-			<!-- FECHA DE SALIDA -->
-			<div class="form-group">
-				<div class="field-wrapper">
-					<div class="cal-wrap" [class.cal-open]="showCalendarioSalida">
-						<input type="text" readonly placeholder="Fecha de salida"
-							[value]="viajeForm.get('fechaSalida')?.value | date:'dd/MM/yyyy'"
-							(click)="toggleCalendarioSalida($event)" class="cal-trigger"
-							[class.filled]="viajeForm.get('fechaSalida')?.value"
-							[class.ng-invalid]="viajeForm.get('fechaSalida')?.invalid && viajeForm.get('fechaSalida')?.touched"
-							[class.ng-touched]="viajeForm.get('fechaSalida')?.touched" />
-						<label [class.active]="viajeForm.get('fechaSalida')?.value"
-							[class.label-error]="viajeForm.get('fechaSalida')?.invalid && viajeForm.get('fechaSalida')?.touched">
-							Fecha de salida *
-						</label>
-						<i class="fa-regular fa-calendar cal-icon"
-							[class.cal-icon-error]="viajeForm.get('fechaSalida')?.invalid && viajeForm.get('fechaSalida')?.touched"></i>
-						<app-custom-calendar *ngIf="showCalendarioSalida" [isOpen]="showCalendarioSalida"
-							[selectedDate]="viajeForm.get('fechaSalida')?.value || ''"
-							(dateSelected)="onFechaSalidaSelected($event)" (closed)="showCalendarioSalida = false">
-						</app-custom-calendar>
-					</div>
-					<span class="field-error"
-						*ngIf="viajeForm.get('fechaSalida')?.invalid && viajeForm.get('fechaSalida')?.touched">
-						Fecha requerida
-					</span>
-				</div>
-			</div>
-
-			<!-- HORA DE SALIDA -->
-			<div class="form-group">
-				<div class="field-wrapper">
-					<div class="hora-wrap" [class.hora-open]="horaDropdownOpen" (click)="toggleHoraDropdown($event)">
-						<div class="hora-display" [class.filled]="viajeForm.get('horaSalida')?.value"
-							[class.invalid]="viajeForm.get('horaSalida')?.invalid && viajeForm.get('horaSalida')?.touched">
-							{{ getHoraSalidaDisplay() }}
-						</div>
-						<label [class.active]="viajeForm.get('horaSalida')?.value"
-							[class.label-error]="viajeForm.get('horaSalida')?.invalid && viajeForm.get('horaSalida')?.touched">
-							Hora de salida *
-						</label>
-						<i class="fa-regular fa-clock hora-icon"
-							[class.hora-icon-error]="viajeForm.get('horaSalida')?.invalid && viajeForm.get('horaSalida')?.touched"></i>
-
-						<div class="hora-dropdown" *ngIf="horaDropdownOpen" (click)="$event.stopPropagation()">
-							<div class="hora-cols">
-								<div class="hora-col">
-									<div class="hora-col-label">H</div>
-									<div class="hora-scroll">
-										<div class="hora-option" *ngFor="let h of horasDisponibles"
-											[class.active]="horaSeleccionada === h"
-											(click)="seleccionarHora(h); $event.stopPropagation()">
-											{{ h }}
-										</div>
-									</div>
-								</div>
-								<div class="hora-sep">:</div>
-								<div class="hora-col">
-									<div class="hora-col-label">MM</div>
-									<div class="hora-scroll">
-										<div class="hora-option" *ngFor="let m of minutosDisponibles"
-											[class.active]="minutoSeleccionado === m"
-											(click)="seleccionarMinuto(m); $event.stopPropagation()">
-											{{ m }}
-										</div>
-									</div>
-								</div>
-								<div class="hora-col hora-col-periodo">
-									<div class="hora-col-label">&nbsp;</div>
-									<div class="hora-scroll hora-scroll-periodo">
-										<div class="hora-option" *ngFor="let p of periodosDisponibles"
-											[class.active]="periodoSeleccionado === p"
-											(click)="seleccionarPeriodo(p); $event.stopPropagation()">
-											{{ p }}
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<span class="field-error"
-						*ngIf="viajeForm.get('horaSalida')?.invalid && viajeForm.get('horaSalida')?.touched">
-						Hora requerida
-					</span>
-				</div>
-			</div>
-
-			<!-- FECHA DE REGRESO (calculada) -->
-			<div class="form-group span-2">
-				<div class="field-wrapper">
-					<input type="text" readonly placeholder="Fecha de regreso" [value]="fechaRegresoDisplay"
-						class="input-readonly" />
-					<label [class.active]="fechaRegresoDisplay">Fecha de regreso</label>
-					<small class="auto-date-msg">Se calcula automáticamente según la duración del paquete</small>
-				</div>
-			</div>
-
-		</div>
-
-		<div class="modal-actions">
-			<button type="button" class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
-			<button type="submit" class="btn-guardar" [disabled]="enviando">
-				{{ enviando ? 'Creando...' : 'Crear viaje' }}
-			</button>
-		</div>
-	</form>
 </div>
 
 <app-confirm-modal [isOpen]="showConfirm" title="Crear viaje" message="¿Desea crear este viaje?" confirmText="Crear"

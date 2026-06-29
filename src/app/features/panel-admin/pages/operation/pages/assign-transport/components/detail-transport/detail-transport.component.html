@@ -1,63 +1,66 @@
-<div class="modal-backdrop" *ngIf="isOpen" (click)="cerrar()"></div>
-<div class="modal-panel" *ngIf="isOpen && viaje" (click)="$event.stopPropagation()">
+<div class="modal-overlay" *ngIf="isOpen" (click)="cerrar()">
+	<div class="modal-panel" *ngIf="isOpen && viaje" (click)="$event.stopPropagation()">
 
-	<div class="modal-header">
-		<button type="button" class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
-	</div>
+		<div class="modal-header">
+			<button type="button" class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
+		</div>
 
-	<h2 class="modal-title">
-		Detalle <span>Transporte</span>
-	</h2>
-	<p class="modal-subtitle" *ngIf="viaje">
-		{{ viaje.titulo }} · Viaje #{{ viaje.id }}
-	</p>
+		<h2 class="modal-title">
+			Detalle <span>Transporte</span>
+		</h2>
+		<p class="modal-subtitle" *ngIf="viaje">
+			{{ viaje.titulo }} · Viaje #{{ viaje.id }}
+		</p>
 
-	<div class="form-grid" *ngIf="viaje.transportes[0] as t">
-		<div class="form-group">
-			<div class="field-wrapper">
-				<input type="text" readonly [value]="t.empresa" class="input-readonly" />
-				<label class="active">Empresa</label>
+		<div class="form-grid" *ngIf="viaje.transportes[0] as t">
+			<div class="form-group">
+				<div class="field-wrapper">
+					<input type="text" readonly [value]="t.empresa" class="input-readonly" />
+					<label class="active">Empresa</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="field-wrapper">
+					<input type="text" readonly [value]="t.tipoTransporte" class="input-readonly" />
+					<label class="active">Tipo de vehículo</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="field-wrapper">
+					<input type="text" readonly [value]="t.placa" class="input-readonly" />
+					<label class="active">Placa</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="field-wrapper">
+					<input type="text" readonly [value]="t.conductor" class="input-readonly" />
+					<label class="active">Conductor</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="field-wrapper">
+					<input type="text" readonly [value]="t.telefonoConductor" class="input-readonly" />
+					<label class="active">Teléfono conductor</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="field-wrapper">
+					<input type="text" readonly [value]="t.capacidad + ' / ' + t.cantidadViajeros"
+						class="input-readonly" />
+					<label class="active">Capacidad / Viajeros</label>
+				</div>
+			</div>
+			<div class="form-group span-2">
+				<div class="field-wrapper">
+					<input type="text" readonly [value]="t.fechaSalida | date:'dd/MM/yyyy HH:mm'"
+						class="input-readonly" />
+					<label class="active">Horario de salida</label>
+				</div>
 			</div>
 		</div>
-		<div class="form-group">
-			<div class="field-wrapper">
-				<input type="text" readonly [value]="t.tipoTransporte" class="input-readonly" />
-				<label class="active">Tipo de vehículo</label>
-			</div>
-		</div>
-		<div class="form-group">
-			<div class="field-wrapper">
-				<input type="text" readonly [value]="t.placa" class="input-readonly" />
-				<label class="active">Placa</label>
-			</div>
-		</div>
-		<div class="form-group">
-			<div class="field-wrapper">
-				<input type="text" readonly [value]="t.conductor" class="input-readonly" />
-				<label class="active">Conductor</label>
-			</div>
-		</div>
-		<div class="form-group">
-			<div class="field-wrapper">
-				<input type="text" readonly [value]="t.telefonoConductor" class="input-readonly" />
-				<label class="active">Teléfono conductor</label>
-			</div>
-		</div>
-		<div class="form-group">
-			<div class="field-wrapper">
-				<input type="text" readonly [value]="t.capacidad + ' / ' + t.cantidadViajeros" class="input-readonly" />
-				<label class="active">Capacidad / Viajeros</label>
-			</div>
-		</div>
-		<div class="form-group span-2">
-			<div class="field-wrapper">
-				<input type="text" readonly [value]="t.fechaSalida | date:'dd/MM/yyyy HH:mm'" class="input-readonly" />
-				<label class="active">Horario de salida</label>
-			</div>
-		</div>
-	</div>
 
-	<div class="modal-actions">
-		<button type="button" class="btn-cancelar" (click)="cerrar()">Cerrar</button>
+		<div class="modal-actions">
+			<button type="button" class="btn-cancelar" (click)="cerrar()">Cerrar</button>
+		</div>
 	</div>
 </div>

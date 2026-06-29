@@ -2,27 +2,27 @@
    BACKDROP & PANEL
    ============================== */
 
-.modal-backdrop {
-	position: fixed;
-	inset: 0;
-	background: rgba(0, 0, 0, 0.35);
-	z-index: 999;
-}
-
 .modal-panel {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	margin-top: 32px;
+	width: 100%;
 	background: white;
 	border-radius: 45px;
-	padding: 28px 28px 36px;
-	width: min(500px, 92vw);
+	max-width: min(500px, 92vw);
 	max-height: 94vh;
+	display: flex;
+	flex-direction: column;
+	padding: 24px 28px;
 	overflow: visible;
-	z-index: 1000;
-	box-shadow: 0 16px 48px rgba(0, 0, 0, 0.14);
+}
+
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(15, 23, 42, .45);
+	backdrop-filter: blur(6px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
 }
 
 .modal-panel::-webkit-scrollbar {
@@ -47,6 +47,7 @@
 	font-family: "Outfit", sans-serif;
 	color: #1e1e1e;
 	margin-bottom: 24px;
+	font-size: 30px;
 }
 
 .modal-title span {

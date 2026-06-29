@@ -1,26 +1,26 @@
-.modal-backdrop {
-	position: fixed;
-	inset: 0;
-	background: rgba(0, 0, 0, 0.35);
-	z-index: 998;
-}
-
 .modal-panel {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	margin-top: 32px;
-	z-index: 999;
+	width: 100%;
 	background: white;
-	border-radius: 22px;
-	padding: 24px 28px;
-	width: min(560px, 92vw);
+	border-radius: 45px;
+	max-width: min(560px, 92vw);
 	max-height: 85vh;
+	display: flex;
+	flex-direction: column;
+	padding: 24px 28px;
 	overflow-y: auto;
 	scrollbar-width: none;
 	-ms-overflow-style: none;
-	box-shadow: 0 16px 48px rgba(0, 0, 0, 0.14);
+}
+
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(15, 23, 42, .45);
+	backdrop-filter: blur(6px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
 }
 
 .modal-panel::-webkit-scrollbar {
@@ -41,6 +41,7 @@
 	font-family: "Outfit", sans-serif;
 	color: #1e1e1e;
 	margin: 0 0 8px;
+	font-size: 32px;
 }
 
 .modal-title span {
@@ -102,7 +103,7 @@
 	position: absolute;
 	top: -9px;
 	left: 12px;
-	font-size: 11px;
+	font-size: 12px;
 	color: var(--color-primario);
 	font-weight: 500;
 	pointer-events: none;
@@ -112,12 +113,12 @@
 }
 
 .field-wrapper input {
-	height: 46px;
-	border-radius: 10px;
+	height: 41px;
+	border-radius: 999px;
 	border: 1.5px solid #e8e8e8;
 	padding: 0 16px;
 	font-family: "Outfit", sans-serif;
-	font-size: 14px;
+	font-size: 15px;
 	outline: none;
 	background: white;
 	color: var(--color-texto-principal);
@@ -141,13 +142,13 @@
 .btn-cancelar {
 	height: 40px;
 	padding: 0 24px;
-	border-radius: 10px;
+	border-radius: 999px;
 	border: none;
 	background: var(--color-primario);
 	color: white;
 	cursor: pointer;
 	font-family: "Outfit", sans-serif;
-	font-size: 13px;
+	font-size: 15px;
 	font-weight: 500;
 	transition: opacity 0.2s;
 }

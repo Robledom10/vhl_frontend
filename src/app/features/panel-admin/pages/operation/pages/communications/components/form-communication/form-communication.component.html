@@ -1,179 +1,183 @@
-<div class="modal-backdrop" *ngIf="isOpen" (click)="cerrar()"></div>
-<div class="modal-panel" *ngIf="isOpen" (click)="onPanelClick($event)">
-	<div class="modal-scroll">
+<div class="modal-overlay" *ngIf="isOpen" (click)="cerrar()">
 
-		<!-- HEADER -->
-		<div class="modal-header">
-			<button class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
-		</div>
+	<div class="modal-panel" *ngIf="isOpen" (click)="onPanelClick($event)">
+		<div class="modal-scroll">
 
-		<h2 class="modal-title">
-			{{ editando ? 'Editar' : 'Nuevo' }} <span>Mensaje</span>
-		</h2>
+			<!-- HEADER -->
+			<div class="modal-header">
+				<button class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
+			</div>
 
-		<form [formGroup]="comForm" (ngSubmit)="enviar()">
-			<div class="form-grid">
+			<h2 class="modal-title">
+				{{ editando ? 'Editar' : 'Nuevo' }} <span>Mensaje</span>
+			</h2>
 
-				<!-- VIAJE — custom select -->
-				<div class="form-group">
-					<div class="custom-select-group">
-						<div class="custom-select" [class.open]="viajeDropdownOpen"
-							[class.selected]="comForm.get('idViaje')?.value"
-							[class.invalid]="formSubmitted && comForm.get('idViaje')?.invalid"
-							(click)="toggleViajeDropdown()">
-							<div class="custom-select-value">
-								{{ idViajeActual ? getViajeLabel(+idViajeActual) : '' }}
-							</div>
-							<i class="fa-solid fa-angle-down select-icon"></i>
-							<div class="custom-select-dropdown" *ngIf="viajeDropdownOpen"
-								(click)="$event.stopPropagation()">
-								<div class="custom-option disabled" *ngIf="viajesFiltrados.length === 0">
-									No hay viajes disponibles
+			<form [formGroup]="comForm" (ngSubmit)="enviar()">
+				<div class="form-grid">
+
+					<!-- VIAJE — custom select -->
+					<div class="form-group">
+						<div class="custom-select-group">
+							<div class="custom-select" [class.open]="viajeDropdownOpen"
+								[class.selected]="comForm.get('idViaje')?.value"
+								[class.invalid]="formSubmitted && comForm.get('idViaje')?.invalid"
+								(click)="toggleViajeDropdown()">
+								<div class="custom-select-value">
+									{{ idViajeActual ? getViajeLabel(+idViajeActual) : '' }}
 								</div>
-								<div class="custom-option" *ngFor="let v of viajesFiltrados"
-									[class.active]="comForm.get('idViaje')?.value === '' + v.id"
-									(click)="selectViaje(v); $event.stopPropagation()">
-									{{ paqueteTituloMap[v.idPaquete]
-									|| ('Paquete ' + v.idPaquete) }} — Viaje #{{ v.id }} · {{ v.fechaSalida |
-									date:'dd/MM/yyyy' }}
+								<i class="fa-solid fa-angle-down select-icon"></i>
+								<div class="custom-select-dropdown" *ngIf="viajeDropdownOpen"
+									(click)="$event.stopPropagation()">
+									<div class="custom-option disabled" *ngIf="viajesFiltrados.length === 0">
+										No hay viajes disponibles
+									</div>
+									<div class="custom-option" *ngFor="let v of viajesFiltrados"
+										[class.active]="comForm.get('idViaje')?.value === '' + v.id"
+										(click)="selectViaje(v); $event.stopPropagation()">
+										{{ paqueteTituloMap[v.idPaquete]
+										|| ('Paquete ' + v.idPaquete) }} — Viaje #{{ v.id }} · {{ v.fechaSalida |
+										date:'dd/MM/yyyy' }}
+									</div>
 								</div>
 							</div>
-						</div>
-						<label [class.active]="comForm.get('idViaje')?.value || viajeDropdownOpen"
-							[class.label-error]="formSubmitted && comForm.get('idViaje')?.invalid">
-							Viaje
-						</label>
-						<span class="field-error" *ngIf="formSubmitted && comForm.get('idViaje')?.invalid">
-							Campo requerido
-						</span>
-					</div>
-				</div>
-
-				<!-- PAQUETE (readonly) -->
-				<div class="form-group">
-					<div class="field-wrapper">
-						<input type="text" [value]="paqueteNombre || ''" readonly placeholder="Paquete"
-							class="input-readonly" />
-						<label [class.active]="paqueteNombre">Paquete</label>
-					</div>
-				</div>
-
-				<!-- CANAL -->
-				<div class="form-group span-2">
-					<p class="section-label">Canal de envío</p>
-					<div class="canal-cards">
-						<div class="canal-card selected">
-							<div class="canal-icon-wrap gmail">
-								<i class="fa-brands fa-google"></i>
-							</div>
-							<div class="canal-info">
-								<span class="canal-name">Gmail</span>
-								<span class="canal-desc">Correo electrónico</span>
-							</div>
-							<i class="fa-solid fa-circle-check canal-check"></i>
-						</div>
-					</div>
-				</div>
-
-				<!-- CORREOS con filtro de pago -->
-				<div class="form-group span-2">
-					<div class="contactos-header">
-						<p class="section-label">Correos electrónicos</p>
-						<div class="pago-chips pago-chips-sm">
-							<button type="button" class="chip" [class.active]="filtroPago === 'todos'"
-								(click)="onFiltroPagoChange('todos')">Todos</button>
-							<button type="button" class="chip chip-verde" [class.active]="filtroPago === 'pagados'"
-								(click)="onFiltroPagoChange('pagados')">
-								<i class="fa-solid fa-circle-check"></i> Pagados
-							</button>
-							<button type="button" class="chip chip-rojo" [class.active]="filtroPago === 'no_pagados'"
-								(click)="onFiltroPagoChange('no_pagados')">
-								<i class="fa-solid fa-circle-xmark"></i> Sin pago
-							</button>
-						</div>
-					</div>
-					<div class="contactos-wrap">
-						<i class="fa-solid fa-spinner fa-spin contactos-loading" *ngIf="cargandoEmails"></i>
-						<div class="textarea-wrapper">
-							<textarea formControlName="contactos"
-								placeholder="Los correos se cargan automáticamente al seleccionar un viaje..." rows="3"
-								[class.ng-invalid]="formSubmitted && comForm.get('contactos')?.invalid"
-								[class.ng-touched]="comForm.get('contactos')?.touched">
-							</textarea>
-						</div>
-					</div>
-					<span class="hint">
-						<i class="fa-solid fa-circle-info"></i>
-						{{ emailCount }} correo(s) cargados · Puedes editarlos manualmente · Separa con comas
-					</span>
-					<span class="field-error" *ngIf="formSubmitted && comForm.get('contactos')?.invalid">
-						Campo requerido
-					</span>
-				</div>
-
-				<!-- VIAJEROS DEL VIAJE -->
-				<div class="form-group span-2" *ngIf="viajerosSummary.length > 0">
-					<div class="viajeros-header">
-						<i class="fa-solid fa-users"></i>
-						<label>Personas que viajan <span class="badge-count">{{ viajerosSummary.length }}</span></label>
-					</div>
-					<div class="viajeros-lista">
-						<div class="viajero-row" *ngFor="let v of viajerosSummary">
-							<span class="viajero-nombre">{{ v.nombre }}</span>
-							<span class="viajero-reserva">{{ v.reserva }}</span>
-							<span class="viajero-pago" [class.pagado]="v.pagado" [class.sin-pago]="!v.pagado">
-								<i class="fa-solid" [class.fa-circle-check]="v.pagado"
-									[class.fa-circle-xmark]="!v.pagado"></i>
-								{{ v.pagado ? 'Pago verificado' : 'Sin pago' }}
+							<label [class.active]="comForm.get('idViaje')?.value || viajeDropdownOpen"
+								[class.label-error]="formSubmitted && comForm.get('idViaje')?.invalid">
+								Viaje
+							</label>
+							<span class="field-error" *ngIf="formSubmitted && comForm.get('idViaje')?.invalid">
+								Campo requerido
 							</span>
 						</div>
 					</div>
-				</div>
 
-				<!-- ASUNTO -->
-				<div class="form-group span-2">
-					<div class="field-wrapper">
-						<input type="text" formControlName="asunto" placeholder="Asunto"
-							[class.ng-invalid]="formSubmitted && comForm.get('asunto')?.invalid"
-							[class.ng-touched]="comForm.get('asunto')?.touched" />
-						<label [class.active]="comForm.get('asunto')?.value"
-							[class.label-error]="formSubmitted && comForm.get('asunto')?.invalid">
-							Asunto
-						</label>
-						<span class="field-error" *ngIf="formSubmitted && comForm.get('asunto')?.invalid">
-							Asunto requerido (mín. 5 caracteres)
+					<!-- PAQUETE (readonly) -->
+					<div class="form-group">
+						<div class="field-wrapper">
+							<input type="text" [value]="paqueteNombre || ''" readonly placeholder="Paquete"
+								class="input-readonly" />
+							<label [class.active]="paqueteNombre">Paquete</label>
+						</div>
+					</div>
+
+					<!-- CANAL -->
+					<div class="form-group span-2">
+						<p class="section-label">Canal de envío</p>
+						<div class="canal-cards">
+							<div class="canal-card selected">
+								<div class="canal-icon-wrap gmail">
+									<i class="fa-brands fa-google"></i>
+								</div>
+								<div class="canal-info">
+									<span class="canal-name">Gmail</span>
+									<span class="canal-desc">Correo electrónico</span>
+								</div>
+								<i class="fa-solid fa-circle-check canal-check"></i>
+							</div>
+						</div>
+					</div>
+
+					<!-- CORREOS con filtro de pago -->
+					<div class="form-group span-2">
+						<div class="contactos-header">
+							<p class="section-label">Correos electrónicos</p>
+							<div class="pago-chips pago-chips-sm">
+								<button type="button" class="chip" [class.active]="filtroPago === 'todos'"
+									(click)="onFiltroPagoChange('todos')">Todos</button>
+								<button type="button" class="chip chip-verde" [class.active]="filtroPago === 'pagados'"
+									(click)="onFiltroPagoChange('pagados')">
+									<i class="fa-solid fa-circle-check"></i> Pagados
+								</button>
+								<button type="button" class="chip chip-rojo"
+									[class.active]="filtroPago === 'no_pagados'"
+									(click)="onFiltroPagoChange('no_pagados')">
+									<i class="fa-solid fa-circle-xmark"></i> Sin pago
+								</button>
+							</div>
+						</div>
+						<div class="contactos-wrap">
+							<i class="fa-solid fa-spinner fa-spin contactos-loading" *ngIf="cargandoEmails"></i>
+							<div class="textarea-wrapper">
+								<textarea formControlName="contactos"
+									placeholder="Los correos se cargan automáticamente al seleccionar un viaje..."
+									rows="3" [class.ng-invalid]="formSubmitted && comForm.get('contactos')?.invalid"
+									[class.ng-touched]="comForm.get('contactos')?.touched">
+							</textarea>
+							</div>
+						</div>
+						<span class="hint">
+							<i class="fa-solid fa-circle-info"></i>
+							{{ emailCount }} correo(s) cargados · Puedes editarlos manualmente · Separa con comas
+						</span>
+						<span class="field-error" *ngIf="formSubmitted && comForm.get('contactos')?.invalid">
+							Campo requerido
 						</span>
 					</div>
-				</div>
 
-				<!-- MENSAJE -->
-				<div class="form-group span-2">
-					<div class="field-wrapper textarea-wrapper">
-						<textarea formControlName="mensaje" placeholder="Mensaje" rows="5"
-							[class.ng-invalid]="formSubmitted && comForm.get('mensaje')?.invalid"
-							[class.ng-touched]="comForm.get('mensaje')?.touched">
+					<!-- VIAJEROS DEL VIAJE -->
+					<div class="form-group span-2" *ngIf="viajerosSummary.length > 0">
+						<div class="viajeros-header">
+							<i class="fa-solid fa-users"></i>
+							<label>Personas que viajan <span class="badge-count">{{ viajerosSummary.length
+									}}</span></label>
+						</div>
+						<div class="viajeros-lista">
+							<div class="viajero-row" *ngFor="let v of viajerosSummary">
+								<span class="viajero-nombre">{{ v.nombre }}</span>
+								<span class="viajero-reserva">{{ v.reserva }}</span>
+								<span class="viajero-pago" [class.pagado]="v.pagado" [class.sin-pago]="!v.pagado">
+									<i class="fa-solid" [class.fa-circle-check]="v.pagado"
+										[class.fa-circle-xmark]="!v.pagado"></i>
+									{{ v.pagado ? 'Pago verificado' : 'Sin pago' }}
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<!-- ASUNTO -->
+					<div class="form-group span-2">
+						<div class="field-wrapper">
+							<input type="text" formControlName="asunto" placeholder="Asunto"
+								[class.ng-invalid]="formSubmitted && comForm.get('asunto')?.invalid"
+								[class.ng-touched]="comForm.get('asunto')?.touched" />
+							<label [class.active]="comForm.get('asunto')?.value"
+								[class.label-error]="formSubmitted && comForm.get('asunto')?.invalid">
+								Asunto
+							</label>
+							<span class="field-error" *ngIf="formSubmitted && comForm.get('asunto')?.invalid">
+								Asunto requerido (mín. 5 caracteres)
+							</span>
+						</div>
+					</div>
+
+					<!-- MENSAJE -->
+					<div class="form-group span-2">
+						<div class="field-wrapper textarea-wrapper">
+							<textarea formControlName="mensaje" placeholder="Mensaje" rows="5"
+								[class.ng-invalid]="formSubmitted && comForm.get('mensaje')?.invalid"
+								[class.ng-touched]="comForm.get('mensaje')?.touched">
 						</textarea>
-						<label [class.active]="comForm.get('mensaje')?.value"
-							[class.label-error]="formSubmitted && comForm.get('mensaje')?.invalid">
-							Mensaje
-						</label>
-						<span class="field-error" *ngIf="formSubmitted && comForm.get('mensaje')?.invalid">
-							Mensaje requerido (mín. 20 caracteres)
-						</span>
+							<label [class.active]="comForm.get('mensaje')?.value"
+								[class.label-error]="formSubmitted && comForm.get('mensaje')?.invalid">
+								Mensaje
+							</label>
+							<span class="field-error" *ngIf="formSubmitted && comForm.get('mensaje')?.invalid">
+								Mensaje requerido (mín. 20 caracteres)
+							</span>
+						</div>
 					</div>
+
 				</div>
 
-			</div>
+				<div class="modal-actions">
+					<button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
+					<button type="submit" class="btn-enviar" [disabled]="enviando">
+						<i class="fa-solid fa-spinner spinning" *ngIf="enviando"></i>
+						{{ enviando ? 'Enviando...' : (editando ? 'Actualizar' : 'Enviar mensaje') }}
+					</button>
+				</div>
+			</form>
 
-			<div class="modal-actions">
-				<button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
-				<button type="submit" class="btn-enviar" [disabled]="enviando">
-					<i class="fa-solid fa-spinner spinning" *ngIf="enviando"></i>
-					{{ enviando ? 'Enviando...' : (editando ? 'Actualizar' : 'Enviar mensaje') }}
-				</button>
-			</div>
-		</form>
-
+		</div>
 	</div>
 </div>
 

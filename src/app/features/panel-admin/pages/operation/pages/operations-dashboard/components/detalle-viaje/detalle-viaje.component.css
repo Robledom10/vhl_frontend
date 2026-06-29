@@ -1,34 +1,26 @@
-:host {
-	display: contents;
-}
-
-/* Backdrop */
-
-.modal-backdrop {
-	position: fixed;
-	inset: 0;
-	background: rgba(0, 0, 0, 0.35);
-	z-index: 999;
-}
-
-/* Modal */
-
 .modal-panel {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	margin-top: 32px;
+	width: 100%;
 	background: white;
-	border-radius: 22px;
-	padding: 40px;
-	width: min(560px, 94vw);
+	border-radius: 45px;
+	max-width: min(560px, 92vw);
 	max-height: 85vh;
+	display: flex;
+	flex-direction: column;
+	padding: 24px 28px;
 	overflow-y: auto;
 	scrollbar-width: none;
 	-ms-overflow-style: none;
-	z-index: 1000;
-	box-shadow: 0 16px 48px rgba(0, 0, 0, 0.14);
+}
+
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(15, 23, 42, .45);
+	backdrop-filter: blur(6px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
 }
 
 .modal-panel::-webkit-scrollbar {
@@ -159,21 +151,16 @@
 }
 
 .btn-cerrar-detalle {
-	height: 44px;
-	padding: 0 28px;
-
+	height: 40px;
+	padding: 0 24px;
 	border: none;
-	border-radius: 25px;
-
+	border-radius: 999px;
 	background: var(--color-primario);
 	color: white;
-
 	cursor: pointer;
-
 	font-family: "Outfit", sans-serif;
-	font-size: 14px;
+	font-size: 15px;
 	font-weight: 500;
-
 	transition: .2s;
 }
 

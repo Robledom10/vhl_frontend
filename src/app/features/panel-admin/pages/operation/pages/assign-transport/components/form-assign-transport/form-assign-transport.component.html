@@ -1,235 +1,241 @@
-<div class="modal-backdrop" *ngIf="isOpen" (click)="cerrar()"></div>
-<div class="modal-panel" *ngIf="isOpen" (click)="onPanelClick($event)">
+<div class="modal-overlay" *ngIf="isOpen" (click)="cerrar()">
+	<div class="modal-panel" *ngIf="isOpen" (click)="onPanelClick($event)">
 
-	<!-- HEADER -->
-	<div class="modal-header">
-		<button type="button" class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
-	</div>
+		<!-- HEADER -->
+		<div class="modal-header">
+			<button type="button" class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
+		</div>
 
-	<h2 class="modal-title">
-		{{ editandoTransporteId ? 'Editar' : 'Asignar' }} <span>Transporte</span>
-		<span *ngIf="viajeSeleccionado" class="modal-title-sub"> - {{ viajeSeleccionado.titulo }}</span>
-	</h2>
+		<h2 class="modal-title">
+			{{ editandoTransporteId ? 'Editar' : 'Asignar' }} <span>Transporte</span>
+			<span *ngIf="viajeSeleccionado" class="modal-title-sub"> - {{ viajeSeleccionado.titulo }}</span>
+		</h2>
 
-	<!-- ALERTA CAPACIDAD -->
-	<div class="alert-capacidad"
-		*ngIf="!capacidadSuficiente() && transporteForm.get('capacidad')?.value && transporteForm.get('cantidadViajeros')?.value">
-		<i class="fa-solid fa-triangle-exclamation"></i>
-		La capacidad del vehículo es menor a la cantidad de viajeros.
-	</div>
+		<!-- ALERTA CAPACIDAD -->
+		<div class="alert-capacidad"
+			*ngIf="!capacidadSuficiente() && transporteForm.get('capacidad')?.value && transporteForm.get('cantidadViajeros')?.value">
+			<i class="fa-solid fa-triangle-exclamation"></i>
+			La capacidad del vehículo es menor a la cantidad de viajeros.
+		</div>
 
-	<form [formGroup]="transporteForm" (ngSubmit)="guardar()">
-		<div class="form-grid">
+		<form [formGroup]="transporteForm" (ngSubmit)="guardar()">
+			<div class="form-grid">
 
-			<!-- VIAJE (custom select, solo si no hay viajeSeleccionado) -->
-			<div class="form-group span-2" *ngIf="!viajeSeleccionado">
-				<div class="custom-select-group">
-					<div class="custom-select" [class.open]="isSelectOpen('viaje')" [class.selected]="selectedViajeId"
-						[class.invalid]="formSubmitted && transporteForm.get('idViaje')?.invalid"
-						(click)="toggleSelect('viaje', $event)">
-						<div class="custom-select-value">
-							{{ selectedViajeId ? getViajeLabel(selectedViajeId) : '' }}
-						</div>
-						<i class="fa-solid fa-angle-down select-icon"></i>
-						<div class="custom-select-dropdown" *ngIf="isSelectOpen('viaje')"
-							(click)="$event.stopPropagation()">
-							<ng-container *ngFor="let v of viajes">
-								<div class="custom-option" *ngIf="v.tieneViaje"
-									[class.active]="selectedViajeId === v.id"
-									(click)="selectViajeOption(v); $event.stopPropagation()">
-									{{ v.nombre }}
-								</div>
-								<div class="custom-option disabled" *ngIf="!v.tieneViaje">
-									{{ v.titulo }} — (Sin viaje creado)
-								</div>
-							</ng-container>
-						</div>
-					</div>
-					<label [class.active]="selectedViajeId || isSelectOpen('viaje')"
-						[class.label-error]="formSubmitted && transporteForm.get('idViaje')?.invalid">
-						Viaje
-					</label>
-					<span class="field-error" *ngIf="formSubmitted && transporteForm.get('idViaje')?.invalid">
-						Debes seleccionar un viaje
-					</span>
-				</div>
-			</div>
-
-			<!-- PROVEEDOR (custom select, opcional) -->
-			<div class="form-group span-2" *ngIf="proveedores.length > 0">
-				<div class="custom-select-group">
-					<div class="custom-select proveedor-select" [class.open]="isSelectOpen('proveedor')"
-						[class.selected]="selectedProveedorId" (click)="toggleSelect('proveedor', $event)">
-						<div class="custom-select-value">
-							{{ selectedProveedorId ? getProveedorLabel(selectedProveedorId) : '' }}
-						</div>
-						<i class="fa-solid fa-angle-down select-icon"></i>
-						<div class="custom-select-dropdown" *ngIf="isSelectOpen('proveedor')"
-							(click)="$event.stopPropagation()">
-							<div class="custom-option" [class.active]="!selectedProveedorId"
-								(click)="clearProveedor(); $event.stopPropagation()">
-								Sin proveedor
+				<!-- VIAJE (custom select, solo si no hay viajeSeleccionado) -->
+				<div class="form-group span-2" *ngIf="!viajeSeleccionado">
+					<div class="custom-select-group">
+						<div class="custom-select" [class.open]="isSelectOpen('viaje')"
+							[class.selected]="selectedViajeId"
+							[class.invalid]="formSubmitted && transporteForm.get('idViaje')?.invalid"
+							(click)="toggleSelect('viaje', $event)">
+							<div class="custom-select-value">
+								{{ selectedViajeId ? getViajeLabel(selectedViajeId) : '' }}
 							</div>
-							<div class="custom-option" *ngFor="let p of proveedores"
-								[class.active]="selectedProveedorId === p.id"
-								(click)="selectProveedorOption(p); $event.stopPropagation()">
-								{{ p.nombre }}{{ p.tipoVehiculo ? ' · ' + p.tipoVehiculo : '' }}
-								{{ p.placa ? ' · Placa:' + p.placa : '' }}{{ p.conductor ? ' · ' + p.conductor : '' }}
+							<i class="fa-solid fa-angle-down select-icon"></i>
+							<div class="custom-select-dropdown" *ngIf="isSelectOpen('viaje')"
+								(click)="$event.stopPropagation()">
+								<ng-container *ngFor="let v of viajes">
+									<div class="custom-option" *ngIf="v.tieneViaje"
+										[class.active]="selectedViajeId === v.id"
+										(click)="selectViajeOption(v); $event.stopPropagation()">
+										{{ v.nombre }}
+									</div>
+									<div class="custom-option disabled" *ngIf="!v.tieneViaje">
+										{{ v.titulo }} — (Sin viaje creado)
+									</div>
+								</ng-container>
 							</div>
 						</div>
-					</div>
-					<label [class.active]="selectedProveedorId || isSelectOpen('proveedor')">
-						Proveedor registrado
-					</label>
-				</div>
-			</div>
-
-			<!-- EMPRESA -->
-			<div class="form-group">
-				<div class="field-wrapper">
-					<input type="text" formControlName="empresa" placeholder="Empresa de transporte"
-						[class.ng-invalid]="formSubmitted && transporteForm.get('empresa')?.invalid"
-						[class.ng-touched]="transporteForm.get('empresa')?.touched" />
-					<label [class.active]="transporteForm.get('empresa')?.value"
-						[class.label-error]="formSubmitted && transporteForm.get('empresa')?.invalid">
-						Empresa de transporte
-					</label>
-					<span class="field-error" *ngIf="formSubmitted && transporteForm.get('empresa')?.invalid">
-						Campo requerido (mín. 3 caracteres)
-					</span>
-				</div>
-			</div>
-
-			<!-- TIPO VEHÍCULO -->
-			<div class="form-group">
-				<div class="field-wrapper">
-					<input type="text" formControlName="tipoVehiculo" placeholder="Tipo de vehículo"
-						[class.ng-invalid]="formSubmitted && transporteForm.get('tipoVehiculo')?.invalid"
-						[class.ng-touched]="transporteForm.get('tipoVehiculo')?.touched" />
-					<label [class.active]="transporteForm.get('tipoVehiculo')?.value"
-						[class.label-error]="formSubmitted && transporteForm.get('tipoVehiculo')?.invalid">
-						Tipo de vehículo
-					</label>
-					<span class="field-error" *ngIf="formSubmitted && transporteForm.get('tipoVehiculo')?.invalid">
-						Campo requerido
-					</span>
-				</div>
-			</div>
-
-			<!-- CAPACIDAD -->
-			<div class="form-group">
-				<div class="field-wrapper">
-					<input type="number" formControlName="capacidad" placeholder="Capacidad" min="1"
-						[class.ng-invalid]="formSubmitted && transporteForm.get('capacidad')?.invalid"
-						[class.ng-touched]="transporteForm.get('capacidad')?.touched" />
-					<label [class.active]="transporteForm.get('capacidad')?.value"
-						[class.label-error]="formSubmitted && transporteForm.get('capacidad')?.invalid">
-						Capacidad (personas)
-					</label>
-					<span class="field-error" *ngIf="formSubmitted && transporteForm.get('capacidad')?.invalid">
-						Capacidad requerida (mín. 1)
-					</span>
-				</div>
-			</div>
-
-			<!-- CANTIDAD VIAJEROS -->
-			<div class="form-group">
-				<div class="field-wrapper">
-					<input type="number" formControlName="cantidadViajeros" placeholder="Cantidad de viajeros" min="1"
-						[class.ng-invalid]="formSubmitted && transporteForm.get('cantidadViajeros')?.invalid"
-						[class.ng-touched]="transporteForm.get('cantidadViajeros')?.touched" />
-					<label [class.active]="transporteForm.get('cantidadViajeros')?.value"
-						[class.label-error]="formSubmitted && transporteForm.get('cantidadViajeros')?.invalid">
-						Cantidad de viajeros
-					</label>
-					<span class="field-error" *ngIf="formSubmitted && transporteForm.get('cantidadViajeros')?.invalid">
-						Campo requerido
-					</span>
-				</div>
-			</div>
-
-			<!-- PLACA -->
-			<div class="form-group">
-				<div class="field-wrapper">
-					<input type="text" formControlName="placa" placeholder="Placa del vehículo"
-						[class.ng-invalid]="formSubmitted && transporteForm.get('placa')?.invalid"
-						[class.ng-touched]="transporteForm.get('placa')?.touched" />
-					<label [class.active]="transporteForm.get('placa')?.value"
-						[class.label-error]="formSubmitted && transporteForm.get('placa')?.invalid">
-						Placa del vehículo *
-					</label>
-					<span class="field-error" *ngIf="formSubmitted && transporteForm.get('placa')?.invalid">
-						Placa requerida (mín. 5 caracteres)
-					</span>
-				</div>
-			</div>
-
-			<!-- CONDUCTOR -->
-			<div class="form-group">
-				<div class="field-wrapper">
-					<input type="text" formControlName="conductor" placeholder="Conductor"
-						[class.ng-invalid]="formSubmitted && transporteForm.get('conductor')?.invalid"
-						[class.ng-touched]="transporteForm.get('conductor')?.touched" />
-					<label [class.active]="transporteForm.get('conductor')?.value"
-						[class.label-error]="formSubmitted && transporteForm.get('conductor')?.invalid">
-						Conductor
-					</label>
-					<span class="field-error" *ngIf="formSubmitted && transporteForm.get('conductor')?.invalid">
-						Campo requerido
-					</span>
-				</div>
-			</div>
-
-			<!-- TELÉFONO CONDUCTOR -->
-			<div class="form-group">
-				<div class="field-wrapper">
-					<input type="text" formControlName="telefonoConductor" placeholder="Teléfono del conductor"
-						[class.ng-invalid]="formSubmitted && transporteForm.get('telefonoConductor')?.invalid"
-						[class.ng-touched]="transporteForm.get('telefonoConductor')?.touched" />
-					<label [class.active]="transporteForm.get('telefonoConductor')?.value"
-						[class.label-error]="formSubmitted && transporteForm.get('telefonoConductor')?.invalid">
-						Teléfono del conductor
-					</label>
-					<span class="field-error" *ngIf="formSubmitted && transporteForm.get('telefonoConductor')?.invalid">
-						Teléfono inválido
-					</span>
-				</div>
-			</div>
-
-			<!-- FECHA DE SALIDA (calendario) -->
-			<div class="form-group span-2">
-				<div class="field-wrapper">
-					<div class="cal-wrap">
-						<input type="text" readonly placeholder="Fecha de salida"
-							[value]="transporteForm.get('horarioSalida')?.value | date:'dd/MM/yyyy'"
-							(click)="toggleCalendarSalida($event)" class="cal-trigger"
-							[class.filled]="transporteForm.get('horarioSalida')?.value"
-							[class.disabled-input]="!!viajeSeleccionado || !!transporteForm.get('idViaje')?.value" />
-						<label [class.active]="transporteForm.get('horarioSalida')?.value">
-							Fecha de salida
+						<label [class.active]="selectedViajeId || isSelectOpen('viaje')"
+							[class.label-error]="formSubmitted && transporteForm.get('idViaje')?.invalid">
+							Viaje
 						</label>
-						<i class="fa-regular fa-calendar cal-icon"></i>
-						<app-custom-calendar *ngIf="openCalendarSalida" [isOpen]="true"
-							[selectedDate]="transporteForm.get('horarioSalida')?.value || ''"
-							[minSelectableDate]="todayStr" (dateSelected)="onFechaSalidaSelected($event)"
-							(closed)="openCalendarSalida = false">
-						</app-custom-calendar>
+						<span class="field-error" *ngIf="formSubmitted && transporteForm.get('idViaje')?.invalid">
+							Debes seleccionar un viaje
+						</span>
 					</div>
-					<small class="field-info" *ngIf="viajeSeleccionado || transporteForm.get('idViaje')?.value">
-						Esta fecha proviene del viaje programado.
-					</small>
 				</div>
+
+				<!-- PROVEEDOR (custom select, opcional) -->
+				<div class="form-group span-2" *ngIf="proveedores.length > 0">
+					<div class="custom-select-group">
+						<div class="custom-select proveedor-select" [class.open]="isSelectOpen('proveedor')"
+							[class.selected]="selectedProveedorId" (click)="toggleSelect('proveedor', $event)">
+							<div class="custom-select-value">
+								{{ selectedProveedorId ? getProveedorLabel(selectedProveedorId) : '' }}
+							</div>
+							<i class="fa-solid fa-angle-down select-icon"></i>
+							<div class="custom-select-dropdown" *ngIf="isSelectOpen('proveedor')"
+								(click)="$event.stopPropagation()">
+								<div class="custom-option" [class.active]="!selectedProveedorId"
+									(click)="clearProveedor(); $event.stopPropagation()">
+									Sin proveedor
+								</div>
+								<div class="custom-option" *ngFor="let p of proveedores"
+									[class.active]="selectedProveedorId === p.id"
+									(click)="selectProveedorOption(p); $event.stopPropagation()">
+									{{ p.nombre }}{{ p.tipoVehiculo ? ' · ' + p.tipoVehiculo : '' }}
+									{{ p.placa ? ' · Placa:' + p.placa : '' }}{{ p.conductor ? ' · ' + p.conductor : ''
+									}}
+								</div>
+							</div>
+						</div>
+						<label [class.active]="selectedProveedorId || isSelectOpen('proveedor')">
+							Proveedor registrado
+						</label>
+					</div>
+				</div>
+
+				<!-- EMPRESA -->
+				<div class="form-group">
+					<div class="field-wrapper">
+						<input type="text" formControlName="empresa" placeholder="Empresa de transporte"
+							[class.ng-invalid]="formSubmitted && transporteForm.get('empresa')?.invalid"
+							[class.ng-touched]="transporteForm.get('empresa')?.touched" />
+						<label [class.active]="transporteForm.get('empresa')?.value"
+							[class.label-error]="formSubmitted && transporteForm.get('empresa')?.invalid">
+							Empresa de transporte
+						</label>
+						<span class="field-error" *ngIf="formSubmitted && transporteForm.get('empresa')?.invalid">
+							Campo requerido (mín. 3 caracteres)
+						</span>
+					</div>
+				</div>
+
+				<!-- TIPO VEHÍCULO -->
+				<div class="form-group">
+					<div class="field-wrapper">
+						<input type="text" formControlName="tipoVehiculo" placeholder="Tipo de vehículo"
+							[class.ng-invalid]="formSubmitted && transporteForm.get('tipoVehiculo')?.invalid"
+							[class.ng-touched]="transporteForm.get('tipoVehiculo')?.touched" />
+						<label [class.active]="transporteForm.get('tipoVehiculo')?.value"
+							[class.label-error]="formSubmitted && transporteForm.get('tipoVehiculo')?.invalid">
+							Tipo de vehículo
+						</label>
+						<span class="field-error" *ngIf="formSubmitted && transporteForm.get('tipoVehiculo')?.invalid">
+							Campo requerido
+						</span>
+					</div>
+				</div>
+
+				<!-- CAPACIDAD -->
+				<div class="form-group">
+					<div class="field-wrapper">
+						<input type="number" formControlName="capacidad" placeholder="Capacidad" min="1"
+							[class.ng-invalid]="formSubmitted && transporteForm.get('capacidad')?.invalid"
+							[class.ng-touched]="transporteForm.get('capacidad')?.touched" />
+						<label [class.active]="transporteForm.get('capacidad')?.value"
+							[class.label-error]="formSubmitted && transporteForm.get('capacidad')?.invalid">
+							Capacidad (personas)
+						</label>
+						<span class="field-error" *ngIf="formSubmitted && transporteForm.get('capacidad')?.invalid">
+							Capacidad requerida (mín. 1)
+						</span>
+					</div>
+				</div>
+
+				<!-- CANTIDAD VIAJEROS -->
+				<div class="form-group">
+					<div class="field-wrapper">
+						<input type="number" formControlName="cantidadViajeros" placeholder="Cantidad de viajeros"
+							min="1"
+							[class.ng-invalid]="formSubmitted && transporteForm.get('cantidadViajeros')?.invalid"
+							[class.ng-touched]="transporteForm.get('cantidadViajeros')?.touched" />
+						<label [class.active]="transporteForm.get('cantidadViajeros')?.value"
+							[class.label-error]="formSubmitted && transporteForm.get('cantidadViajeros')?.invalid">
+							Cantidad de viajeros
+						</label>
+						<span class="field-error"
+							*ngIf="formSubmitted && transporteForm.get('cantidadViajeros')?.invalid">
+							Campo requerido
+						</span>
+					</div>
+				</div>
+
+				<!-- PLACA -->
+				<div class="form-group">
+					<div class="field-wrapper">
+						<input type="text" formControlName="placa" placeholder="Placa del vehículo"
+							[class.ng-invalid]="formSubmitted && transporteForm.get('placa')?.invalid"
+							[class.ng-touched]="transporteForm.get('placa')?.touched" />
+						<label [class.active]="transporteForm.get('placa')?.value"
+							[class.label-error]="formSubmitted && transporteForm.get('placa')?.invalid">
+							Placa del vehículo *
+						</label>
+						<span class="field-error" *ngIf="formSubmitted && transporteForm.get('placa')?.invalid">
+							Placa requerida (mín. 5 caracteres)
+						</span>
+					</div>
+				</div>
+
+				<!-- CONDUCTOR -->
+				<div class="form-group">
+					<div class="field-wrapper">
+						<input type="text" formControlName="conductor" placeholder="Conductor"
+							[class.ng-invalid]="formSubmitted && transporteForm.get('conductor')?.invalid"
+							[class.ng-touched]="transporteForm.get('conductor')?.touched" />
+						<label [class.active]="transporteForm.get('conductor')?.value"
+							[class.label-error]="formSubmitted && transporteForm.get('conductor')?.invalid">
+							Conductor
+						</label>
+						<span class="field-error" *ngIf="formSubmitted && transporteForm.get('conductor')?.invalid">
+							Campo requerido
+						</span>
+					</div>
+				</div>
+
+				<!-- TELÉFONO CONDUCTOR -->
+				<div class="form-group">
+					<div class="field-wrapper">
+						<input type="text" formControlName="telefonoConductor" placeholder="Teléfono del conductor"
+							[class.ng-invalid]="formSubmitted && transporteForm.get('telefonoConductor')?.invalid"
+							[class.ng-touched]="transporteForm.get('telefonoConductor')?.touched" />
+						<label [class.active]="transporteForm.get('telefonoConductor')?.value"
+							[class.label-error]="formSubmitted && transporteForm.get('telefonoConductor')?.invalid">
+							Teléfono del conductor
+						</label>
+						<span class="field-error"
+							*ngIf="formSubmitted && transporteForm.get('telefonoConductor')?.invalid">
+							Teléfono inválido
+						</span>
+					</div>
+				</div>
+
+				<!-- FECHA DE SALIDA (calendario) -->
+				<div class="form-group span-2">
+					<div class="field-wrapper">
+						<div class="cal-wrap">
+							<input type="text" readonly placeholder="Fecha de salida"
+								[value]="transporteForm.get('horarioSalida')?.value | date:'dd/MM/yyyy'"
+								(click)="toggleCalendarSalida($event)" class="cal-trigger"
+								[class.filled]="transporteForm.get('horarioSalida')?.value"
+								[class.disabled-input]="!!viajeSeleccionado || !!transporteForm.get('idViaje')?.value" />
+							<label [class.active]="transporteForm.get('horarioSalida')?.value">
+								Fecha de salida
+							</label>
+							<i class="fa-regular fa-calendar cal-icon"></i>
+							<app-custom-calendar *ngIf="openCalendarSalida" [isOpen]="true"
+								[selectedDate]="transporteForm.get('horarioSalida')?.value || ''"
+								[minSelectableDate]="todayStr" (dateSelected)="onFechaSalidaSelected($event)"
+								(closed)="openCalendarSalida = false">
+							</app-custom-calendar>
+						</div>
+						<small class="field-info" *ngIf="viajeSeleccionado || transporteForm.get('idViaje')?.value">
+							Esta fecha proviene del viaje programado.
+						</small>
+					</div>
+				</div>
+
 			</div>
 
-		</div>
-
-		<div class="modal-actions">
-			<button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
-			<button type="submit" class="btn-guardar" [disabled]="enviando">
-				{{ enviando ? 'Guardando...' : (editandoTransporteId ? 'Guardar cambios' : 'Guardar asignación') }}
-			</button>
-		</div>
-	</form>
+			<div class="modal-actions">
+				<button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
+				<button type="submit" class="btn-guardar" [disabled]="enviando">
+					{{ enviando ? 'Guardando...' : (editandoTransporteId ? 'Guardar cambios' : 'Guardar asignación') }}
+				</button>
+			</div>
+		</form>
+	</div>
 </div>
 
 <app-confirm-modal [isOpen]="showConfirmModal"

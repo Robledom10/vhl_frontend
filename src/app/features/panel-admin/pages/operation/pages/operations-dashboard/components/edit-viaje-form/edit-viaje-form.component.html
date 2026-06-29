@@ -1,122 +1,124 @@
-<div class="modal-backdrop" (click)="cerrarModal()"></div>
-<div class="modal-panel" (click)="onPanelClick($event)">
+<div class="modal-overlay" (click)="cerrarModal()">
+	<div class="modal-panel" (click)="onPanelClick($event)">
 
-	<!-- HEADER -->
-	<div class="modal-header">
-		<button type="button" class="btn-cerrar" (click)="cerrarModal()">&#x2715;</button>
-	</div>
+		<!-- HEADER -->
+		<div class="modal-header">
+			<button type="button" class="btn-cerrar" (click)="cerrarModal()">&#x2715;</button>
+		</div>
 
-	<h2 class="modal-title">
-		Editar <span>Viaje #{{ idViaje }}</span>
-	</h2>
+		<h2 class="modal-title">
+			Editar <span>Viaje #{{ idViaje }}</span>
+		</h2>
 
-	<form [formGroup]="editForm" (ngSubmit)="abrirConfirmacion()">
-		<div class="form-grid">
+		<form [formGroup]="editForm" (ngSubmit)="abrirConfirmacion()">
+			<div class="form-grid">
 
-			<!-- FECHA DE SALIDA -->
-			<div class="form-group">
-				<div class="field-wrapper">
-					<div class="cal-wrap">
-						<input type="text" readonly placeholder="Fecha de salida"
-							[value]="editForm.get('fechaSalida')?.value | date:'dd/MM/yyyy'"
-							(click)="toggleCalendarioSalida($event)" class="cal-trigger"
-							[class.filled]="editForm.get('fechaSalida')?.value"
-							[class.ng-invalid]="editForm.get('fechaSalida')?.invalid && editForm.get('fechaSalida')?.touched"
-							[class.ng-touched]="editForm.get('fechaSalida')?.touched" />
-						<label [class.active]="editForm.get('fechaSalida')?.value"
-							[class.label-error]="editForm.get('fechaSalida')?.invalid && editForm.get('fechaSalida')?.touched">
-							Fecha de salida
-						</label>
-						<i class="fa-regular fa-calendar cal-icon"
-							[class.cal-icon-error]="editForm.get('fechaSalida')?.invalid && editForm.get('fechaSalida')?.touched"></i>
-						<app-custom-calendar *ngIf="showCalendarioSalida" [isOpen]="showCalendarioSalida"
-							[selectedDate]="editForm.get('fechaSalida')?.value || ''"
-							(dateSelected)="onFechaSalidaSelected($event)" (closed)="showCalendarioSalida = false">
-						</app-custom-calendar>
-					</div>
-					<span class="field-error"
-						*ngIf="editForm.get('fechaSalida')?.invalid && editForm.get('fechaSalida')?.touched">
-						Fecha requerida
-					</span>
-				</div>
-			</div>
-
-			<!-- HORA DE SALIDA (custom) -->
-			<div class="form-group">
-				<div class="field-wrapper">
-					<div class="hora-wrap" [class.hora-open]="horaDropdownOpen" (click)="toggleHoraDropdown($event)">
-						<div class="hora-display" [class.filled]="editForm.get('horaSalida')?.value"
-							[class.invalid]="editForm.get('horaSalida')?.invalid && editForm.get('horaSalida')?.touched">
-							{{ getHoraSalidaDisplay() }}
+				<!-- FECHA DE SALIDA -->
+				<div class="form-group">
+					<div class="field-wrapper">
+						<div class="cal-wrap">
+							<input type="text" readonly placeholder="Fecha de salida"
+								[value]="editForm.get('fechaSalida')?.value | date:'dd/MM/yyyy'"
+								(click)="toggleCalendarioSalida($event)" class="cal-trigger"
+								[class.filled]="editForm.get('fechaSalida')?.value"
+								[class.ng-invalid]="editForm.get('fechaSalida')?.invalid && editForm.get('fechaSalida')?.touched"
+								[class.ng-touched]="editForm.get('fechaSalida')?.touched" />
+							<label [class.active]="editForm.get('fechaSalida')?.value"
+								[class.label-error]="editForm.get('fechaSalida')?.invalid && editForm.get('fechaSalida')?.touched">
+								Fecha de salida
+							</label>
+							<i class="fa-regular fa-calendar cal-icon"
+								[class.cal-icon-error]="editForm.get('fechaSalida')?.invalid && editForm.get('fechaSalida')?.touched"></i>
+							<app-custom-calendar *ngIf="showCalendarioSalida" [isOpen]="showCalendarioSalida"
+								[selectedDate]="editForm.get('fechaSalida')?.value || ''"
+								(dateSelected)="onFechaSalidaSelected($event)" (closed)="showCalendarioSalida = false">
+							</app-custom-calendar>
 						</div>
-						<label [class.active]="editForm.get('horaSalida')?.value"
-							[class.label-error]="editForm.get('horaSalida')?.invalid && editForm.get('horaSalida')?.touched">
-							Hora de salida
-						</label>
-						<i class="fa-regular fa-clock hora-icon"
-							[class.hora-icon-error]="editForm.get('horaSalida')?.invalid && editForm.get('horaSalida')?.touched"></i>
+						<span class="field-error"
+							*ngIf="editForm.get('fechaSalida')?.invalid && editForm.get('fechaSalida')?.touched">
+							Fecha requerida
+						</span>
+					</div>
+				</div>
 
-						<div class="hora-dropdown" *ngIf="horaDropdownOpen" (click)="$event.stopPropagation()">
-							<div class="hora-cols">
-								<div class="hora-col">
-									<div class="hora-col-label">H</div>
-									<div class="hora-scroll">
-										<div class="hora-option" *ngFor="let h of horasDisponibles"
-											[class.active]="horaSeleccionada === h"
-											(click)="seleccionarHora(h); $event.stopPropagation()">
-											{{ h }}
+				<!-- HORA DE SALIDA (custom) -->
+				<div class="form-group">
+					<div class="field-wrapper">
+						<div class="hora-wrap" [class.hora-open]="horaDropdownOpen"
+							(click)="toggleHoraDropdown($event)">
+							<div class="hora-display" [class.filled]="editForm.get('horaSalida')?.value"
+								[class.invalid]="editForm.get('horaSalida')?.invalid && editForm.get('horaSalida')?.touched">
+								{{ getHoraSalidaDisplay() }}
+							</div>
+							<label [class.active]="editForm.get('horaSalida')?.value"
+								[class.label-error]="editForm.get('horaSalida')?.invalid && editForm.get('horaSalida')?.touched">
+								Hora de salida
+							</label>
+							<i class="fa-regular fa-clock hora-icon"
+								[class.hora-icon-error]="editForm.get('horaSalida')?.invalid && editForm.get('horaSalida')?.touched"></i>
+
+							<div class="hora-dropdown" *ngIf="horaDropdownOpen" (click)="$event.stopPropagation()">
+								<div class="hora-cols">
+									<div class="hora-col">
+										<div class="hora-col-label">H</div>
+										<div class="hora-scroll">
+											<div class="hora-option" *ngFor="let h of horasDisponibles"
+												[class.active]="horaSeleccionada === h"
+												(click)="seleccionarHora(h); $event.stopPropagation()">
+												{{ h }}
+											</div>
 										</div>
 									</div>
-								</div>
-								<div class="hora-sep">:</div>
-								<div class="hora-col">
-									<div class="hora-col-label">MM</div>
-									<div class="hora-scroll">
-										<div class="hora-option" *ngFor="let m of minutosDisponibles"
-											[class.active]="minutoSeleccionado === m"
-											(click)="seleccionarMinuto(m); $event.stopPropagation()">
-											{{ m }}
+									<div class="hora-sep">:</div>
+									<div class="hora-col">
+										<div class="hora-col-label">MM</div>
+										<div class="hora-scroll">
+											<div class="hora-option" *ngFor="let m of minutosDisponibles"
+												[class.active]="minutoSeleccionado === m"
+												(click)="seleccionarMinuto(m); $event.stopPropagation()">
+												{{ m }}
+											</div>
 										</div>
 									</div>
-								</div>
-								<div class="hora-col hora-col-periodo">
-									<div class="hora-col-label">&nbsp;</div>
-									<div class="hora-scroll hora-scroll-periodo">
-										<div class="hora-option" *ngFor="let p of periodosDisponibles"
-											[class.active]="periodoSeleccionado === p"
-											(click)="seleccionarPeriodo(p); $event.stopPropagation()">
-											{{ p }}
+									<div class="hora-col hora-col-periodo">
+										<div class="hora-col-label">&nbsp;</div>
+										<div class="hora-scroll hora-scroll-periodo">
+											<div class="hora-option" *ngFor="let p of periodosDisponibles"
+												[class.active]="periodoSeleccionado === p"
+												(click)="seleccionarPeriodo(p); $event.stopPropagation()">
+												{{ p }}
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
+						<span class="field-error"
+							*ngIf="editForm.get('horaSalida')?.invalid && editForm.get('horaSalida')?.touched">
+							Hora requerida
+						</span>
 					</div>
-					<span class="field-error"
-						*ngIf="editForm.get('horaSalida')?.invalid && editForm.get('horaSalida')?.touched">
-						Hora requerida
-					</span>
 				</div>
+
+				<!-- FECHA DE REGRESO (calculada automáticamente) -->
+				<div class="form-group span-2">
+					<div class="field-wrapper">
+						<input type="text" readonly placeholder="Fecha de regreso" [value]="fechaRegresoDisplay"
+							class="input-readonly" />
+						<small class="auto-date-msg">Se calcula automáticamente según la duración del paquete</small>
+					</div>
+				</div>
+
 			</div>
 
-			<!-- FECHA DE REGRESO (calculada automáticamente) -->
-			<div class="form-group span-2">
-				<div class="field-wrapper">
-					<input type="text" readonly placeholder="Fecha de regreso" [value]="fechaRegresoDisplay"
-						class="input-readonly" />
-					<small class="auto-date-msg">Se calcula automáticamente según la duración del paquete</small>
-				</div>
+			<div class="modal-actions">
+				<button type="button" class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+				<button type="submit" class="btn-guardar" [disabled]="enviando">
+					{{ enviando ? 'Guardando...' : 'Guardar cambios' }}
+				</button>
 			</div>
-
-		</div>
-
-		<div class="modal-actions">
-			<button type="button" class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
-			<button type="submit" class="btn-guardar" [disabled]="enviando">
-				{{ enviando ? 'Guardando...' : 'Guardar cambios' }}
-			</button>
-		</div>
-	</form>
+		</form>
+	</div>
 </div>
 
 <!-- Confirmación -->
