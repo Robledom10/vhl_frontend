@@ -19,30 +19,22 @@
 		<div class="footer-col">
 			<h4 class="footer-title">Atención al Cliente</h4>
 			<ul class="footer-links">
-				<li><a routerLink="/contacto">Contáctanos</a></li>
-				<li><a routerLink="/faq">Preguntas Frecuentes</a></li>
-				<li><a routerLink="/reservas">Reservas</a></li>
-				<li><a routerLink="/metodos-pago">Métodos de Pago</a></li>
-				<li><a routerLink="/cancelacion">Política de Cancelación</a></li>
+				<li>
+					<a class="pdf-link" (click)="openPoliticaCancelacion()">
+						Política de Cancelación
+					</a>
+				</li>
+				<li>
+					<a class="pdf-link" (click)="openTerminosCondiciones()">
+						Términos y Condiciones
+					</a>
+				</li>
 			</ul>
 		</div>
 
 		<!-- Mantente Conectado -->
-		<div class="footer-col footer-newsletter">
+		<div class="footer-col footer-social">
 			<h4 class="footer-title">Mantente Conectado</h4>
-			<p class="footer-desc">Recibe ofertas exclusivas en tu correo.</p>
-
-			<div class="newsletter-input">
-				<input type="email" placeholder="Correo Electrónico" [(ngModel)]="email" />
-				<button (click)="onSubscribe()">
-					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-						stroke-width="2.2">
-						<path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" />
-					</svg>
-				</button>
-			</div>
-
-			<!-- Redes sociales -->
 			<div class="social-links">
 				<a href="#" target="_blank" class="social-btn" aria-label="WhatsApp">
 					<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">

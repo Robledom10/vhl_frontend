@@ -133,6 +133,18 @@ export class OperacionesService {
 		return this.http.delete<void>(`${this.base}/viajeros/${idViajero}/contactos-emergencia/${id}`);
 	}
 
+	eliminarContactoDirecto(id: number): Observable<void> {
+		return this.http.delete<void>(`${this.base}/contactos-emergencia/${id}`);
+	}
+
+	actualizarContactoDeReserva(id: number, body: object): Observable<any> {
+		return this.http.put<any>(`${environment.apiUrl}/v1/reservas/contactos-emergencia/${id}`, body);
+	}
+
+	eliminarContactoDeReserva(id: number): Observable<void> {
+		return this.http.delete<void>(`${environment.apiUrl}/v1/reservas/contactos-emergencia/${id}`);
+	}
+
 	// --- Incidentes ---
 	getIncidentes(idViaje: number): Observable<Incidente[]> {
 		return this.http.get<Incidente[]>(`${this.base}/viajes/${idViaje}/incidentes`);
