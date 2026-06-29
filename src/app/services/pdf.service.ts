@@ -1,0 +1,258 @@
+import { Injectable } from '@angular/core';
+import jsPDF from 'jspdf';
+
+const PRIMARY = '#3fa2db';
+const DARK    = '#123862';
+const GRAY    = '#6b7280';
+const BLACK   = '#1e1e1e';
+
+@Injectable({ providedIn: 'root' })
+export class PdfService {
+
+  private loadLogo(): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload  = () => resolve(img);
+      img.onerror = reject;
+      img.src = '/assets/images/logo.png';
+    });
+  }
+
+  private buildHeader(doc: jsPDF, logo: HTMLImageElement, title: string): void {
+    const pageW = doc.internal.pageSize.getWidth();
+    const cx    = pageW / 2;
+
+    // Banner único en azul claro
+    doc.setFillColor(PRIMARY);
+    doc.rect(0, 0, pageW, 62, 'F');
+
+    // Logo a la izquierda, centrado verticalmente
+    doc.addImage(logo, 'PNG', 10, 6, 34, 34);
+
+    // "AGENCIA DE VIAJES Y EXCURSIONES" centrado — espaciado con espacios literales
+    // para que align:'center' calcule correctamente el ancho
+    const agencyLabel = 'A G E N C I A   D E   V I A J E S   Y   E X C U R S I O N E S';
+    doc.setTextColor('#ffffff');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.text(agencyLabel, cx, 18, { align: 'center' });
+
+    // "Hernando Lopera" centrado, grande y negrita
+    doc.setFontSize(24);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Hernando Lopera', cx, 35, { align: 'center' });
+
+    // Línea separadora blanca tenue
+    doc.setDrawColor('#ffffff');
+    doc.setLineWidth(0.4);
+    doc.line(14, 46, pageW - 14, 46);
+
+    // Título del documento centrado, mismo fondo azul claro
+    doc.setTextColor('#ffffff');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.text(title, cx, 56, { align: 'center' });
+  }
+
+  private buildFooter(doc: jsPDF): void {
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+
+    doc.setDrawColor(PRIMARY);
+    doc.setLineWidth(0.4);
+    doc.line(12, pageH - 18, pageW - 12, pageH - 18);
+
+    doc.setTextColor(GRAY);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.text(
+      '© 2026 Hernando Lopera Viajes y Excursiones. Todos los derechos reservados.',
+      pageW / 2,
+      pageH - 10,
+      { align: 'center' }
+    );
+  }
+
+  private addSection(
+    doc: jsPDF,
+    title: string,
+    bullets: string[],
+    y: number
+  ): number {
+    const margin  = 14;
+    const pageW   = doc.internal.pageSize.getWidth();
+    const pageH   = doc.internal.pageSize.getHeight();
+    const contentW = pageW - margin * 2;
+    const footerY  = pageH - 25;
+
+    if (y > footerY - 30) {
+      doc.addPage();
+      this.buildFooter(doc);
+      y = 20;
+    }
+
+    doc.setTextColor(PRIMARY);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text(title, margin, y);
+    y += 7;
+
+    doc.setDrawColor(PRIMARY);
+    doc.setLineWidth(0.3);
+    doc.line(margin, y, margin + contentW, y);
+    y += 6;
+
+    doc.setTextColor(BLACK);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+
+    for (const bullet of bullets) {
+      const lines = doc.splitTextToSize(`• ${bullet}`, contentW - 6);
+      if (y + lines.length * 5.5 > footerY) {
+        doc.addPage();
+        this.buildFooter(doc);
+        y = 20;
+      }
+      doc.text(lines, margin + 4, y);
+      y += lines.length * 5.5 + 2;
+    }
+
+    return y + 5;
+  }
+
+  private addAcceptanceBox(doc: jsPDF, text: string, y: number): void {
+    const margin  = 14;
+    const pageW   = doc.internal.pageSize.getWidth();
+    const pageH   = doc.internal.pageSize.getHeight();
+
+    if (y > pageH - 50) {
+      doc.addPage();
+      this.buildFooter(doc);
+      y = 20;
+    }
+
+    y += 4;
+    doc.setFillColor('#f0f9ff');
+    doc.setDrawColor(PRIMARY);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(margin, y, pageW - margin * 2, 24, 3, 3, 'FD');
+
+    doc.setTextColor(DARK);
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Aceptación:', margin + 4, y + 8);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(BLACK);
+    const wrapped = doc.splitTextToSize(text, pageW - margin * 2 - 10);
+    doc.text(wrapped, margin + 4, y + 16);
+  }
+
+  async generateCancelacionPDF(): Promise<void> {
+    const doc  = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const logo = await this.loadLogo();
+
+    this.buildHeader(doc, logo, 'Política de Cancelación');
+    this.buildFooter(doc);
+
+    let y = 74;
+
+    y = this.addSection(doc, '1. Cancelaciones y Reembolsos', [
+      'Los pagos realizados a la agencia no son reembolsables bajo ninguna circunstancia.'
+    ], y);
+
+    y = this.addSection(doc, '2. Política de No Presentación (No Show)', [
+      'Si el viajero no se presenta en la fecha, hora o lugar de salida establecidos, se entenderá como cancelación voluntaria.',
+      'No habrá derecho a reembolso, salvo que las políticas del proveedor indiquen lo contrario.'
+    ], y);
+
+    y = this.addSection(doc, '3. Cambios de Fecha o Nombre', [
+      'Los cambios de fecha o nombre estarán sujetos a disponibilidad y podrán generar costos adicionales.',
+      'La agencia no garantiza que los proveedores acepten modificaciones.'
+    ], y);
+
+    y = this.addSection(doc, '4. Responsabilidad de la Agencia', [
+      'La agencia actúa como intermediaria entre el cliente y los prestadores de servicios turísticos.',
+      'No será responsable por retrasos, cancelaciones, cambios climáticos, desastres naturales, cierres de vías, huelgas, problemas de orden público o cualquier evento de fuerza mayor.',
+      'Tampoco responderá por pérdidas, robos o daños a equipaje y pertenencias personales durante el viaje.'
+    ], y);
+
+    this.addAcceptanceBox(
+      doc,
+      'Al realizar la reserva y efectuar cualquier pago, el cliente declara haber leído, comprendido y aceptado esta política de cancelación.',
+      y
+    );
+
+    doc.save('politica-de-cancelacion.pdf');
+  }
+
+  async generateTerminosCondicionesPDF(): Promise<void> {
+    const doc  = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const logo = await this.loadLogo();
+
+    this.buildHeader(doc, logo, 'Términos y Condiciones');
+    this.buildFooter(doc);
+
+    let y = 74;
+
+    y = this.addSection(doc, '1. Reservas', [
+      'Toda reserva se considera confirmada una vez se haya realizado el abono inicial.',
+      'El cliente es responsable de suministrar información personal veraz y completa.'
+    ], y);
+
+    y = this.addSection(doc, '2. Pagos', [
+      'Los pagos deberán realizarse dentro de las fechas establecidas por la agencia.'
+    ], y);
+
+    y = this.addSection(doc, '3. Cancelaciones y Reembolsos', [
+      'Los pagos realizados no son reembolsables.'
+    ], y);
+
+    y = this.addSection(doc, '4. Cambios', [
+      'Los cambios de fecha o nombre estarán sujetos a disponibilidad y podrán generar costos adicionales.',
+      'La agencia no garantiza que los proveedores acepten modificaciones.'
+    ], y);
+
+    y = this.addSection(doc, '5. Documentación', [
+      'Es responsabilidad del viajero contar con documento de identidad, pasaporte, visas, permisos para menores, vacunas y demás requisitos exigidos por las autoridades.',
+      'La agencia no será responsable por la negación de ingreso o salida debido a documentación incompleta o vencida.'
+    ], y);
+
+    y = this.addSection(doc, '6. Equipaje', [
+      'Cada proveedor establece sus propias políticas sobre equipaje permitido, peso y costos adicionales.',
+      'La agencia únicamente informa dichas condiciones, pero no define ni modifica estas políticas.'
+    ], y);
+
+    y = this.addSection(doc, '7. Responsabilidad', [
+      'La agencia actúa como intermediaria entre el cliente y los prestadores de servicios turísticos.',
+      'No será responsable por retrasos, cancelaciones, cambios climáticos, desastres naturales, cierres de vías, huelgas, problemas de orden público o cualquier evento de fuerza mayor que afecte el viaje.',
+      'Tampoco responderá por pérdidas, robos, daños a equipaje o pertenencias personales durante el viaje.'
+    ], y);
+
+    y = this.addSection(doc, '8. Comportamiento del Viajero', [
+      'El viajero deberá mantener un comportamiento respetuoso con los demás pasajeros, el personal de la agencia y los proveedores.',
+      'La agencia podrá retirar del viaje a cualquier persona cuyo comportamiento represente un riesgo para el grupo, sin derecho a reembolso.'
+    ], y);
+
+    y = this.addSection(doc, '9. Horarios', [
+      'Es obligación del viajero presentarse puntualmente en los lugares y horarios establecidos.',
+      'La agencia no asumirá costos por pérdida de servicios ocasionada por retrasos del cliente.'
+    ], y);
+
+    y = this.addSection(doc, '10. Menores de Edad', [
+      'Todo menor deberá viajar acompañado por un adulto responsable y con la documentación requerida por la ley.'
+    ], y);
+
+    y = this.addSection(doc, '11. Política de No Presentación (No Show)', [
+      'Si el viajero no se presenta en la fecha, hora o lugar de salida establecidos, se entenderá como cancelación voluntaria y no habrá derecho a reembolso, salvo que las políticas del proveedor indiquen lo contrario.'
+    ], y);
+
+    this.addAcceptanceBox(
+      doc,
+      'Al realizar la reserva y efectuar cualquier pago, el cliente declara haber leído, comprendido y aceptado estos términos y condiciones en su totalidad.',
+      y
+    );
+
+    doc.save('terminos-y-condiciones.pdf');
+  }
+}

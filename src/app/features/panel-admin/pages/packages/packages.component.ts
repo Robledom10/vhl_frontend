@@ -200,6 +200,18 @@ export class PackagesComponent implements OnInit {
 		this.sheetOpen = false;
 	}
 
+	reactivarPaquete(pkg: AdminPackage): void {
+		this.packageService.reactivarPackage(pkg.id).subscribe({
+			next: () => {
+				this.showFeedbackToast('Paquete reactivado', `El paquete ${pkg.name} fue reactivado correctamente.`, 'edit');
+				this.cargarPaquetes();
+			},
+			error: () => {
+				this.showErrorToast(`No se pudo reactivar el paquete ${pkg.name}.`);
+			}
+		});
+	}
+
 	openDeleteModal(pkg: AdminPackage): void {
 		this.selectedPackage = pkg;
 		this.showDeleteModal = true;

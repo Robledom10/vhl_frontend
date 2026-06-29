@@ -1,103 +1,126 @@
-<div class="operaciones-container">
+<div class="emergency-container">
 
 	<div class="page-header">
-		<div>
-			<h2 class="page-title">Contactos de <span>Emergencia</span></h2>
-			<p class="page-subtitle">Consulta y actualiza los contactos de emergencia de cada viajero</p>
+		<div class="page-title-group">
+			<div class="page-title-icon">
+				<i class="fa-solid fa-phone-volume"></i>
+			</div>
+			<div>
+				<h2 class="page-title">Contactos de <span>Emergencia</span></h2>
+				<p class="page-subtitle">Consulta y actualiza los contactos de emergencia de cada viajero</p>
+			</div>
 		</div>
 		<button class="btn-nuevo" (click)="abrirNuevo()">
-			Nuevo contacto
+			<i class="fa-solid fa-plus"></i>
+			<span>Nuevo contacto</span>
 		</button>
 	</div>
 
-	<!-- SELECTOR DE VIAJE -->
-	<div class="form-group" style="max-width: 420px; margin-bottom: 8px;">
-		<label style="font-size:13px; font-weight:500; color:var(--color-texto-secundario); padding-left:6px;">Filtrar
-			por viaje</label>
-		<select (change)="onViajeChange($event)"
-			style="height:52px; border-radius:25px; border:1.5px solid #e8e8e8; padding:0 22px; font-family:'Outfit',sans-serif; font-size:15px; outline:none; background:white; width:100%;">
-			<option value="">Seleccionar viaje...</option>
-			<option *ngFor="let v of viajes" [value]="v.id" [selected]="v.id === idViajeSeleccionado">
-				{{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} &mdash; Viaje #{{ v.id }} &middot; {{
-				v.fechaSalida | date:'dd/MM/yyyy' }}
-			</option>
-		</select>
-	</div>
-
-	<div class="section-title">
-		<i class="fa-solid fa-phone-volume"></i>
-		<h3>Contactos registrados</h3>
-	</div>
-
-	<div class="contactos-grid">
-		<div class="contacto-card" *ngFor="let c of contactosPaginados">
-			<div class="card-header">
-				<div class="viajero-badge">
-					<i class="fa-solid fa-user"></i>
+	<!-- FILTRO DE VIAJE — custom select, mismo patrón/lógica que info médica -->
+	<div class="filter-panel">
+		<div class="section-title">
+			<i class="fa-solid fa-route icon"></i>
+			<h3>Filtro de viaje</h3>
+			<div class="custom-select-wrapper" (click)="$event.stopPropagation()">
+				<div class="custom-select" [class.open]="viajeDropdownOpen" [class.selected]="idViajeSeleccionado"
+					(click)="toggleViajeDropdown($event)">
+					<span class="custom-select-value">{{ viajeSeleccionadoLabel }}</span>
+					<i class="fa-solid fa-chevron-down select-icon"></i>
 				</div>
-				<div>
-					<p class="viajero-nombre">{{ c.nombre }}</p>
-					<p class="viajero-sub">{{ c.nombreViajero || getNombreViajero(c.idViajero) }} &mdash; {{
-						c.parentesco }}</p>
+				<div class="custom-select-dropdown" *ngIf="viajeDropdownOpen">
+					<div class="custom-option" [class.active]="!idViajeSeleccionado" (click)="seleccionarViaje(null)">
+						Seleccionar viaje...
+					</div>
+					<div class="custom-option" *ngFor="let v of viajes" [class.active]="v.id === idViajeSeleccionado"
+						(click)="seleccionarViaje(v.id)">
+						{{ getViajeLabel(v) }}
+					</div>
 				</div>
 			</div>
+		</div>
+	</div>
 
-			<div class="card-info">
-				<div class="info-row">
-					<span class="info-label"><i class="fa-solid fa-person"></i> Contacto</span>
-					<span>{{ c.nombre }}</span>
+	<!-- BLOQUE DE CONTACTOS -->
+	<div class="section-block">
+		<div class="section-header">
+			<div class="section-title">
+				<i class="fa-solid fa-address-book icon contact-icon"></i>
+				<div>
+					<h3>Contactos registrados</h3>
+					<p>Persona a contactar en caso de emergencia durante el viaje</p>
 				</div>
-				<div class="info-row">
-					<span class="info-label"><i class="fa-solid fa-heart"></i> Relacion</span>
+			</div>
+			<span class="pagination-info" *ngIf="totalPaginasContactos > 1">
+				Página {{ paginaContactos + 1 }} de {{ totalPaginasContactos }} · {{ contactos.length }} contactos
+			</span>
+		</div>
+
+		<div class="contactos-grid">
+			<div class="contacto-card" *ngFor="let c of contactosPaginados">
+				<div class="cc-top">
+					<div class="cc-avatar"><i class="fa-solid fa-user"></i></div>
+					<div class="cc-viajero">
+						<span class="cc-viajero-nombre">{{ c.nombre }}</span>
+						<span class="cc-viajero-sub">{{ c.nombreViajero || getNombreViajero(c.idViajero) }}</span>
+					</div>
 					<span class="tag-relacion">{{ c.parentesco }}</span>
 				</div>
-				<div class="info-row">
-					<span class="info-label"><i class="fa-solid fa-phone"></i> Telefono</span>
-					<span>{{ c.telefono }}</span>
+				<div class="cc-divider"></div>
+				<div class="cc-body">
+					<div class="cc-row">
+						<div class="cc-row-left">
+							<i class="fa-solid fa-phone"></i>
+							<span class="cc-row-label">Teléfono</span>
+						</div>
+						<span class="cc-row-value">{{ c.telefono }}</span>
+					</div>
+					<div class="cc-row" *ngIf="c.correo">
+						<div class="cc-row-left">
+							<i class="fa-solid fa-envelope"></i>
+							<span class="cc-row-label">Correo</span>
+						</div>
+						<span class="cc-row-value">{{ c.correo }}</span>
+					</div>
 				</div>
-				<div class="info-row" *ngIf="c.correo">
-					<span class="info-label"><i class="fa-solid fa-envelope"></i> Correo</span>
-					<span>{{ c.correo }}</span>
+				<div class="cc-divider"></div>
+				<div class="card-actions" *ngIf="!c.fromReserva">
+					<button class="edit" (click)="abrir(c)">Editar</button>
+					<button class="del" (click)="eliminar(c)">Eliminar</button>
 				</div>
-			</div>
 
-			<div class="card-actions" *ngIf="!c.fromReserva">
-				<button class="btn-editar-sm" (click)="abrir(c)">Editar</button>
-				<button class="btn-eliminar-sm" (click)="eliminar(c)">Eliminar</button>
+				<div *ngIf="c.fromReserva" class="card-info">
+					<i class="fa-solid fa-bookmark"></i> Registrado en reserva
+				</div>
 			</div>
-			<div *ngIf="c.fromReserva" style="padding: 10px 16px; font-size: 12px; color: #3fa2db; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-				<i class="fa-solid fa-bookmark"></i> Registrado en reserva
+			<div class="contactos-empty" *ngIf="contactos.length === 0">
+				<i class="fa-solid fa-phone-slash"></i>
+				<p>No hay contactos registrados para este viaje.</p>
 			</div>
 		</div>
 
-		<div *ngIf="contactos.length === 0"
-			style="padding: 2rem; color: var(--color-texto-secundario); text-align: center; grid-column: 1/-1;">
-			No hay contactos registrados para este viaje.
-		</div>
-	</div>
-
-	<!-- PAGINACIÓN -->
-	<div class="pagination-contactos" *ngIf="totalPaginasContactos > 1">
-		<div class="pag-controls">
-			<button class="pag-btn" [disabled]="paginaContactos === 0" (click)="cambiarPaginaContactos(0)">
-				<i class="fa-solid fa-angles-left"></i>
-			</button>
-			<button class="pag-btn" [disabled]="paginaContactos === 0"
-				(click)="cambiarPaginaContactos(paginaContactos - 1)">
-				<i class="fa-solid fa-chevron-left"></i>
-			</button>
-			<button *ngFor="let p of paginasContactos" class="pag-btn" [class.active]="p === paginaContactos"
-				(click)="cambiarPaginaContactos(p)">
-				{{ p + 1 }}
-			</button>
-			<button class="pag-btn" [disabled]="paginaContactos === totalPaginasContactos - 1"
-				(click)="cambiarPaginaContactos(paginaContactos + 1)">
-				<i class="fa-solid fa-chevron-right"></i>
-			</button>
-			<button class="pag-btn" [disabled]="paginaContactos === totalPaginasContactos - 1"
-				(click)="cambiarPaginaContactos(totalPaginasContactos - 1)">
-				<i class="fa-solid fa-angles-right"></i>
-			</button>
+		<!-- PAGINACIÓN -->
+		<div class="pagination-bar" *ngIf="totalPaginasContactos > 1">
+			<div class="pagination-controls">
+				<button class="page-btn" [disabled]="paginaContactos === 0" (click)="cambiarPaginaContactos(0)">
+					<i class="fa-solid fa-angles-left"></i>
+				</button>
+				<button class="page-btn" [disabled]="paginaContactos === 0"
+					(click)="cambiarPaginaContactos(paginaContactos - 1)">
+					<i class="fa-solid fa-chevron-left"></i>
+				</button>
+				<button *ngFor="let p of paginasContactos" class="page-btn" [class.active]="p === paginaContactos"
+					(click)="cambiarPaginaContactos(p)">
+					{{ p + 1 }}
+				</button>
+				<button class="page-btn" [disabled]="paginaContactos === totalPaginasContactos - 1"
+					(click)="cambiarPaginaContactos(paginaContactos + 1)">
+					<i class="fa-solid fa-chevron-right"></i>
+				</button>
+				<button class="page-btn" [disabled]="paginaContactos === totalPaginasContactos - 1"
+					(click)="cambiarPaginaContactos(totalPaginasContactos - 1)">
+					<i class="fa-solid fa-angles-right"></i>
+				</button>
+			</div>
 		</div>
 	</div>
 </div>

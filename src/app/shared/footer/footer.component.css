@@ -52,53 +52,8 @@
 	color: var(--color-primario);
 }
 
-/* ===== Newsletter ===== */
-.footer-desc {
-	font-size: 16px;
-	color: var(--color-texto-secundario);
-	margin-bottom: 16px;
-	line-height: 1.5;
-}
-
-.newsletter-input {
-	display: flex;
-	align-items: center;
-	border: 1.5px solid #d0def0;
-	border-radius: 10px;
-	overflow: hidden;
-	margin-bottom: 20px;
-}
-
-.newsletter-input input {
-	flex: 1;
-	padding: 10px 14px;
-	border: none;
-	outline: none;
-	font-size: 16px;
-	color: var(--color-texto-principal);
-	background: transparent;
-	font-family: "Outfit", sans-serif;
-}
-
-.newsletter-input input::placeholder {
-	color: var(--color-texto-secundario);
-}
-
-.newsletter-input button {
-	background: var(--color-fondo-iconos);
-	border: none;
-	padding: 11px 15px;
+.pdf-link {
 	cursor: pointer;
-	color: var(--color-primario);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	transition: background 0.2s;
-}
-
-.newsletter-input button:hover {
-	background: var(--color-primario);
-	color: white;
 }
 
 /* ===== Redes sociales ===== */
@@ -207,8 +162,6 @@
 	}
 
 	.footer-links a,
-	.footer-desc,
-	.newsletter-input input,
 	.footer-copy {
 		font-size: 15px;
 	}
@@ -229,17 +182,9 @@
 		justify-content: center;
 	}
 
-	.footer-newsletter {
+	.footer-social {
 		grid-column: 1 / -1;
-		max-width: 520px;
-		width: 100%;
-		margin: 0 auto;
 		text-align: center;
-	}
-
-	.newsletter-input {
-		max-width: 420px;
-		margin: 0 auto 18px;
 	}
 
 	.social-links {
@@ -284,12 +229,9 @@
 		grid-row: 2;
 	}
 
-	.footer-newsletter {
+	.footer-social {
 		grid-column: 1 / -1;
 		grid-row: 3;
-		max-width: 520px;
-		width: 100%;
-		margin: 0 auto;
 		text-align: center;
 	}
 
@@ -303,11 +245,6 @@
 
 	.footer-links {
 		gap: 9px;
-	}
-
-	.newsletter-input {
-		max-width: 430px;
-		margin: 0 auto 16px;
 	}
 
 	.social-links {
@@ -337,16 +274,8 @@
 		align-items: center;
 	}
 
-	.footer-newsletter {
-		max-width: 440px;
-		width: 100%;
-		margin: 0 auto;
+	.footer-social {
 		text-align: center;
-	}
-
-	.newsletter-input {
-		max-width: 100%;
-		margin: 0 auto 16px;
 	}
 
 	.social-links {
@@ -383,25 +312,8 @@
 		gap: 9px;
 	}
 
-	.footer-links a,
-	.footer-desc {
+	.footer-links a {
 		font-size: 15px;
-	}
-
-	.newsletter-input {
-		max-width: 100%;
-		border-radius: 14px;
-		margin-bottom: 16px;
-	}
-
-	.newsletter-input input {
-		min-width: 0;
-		font-size: 14px;
-		padding: 11px 12px;
-	}
-
-	.newsletter-input button {
-		padding: 12px 14px;
 	}
 
 	.social-links {

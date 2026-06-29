@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { OperacionesService } from '../../../../../../core/services/operaciones.service';
@@ -22,6 +22,7 @@ export class ContactosEmergenciaComponent implements OnInit {
 
 	viajes: Viaje[] = [];
 	idViajeSeleccionado: number | null = null;
+	viajeDropdownOpen = false;
 	contactos: ContactoEmergencia[] = [];
 	usuarios: Usuario[] = [];
 	usuarioMap: Record<number, string> = {};
@@ -33,7 +34,7 @@ export class ContactosEmergenciaComponent implements OnInit {
 
 	// ─── Paginación contactos ─────────────────────────────
 	paginaContactos = 0;
-	readonly tamanoContactos = 4;
+	readonly tamanoContactos = 6;
 
 	get contactosPaginados(): ContactoEmergencia[] {
 		const start = this.paginaContactos * this.tamanoContactos;
@@ -57,6 +58,11 @@ export class ContactosEmergenciaComponent implements OnInit {
 	}
 
 	constructor(private svc: OperacionesService, private authSvc: AuthService) { }
+
+	@HostListener('document:click')
+	closeDropdowns(): void {
+		this.viajeDropdownOpen = false;
+	}
 
 	getNombreViajero(id: number): string {
 		return this.usuarioMap[id] || `Viajero #${id}`;
@@ -87,11 +93,29 @@ export class ContactosEmergenciaComponent implements OnInit {
 		});
 	}
 
-	onViajeChange(event: Event): void {
-		const id = Number((event.target as HTMLSelectElement).value);
-		this.idViajeSeleccionado = id || null;
+	// ── Custom select de viaje (mismo patrón/lógica que info médica) ──────
+	toggleViajeDropdown(event: Event): void {
+		event.stopPropagation();
+		this.viajeDropdownOpen = !this.viajeDropdownOpen;
+	}
+
+	seleccionarViaje(id: number | null): void {
+		this.idViajeSeleccionado = id;
+		this.viajeDropdownOpen = false;
 		this.contactos = [];
 		if (this.idViajeSeleccionado) this.cargarContactos();
+	}
+
+	get viajeSeleccionadoLabel(): string {
+		if (!this.idViajeSeleccionado) return 'Seleccionar viaje...';
+		const viaje = this.viajes.find(v => v.id === this.idViajeSeleccionado);
+		return viaje ? this.getViajeLabel(viaje) : 'Seleccionar viaje...';
+	}
+
+	getViajeLabel(viaje: Viaje): string {
+		const paquete = this.paqueteTituloMap[viaje.idPaquete] || `Paquete ${viaje.idPaquete}`;
+		const fecha = viaje.fechaSalida ? new Date(viaje.fechaSalida).toLocaleDateString('es-CO') : 'Sin fecha';
+		return `${paquete} - Viaje #${viaje.id} - ${fecha}`;
 	}
 
 	cargarContactos(): void {
@@ -105,13 +129,13 @@ export class ContactosEmergenciaComponent implements OnInit {
 			const contactosReserva: ContactoEmergencia[] = (deReserva as any[]).map(c => ({
 				id: c.id,
 				idViaje: id,
-				idViajero: 0,
+				idViajero: c.idViajero ?? 0,
 				nombre: c.nombre,
 				parentesco: c.parentesco,
 				telefono: c.telefono,
 				correo: c.correo ?? '',
 				fechaRegistro: '',
-				nombreViajero: 'Desde reserva',
+				nombreViajero: c.nombreViajero || 'Desde reserva',
 				fromReserva: true
 			}));
 			this.contactos = [...(deOperacion as ContactoEmergencia[]), ...contactosReserva];
@@ -160,7 +184,11 @@ export class ContactosEmergenciaComponent implements OnInit {
 		const c = this.contactoAEliminar;
 		this.showDeleteModal = false;
 
-		this.svc.eliminarContacto(c.idViajero, c.id).subscribe({
+		const delete$ = c.fromReserva
+			? this.svc.eliminarContactoDeReserva(c.id)
+			: this.svc.eliminarContactoDirecto(c.id);
+
+		delete$.subscribe({
 			next: () => {
 				this.contactos = this.contactos.filter(x => x.id !== c.id);
 				this.contactoAEliminar = null;

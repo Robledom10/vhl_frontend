@@ -93,6 +93,8 @@
 								<i class="fa-regular fa-eye"></i>
 							</button>
 							<button class="edit" (click)="openEditModal(item); $event.stopPropagation()">Editar</button>
+							<button *ngIf="item.status === 'inactivo'" class="reactivar"
+								(click)="reactivarPaquete(item); $event.stopPropagation()">Reactivar</button>
 							<button class="delete"
 								(click)="openDeleteModal(item); $event.stopPropagation()">Eliminar</button>
 						</div>

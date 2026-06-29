@@ -5,7 +5,10 @@
 			<h2 class="page-title">Asignar <span>Alojamiento</span></h2>
 			<p class="page-subtitle">Gestiona el alojamiento asignado a cada viajero por viaje</p>
 		</div>
-		<button class="btn-nuevo" (click)="abrirNuevo()">+ Asignar alojamiento</button>
+		<button class="btn-nuevo" (click)="abrirNuevo()">
+			<i class="fa-solid fa-plus"></i>
+			<span>Asignar alojamiento</span>
+		</button>
 	</div>
 
 	<!-- PROVEEDORES DISPONIBLES -->
@@ -44,14 +47,12 @@
 	<div class="section-title">
 		<i class="fa-solid fa-bed"></i>
 		<h3>Viajes y estado de alojamiento</h3>
-	</div>
-
-	<!-- BUSCADOR -->
-	<div class="search-box">
-		<input type="text" placeholder="Buscar" [(ngModel)]="search">
-		<button>
-			<i class="fa-solid fa-magnifying-glass"></i>
-		</button>
+		<div class="search-box">
+			<input type="text" placeholder="Buscar" [(ngModel)]="search">
+			<button>
+				<i class="fa-solid fa-magnifying-glass"></i>
+			</button>
+		</div>
 	</div>
 
 	<div class="table-container">
@@ -87,7 +88,7 @@
 					<td>
 						<div class="actions" *ngIf="viaje.tieneViaje">
 							<button class="ver" *ngIf="viaje.alojamientoAsignado" (click)="verDetalle(viaje)">
-								<i class="fa-solid fa-eye"></i>
+								<i class="fa-regular fa-eye"></i>
 							</button>
 							<button [class]="viaje.alojamientoAsignado ? 'edit' : 'assign'"
 								(click)="seleccionarViaje(viaje)">
