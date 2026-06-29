@@ -299,6 +299,12 @@ tbody img {
 	color: #ff3b3b;
 }
 
+.actions .reactivar {
+	padding: 10px 16px;
+	background: rgba(63, 162, 219, 0.15);
+	color: #3fa2db;
+}
+
 .fa-spinner {
 	animation: spin 1s linear infinite;
 }
