@@ -1,5 +1,8 @@
 <div class="modal-overlay" *ngIf="isOpen" (click)="onOverlayClick($event)">
 	<div class="modal-container" @slideIn (click)="$event.stopPropagation()">
+		<button class="close-btn" (click)="cancel()">
+			<i class="fa-solid fa-xmark"></i>
+		</button>
 		<div class="modal-scroll">
 			<div class="modal-content">
 
@@ -46,7 +49,7 @@
 							<span *ngIf="buscandoCliente" class="status-msg">
 								<i class="fa-solid fa-spinner fa-spin"></i> Buscando...
 							</span>
-							<span *ngIf="errorCliente" class="error-msg">Cliente no encontrado.</span>
+							<span *ngIf="errorCliente" class="error-msg">{{ errorClienteMsg }}</span>
 							<span *ngIf="submitted && !form.idUsuario && !errorCliente" class="error-msg">
 								Debes seleccionar un cliente válido.
 							</span>
@@ -390,7 +393,7 @@
 								<i class="fa-solid fa-check" *ngIf="form.aceptaPolitica"></i>
 							</div>
 							<span>
-								Acepto la <a href="#" (click)="$event.preventDefault()">política de cancelación</a>
+								Acepto la <button type="button" class="terms-link-btn" (click)="showCancellation = true">política de cancelación</button>
 							</span>
 						</label>
 
@@ -433,3 +436,4 @@
 </div>
 
 <app-terms-modal [isOpen]="showTerms" (closed)="showTerms = false"></app-terms-modal>
+<app-cancellation-modal [isOpen]="showCancellation" (closed)="showCancellation = false"></app-cancellation-modal>

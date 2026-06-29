@@ -394,7 +394,7 @@
 						<label class="checkbox-item">
 							<input type="checkbox" [(ngModel)]="acceptCancellation">
 							<span class="custom-checkbox"></span>
-							Acepto la política de cancelación.
+							Acepto la <button type="button" class="terms-link-btn" (click)="showCancellation = true">política de cancelación</button>.
 						</label>
 
 						<span class="error" *ngIf="attempted[4] && !isStep4Valid()">
@@ -403,6 +403,7 @@
 					</div>
 
 					<app-terms-modal [isOpen]="showTerms" (closed)="showTerms = false"></app-terms-modal>
+					<app-cancellation-modal [isOpen]="showCancellation" (closed)="showCancellation = false"></app-cancellation-modal>
 				</div>
 
 				<div class="actions">

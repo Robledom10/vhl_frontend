@@ -73,8 +73,11 @@
 			&copy; 2026 Hernando Lopera. Todos los derechos reservados.
 			<span class="footer-separator">·</span>
 			<button class="terms-link" (click)="showTerms = true">Términos y Condiciones</button>
+			<span class="footer-separator">·</span>
+			<button class="terms-link" (click)="showCancellation = true">Política de Cancelaciones</button>
 		</p>
 	</div>
 </footer>
 
 <app-terms-modal [isOpen]="showTerms" (closed)="showTerms = false"></app-terms-modal>
+<app-cancellation-modal [isOpen]="showCancellation" (closed)="showCancellation = false"></app-cancellation-modal>

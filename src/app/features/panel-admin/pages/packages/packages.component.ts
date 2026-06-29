@@ -83,7 +83,7 @@ export class PackagesComponent implements OnInit {
 		this.toastType = type;
 		this.showToast = true;
 
-		setTimeout(() => { this.showToast = false; }, 3200);
+		setTimeout(() => { this.showToast = false; }, 3000);
 	}
 
 	private showErrorToast(message: string): void {

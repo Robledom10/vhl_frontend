@@ -1,6 +1,15 @@
 <section class="explore-section">
 	<div class="explore-container">
-		<div class="video"><iframe
+		<div class="video">
+			<iframe *ngIf="selectedYear === 2024"
+				src="https://player.vimeo.com/video/1191694846?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&muted=1"
+				frameborder="0" allow="fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+				referrerpolicy="strict-origin-when-cross-origin"></iframe>
+			<iframe *ngIf="selectedYear === 2023"
+				src="https://player.vimeo.com/video/1205347846?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&muted=1"
+				frameborder="0" allow="fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+				referrerpolicy="strict-origin-when-cross-origin"></iframe>
+			<iframe *ngIf="!selectedYear || !videosByYear[selectedYear]"
 				src="https://player.vimeo.com/video/1191705756?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&muted=1"
 				frameborder="0" allow="fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
 				referrerpolicy="strict-origin-when-cross-origin"></iframe>
@@ -9,7 +18,11 @@
 
 	<!-- Filtro fuera del contenedor para que ocupe más ancho -->
 	<div class="explore-filter">
-		<app-search-filter-gallery [availableYears]="years" [siteOptions]="excursions" [activityOptions]="activities"
+		<app-search-filter-gallery
+			[availableYears]="effectiveYears"
+			[siteOptions]="excursions"
+			[activityOptions]="activities"
+			(yearChange)="onYearChange($event)"
 			(search)="onSearch($event)">
 		</app-search-filter-gallery>
 	</div>

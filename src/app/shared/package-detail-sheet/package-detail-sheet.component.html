@@ -69,12 +69,12 @@
 							<textarea rows="4" [(ngModel)]="newComment"
 								placeholder="Cuéntanos cómo fue tu experiencia en este viaje..."></textarea>
 
-							<small class="word-counter" [class.over-limit]="newCommentWords > maxPalabras">
-								{{ newCommentWords }}/{{ maxPalabras }} palabras
+							<small class="word-counter" [class.over-limit]="newCommentChars > maxCaracteres">
+								{{ newCommentChars }}/{{ maxCaracteres }} caracteres
 							</small>
 
 							<button class="comment-btn" (click)="submitComment()"
-								[disabled]="!newComment.trim() || newCommentWords > maxPalabras">
+								[disabled]="!newComment.trim() || newCommentChars > maxCaracteres">
 								<i class="fa-regular fa-paper-plane"></i>
 								Publicar comentario
 							</button>
@@ -146,15 +146,15 @@
 
 								<textarea rows="3" [(ngModel)]="editCommentText"></textarea>
 
-								<small class="word-counter" [class.over-limit]="editCommentWords > maxPalabras">
-									{{ editCommentWords }}/{{ maxPalabras }} palabras
+								<small class="word-counter" [class.over-limit]="editCommentChars > maxCaracteres">
+									{{ editCommentChars }}/{{ maxCaracteres }} caracteres
 								</small>
 
 								<div class="edit-comment-actions">
 									<button class="cancel-edit-btn" type="button"
 										(click)="cancelEditComment()">Cancelar</button>
 									<button class="save-edit-btn" type="button" (click)="saveEditComment(comment)"
-										[disabled]="savingEdit || !editCommentText.trim() || editCommentWords > maxPalabras">
+										[disabled]="savingEdit || !editCommentText.trim() || editCommentChars > maxCaracteres">
 										{{ savingEdit ? 'Guardando...' : 'Guardar' }}
 									</button>
 								</div>
@@ -360,5 +360,5 @@
 	(closed)="closeDeleteModal()">
 </app-confirm-modal>
 
-<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage" [type]="toastType">
 </app-toast-notification>

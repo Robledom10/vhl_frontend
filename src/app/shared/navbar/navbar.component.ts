@@ -35,8 +35,8 @@ export class NavbarComponent {
 			next: () => {
 				this.router.navigate(['/home']);
 			},
-			error: (err) => {
-				console.error('Error logout', err);
+			error: () => {
+				this.router.navigate(['/home']);
 			},
 		});
 	}

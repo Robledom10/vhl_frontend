@@ -15,6 +15,7 @@ import { TestimonialSliderComponent } from './testimonial-slider/testimonial-sli
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { ToastNotificationComponent } from './toast-notification/toast-notification.component';
 import { TermsModalComponent } from './terms-modal/terms-modal.component';
+import { CancellationModalComponent } from './cancellation-modal/cancellation-modal.component';
 
 @NgModule({
 	declarations: [
@@ -31,6 +32,7 @@ import { TermsModalComponent } from './terms-modal/terms-modal.component';
 		ConfirmModalComponent,
 		ToastNotificationComponent,
 		TermsModalComponent,
+		CancellationModalComponent,
 	],
 	imports: [
 		CommonModule,
@@ -51,6 +53,7 @@ import { TermsModalComponent } from './terms-modal/terms-modal.component';
 		ConfirmModalComponent,
 		ToastNotificationComponent,
 		TermsModalComponent,
+		CancellationModalComponent,
 	],
 })
 export class SharedModule { }

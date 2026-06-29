@@ -48,6 +48,7 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 	acceptCancellation = false;
 
 	showTerms = false;
+	showCancellation = false;
 
 	openDropdown: string | null = null;
 	showCalendarCompanion: number | null = null;

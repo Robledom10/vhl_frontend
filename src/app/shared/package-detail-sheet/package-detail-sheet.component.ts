@@ -51,7 +51,7 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 	private scrollY = 0;
 	private closeTimer: ReturnType<typeof setTimeout> | null = null;
 
-	readonly maxPalabras = 250;
+	readonly maxCaracteres = 150;
 
 	selectedRating = 5;
 	newComment = '';
@@ -69,6 +69,7 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 	showToast = false;
 	toastTitle = '';
 	toastMessage = '';
+	toastType: 'success' | 'edit' | 'delete' | 'error' = 'success';
 	private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
 	// Modal de reserva
@@ -91,30 +92,34 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 	) { }
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if (!changes['isOpen']) return;
-		if (this.isOpen) {
-			if (this.closeTimer) {
-				clearTimeout(this.closeTimer);
-				this.closeTimer = null;
+		if (changes['isOpen']) {
+			if (this.isOpen) {
+				if (this.closeTimer) {
+					clearTimeout(this.closeTimer);
+					this.closeTimer = null;
+				}
+
+				if (this.package?.id) {
+					this.loadComments();
+					this.loadTrips();
+				}
+
+				this.visible = true;
+				this.travelers = 1;
+
+				setTimeout(() => {
+					this.animating = true;
+				}, 10);
+
+				this.blockScroll();
+			} else {
+				this.animating = false;
+				this.closeTimer = setTimeout(() => { this.visible = false; this.closeTimer = null; }, 420);
+				this.restoreScroll();
 			}
-
-			if (this.package?.id) {
-				this.loadComments();
-				this.loadTrips();
-			}
-
-			this.visible = true;
-			this.travelers = 1;
-
-			setTimeout(() => {
-				this.animating = true;
-			}, 10);
-
-			this.blockScroll();
-		} else {
-			this.animating = false;
-			this.closeTimer = setTimeout(() => { this.visible = false; this.closeTimer = null; }, 420);
-			this.restoreScroll();
+		} else if (changes['package'] && this.isOpen && this.package?.id) {
+			this.loadComments();
+			this.loadTrips();
 		}
 	}
 
@@ -309,7 +314,7 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 			return;
 		}
 
-		if (this.newCommentWords > this.maxPalabras) {
+		if (this.newCommentChars > this.maxCaracteres) {
 			return;
 		}
 
@@ -356,7 +361,7 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 			return;
 		}
 
-		if (this.editCommentWords > this.maxPalabras) {
+		if (this.editCommentChars > this.maxCaracteres) {
 			return;
 		}
 
@@ -422,41 +427,36 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 
 					this.deletingCommentId = null;
 					this.commentToDelete = null;
-					this.showFeedbackToast('Comentario eliminado', 'Tu comentario se eliminó correctamente.');
+					this.showFeedbackToast('Comentario eliminado', 'Tu comentario se eliminó correctamente.', 'delete');
 				},
 				error: error => {
 					this.deletingCommentId = null;
 					this.commentToDelete = null;
 					console.error(error);
-					this.showFeedbackToast('Ocurrió un error', 'No se pudo eliminar tu comentario, inténtalo de nuevo.');
+					this.showFeedbackToast('Ocurrió un error', 'No se pudo eliminar tu comentario, inténtalo de nuevo.', 'error');
 				}
 			});
 	}
 
-	private showFeedbackToast(title: string, message: string): void {
+	private showFeedbackToast(title: string, message: string, type: 'success' | 'edit' | 'delete' | 'error' = 'success'): void {
 		this.toastTitle = title;
 		this.toastMessage = message;
+		this.toastType = type;
 		this.showToast = true;
 
 		if (this.toastTimer) {
 			clearTimeout(this.toastTimer);
 		}
 
-		this.toastTimer = setTimeout(() => { this.showToast = false; }, 3200);
+		this.toastTimer = setTimeout(() => { this.showToast = false; }, 3000);
 	}
 
-	private contarPalabras(texto: string): number {
-		const limpio = texto.trim();
-
-		return limpio ? limpio.split(/\s+/).length : 0;
+	get newCommentChars(): number {
+		return this.newComment.trim().length;
 	}
 
-	get newCommentWords(): number {
-		return this.contarPalabras(this.newComment);
-	}
-
-	get editCommentWords(): number {
-		return this.contarPalabras(this.editCommentText);
+	get editCommentChars(): number {
+		return this.editCommentText.trim().length;
 	}
 
 	canEditComment(comment: RespuestaComentarioPaquete): boolean {

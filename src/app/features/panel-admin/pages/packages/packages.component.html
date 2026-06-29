@@ -148,7 +148,7 @@
 	(confirmed)="confirmDelete()" (closed)="closeDeleteModal()">
 </app-confirm-modal>
 
-<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage" [type]="toastType">
 </app-toast-notification>
 
 <app-form-package-creation [isOpen]="showCreateModal" [mode]="editingPackage ? 'edit' : 'create'"

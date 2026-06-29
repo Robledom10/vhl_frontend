@@ -199,6 +199,6 @@ export class ProveedorComponent implements OnInit {
 		this.toastMessage = message;
 		this.toastType = type;
 		this.showToast = true;
-		setTimeout(() => { this.showToast = false; }, 3200);
+		setTimeout(() => { this.showToast = false; }, 3000);
 	}
 }
