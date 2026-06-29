@@ -67,6 +67,14 @@ export class NavbarComponent {
 		return role === 'ADMIN' || role === 'GUIDE';
 	}
 
+	get profileRoute(): string {
+		const role = this.user?.role;
+		if (role === 'ADMIN' || role === 'GUIDE') {
+			return '/panel-admin/control-panel';
+		}
+		return '/panel-admin/profile';
+	}
+
 	@HostListener('document:click')
 	closeDropdown() {
 		this.dropdownOpen = false;

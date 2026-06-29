@@ -1,22 +1,49 @@
 <div class="operaciones-container">
 
+	<!-- PAGE HEADER mejorado -->
 	<div class="page-header">
-		<div>
-			<h2 class="page-title">Check-in</h2>
-			<p class="page-subtitle">Registra la asistencia de los viajeros usando el código de su reserva</p>
+		<div class="page-title-group">
+			<div class="page-title-icon">
+				<i class="fa-solid fa-qrcode"></i>
+			</div>
+			<div class="page-title-text">
+				<h2 class="page-title">Check<span> - in</span></h2>
+				<p class="page-subtitle">Registra la asistencia de los viajeros usando el código de su reserva</p>
+			</div>
 		</div>
+		<span class="page-header-badge">
+			<i class="fa-solid fa-circle-dot"></i> Módulo de operaciones
+		</span>
 	</div>
 
-	<!-- SELECTOR DE VIAJE -->
+	<!-- SELECTOR DE VIAJE — custom select mejorado -->
 	<div class="filtro-viaje">
-		<label>Viaje activo</label>
-		<select (change)="onViajeChange($event)">
-			<option value="">Seleccionar viaje...</option>
-			<option *ngFor="let v of viajes" [value]="v.id" [selected]="v.id === idViajeSeleccionado">
-				{{ paqueteTituloMap[v.idPaquete] || ('Paquete ' + v.idPaquete) }} &mdash; Viaje #{{ v.id }} &middot; {{
-				v.fechaSalida | date:'dd/MM/yyyy' }}
-			</option>
-		</select>
+		<label>
+			<i class="fa-solid fa-plane-departure"></i> Viaje activo
+		</label>
+		<div class="custom-select-wrapper" (click)="$event.stopPropagation()">
+			<div class="custom-select" [class.open]="viajeDropdownOpen" [class.selected]="idViajeSeleccionado"
+				(click)="toggleViajeDropdown($event)">
+				<div class="select-left">
+					<span class="custom-select-value">{{ viajeSeleccionadoLabel }}</span>
+				</div>
+				<i class="fa-solid fa-chevron-down select-icon"></i>
+			</div>
+
+			<div class="custom-select-dropdown" *ngIf="viajeDropdownOpen">
+				<div class="custom-option placeholder" [class.active]="!idViajeSeleccionado"
+					(click)="seleccionarViaje(null)">
+					<i class="fa-regular fa-circle-dot"></i>
+					Seleccionar viaje...
+				</div>
+				<div class="dropdown-divider"></div>
+				<div class="custom-option" *ngFor="let v of viajes" [class.active]="v.id === idViajeSeleccionado"
+					(click)="seleccionarViaje(v.id)">
+					<i class="fa-solid fa-route"></i>
+					{{ getViajeLabel(v) }}
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<!-- STATS -->
@@ -57,7 +84,6 @@
 				<i class="fa-solid fa-ticket"></i>
 				<h3>Reservas del viaje</h3>
 			</div>
-			<!-- Info de paginación en el header -->
 			<span class="panel-pag-info" *ngIf="reservas.length > 0">
 				{{ reservas.length }} reservas · Página {{ paginaReservas + 1 }} de {{ totalPaginasReservas }}
 			</span>
@@ -81,7 +107,6 @@
 								<div class="avatar-sm">
 									<i class="fa-solid fa-user"></i>
 								</div>
-
 								<div class="viajero-data">
 									<span class="viajero-nombre">
 										<ng-container *ngIf="r.viajeros && r.viajeros.length > 0; else soloId">
@@ -89,7 +114,6 @@
 										</ng-container>
 										<ng-template #soloId>Usuario #{{ r.idUsuario }}</ng-template>
 									</span>
-
 									<span class="viajero-email" *ngIf="r.viajeros && r.viajeros.length > 0">
 										{{ r.viajeros[0].email }}
 									</span>
@@ -109,7 +133,6 @@
 							<span class="badge-checkin ok" *ngIf="yaHizoCheckIn(r)">
 								<i class="fa-solid fa-circle-check"></i> Registrado
 							</span>
-
 							<button class="btn-checkin" *ngIf="!yaHizoCheckIn(r)" (click)="abrirConfirmacionCheckIn(r)"
 								[disabled]="procesando[r.id]">
 								<i class="fa-solid fa-spinner spinning" *ngIf="procesando[r.id]"></i>
@@ -125,7 +148,7 @@
 			</table>
 		</div>
 
-		<!-- PAGINACIÓN RESERVAS -->
+		<!-- PAGINACIÓN -->
 		<div class="pagination-reservas" *ngIf="totalPaginasReservas > 1">
 			<div class="pag-controls">
 				<button class="pag-btn" [disabled]="paginaReservas === 0" (click)="cambiarPaginaReservas(0)">
@@ -149,6 +172,12 @@
 				</button>
 			</div>
 		</div>
+	</div>
+
+	<!-- EMPTY STATE -->
+	<div class="empty-state" *ngIf="!idViajeSeleccionado">
+		<i class="fa-solid fa-filter"></i>
+		<p>Selecciona un viaje activo para ver y registrar el check-in de sus reservas.</p>
 	</div>
 </div>
 
