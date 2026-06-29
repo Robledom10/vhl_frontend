@@ -44,6 +44,7 @@ export class AppComponent {
 	}
 
 	get showChatbot(): boolean {
-		return !this.router.url.includes('panel-admin');
+		const url = this.router.url;
+		return !url.includes('panel-admin') && !url.includes('/auth/');
 	}
 }
