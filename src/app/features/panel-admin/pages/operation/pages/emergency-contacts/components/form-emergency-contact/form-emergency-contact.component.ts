@@ -46,6 +46,11 @@ export class FormEmergencyContactComponent implements OnChanges {
 					telefono: this.editando.telefono,
 					correo: this.editando.correo,
 				});
+				// Si el contacto no tiene viajero asignado, cargar selector para que el admin lo asigne
+				if (!this.editando.idViajero) {
+					this.usuarioSeleccionadoId = null;
+					this.cargarUsuarios();
+				}
 			} else {
 				this.contactoForm.reset();
 				this.usuarioSeleccionadoId = null;
@@ -111,7 +116,9 @@ export class FormEmergencyContactComponent implements OnChanges {
 
 		const v = this.contactoForm.value;
 		const idViaje = this.idViajeSeleccionado || 1;
-		const idViajero = this.editando ? this.editando.idViajero : (this.usuarioSeleccionadoId ?? 1);
+		const idViajero = this.editando
+			? (this.editando.idViajero || this.usuarioSeleccionadoId || 0)
+			: (this.usuarioSeleccionadoId ?? 1);
 		const body = {
 			idViaje,
 			nombre: v.nombreContacto || '',
@@ -122,7 +129,9 @@ export class FormEmergencyContactComponent implements OnChanges {
 		};
 
 		const request$ = this.editando
-			? this.svc.actualizarContacto(this.editando.idViajero, this.editando.id, body)
+			? (this.editando.fromReserva
+				? this.svc.actualizarContactoDeReserva(this.editando.id, body)
+				: this.svc.actualizarContacto(this.editando.idViajero, this.editando.id, body))
 			: this.svc.registrarContacto(idViajero, body);
 
 		request$.subscribe({

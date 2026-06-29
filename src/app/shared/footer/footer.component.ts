@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { PdfService } from '../../services/pdf.service';
 
 @Component({
 	selector: 'app-footer',
@@ -6,13 +7,13 @@ import { Component } from '@angular/core';
 	styleUrls: ['./footer.component.css'],
 })
 export class FooterComponent {
-	email: string = '';
+	constructor(private pdfService: PdfService) {}
 
-	onSubscribe(): void {
-		if (this.email && this.email.includes('@')) {
-			console.log('Suscrito:', this.email);
-			this.email = '';
-			// Aquí conectas con tu servicio de email
-		}
+	openPoliticaCancelacion(): void {
+		this.pdfService.generateCancelacionPDF();
+	}
+
+	openTerminosCondiciones(): void {
+		this.pdfService.generateTerminosCondicionesPDF();
 	}
 }

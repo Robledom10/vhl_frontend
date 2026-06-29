@@ -7,8 +7,9 @@
 
 	<form [formGroup]="contactoForm" (ngSubmit)="guardar()">
 		<div class="form-grid">
-			<div class="form-group span-2" *ngIf="!editando">
-				<label>Usuario *</label>
+			<!-- Nuevo contacto o edición de contacto sin viajero asignado -->
+			<div class="form-group span-2" *ngIf="!editando || (editando && !editando.idViajero)">
+				<label>Usuario * {{ editando && !editando.idViajero ? '(sin viajero asignado — seleccione uno)' : '' }}</label>
 				<select (change)="onUsuarioChange($any($event.target).value)" [disabled]="cargandoUsuarios">
 					<option value="">{{ cargandoUsuarios ? 'Cargando usuarios...' : 'Seleccionar usuario...' }}</option>
 					<option *ngFor="let u of usuarios" [value]="u.id">{{ u.nombre }}</option>
@@ -16,7 +17,8 @@
 				<span class="error" *ngIf="contactoForm.get('nombreViajero')?.invalid && contactoForm.get('nombreViajero')?.touched">Selecciona un usuario</span>
 			</div>
 
-			<div class="form-group span-2" *ngIf="editando">
+			<!-- Edición de contacto con viajero ya asignado -->
+			<div class="form-group span-2" *ngIf="editando && editando.idViajero">
 				<label>Nombre del viajero</label>
 				<input type="text" formControlName="nombreViajero" class="input-readonly" readonly>
 			</div>

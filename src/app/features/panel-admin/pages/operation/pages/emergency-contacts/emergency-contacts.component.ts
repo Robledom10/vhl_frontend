@@ -105,13 +105,13 @@ export class ContactosEmergenciaComponent implements OnInit {
 			const contactosReserva: ContactoEmergencia[] = (deReserva as any[]).map(c => ({
 				id: c.id,
 				idViaje: id,
-				idViajero: 0,
+				idViajero: c.idViajero ?? 0,
 				nombre: c.nombre,
 				parentesco: c.parentesco,
 				telefono: c.telefono,
 				correo: c.correo ?? '',
 				fechaRegistro: '',
-				nombreViajero: 'Desde reserva',
+				nombreViajero: c.nombreViajero || 'Desde reserva',
 				fromReserva: true
 			}));
 			this.contactos = [...(deOperacion as ContactoEmergencia[]), ...contactosReserva];
@@ -160,7 +160,11 @@ export class ContactosEmergenciaComponent implements OnInit {
 		const c = this.contactoAEliminar;
 		this.showDeleteModal = false;
 
-		this.svc.eliminarContacto(c.idViajero, c.id).subscribe({
+		const delete$ = c.fromReserva
+			? this.svc.eliminarContactoDeReserva(c.id)
+			: this.svc.eliminarContactoDirecto(c.id);
+
+		delete$.subscribe({
 			next: () => {
 				this.contactos = this.contactos.filter(x => x.id !== c.id);
 				this.contactoAEliminar = null;
