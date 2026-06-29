@@ -128,6 +128,7 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 	correoCliente: string = '';
 	buscandoCliente = false;
 	errorCliente = false;
+	errorSelfReservation = false;
 	// ------------------------------------------
 
 	form: ReservationForm = this.emptyForm();
@@ -158,11 +159,19 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 
 		this.buscandoCliente = true;
 		this.errorCliente = false;
+		this.errorSelfReservation = false;
 
 		this.authService.getUserByDocumento(this.documentoBusqueda.trim()).subscribe({
 			next: (usuario: any) => {
 				this.buscandoCliente = false;
 				if (usuario && usuario.id) {
+					const currentUser = this.authService.getUser();
+					const isAdminOrGuide = currentUser?.role === 'ADMIN' || currentUser?.role === 'GUIDE';
+					if (isAdminOrGuide && usuario.id === currentUser?.id) {
+						this.errorSelfReservation = true;
+						this.resetDatosCliente();
+						return;
+					}
 					this.form.idUsuario = usuario.id;
 					this.nombreClienteSeleccionado = `${usuario.firstName ?? ''} ${usuario.lastName ?? ''}`.trim();
 					this.apellidoCliente = usuario.lastName ?? '';
@@ -458,6 +467,7 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 		this.correoCliente = '';
 		this.buscandoCliente = false;
 		this.errorCliente = false;
+		this.errorSelfReservation = false;
 		this.selectedPaqueteId = '';
 		this.viajesFiltrados = [];
 	}

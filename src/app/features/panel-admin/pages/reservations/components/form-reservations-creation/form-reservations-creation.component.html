@@ -47,7 +47,8 @@
 								<i class="fa-solid fa-spinner fa-spin"></i> Buscando...
 							</span>
 							<span *ngIf="errorCliente" class="error-msg">Cliente no encontrado.</span>
-							<span *ngIf="submitted && !form.idUsuario && !errorCliente" class="error-msg">
+							<span *ngIf="errorSelfReservation" class="error-msg">No puedes crear una reserva para ti mismo.</span>
+							<span *ngIf="submitted && !form.idUsuario && !errorCliente && !errorSelfReservation" class="error-msg">
 								Debes seleccionar un cliente válido.
 							</span>
 						</div>
