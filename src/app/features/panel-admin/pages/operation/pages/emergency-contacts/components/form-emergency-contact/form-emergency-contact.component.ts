@@ -19,9 +19,14 @@ export class FormEmergencyContactComponent implements OnChanges {
 	@Output() saveFailed = new EventEmitter<string>();
 
 	enviando = false;
+	formSubmitted = false;
 	cargandoUsuarios = false;
 	usuarios: { id: number; nombre: string }[] = [];
 	usuarioSeleccionadoId: number | null = null;
+
+	// Dropdown state
+	usuarioDropdownOpen = false;
+	selectedUsuarioLabel = '';
 
 	// Confirmación de guardado
 	showConfirmModal = false;
@@ -38,6 +43,10 @@ export class FormEmergencyContactComponent implements OnChanges {
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes['isOpen']?.currentValue === true) {
+			this.formSubmitted = false;
+			this.usuarioDropdownOpen = false;
+			this.selectedUsuarioLabel = '';
+
 			if (this.editando) {
 				this.contactoForm.patchValue({
 					nombreViajero: this.editando.nombreViajero || '',
@@ -70,26 +79,47 @@ export class FormEmergencyContactComponent implements OnChanges {
 		});
 	}
 
+	// ==============================
+	// DROPDOWN
+	// ==============================
+
+	toggleUsuarioDropdown(): void {
+		this.usuarioDropdownOpen = !this.usuarioDropdownOpen;
+	}
+
 	onUsuarioChange(idStr: string): void {
 		const id = idStr ? +idStr : null;
 		this.usuarioSeleccionadoId = id;
+		this.usuarioDropdownOpen = false;
+
 		if (!id) {
+			this.selectedUsuarioLabel = '';
 			this.contactoForm.patchValue({ nombreViajero: '' });
 			return;
 		}
 		const usuario = this.usuarios.find(u => u.id === id);
 		if (usuario) {
+			this.selectedUsuarioLabel = usuario.nombre;
 			this.contactoForm.patchValue({ nombreViajero: usuario.nombre });
+		}
+	}
+
+	onModalClick(event: Event): void {
+		event.stopPropagation();
+		const target = event.target as HTMLElement;
+		if (!target.closest('.custom-select')) {
+			this.usuarioDropdownOpen = false;
 		}
 	}
 
 	cerrar(): void { this.closed.emit(); }
 
-	// =========================================
-	// VALIDAR Y ABRIR CONFIRMACIÓN
-	// =========================================
+	// ==============================
+	// GUARDAR
+	// ==============================
 
 	guardar(): void {
+		this.formSubmitted = true;
 		if (this.contactoForm.invalid) {
 			this.contactoForm.markAllAsTouched();
 			return;

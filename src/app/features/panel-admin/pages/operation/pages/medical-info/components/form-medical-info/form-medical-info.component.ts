@@ -19,10 +19,16 @@ export class FormMedicalInfoComponent implements OnChanges {
 	@Output() saveFailed = new EventEmitter<string>();
 
 	enviando = false;
+	formSubmitted = false;
 	cargandoUsuarios = false;
 	usuarios: { id: number; nombre: string }[] = [];
 	usuarioSeleccionadoId: number | null = null;
 	gruposSanguineos = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
+
+	// Dropdown state
+	usuarioDropdownOpen = false;
+	tipoSangreDropdownOpen = false;
+	selectedUsuarioLabel = '';
 
 	// Confirmación de guardado
 	showConfirmModal = false;
@@ -40,6 +46,11 @@ export class FormMedicalInfoComponent implements OnChanges {
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes['isOpen']?.currentValue === true) {
+			this.formSubmitted = false;
+			this.usuarioDropdownOpen = false;
+			this.tipoSangreDropdownOpen = false;
+			this.selectedUsuarioLabel = '';
+
 			if (this.editandoMedico) {
 				this.medForm.patchValue({
 					nombreViajero: this.editandoMedico.nombreViajero || ('Viajero #' + this.editandoMedico.idViajero),
@@ -73,26 +84,60 @@ export class FormMedicalInfoComponent implements OnChanges {
 		});
 	}
 
+	// ==============================
+	// DROPDOWNS
+	// ==============================
+
+	toggleUsuarioDropdown(): void {
+		this.usuarioDropdownOpen = !this.usuarioDropdownOpen;
+		this.tipoSangreDropdownOpen = false;
+	}
+
+	toggleTipoSangreDropdown(): void {
+		this.tipoSangreDropdownOpen = !this.tipoSangreDropdownOpen;
+		this.usuarioDropdownOpen = false;
+	}
+
 	onUsuarioChange(idStr: string): void {
 		const id = idStr ? +idStr : null;
 		this.usuarioSeleccionadoId = id;
+		this.usuarioDropdownOpen = false;
+
 		if (!id) {
+			this.selectedUsuarioLabel = '';
 			this.medForm.patchValue({ nombreViajero: '' });
 			return;
 		}
 		const usuario = this.usuarios.find(u => u.id === id);
 		if (usuario) {
+			this.selectedUsuarioLabel = usuario.nombre;
 			this.medForm.patchValue({ nombreViajero: usuario.nombre });
+		}
+	}
+
+	selectTipoSangre(grupo: string): void {
+		this.medForm.patchValue({ tipoSangre: grupo });
+		this.medForm.get('tipoSangre')?.markAsTouched();
+		this.tipoSangreDropdownOpen = false;
+	}
+
+	onModalClick(event: Event): void {
+		event.stopPropagation();
+		const target = event.target as HTMLElement;
+		if (!target.closest('.custom-select')) {
+			this.usuarioDropdownOpen = false;
+			this.tipoSangreDropdownOpen = false;
 		}
 	}
 
 	cerrar(): void { this.closed.emit(); }
 
-	// =========================================
-	// VALIDAR Y ABRIR CONFIRMACIÓN
-	// =========================================
+	// ==============================
+	// GUARDAR
+	// ==============================
 
 	guardar(): void {
+		this.formSubmitted = true;
 		if (this.medForm.invalid) {
 			this.medForm.markAllAsTouched();
 			return;

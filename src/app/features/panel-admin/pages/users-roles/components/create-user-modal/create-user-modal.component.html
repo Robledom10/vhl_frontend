@@ -55,7 +55,7 @@
 
 				<div class="form-group">
 					<input type="tel" formControlName="phone" placeholder="Teléfono"
-						[class.ng-touched]="f.phone.touched" />
+						[class.ng-touched]="f.phone.touched" [class.ng-invalid]="f.phone.invalid"/>
 
 					<label>Teléfono (opcional)</label>
 

@@ -24,9 +24,13 @@ export class AppComponent {
 					.googleLogin(credential)
 					.subscribe({
 						next: () => {
-							this.router.navigate(
-								['/home']
-							);
+							const user = this.authService.getUser();
+							const role = user?.role;
+							if (role === 'ADMIN' || role === 'GUIDE') {
+								this.router.navigate(['/panel-admin/control-panel']);
+							} else {
+								this.router.navigate(['/home']);
+							}
 						},
 						error: (err) => {
 							console.error(

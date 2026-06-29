@@ -172,12 +172,13 @@ select:valid {
 }
 
 .buttons button {
-	height: 48px;
-	padding: 0 25px;
-	border: none;
+	height: 40px;
+	padding: 0 20px;
 	border-radius: 999px;
+	border: none;
 	cursor: pointer;
 	font-family: "Outfit";
+	font-size: 15px;
 	transition: .25s;
 }
 

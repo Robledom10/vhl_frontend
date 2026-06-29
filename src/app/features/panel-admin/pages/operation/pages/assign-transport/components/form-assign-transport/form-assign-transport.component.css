@@ -1,49 +1,71 @@
-.modal-backdrop {
-	position: fixed;
-	inset: 0;
-	background: rgba(0, 0, 0, 0.35);
-	z-index: 998;
-}
-
-.modal-panel {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	margin-top: 32px;
-	z-index: 999;
-	background: white;
-	border-radius: 22px;
-	padding: 24px 28px;
-	width: min(540px, 92vw);
-	max-height: 80vh;
-	overflow-y: auto;
-	scrollbar-width: none;
-	-ms-overflow-style: none;
-	box-shadow: 0 16px 48px rgba(0, 0, 0, 0.14);
-}
+/* ==============================
+	OVERLAY & PANEL
+============================== */
 
 .modal-panel::-webkit-scrollbar {
 	display: none;
 }
 
+.modal-panel {
+	width: 100%;
+	background: white;
+	border-radius: 45px;
+	max-width: min(560px, 92vw);
+	max-height: 85vh;
+	display: flex;
+	flex-direction: column;
+	padding: 24px 28px;
+	overflow-y: auto;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(15, 23, 42, .45);
+	backdrop-filter: blur(6px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
+}
+
+/* ==============================
+   HEADER
+   ============================== */
+
 .modal-header {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 20px;
+	justify-content: flex-end;
+	margin-bottom: 4px;
 }
 
-.modal-header h3 {
-	font-size: 17px;
-	font-weight: 500;
-	color: var(--color-texto-principal);
-	margin: 0;
+.modal-title {
+	text-align: center;
+	font-size: var(--titulos-medianos);
+	font-weight: 700;
+	font-family: "Outfit", sans-serif;
+	color: #1e1e1e;
+	margin-bottom: 20px;
+	font-size: 32px;
+	text-align: center;
+}
+
+.modal-title span {
+	color: var(--color-primario);
+}
+
+.modal-title-sub {
+	font-weight: 700;
+	color: var(--color-texto-secundario);
 }
 
 .btn-cerrar {
 	width: 34px;
 	height: 34px;
+	flex-shrink: 0;
 	border-radius: 50%;
 	border: 1px solid var(--bordes);
 	background: white;
@@ -52,6 +74,7 @@
 	align-items: center;
 	justify-content: center;
 	color: var(--color-texto-secundario);
+	font-size: 15px;
 	transition: all 0.2s;
 }
 
@@ -60,6 +83,10 @@
 	border-color: #fca5a5;
 	color: #ef4444;
 }
+
+/* ==============================
+   ALERTA CAPACIDAD
+   ============================== */
 
 .alert-capacidad {
 	background: rgba(255, 193, 7, 0.12);
@@ -72,35 +99,78 @@
 	align-items: center;
 	gap: 10px;
 	margin-bottom: 16px;
+	font-family: "Outfit", sans-serif;
 }
+
+/* ==============================
+   GRID
+   ============================== */
 
 .form-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 14px;
+	gap: 18px;
 }
 
 .form-group {
 	display: flex;
 	flex-direction: column;
-	gap: 5px;
 }
 
 .form-group.span-2 {
 	grid-column: span 2;
 }
 
-.form-group label {
-	font-size: 13px;
-	font-weight: 500;
-	color: var(--color-texto-secundario);
-	padding-left: 6px;
+/* ==============================
+   FIELD WRAPPER — floating label
+   ============================== */
+
+.field-wrapper {
+	position: relative;
+	display: flex;
+	flex-direction: column;
 }
 
-.form-group input,
-.form-group select {
-	height: 42px;
-	border-radius: 12px;
+.field-wrapper label,
+.custom-select-group label {
+	position: absolute;
+	top: 11px;
+	left: 16px;
+	font-size: 14px;
+	color: var(--color-texto-secundario);
+	pointer-events: none;
+	transition: all 0.18s ease;
+	background: white;
+	padding: 0 4px;
+	z-index: 1;
+}
+
+/* Label flota cuando hay valor */
+.field-wrapper input:focus~label,
+.field-wrapper input:not(:placeholder-shown)~label,
+.field-wrapper label.active,
+.custom-select-group label.active {
+	top: -9px;
+	left: 12px;
+	font-size: 11px;
+	color: var(--color-primario);
+	font-weight: 500;
+}
+
+/* Label en rojo cuando hay error */
+.field-wrapper label.label-error,
+.custom-select-group label.label-error {
+	color: #ef4444 !important;
+}
+
+/* ==============================
+   INPUTS
+   ============================== */
+
+.field-wrapper input,
+.field-wrapper .cal-trigger {
+	height: 41px;
+	border-radius: 999px;
 	border: 1.5px solid #e8e8e8;
 	padding: 0 16px;
 	font-family: "Outfit", sans-serif;
@@ -108,55 +178,240 @@
 	outline: none;
 	transition: border-color 0.2s;
 	background: white;
+	color: var(--color-texto-principal);
+	box-sizing: border-box;
+	width: 100%;
 }
 
-.form-group input:focus,
-.form-group select:focus {
+.field-wrapper input:focus {
 	border-color: var(--color-primario);
 }
 
-.readonly-field {
-	background: #f7f9fc !important;
-	color: var(--color-texto-secundario);
-	cursor: default;
+/* Borde azul cuando tiene valor */
+.field-wrapper input:not(:placeholder-shown):not(.ng-invalid),
+.field-wrapper input[value]:not([value=""]):not(.ng-invalid) {
+	border-color: var(--color-primario);
 }
 
-.field-info {
-	font-size: 11px;
-	color: var(--color-texto-secundario);
-	padding-left: 6px;
+/* Error state */
+.field-wrapper input.ng-invalid.ng-touched {
+	border-color: #ef4444;
 }
 
-.proveedor-select {
-	border-style: dashed !important;
-	background: rgba(63, 162, 219, 0.04) !important;
-	color: var(--color-texto-secundario);
+.field-wrapper input.ng-invalid.ng-touched~label {
+	color: #ef4444;
 }
 
-.error {
+/* Input deshabilitado (fecha de viaje programado) */
+.disabled-input {
+	background: #f8f8f8 !important;
+	color: var(--color-texto-secundario) !important;
+	cursor: default !important;
+}
+
+/* ==============================
+   ERROR SPAN
+   ============================== */
+
+.field-error {
 	font-size: 12px;
 	color: #ef4444;
 	padding-left: 6px;
+	margin-top: 4px;
 }
+
+.field-info {
+	font-size: 12px;
+	color: var(--color-texto-secundario);
+	padding-left: 6px;
+	margin-top: 4px;
+	font-family: "Outfit", sans-serif;
+}
+
+/* ==============================
+   CUSTOM SELECT
+   ============================== */
+
+.custom-select-group {
+	position: relative;
+}
+
+.custom-select {
+	height: 41px;
+	border-radius: 999px;
+	border: 1.5px solid #e8e8e8;
+	padding: 0 16px;
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	position: relative;
+	transition: border-color 0.2s;
+	background: white;
+	user-select: none;
+}
+
+.custom-select:hover,
+.custom-select.open {
+	border-color: var(--color-primario);
+}
+
+/* Borde azul persistente al tener valor */
+.custom-select.selected {
+	border-color: var(--color-primario);
+}
+
+.custom-select.invalid {
+	border-color: #ef4444;
+}
+
+.custom-select.invalid~label {
+	color: #ef4444 !important;
+}
+
+.custom-select-value {
+	flex: 1;
+	color: var(--color-texto-principal);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	min-height: 20px;
+}
+
+.select-icon {
+	font-size: 12px;
+	color: var(--color-texto-secundario);
+	transition: transform 0.2s;
+	margin-left: 8px;
+}
+
+.custom-select.open .select-icon {
+	transform: rotate(180deg);
+}
+
+.custom-select-dropdown {
+	position: absolute;
+	top: calc(100% + 6px);
+	left: 0;
+	right: 0;
+	background: white;
+	border: 1.5px solid #e8e8e8;
+	border-radius: 12px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+	z-index: 9999;
+	max-height: 200px;
+	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: rgba(63, 162, 219, 0.28) transparent;
+	padding: 8px;
+}
+
+.custom-option {
+	padding: 10px 16px;
+	font-size: 15px;
+	color: var(--color-texto-secundario);
+	cursor: pointer;
+	transition: background 0.15s;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	border-radius: 10px;
+}
+
+.custom-option:hover {
+	background: rgba(63, 162, 219, 0.08);
+}
+
+.custom-option.active {
+	background: rgba(63, 162, 219, 0.12);
+	color: var(--color-primario);
+	font-weight: 500;
+}
+
+.custom-option.disabled {
+	color: #aaa;
+	cursor: not-allowed;
+	font-style: italic;
+}
+
+.custom-option.disabled:hover {
+	background: transparent;
+}
+
+/* Proveedor: estilo punteado diferenciado */
+.proveedor-select {
+	border-style: dashed !important;
+	background: rgba(63, 162, 219, 0.03) !important;
+}
+
+/* ==============================
+   CALENDARIO
+   ============================== */
+
+.cal-wrap {
+	position: relative;
+}
+
+.cal-trigger {
+	cursor: pointer !important;
+	padding-right: 44px !important;
+}
+
+/* Borde azul cuando ya tiene fecha */
+.cal-trigger.filled {
+	border-color: var(--color-primario) !important;
+}
+
+.cal-trigger.ng-invalid.ng-touched {
+	border-color: #ef4444 !important;
+}
+
+.cal-icon {
+	position: absolute;
+	right: 16px;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 15px;
+	color: var(--color-primario);
+	pointer-events: none;
+	z-index: 2;
+}
+
+.cal-wrap app-custom-calendar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 9999;
+}
+
+.cal-wrap ::ng-deep .calendar-dropdown {
+	top: auto !important;
+	bottom: calc(100% + 8px) !important;
+}
+
+/* ==============================
+   ACTIONS
+   ============================== */
 
 .modal-actions {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	gap: 12px;
-	margin-top: 14px;
+	margin-top: 20px;
 }
 
 .btn-cancelar {
-	height: 36px;
-	padding: 0 18px;
-	border-radius: 10px;
+	height: 40px;
+	padding: 0 20px;
+	border-radius: 999px;
 	border: none;
 	background: #ef4444;
 	color: white;
 	cursor: pointer;
 	font-family: "Outfit", sans-serif;
-	font-size: 13px;
+	font-size: 15px;
 	font-weight: 500;
 	transition: all 0.2s;
 }
@@ -166,15 +421,15 @@
 }
 
 .btn-guardar {
-	height: 36px;
-	padding: 0 22px;
-	border-radius: 10px;
+	height: 40px;
+	padding: 0 24px;
+	border-radius: 999px;
 	border: none;
 	background: var(--color-primario);
 	color: white;
 	cursor: pointer;
 	font-family: "Outfit", sans-serif;
-	font-size: 13px;
+	font-size: 15px;
 	font-weight: 500;
 	transition: all 0.2s;
 }
@@ -187,6 +442,10 @@
 	opacity: 0.6;
 	cursor: not-allowed;
 }
+
+/* ==============================
+   RESPONSIVE
+   ============================== */
 
 @media (max-width: 600px) {
 	.form-grid {

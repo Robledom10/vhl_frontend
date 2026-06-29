@@ -114,7 +114,7 @@
 					<td>
 						<span class="status" [class.confirmada]="item.estado === 'Confirmada'"
 							[class.pendiente]="item.estado === 'Pendiente'"
-							[class.cancelada]="item.estado === 'Cancelada'">
+							[class.cancelada]="item.estado === 'Cancelada'" [class.pasada]="item.estado === 'Pasada'">
 							{{ item.estado }}
 						</span>
 					</td>
@@ -175,16 +175,16 @@
 			<button class="page-btn" [disabled]="paginaActual === 0" (click)="cambiarPagina(paginaActual - 1)">
 				<i class="fa-solid fa-angle-left"></i>
 			</button>
-			<button *ngFor="let p of paginas"
-				class="page-btn page-number"
-				[class.active]="p === paginaActual"
+			<button *ngFor="let p of paginas" class="page-btn page-number" [class.active]="p === paginaActual"
 				(click)="cambiarPagina(p)">
 				{{ p + 1 }}
 			</button>
-			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1" (click)="cambiarPagina(paginaActual + 1)">
+			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1"
+				(click)="cambiarPagina(paginaActual + 1)">
 				<i class="fa-solid fa-angle-right"></i>
 			</button>
-			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1" (click)="cambiarPagina(totalPaginas - 1)">
+			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1"
+				(click)="cambiarPagina(totalPaginas - 1)">
 				<i class="fa-solid fa-angles-right"></i>
 			</button>
 		</div>
@@ -203,15 +203,14 @@
 </app-toast-notification>
 
 <!-- MODAL CREAR USUARIO (para flujo de usuario nuevo) -->
-<app-create-user-modal [isOpen]="showCreateUserModal"
-	(closed)="closeCreateUserModal()"
+<app-create-user-modal [isOpen]="showCreateUserModal" (closed)="closeCreateUserModal()"
 	(userCreated)="onUserCreatedForReservation($event)">
 </app-create-user-modal>
 
 <!-- MODAL CREAR RESERVA -->
 <app-form-reservation-creation [isOpen]="showCreateModal" [mode]="createModalMode"
-	[prefilledDocument]="prefilledDocument"
-	(closed)="closeCreateModal()" (reservationCreated)="onReservationCreated($event)">
+	[prefilledDocument]="prefilledDocument" (closed)="closeCreateModal()"
+	(reservationCreated)="onReservationCreated($event)">
 </app-form-reservation-creation>
 
 <!-- DETALLE RESERVA -->

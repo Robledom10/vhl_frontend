@@ -3,22 +3,67 @@
 	display: flex;
 	flex-direction: column;
 	gap: 24px;
+	padding-bottom: 100px;
 }
 
-/* ── HEADER ──────────────────────────────────────────────────────── */
+/* ========================= PAGE HEADER ========================= */
 .page-header {
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	justify-content: space-between;
 	flex-wrap: wrap;
 	gap: 16px;
+	border: 1px solid rgba(63, 162, 219, 0.12);
+	border-radius: 22px;
+	background: white;
+	padding: 26px 28px;
+	box-shadow: 0 3px 14px rgba(0, 0, 0, 0.06);
+	position: relative;
+	overflow: hidden;
+}
+
+.page-header::before {
+	content: '';
+	position: absolute;
+	top: -30px;
+	right: -20px;
+	width: 160px;
+	height: 160px;
+	border-radius: 50%;
+	background: radial-gradient(circle, rgba(63, 162, 219, 0.10) 0%, transparent 70%);
+	pointer-events: none;
+}
+
+.page-title-group {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	min-width: 0;
+	position: relative;
+}
+
+.page-title-icon {
+	width: 52px;
+	height: 52px;
+	border-radius: 16px;
+	background: var(--color-primario);
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 20px;
+	flex-shrink: 0;
+	box-shadow: 0 6px 18px rgba(63, 162, 219, 0.35);
 }
 
 .page-title {
-	font-size: 20px;
-	font-weight: 400;
+	font-size: 22px;
+	font-weight: 600;
 	color: var(--color-texto-principal);
 	margin: 0;
+	line-height: 1.2;
+	letter-spacing: -0.3px;
+	font-family: "Outfit", sans-serif;
 }
 
 .page-title span {
@@ -26,66 +71,241 @@
 }
 
 .page-subtitle {
-	font-size: 14px;
+	font-size: 13.5px;
 	color: var(--color-texto-secundario);
-	margin: 4px 0 0;
+	margin: 0;
 	font-weight: 400;
+	line-height: 1.5;
+	font-family: "Outfit", sans-serif;
+	max-width: 420px;
 }
 
-/* ── FILTRO VIAJE ────────────────────────────────────────────────── */
+.page-header-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: rgba(63, 162, 219, 0.12);
+	color: var(--color-primario);
+	font-family: "Outfit", sans-serif;
+	font-size: 12px;
+	font-weight: 600;
+	padding: 6px 14px;
+	border-radius: 999px;
+	letter-spacing: 0.03em;
+	white-space: nowrap;
+	align-self: center;
+	flex-shrink: 0;
+}
+
+.page-header-badge i {
+	font-size: 11px;
+}
+
+/* ========================= FILTRO VIAJE — custom select ========================= */
 .filtro-viaje {
 	display: flex;
 	flex-direction: column;
-	gap: 5px;
-	max-width: 480px;
+	gap: 8px;
+	width: 100%;
+	border: 1px solid #edf1f5;
+	border-radius: 18px;
+	background: white;
+	border-radius: 20px;
+	padding: 24px;
+	box-shadow: 0 3px 14px rgba(0, 0, 0, 0.07);
 }
 
 .filtro-viaje label {
-	font-size: 13px;
-	font-weight: 500;
+	font-size: 11.5px;
+	font-weight: 700;
 	color: var(--color-texto-secundario);
-	padding-left: 6px;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	padding-left: 2px;
+	display: flex;
+	align-items: center;
+	gap: 6px;
 }
 
-.filtro-viaje select {
-	height: 42px;
-	border-radius: 12px;
-	border: 1.5px solid #e8e8e8;
-	padding: 0 16px;
+.filtro-viaje label i {
+	color: var(--color-primario);
+	font-size: 11px;
+}
+
+.custom-select-wrapper {
+	position: relative;
+	width: 100%;
+}
+
+.custom-select {
+	height: 44px;
+	padding: 0 16px 0 18px;
+	border-radius: 25px;
+	border: 1px solid var(--bordes);
+	background: white;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	cursor: pointer;
 	font-family: "Outfit", sans-serif;
 	font-size: 14px;
-	outline: none;
-	background: white;
-	transition: border-color 0.2s;
-	color: var(--color-texto-principal);
+	color: var(--color-texto-secundario);
+	transition: all 0.25s ease;
+	user-select: none;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 
-.filtro-viaje select:focus {
+.custom-select:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
+}
+
+.custom-select.open {
 	border-color: var(--color-primario);
+	box-shadow: 0 6px 16px rgba(63, 162, 219, 0.12);
 }
 
-/* ── STATS ───────────────────────────────────────────────────────── */
+.custom-select.selected {
+	color: var(--color-texto-secundario);
+}
+
+.select-left {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex: 1;
+	overflow: hidden;
+}
+
+.select-left-icon {
+	width: 30px;
+	height: 30px;
+	border-radius: 10px;
+	background: rgba(63, 162, 219, 0.10);
+	color: var(--color-primario);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	flex-shrink: 0;
+}
+
+.custom-select-value {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.select-icon {
+	font-size: 10px;
+	color: var(--color-texto-secundario);
+	transition: transform 0.25s ease;
+	flex-shrink: 0;
+}
+
+.custom-select.open .select-icon {
+	transform: rotate(180deg);
+	color: var(--color-primario);
+}
+
+.custom-select-dropdown {
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 0;
+	right: 0;
+	background: white;
+	border: 1px solid var(--bordes);
+	border-radius: 18px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+	padding: 8px;
+	z-index: 999;
+	animation: fadeDropdown 0.2s ease;
+	max-height: 260px;
+	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: rgba(63, 162, 219, 0.28) transparent;
+}
+
+
+.custom-option {
+	padding: 11px 14px;
+	border-radius: 12px;
+	font-size: 14px;
+	font-family: "Outfit", sans-serif;
+	color: var(--color-texto-secundario);
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.custom-option i {
+	font-size: 12px;
+	width: 16px;
+	text-align: center;
+	flex-shrink: 0;
+}
+
+.custom-option:hover {
+	background: rgba(63, 162, 219, 0.08);
+	color: var(--color-primario);
+}
+
+.custom-option.active {
+	background: rgba(63, 162, 219, 0.10);
+	color: var(--color-primario);
+	font-weight: 500;
+}
+
+.custom-option.placeholder {
+	color: var(--color-texto-secundario);
+	font-style: italic;
+	font-size: 13px;
+}
+
+@keyframes fadeDropdown {
+	from {
+		opacity: 0;
+		transform: translateY(-4px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* ========================= STATS ========================= */
 .stats-row {
 	display: flex;
-	gap: 16px;
+	gap: 14px;
 	flex-wrap: wrap;
 }
 
 .stat-card {
 	flex: 1;
-	min-width: 140px;
+	min-width: 160px;
 	background: white;
 	border-radius: 18px;
 	padding: 18px 22px;
 	display: flex;
 	align-items: center;
 	gap: 14px;
-	box-shadow: 0 3px 14px rgba(0, 0, 0, 0.07);
+	box-shadow: 0 3px 14px rgba(0, 0, 0, 0.06);
+	border: 1px solid rgba(0, 0, 0, 0.04);
+	transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
 }
 
 .stat-icon {
-	width: 44px;
-	height: 44px;
+	width: 46px;
+	height: 46px;
 	border-radius: 14px;
 	display: flex;
 	align-items: center;
@@ -113,35 +333,44 @@
 	display: flex;
 	flex-direction: column;
 	gap: 2px;
+	min-width: 0;
 }
 
 .stat-val {
-	font-size: 22px;
-	font-weight: 600;
+	font-size: 26px;
+	font-weight: 700;
 	color: var(--color-texto-principal);
-	line-height: 1;
+	line-height: 1.1;
+	font-family: "Outfit", sans-serif;
 }
 
 .stat-lbl {
-	font-size: 12px;
+	font-size: 12.5px;
 	color: var(--color-texto-secundario);
+	white-space: normal;
+	line-height: 1.3;
+	font-family: "Outfit", sans-serif;
 }
 
-/* ── PANEL ───────────────────────────────────────────────────────── */
+/* ========================= PANEL DE RESERVAS ========================= */
 .reservas-panel {
 	background: white;
-	border-radius: 22px;
-	padding: 24px 28px;
+	border-radius: 20px;
+	padding: 24px;
 	box-shadow: 0 3px 14px rgba(0, 0, 0, 0.07);
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	gap: 18px;
 }
 
 .panel-header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 10px;
+	padding-bottom: 14px;
+	border-bottom: 1px solid var(--bordes);
 }
 
 .panel-title {
@@ -151,25 +380,40 @@
 }
 
 .panel-title i {
+	width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 10px;
+	background: rgba(63, 162, 219, 0.1);
 	color: var(--color-primario);
-	font-size: 16px;
+	font-size: 14px;
+	flex-shrink: 0;
 }
 
 .panel-title h3 {
-	font-size: 15px;
+	font-size: 16px;
 	font-weight: 500;
 	color: var(--color-texto-principal);
 	margin: 0;
 }
 
-/* ── TABLE ───────────────────────────────────────────────────────── */
+.panel-pag-info {
+	font-size: 13px;
+	color: var(--color-texto-secundario);
+	font-family: "Outfit", sans-serif;
+	white-space: nowrap;
+}
+
+/* ========================= TABLA ========================= */
 .table-container {
 	width: 100%;
-	overflow-x: auto;
 }
 
 table {
 	width: 100%;
+	table-layout: auto;
 	border-collapse: separate;
 	border-spacing: 0 10px;
 }
@@ -180,6 +424,7 @@ thead th {
 	font-weight: 500;
 	color: var(--color-primario);
 	padding: 0 14px;
+	white-space: nowrap;
 }
 
 thead th:first-child {
@@ -189,7 +434,7 @@ thead th:first-child {
 tbody tr {
 	background: #fafafa;
 	border-radius: 14px;
-	transition: all 0.2s;
+	transition: all 0.2s ease;
 }
 
 tbody tr:hover {
@@ -204,6 +449,7 @@ tbody td {
 	color: var(--color-texto-secundario);
 	text-align: center;
 	vertical-align: middle;
+	font-family: "Outfit", sans-serif;
 }
 
 tbody td:first-child {
@@ -224,9 +470,10 @@ tbody td:last-child {
 	padding: 2.5rem;
 	color: var(--color-texto-secundario);
 	font-size: 14px;
+	font-family: "Outfit", sans-serif;
 }
 
-/* ── VIAJERO CELL ────────────────────────────────────────────────── */
+/* ========================= VIAJERO CELL ========================= */
 .td-viajero {
 	display: flex;
 	align-items: center;
@@ -250,20 +497,27 @@ tbody td:last-child {
 	display: flex;
 	flex-direction: column;
 	gap: 1px;
+	min-width: 0;
 }
 
 .viajero-nombre {
 	font-size: 14px;
 	font-weight: 500;
 	color: var(--color-texto-principal);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .viajero-email {
 	font-size: 12px;
 	color: var(--color-texto-secundario);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
-/* ── CODIGO RESERVA ─────────────────────────────────────────────── */
+/* ========================= CÓDIGO RESERVA ========================= */
 .codigo-reserva {
 	display: inline-flex;
 	align-items: center;
@@ -276,18 +530,20 @@ tbody td:last-child {
 	font-weight: 500;
 	font-family: monospace;
 	letter-spacing: 0.5px;
+	white-space: nowrap;
 }
 
 .codigo-reserva i {
 	font-size: 11px;
 }
 
-/* ── BADGES ─────────────────────────────────────────────────────── */
+/* ========================= BADGES ========================= */
 .badge-estado {
 	padding: 4px 12px;
 	border-radius: 999px;
 	font-size: 12px;
 	font-weight: 500;
+	white-space: nowrap;
 }
 
 .badge-estado.confirmada {
@@ -318,6 +574,7 @@ tbody td:last-child {
 	border-radius: 999px;
 	font-size: 12px;
 	font-weight: 500;
+	white-space: nowrap;
 }
 
 .badge-checkin.ok {
@@ -325,7 +582,7 @@ tbody td:last-child {
 	color: #16a34a;
 }
 
-/* ── BTN CHECK-IN ────────────────────────────────────────────────── */
+/* ========================= BOTÓN CHECK-IN ========================= */
 .btn-checkin {
 	height: 34px;
 	padding: 0 18px;
@@ -340,11 +597,11 @@ tbody td:last-child {
 	display: inline-flex;
 	align-items: center;
 	gap: 7px;
-	transition: all 0.2s;
+	transition: all 0.2s ease;
 	white-space: nowrap;
 }
 
-.btn-checkin:hover {
+.btn-checkin:hover:not(:disabled) {
 	transform: translateY(-1px);
 	box-shadow: 0 5px 14px rgba(63, 162, 219, 0.30);
 }
@@ -356,13 +613,7 @@ tbody td:last-child {
 	box-shadow: none;
 }
 
-/* ── PAGINACIÓN VIAJES ───────────────────────────────────────────── */
-.panel-pag-info {
-	font-size: 12px;
-	color: var(--color-texto-secundario);
-	font-family: "Outfit", sans-serif;
-}
-
+/* ========================= PAGINACIÓN ========================= */
 .pagination-reservas {
 	display: flex;
 	justify-content: center;
@@ -373,18 +624,18 @@ tbody td:last-child {
 .pag-controls {
 	display: flex;
 	align-items: center;
-	gap: 6px;
+	gap: 8px;
 }
 
 .pag-btn {
-	width: 32px;
-	height: 32px;
-	border-radius: 10px;
+	width: 36px;
+	height: 36px;
+	border-radius: 12px;
 	border: 1px solid var(--bordes);
 	background: white;
 	color: var(--color-texto-secundario);
 	font-family: "Outfit", sans-serif;
-	font-size: 13px;
+	font-size: 14px;
 	font-weight: 500;
 	cursor: pointer;
 	transition: all 0.2s ease;
@@ -398,6 +649,7 @@ tbody td:last-child {
 	background: rgba(63, 162, 219, 0.08);
 	color: var(--color-primario);
 	border-color: var(--color-primario);
+	transform: translateY(-1px);
 }
 
 .pag-btn.active {
@@ -411,7 +663,33 @@ tbody td:last-child {
 	cursor: not-allowed;
 }
 
-/* ── SPIN ────────────────────────────────────────────────────────── */
+/* ========================= EMPTY STATE ========================= */
+.empty-state {
+	text-align: center;
+	padding: 60px 20px;
+	color: var(--color-texto-secundario);
+	background: white;
+	border-radius: 20px;
+	box-shadow: 0 3px 14px rgba(0, 0, 0, 0.07);
+	border: 1px solid #edf1f5;
+}
+
+.empty-state i {
+	font-size: 44px;
+	opacity: 0.25;
+	margin-bottom: 12px;
+	display: block;
+	color: var(--color-primario);
+}
+
+.empty-state p {
+	margin: 0;
+	font-size: 15px;
+	font-weight: 400;
+	font-family: "Outfit", sans-serif;
+}
+
+/* ========================= SPIN ========================= */
 .spinning {
 	animation: spin 0.9s linear infinite;
 }
@@ -422,20 +700,44 @@ tbody td:last-child {
 	}
 }
 
-@keyframes toastIn {
-	from {
-		transform: translateX(80px);
-		opacity: 0;
+/* ========================= RESPONSIVE ========================= */
+@media (max-width: 900px) {
+
+	thead th:nth-child(3),
+	tbody td:nth-child(3) {
+		display: none;
 	}
 
-	to {
-		transform: translateX(0);
-		opacity: 1;
+	.page-header-badge {
+		display: none;
 	}
 }
 
 @media (max-width: 700px) {
 	.stats-row {
 		flex-direction: column;
+	}
+
+	.table-container {
+		overflow-x: auto;
+	}
+
+	table {
+		min-width: 560px;
+	}
+
+	thead th:nth-child(3),
+	tbody td:nth-child(3) {
+		display: table-cell;
+	}
+
+	.page-header {
+		padding: 18px 20px;
+	}
+
+	.page-title-icon {
+		width: 44px;
+		height: 44px;
+		font-size: 17px;
 	}
 }
