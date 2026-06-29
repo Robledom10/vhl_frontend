@@ -19,7 +19,6 @@ const CONTINUE_REPLIES: QuickReply[] = [
 	{ label: '👋 No, listo — salir', action: 'exit' },
 ];
 
-const SUPPORT_CHIP: QuickReply = { label: '🆘 Hablar con soporte', action: 'support' };
 
 interface FaqItem {
 	id: string;
@@ -52,51 +51,12 @@ const FAQ_ITEMS: FaqItem[] = [
 			'mínima del paquete. Revisá los requisitos de cada paquete antes de reservar.',
 	},
 	{
-		id: 'cambiar-reserva',
-		question: '¿Cómo cambio mi reserva?',
-		answer:
-			'Los cambios de fecha o paquete se gestionan llamando al 604-123-4567 o desde el detalle de tu ' +
-			'reserva en "Mis Reservas". Contame qué necesitás cambiar y te oriento.',
-	},
-	{
-		id: 'maleta',
-		question: '¿Qué debo llevar en la maleta?',
-		answer:
-			'Lo básico para cualquier viaje VHL: ropa ligera y cómoda, zapatos cerrados para caminar, bloqueador solar, ' +
-			'repelente de insectos, una chaqueta delgada (las noches pueden ser frescas), medicamentos personales y ' +
-			'copia de tus documentos. Preguntame por tu destino específico si querés una lista más detallada.',
-	},
-	{
 		id: 'documentos',
 		question: '¿Qué documentos necesito para viajar?',
 		answer:
 			'Para destinos nacionales (Colombia) vas con tu cédula de ciudadanía o tarjeta de identidad si sos menor de edad. ' +
 			'Para destinos internacionales necesitás pasaporte vigente con mínimo 6 meses de validez. ' +
 			'Algunos paquetes también piden el voucher de pago y el permiso firmado para menores.',
-	},
-	{
-		id: 'horario',
-		question: '¿Cuál es el horario de atención?',
-		answer:
-			'Atendemos de lunes a viernes de 8:00 a.m. a 6:00 p.m. y sábados de 9:00 a.m. a 2:00 p.m. ' +
-			'Podés llamarnos al 604-123-4567 o escribirnos desde la plataforma. ' +
-			'Fuera de horario dejanos tu mensaje y te respondemos el siguiente día hábil.',
-	},
-	{
-		id: 'redes',
-		question: '¿Tienen WhatsApp o redes sociales?',
-		answer:
-			'¡Claro! Encontranos en Instagram como @hernandoloperaviajes y en Facebook como Hernando Lopera Viajes. ' +
-			'Para atención directa escribinos al WhatsApp: 604-123-4567 en horario de atención. ' +
-			'Seguinos para ver destinos, promos y novedades.',
-	},
-	{
-		id: 'punto-encuentro',
-		question: '¿Dónde es el punto de encuentro?',
-		answer:
-			'El lugar de salida depende del paquete que elijas — aparece en el detalle de cada tour. ' +
-			'Si querés saber el punto exacto, preguntame "¿Dónde es la salida del paquete [nombre]?" y te digo con el dato real. ' +
-			'La mayoría de salidas son desde un punto central de Medellín.',
 	},
 ];
 
@@ -166,11 +126,6 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy, AfterViewCheck
 			return;
 		}
 		if (option.action === 'support') {
-			this.pushBot(
-				'Para hablar con soporte comunícate al 604-123-4567 o contáctanos desde la plataforma. ¡Estamos pa\' lo que necesites! 🦈',
-				false, undefined, undefined,
-				[{ label: '← Volver al menú', action: 'menu' }]
-			);
 			this.shouldScroll = true;
 			return;
 		}
@@ -324,7 +279,6 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy, AfterViewCheck
 		this.pushUser(item.question);
 		this.pushBot(item.answer, false, undefined, undefined, [
 			{ label: '❓ Otras preguntas frecuentes', action: 'faq_menu' },
-			SUPPORT_CHIP,
 		]);
 		this.shouldScroll = true;
 	}
