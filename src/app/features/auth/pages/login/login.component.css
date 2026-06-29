@@ -12,3 +12,21 @@
 	flex: 1;
 	min-width: 0; /* evita desbordes raros */
 }
+
+@media (max-width: 920px) {
+	.body {
+		width: 100%;
+		justify-content: center;
+		padding: 0 24px;
+		box-sizing: border-box;
+	}
+
+	.body app-auth-banner {
+		display: none;
+	}
+
+	.body app-login-form {
+		flex: 0 1 520px;
+		width: 100%;
+	}
+}
