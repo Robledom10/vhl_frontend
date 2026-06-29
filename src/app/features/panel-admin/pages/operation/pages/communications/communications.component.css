@@ -177,7 +177,7 @@
 }
 
 .select-icon {
-	font-size: 11px;
+	font-size: 12px;
 	color: var(--color-texto-secundario);
 	transition: transform 0.25s ease;
 	flex-shrink: 0;
@@ -185,10 +185,17 @@
 
 .custom-select.open .select-icon {
 	transform: rotate(180deg);
+	color: var(--color-primario);
 }
 
-.select-icon:hover {
+.custom-select:hover .select-icon,
+.custom-select.selected .select-icon {
 	color: var(--color-primario);
+}
+
+
+.custom-select.disabled .select-icon {
+	color: var(--color-texto-secundario);
 }
 
 .custom-select-dropdown {

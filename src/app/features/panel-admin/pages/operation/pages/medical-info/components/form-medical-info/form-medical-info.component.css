@@ -265,6 +265,16 @@
 
 .custom-select.open .select-icon {
 	transform: rotate(180deg);
+	color: var(--color-primario);
+}
+
+.custom-select:hover .select-icon,
+.custom-select.selected .select-icon {
+	color: var(--color-primario);
+}
+
+.custom-select.invalid .select-icon {
+	color: #ef4444;
 }
 
 .custom-select-dropdown {
@@ -286,8 +296,8 @@
 
 .custom-option {
 	padding: 10px 16px;
-	font-size: 13px;
-	color: var(--color-texto-principal);
+	font-size: 15px;
+	color: var(--color-texto-secundario);
 	cursor: pointer;
 	transition: background 0.15s;
 	white-space: nowrap;

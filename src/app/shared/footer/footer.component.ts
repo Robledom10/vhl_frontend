@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PdfService } from '../../services/pdf.service';
+import { PdfService } from '../../core/services/pdf.service';
 
 @Component({
 	selector: 'app-footer',
