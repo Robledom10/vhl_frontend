@@ -3,9 +3,7 @@
 	<div class="profile-header">
 
 		<div class="image-profile">
-			<img
-				[src]="'https://ui-avatars.com/api/?name=' + user?.firstName + '&background=3fa2db&color=fff&size=120'"
-				alt="user" class="user-avatar" />
+			<img [src]="'https://ui-avatars.com/api/?name=' + user?.firstName + '&background=3fa2db&color=fff&size=120'" alt="user" class="user-avatar" />
 		</div>
 
 		<div class="profile-info">
@@ -21,24 +19,20 @@
 
 		<!-- NOMBRE -->
 		<div class="form-group">
-			<input type="text" formControlName="firstName" id="firstName"
-				placeholder="Nombre"
+			<input type="text" formControlName="firstName" id="firstName" placeholder="Nombre"
 				[class.ng-invalid]="f.firstName.invalid && f.firstName.touched"
 				[class.ng-touched]=" f.firstName.touched" />
 			<label for="firstName">Nombre</label>
 
-			<span class="error-message"
-				*ngIf="f.firstName.touched && f.firstName.errors?.['minlength']">
+			<span class="error-message" *ngIf="f.firstName.touched && f.firstName.errors?.['minlength']">
 				El nombre debe tener al menos 3 caracteres
 			</span>
 		</div>
 
 		<!-- APELLIDO -->
 		<div class="form-group">
-			<input type="text" formControlName="lastName" id="lastName"
-				placeholder="Apellido"
-				[class.ng-invalid]="f.lastName.invalid && f.lastName.touched"
-				[class.ng-touched]="f.lastName.touched" />
+			<input type="text" formControlName="lastName" id="lastName" placeholder="Apellido"
+				[class.ng-invalid]="f.lastName.invalid && f.lastName.touched" [class.ng-touched]="f.lastName.touched" />
 			<label for="lastName">Apellido</label>
 		</div>
 
@@ -46,8 +40,7 @@
 		<div class="form-group">
 			<input type="text" id="phone" formControlName="phone" placeholder="Teléfono"
 				oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-				[class.ng-invalid]="f.phone.invalid && f.phone.touched"
-				[class.ng-touched]="f.phone.touched" />
+				[class.ng-invalid]="f.phone.invalid && f.phone.touched" [class.ng-touched]="f.phone.touched" />
 			<label for="phone">Teléfono</label>
 
 			<span class="error-message"
@@ -68,12 +61,10 @@
 
 			<label [class.active]="selectedBirthDate">Fecha de nacimiento</label>
 
-			<app-custom-calendar [isOpen]="birthCalendarOpen"
-				[selectedDate]="selectedBirthDate"
+			<app-custom-calendar [isOpen]="birthCalendarOpen" [selectedDate]="selectedBirthDate"
 				(dateSelected)="onDateSelected($event)"></app-custom-calendar>
 
-			<span class="error-message"
-				*ngIf="f.birthDate.touched && f.birthDate.errors?.['minAge']">
+			<span class="error-message" *ngIf="f.birthDate.touched && f.birthDate.errors?.['minAge']">
 				Debes ser mayor de edad
 			</span>
 		</div>
@@ -81,10 +72,8 @@
 		<!-- DEPARTAMENTO -->
 		<div class="form-group custom-select-group">
 
-			<div class="custom-select" [class.open]="departmentDropdownOpen"
-				[class.selected]="selectedDepartment"
-				[class.invalid]="f.state.invalid && f.state.touched"
-				(click)="toggleDepartmentDropdown($event)">
+			<div class="custom-select" [class.open]="departmentDropdownOpen" [class.selected]="selectedDepartment"
+				[class.invalid]="f.state.invalid && f.state.touched" (click)="toggleDepartmentDropdown($event)">
 
 				<div class="custom-select-value">
 					{{ selectedDepartment }}
@@ -92,8 +81,7 @@
 
 				<i class="fa-solid fa-angle-down select-icon"></i>
 
-				<div class="custom-select-dropdown" *ngIf="departmentDropdownOpen"
-					(click)="$event.stopPropagation()">
+				<div class="custom-select-dropdown" *ngIf="departmentDropdownOpen" (click)="$event.stopPropagation()">
 
 					<div class="custom-option" *ngFor="let department of departments"
 						[class.active]="selectedDepartment === department"
@@ -112,8 +100,7 @@
 		<!-- CIUDAD -->
 		<div class="form-group custom-select-group">
 
-			<div class="custom-select" [class.open]="cityDropdownOpen"
-				[class.selected]="selectedCity"
+			<div class="custom-select" [class.open]="cityDropdownOpen" [class.selected]="selectedCity"
 				[class.disabled]="!selectedDepartment" (click)="toggleCityDropdown($event)">
 
 				<div class="custom-select-value">
@@ -122,12 +109,10 @@
 
 				<i class="fa-solid fa-angle-down select-icon"></i>
 
-				<div class="custom-select-dropdown"
-					*ngIf="cityDropdownOpen && selectedDepartment"
+				<div class="custom-select-dropdown" *ngIf="cityDropdownOpen && selectedDepartment"
 					(click)="$event.stopPropagation()">
 
-					<div class="custom-option" *ngFor="let city of cities"
-						[class.active]="selectedCity === city"
+					<div class="custom-option" *ngFor="let city of cities" [class.active]="selectedCity === city"
 						(click)="selectCity(city); $event.stopPropagation()">
 
 						{{ city }}
@@ -142,19 +127,15 @@
 
 		<!-- DIRECCIÓN -->
 		<div class="form-group full-width">
-			<input type="text" formControlName="address" id="address"
-				placeholder="Dirección"
-				[class.ng-invalid]="f.address.invalid && f.address.touched"
-				[class.ng-touched]="f.address.touched" />
+			<input type="text" formControlName="address" id="address" placeholder="Dirección"
+				[class.ng-invalid]="f.address.invalid && f.address.touched" [class.ng-touched]="f.address.touched" />
 			<label for="address">Dirección</label>
 		</div>
 
 		<!-- BOTONES -->
 		<div class="buttons">
-			<button type="button" class="btn-cancel"
-				(click)="cancelEdit()">Cancelar</button>
-			<button type="button" class="btn-save" (click)="saveProfile()"
-				[disabled]="!hasChanges()">Guardar</button>
+			<button type="button" class="btn-cancel" (click)="cancelEdit()">Cancelar</button>
+			<button type="button" class="btn-save" (click)="saveProfile()" [disabled]="!hasChanges()">Guardar</button>
 		</div>
 	</form>
 </div>
@@ -198,23 +179,18 @@
 					<td>
 						<span class="status" [class.confirmada]="item.estado === 'Confirmada'"
 							[class.pendiente]="item.estado === 'Pendiente'"
-							[class.cancelada]="item.estado === 'Cancelada'">
-
+							[class.cancelada]="item.estado === 'Cancelada'" [class.pasada]="item.estado === 'Pasada'">
 							{{ item.estado }}
-
 						</span>
 					</td>
-
 					<td>
 
 						<div class="actions">
-
 							<button class="view" (click)="openDetail(item)">
 								<i class="fa-regular fa-eye"></i>
 							</button>
 
-							<button class="upload" *ngIf="item.estado === 'Pendiente'"
-								(click)="openUploadModal(item)">
+							<button class="upload" *ngIf="item.estado === 'Pendiente'" (click)="openUploadModal(item)">
 								<i class="fa-solid fa-file-arrow-up"></i>
 								Subir
 							</button>
@@ -223,13 +199,9 @@
 								{{ getDocumentStatus(item) }}
 							</button>
 
-							<button
-								class="pay"
-								(click)="payReservation(item)">
-
+							<button class="pay" (click)="payReservation(item)">
 								<i class="fa-solid fa-credit-card"></i>
 								Pagar
-
 							</button>
 
 							<button class="cancel">
@@ -258,12 +230,9 @@
 </div>
 
 <app-confirm-modal [isOpen]="showConfirmModal" title="Guardar cambios"
-	message="¿Estás seguro de que deseas actualizar la información de tu perfil?"
-	confirmText="Sí, guardar"
-	cancelText="Cancelar" icon="fa-solid fa-circle-question"
-	confirmColor="var(--color-primario)"
-	iconBg="rgba(63, 162, 219, 0.12)" iconColor="var(--color-primario)"
-	(confirmed)="confirmSaveProfile()"
+	message="¿Estás seguro de que deseas actualizar la información de tu perfil?" confirmText="Sí, guardar"
+	cancelText="Cancelar" icon="fa-solid fa-circle-question" confirmColor="var(--color-primario)"
+	iconBg="rgba(63, 162, 219, 0.12)" iconColor="var(--color-primario)" (confirmed)="confirmSaveProfile()"
 	(closed)="closeConfirmModal()">
 </app-confirm-modal>
 
@@ -275,21 +244,16 @@
 
 <!-- Modal de error -->
 
-<app-confirm-modal [isOpen]="showErrorModal" title="Error"
-	[message]="errorMessage" confirmText="Entendido"
-	cancelText icon="fa-solid fa-circle-xmark" confirmColor="#ff3b3b"
-	iconBg="rgba(255, 59, 59, 0.12)"
-	iconColor="#ff3b3b" (confirmed)="showErrorModal = false"
-	(closed)="showErrorModal = false">
+<app-confirm-modal [isOpen]="showErrorModal" title="Error" [message]="errorMessage" confirmText="Entendido" cancelText
+	icon="fa-solid fa-circle-xmark" confirmColor="#ff3b3b" iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b"
+	(confirmed)="showErrorModal = false" (closed)="showErrorModal = false">
 </app-confirm-modal>
 
 <!-- Modal detalles de reserva -->
 
-<app-reservation-detail-sheet [isOpen]="sheetOpen"
-	[reservation]="selectedReservation" (closed)="closeDetail()">
-</app-reservation-detail-sheet>
+<app-reservation-detail-sheet [isOpen]="sheetOpen" [reservation]="selectedReservation"
+	(closed)="closeDetail()"></app-reservation-detail-sheet>
 
 <app-upload-document-modal [isOpen]="showUploadModal" [userId]="user?.id"
-	[reservationId]="selectedReservationUpload?.id" (closed)="closeUploadModal()"
-	(uploaded)="closeUploadModal()">
+	[reservationId]="selectedReservationUpload?.id" (closed)="closeUploadModal()" (uploaded)="closeUploadModal()">
 </app-upload-document-modal>

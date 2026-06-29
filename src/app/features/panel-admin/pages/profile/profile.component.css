@@ -557,6 +557,11 @@ tbody td:last-child {
 	color: #ff3b3b;
 }
 
+.status.pasada {
+	background: rgba(63, 162, 219, 0.12);
+	color: var(--color-primario);
+}
+
 /* =========================
 	ACTIONS
 ========================= */
@@ -639,8 +644,8 @@ tbody td:last-child {
 .empty-state i {
 	font-size: 32px;
 	display: block;
-	margin-bottom: 12px;
 	color: var(--color-iconos);
+	margin: 0 auto 12px;
 }
 
 @media (max-width: 1279px) {

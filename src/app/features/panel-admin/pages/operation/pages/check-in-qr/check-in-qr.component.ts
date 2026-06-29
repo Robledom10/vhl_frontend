@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { OperacionesService } from '../../../../../../core/services/operaciones.service';
@@ -14,6 +14,7 @@ export class CheckInQrComponent implements OnInit {
 	viajes: Viaje[] = [];
 	idViajeSeleccionado: number | null = null;
 	viajeActual: Viaje | null = null;
+	viajeDropdownOpen = false;
 	paqueteTituloMap: Record<number, string> = {};
 
 	reservas: ReservaApi[] = [];
@@ -36,6 +37,11 @@ export class CheckInQrComponent implements OnInit {
 
 	constructor(private svc: OperacionesService) { }
 
+	@HostListener('document:click')
+	closeDropdowns(): void {
+		this.viajeDropdownOpen = false;
+	}
+
 	ngOnInit(): void {
 		this.svc.getViajes().subscribe({
 			next: (viajes) => {
@@ -53,13 +59,31 @@ export class CheckInQrComponent implements OnInit {
 		});
 	}
 
-	onViajeChange(event: Event): void {
-		const id = Number((event.target as HTMLSelectElement).value);
-		this.idViajeSeleccionado = id || null;
+	// ── Custom select de viaje ─────────────────────────────
+	toggleViajeDropdown(event: Event): void {
+		event.stopPropagation();
+		this.viajeDropdownOpen = !this.viajeDropdownOpen;
+	}
+
+	seleccionarViaje(id: number | null): void {
+		this.viajeDropdownOpen = false;
+		this.idViajeSeleccionado = id;
 		this.viajeActual = this.viajes.find(v => v.id === id) || null;
 		this.reservas = [];
 		this.checkinsRealizados = [];
 		if (this.idViajeSeleccionado) this.cargarDatos();
+	}
+
+	get viajeSeleccionadoLabel(): string {
+		if (!this.idViajeSeleccionado) return 'Seleccionar viaje...';
+		const v = this.viajes.find(x => x.id === this.idViajeSeleccionado);
+		return v ? this.getViajeLabel(v) : 'Seleccionar viaje...';
+	}
+
+	getViajeLabel(v: Viaje): string {
+		const paquete = this.paqueteTituloMap[v.idPaquete] || `Paquete ${v.idPaquete}`;
+		const fecha = v.fechaSalida ? new Date(v.fechaSalida).toLocaleDateString('es-CO') : 'Sin fecha';
+		return `${paquete} — Viaje #${v.id} · ${fecha}`;
 	}
 
 	cargarDatos(): void {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { forkJoin, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { OperacionesService } from '../../../../../../core/services/operaciones.service';
@@ -14,6 +14,7 @@ export class InfoMedicaComponent implements OnInit {
 	// ── Estado compartido ────────────────────────────────────────────
 	viajes: Viaje[] = [];
 	idViajeSeleccionado: number | null = null;
+	viajeDropdownOpen = false;
 	paqueteTituloMap: Record<number, string> = {};
 	showToast = false;
 	toastTitle = '';
@@ -84,6 +85,11 @@ export class InfoMedicaComponent implements OnInit {
 
 	constructor(private svc: OperacionesService) { }
 
+	@HostListener('document:click')
+	closeDropdowns(): void {
+		this.viajeDropdownOpen = false;
+	}
+
 	ngOnInit(): void {
 		this.svc.getViajes().subscribe({
 			next: (viajes) => {
@@ -103,20 +109,56 @@ export class InfoMedicaComponent implements OnInit {
 
 	onViajeChange(event: Event): void {
 		const id = Number((event.target as HTMLSelectElement).value);
-		this.idViajeSeleccionado = id || null;
+		this.seleccionarViaje(id || null);
+	}
+
+	toggleViajeDropdown(event: Event): void {
+		event.stopPropagation();
+		this.viajeDropdownOpen = !this.viajeDropdownOpen;
+	}
+
+	seleccionarViaje(id: number | null): void {
+		this.idViajeSeleccionado = id;
+		this.viajeDropdownOpen = false;
 		this.registros = [];
 		if (this.idViajeSeleccionado) this.cargarTodo();
+	}
+
+	get viajeSeleccionadoLabel(): string {
+		if (!this.idViajeSeleccionado) return 'Seleccionar viaje...';
+		const viaje = this.viajes.find(v => v.id === this.idViajeSeleccionado);
+		return viaje ? this.getViajeLabel(viaje) : 'Seleccionar viaje...';
+	}
+
+	getViajeLabel(viaje: Viaje): string {
+		const paquete = this.paqueteTituloMap[viaje.idPaquete] || `Paquete ${viaje.idPaquete}`;
+		const fecha = viaje.fechaSalida ? new Date(viaje.fechaSalida).toLocaleDateString('es-CO') : 'Sin fecha';
+		return `${paquete} - Viaje #${viaje.id} - ${fecha}`;
 	}
 
 	cargarTodosContactos(): void {
 		if (this.viajes.length === 0) return;
 		this.paginaRegistros = 0;
-		forkJoin(
-			this.viajes.map(v => this.svc.getContactos(v.id).pipe(catchError(() => of([]))))
-		).pipe(
-			map(results => (results as ContactoEmergencia[][]).flat())
-		).subscribe(contactos => {
-			this.contactos = contactos;
+		forkJoin([
+			forkJoin(this.viajes.map(v => this.svc.getContactos(v.id).pipe(catchError(() => of([]))))).pipe(
+				map(results => (results as ContactoEmergencia[][]).flat())
+			),
+			forkJoin(this.viajes.map(v => this.svc.getContactosDesdeReservas(v.id).pipe(catchError(() => of([]))))).pipe(
+				map(results => (results as any[][]).flat().map(c => ({
+					id: c.id,
+					idViaje: 0,
+					idViajero: 0,
+					nombre: c.nombre,
+					parentesco: c.parentesco,
+					telefono: c.telefono,
+					correo: c.correo ?? '',
+					fechaRegistro: '',
+					nombreViajero: 'Desde reserva',
+					fromReserva: true
+				} as ContactoEmergencia)))
+			)
+		]).subscribe(([deOperacion, deReserva]) => {
+			this.contactos = [...deOperacion, ...deReserva];
 		});
 	}
 

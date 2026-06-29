@@ -24,10 +24,14 @@ export class FormCommunicationComponent implements OnChanges {
 	@Output() filtroPagoChange = new EventEmitter<'todos' | 'pagados' | 'no_pagados'>();
 
 	enviando = false;
+	formSubmitted = false;
 	cargandoEmailsInterno = false;
 	paqueteNombre = '';
 
-	// Confirmación de envío
+	// Dropdown viaje
+	viajeDropdownOpen = false;
+
+	// Confirmación
 	showConfirmModal = false;
 
 	comForm = this.fb.group({
@@ -38,9 +42,20 @@ export class FormCommunicationComponent implements OnChanges {
 		contactos: ['', Validators.required],
 	});
 
+	constructor(private fb: FormBuilder, private svc: OperacionesService) { }
+
+	// ==============================
+	// HELPERS
+	// ==============================
+
 	get emailCount(): number {
 		const val = this.comForm.get('contactos')?.value || '';
 		return val.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0).length;
+	}
+
+	// Agrega esto junto a tus otros getters (como emailCount)
+	get idViajeActual(): string | null {
+		return this.comForm.get('idViaje')?.value || null;
 	}
 
 	get viajerosSummary(): { nombre: string; reserva: string; pagado: boolean }[] {
@@ -62,10 +77,50 @@ export class FormCommunicationComponent implements OnChanges {
 		return lista;
 	}
 
-	constructor(private fb: FormBuilder, private svc: OperacionesService) { }
+	getViajeLabel(id: number): string {
+		const v = this.viajesFiltrados.find(x => x.id === id);
+		if (!v) return '';
+		const paquete = this.paqueteTituloMap[v.idPaquete] || `Paquete ${v.idPaquete}`;
+		const fecha = v.fechaSalida ? new Date(v.fechaSalida).toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '';
+		return `${paquete} — Viaje #${v.id} · ${fecha}`;
+	}
+
+	// ==============================
+	// DROPDOWN VIAJE
+	// ==============================
+
+	toggleViajeDropdown(): void {
+		this.viajeDropdownOpen = !this.viajeDropdownOpen;
+	}
+
+	selectViaje(v: Viaje): void {
+		this.comForm.patchValue({ idViaje: String(v.id) });
+		this.viajeDropdownOpen = false;
+		this.actualizarPaqueteNombre(v.id);
+		this.cargarEmailsViaje(v.id);
+	}
+
+	// ==============================
+	// CLICK FUERA — cierra dropdown
+	// ==============================
+
+	onPanelClick(event: Event): void {
+		event.stopPropagation();
+		const target = event.target as HTMLElement;
+		if (!target.closest('.custom-select')) {
+			this.viajeDropdownOpen = false;
+		}
+	}
+
+	// ==============================
+	// LIFECYCLE
+	// ==============================
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes['isOpen']?.currentValue === true) {
+			this.formSubmitted = false;
+			this.viajeDropdownOpen = false;
+
 			if (this.editando) {
 				this.comForm.patchValue({
 					idViaje: String(this.editando.idViaje),
@@ -79,26 +134,27 @@ export class FormCommunicationComponent implements OnChanges {
 				this.comForm.reset({
 					canal: 'EMAIL',
 					idViaje: this.idViajeSeleccionado?.toString() || '',
-					contactos: ''
+					contactos: '',
 				});
 				this.actualizarPaqueteNombre(this.idViajeSeleccionado);
 				this.aplicarEmails();
 			}
 		}
+
 		if ((changes['filtroPago'] || changes['reservasViaje']) && this.isOpen && !this.editando) {
 			this.aplicarEmails();
 		}
 	}
 
-	onViajeFormChange(): void {
-		const idViaje = Number(this.comForm.get('idViaje')?.value);
-		this.actualizarPaqueteNombre(idViaje || null);
-		if (!idViaje) {
-			this.comForm.patchValue({ contactos: '' });
-			return;
-		}
+	// ==============================
+	// EMAILS / PAQUETE
+	// ==============================
+
+	/** Carga emails desde el servidor al cambiar de viaje manualmente */
+	private cargarEmailsViaje(idViaje: number): void {
 		this.cargandoEmailsInterno = true;
 		this.comForm.patchValue({ contactos: '' });
+
 		this.svc.getReservasPorViaje(idViaje).subscribe({
 			next: (reservas) => {
 				this.cargandoEmailsInterno = false;
@@ -109,8 +165,19 @@ export class FormCommunicationComponent implements OnChanges {
 				});
 				this.comForm.patchValue({ contactos: Array.from(emails).join(', ') });
 			},
-			error: () => { this.cargandoEmailsInterno = false; }
+			error: () => { this.cargandoEmailsInterno = false; },
 		});
+	}
+
+	/** Mantiene compatibilidad con el método que usaba el select nativo */
+	onViajeFormChange(): void {
+		const idViaje = Number(this.comForm.get('idViaje')?.value);
+		this.actualizarPaqueteNombre(idViaje || null);
+		if (!idViaje) {
+			this.comForm.patchValue({ contactos: '' });
+			return;
+		}
+		this.cargarEmailsViaje(idViaje);
 	}
 
 	private actualizarPaqueteNombre(idViaje: number | null): void {
@@ -137,11 +204,12 @@ export class FormCommunicationComponent implements OnChanges {
 
 	cerrar(): void { this.closed.emit(); }
 
-	// =========================================
-	// VALIDAR Y ABRIR CONFIRMACIÓN
-	// =========================================
+	// ==============================
+	// ENVIAR
+	// ==============================
 
 	enviar(): void {
+		this.formSubmitted = true;
 		if (this.comForm.invalid) {
 			this.comForm.markAllAsTouched();
 			return;
@@ -163,7 +231,11 @@ export class FormCommunicationComponent implements OnChanges {
 
 		const v = this.comForm.value;
 		const idViaje = Number(v.idViaje);
-		const contactosList = (v.contactos || '').split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
+		const contactosList = (v.contactos || '')
+			.split(',')
+			.map((s: string) => s.trim())
+			.filter((s: string) => s.length > 0);
+
 		const body = {
 			asunto: v.asunto || '',
 			mensaje: v.mensaje || '',
@@ -174,25 +246,13 @@ export class FormCommunicationComponent implements OnChanges {
 
 		if (this.editando) {
 			this.svc.actualizarNotificacion(idViaje, this.editando.id, body).subscribe({
-				next: () => {
-					this.enviando = false;
-					this.saved.emit('Comunicación actualizada');
-				},
-				error: (err) => {
-					this.enviando = false;
-					this.saveFailed.emit(err?.error?.mensaje || 'Error al actualizar');
-				}
+				next: () => { this.enviando = false; this.saved.emit('Comunicación actualizada'); },
+				error: (err) => { this.enviando = false; this.saveFailed.emit(err?.error?.mensaje || 'Error al actualizar'); },
 			});
 		} else {
 			this.svc.enviarNotificacion(idViaje, body).subscribe({
-				next: () => {
-					this.enviando = false;
-					this.saved.emit('Comunicación enviada exitosamente');
-				},
-				error: (err) => {
-					this.enviando = false;
-					this.saveFailed.emit(err?.error?.mensaje || 'Error al enviar comunicación');
-				}
+				next: () => { this.enviando = false; this.saved.emit('Comunicación enviada exitosamente'); },
+				error: (err) => { this.enviando = false; this.saveFailed.emit(err?.error?.mensaje || 'Error al enviar comunicación'); },
 			});
 		}
 	}

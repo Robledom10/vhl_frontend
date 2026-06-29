@@ -76,18 +76,11 @@
 					<img [src]="selectedDestination.photos[activePhotoIndex]" [alt]="selectedDestination.name"
 						class="gallery-img" />
 					<button class="photo-nav prev" (click)="prevPhoto()" *ngIf="activePhotoIndex > 0">
-						<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-							<path d="M10 4L6 8l4 4" stroke="white" stroke-width="2" stroke-linecap="round"
-								stroke-linejoin="round" />
-						</svg>
+						<i class="fa-solid fa-chevron-left"></i>
 					</button>
 					<button class="photo-nav next" (click)="nextPhoto()"
 						*ngIf="activePhotoIndex < selectedDestination.photos.length - 1">
-						<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-							<path d="M6 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round"
-								stroke-linejoin="round" />
-						</svg>
-					</button>
+						<i class="fa-solid fa-chevron-right"></i> </button>
 					<div class="photo-dots">
 						<span *ngFor="let p of selectedDestination.photos; let pi = index" class="dot"
 							[class.active]="pi === activePhotoIndex" (click)="activePhotoIndex = pi"></span>

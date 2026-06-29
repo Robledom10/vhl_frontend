@@ -1,19 +1,22 @@
+/* =========================
+   PACKAGES CONTAINER
+========================= */
+
 .packages-container {
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	gap: 26px;
+	gap: 24px;
 	padding-bottom: 100px;
 }
 
 /* =========================
-	TOP BAR
+   TOP BAR
 ========================= */
 
 .top-bar {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
 	gap: 16px;
 	flex-wrap: wrap;
 }
@@ -24,7 +27,8 @@
 	align-items: center;
 	background: white;
 	border: 1px solid #e5e5e5;
-	border-radius: 18px;
+	border-radius: 25px;
+	height: 42px;
 	padding: 0 0 0 18px;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
@@ -56,6 +60,10 @@
 	color: var(--color-primario);
 }
 
+/* =========================
+   FILTER
+========================= */
+
 .filter-wrapper {
 	position: relative;
 }
@@ -85,28 +93,30 @@
 	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
 }
 
+.filter-btn i,
+.add-btn i {
+	font-size: 14px;
+}
+
 .filter-content {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 10px;
 }
 
 .arrow {
-	font-size: 11px;
-	transition: transform 0.25s ease;
+	font-size: 12px;
+	transition: all 0.25s ease;
 }
 
 .arrow.rotate {
 	transform: rotate(180deg);
 }
 
-.add-btn {
-	background: var(--color-primario);
-	color: white;
-	border: none;
-}
+/* =========================
+   DROPDOWN
+========================= */
 
-/* ── Dropdown ── */
 .dropdown {
 	position: absolute;
 	top: calc(100% + 8px);
@@ -118,11 +128,12 @@
 	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 	padding: 8px;
 	z-index: 999;
+	animation: fadeDropdown 0.2s ease;
 }
 
 .dropdown-item {
-	padding: 10px 14px;
-	border-radius: 12px;
+	padding: 12px 14px;
+	border-radius: 14px;
 	font-size: 14px;
 	font-family: "Outfit", sans-serif;
 	color: var(--color-texto-secundario);
@@ -135,21 +146,10 @@
 	color: var(--color-primario);
 }
 
-/* ── Calendario flotante ── */
-.calendar-filter ::ng-deep .calendar-dropdown {
-	position: absolute;
-	top: calc(100% + 8px);
-	right: 40px;
-	left: auto;
-	width: 290px;
-	padding: 16px 18px 18px;
-	border: 1px solid rgba(229, 229, 229, 0.72);
-	border-radius: 18px;
-	box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
-	z-index: 1000;
-}
+/* =========================
+   CLEAR & ADD BUTTONS
+========================= */
 
-/* ── Limpiar ── */
 .clear-filter {
 	height: 42px;
 	padding: 0 20px;
@@ -166,6 +166,27 @@
 
 .clear-filter:hover {
 	background: rgba(255, 59, 59, 0.18);
+}
+
+.add-btn {
+	background: var(--color-primario);
+	color: white;
+	border: none;
+}
+
+/* =========================
+   LOADING
+   — Exclusivo de paquetes
+========================= */
+
+.loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 40px;
+	font-family: "Outfit", sans-serif;
+	font-size: 15px;
+	color: var(--color-texto-secundario);
 }
 
 /* =========================
@@ -225,7 +246,7 @@ tbody img {
 }
 
 /* =========================
-	STATUS
+   STATUS
 ========================= */
 
 .status {
@@ -254,15 +275,13 @@ tbody img {
 }
 
 /* =========================
-	ACTIONS
+   ACTIONS
 ========================= */
 
 .actions {
 	display: flex;
 	align-items: center;
-	justify-content: center;
-	gap: 10px;
-	white-space: nowrap;
+	justify-content: space-around;
 }
 
 .actions button {
@@ -291,36 +310,18 @@ tbody img {
 	padding: 10px 16px;
 	background: rgba(255, 193, 7, 0.3);
 	color: #c99700;
+	width: 35%;
 }
 
 .actions .delete {
 	padding: 10px 16px;
 	background: rgba(255, 59, 59, 0.12);
 	color: #ff3b3b;
-}
-
-.fa-spinner {
-	animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-	to {
-		transform: rotate(360deg);
-	}
-}
-
-@media (max-width: 720px) {
-	.top-bar {
-		flex-wrap: wrap;
-	}
-
-	.search-box {
-		width: 100%;
-	}
+	width: 42%;
 }
 
 /* =========================
-  PAGINACIÓN
+   PAGINACIÓN
 ========================= */
 
 .pagination-bar {
@@ -328,7 +329,7 @@ tbody img {
 	flex-direction: column;
 	align-items: center;
 	gap: 10px;
-	margin-top: 8px;
+	padding-top: 8px;
 }
 
 .pagination-info {
@@ -378,6 +379,110 @@ tbody img {
 	opacity: 0.35;
 	cursor: not-allowed;
 }
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes fadeDropdown {
+	from {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.fa-spinner {
+	animation: spin 1s linear infinite;
+}
+
+/* =========================
+   RESPONSIVE — 1279px
+========================= */
+
+@media (max-width: 1279px) {
+	.packages-container {
+		gap: 22px;
+	}
+
+	.top-bar {
+		gap: 14px;
+	}
+
+	.search-box {
+		min-width: 280px;
+	}
+
+	.filter-btn,
+	.add-btn {
+		padding: 0 18px;
+	}
+
+	table {
+		min-width: 820px;
+	}
+
+	thead th {
+		font-size: 14px;
+		padding: 0 12px;
+	}
+
+	tbody td {
+		font-size: 14px;
+		padding: 14px 12px;
+	}
+
+	.actions {
+		gap: 8px;
+		justify-content: center;
+	}
+
+	.actions .edit,
+	.actions .delete {
+		width: auto;
+		padding: 9px 13px;
+	}
+}
+
+/* =========================
+   RESPONSIVE — 920px
+========================= */
+
+@media (max-width: 920px) {
+	.top-bar {
+		display: grid;
+		grid-template-columns: 1fr auto auto;
+		align-items: center;
+	}
+
+	.search-box {
+		min-width: 0;
+		width: 100%;
+	}
+
+	.filter-btn,
+	.add-btn {
+		white-space: nowrap;
+	}
+
+	table {
+		min-width: 780px;
+	}
+}
+
+/* =========================
+   RESPONSIVE — 768px
+========================= */
 
 @media (max-width: 768px) {
 	.packages-container {
@@ -537,6 +642,10 @@ tbody img {
 		padding: 8px 12px;
 	}
 }
+
+/* =========================
+   RESPONSIVE — 480px
+========================= */
 
 @media (max-width: 480px) {
 	.packages-container {

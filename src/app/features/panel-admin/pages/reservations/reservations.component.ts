@@ -321,11 +321,6 @@ export class ReservationsComponent implements OnInit {
 		this.closeCreateModal();
 		this.reservations = [newReservation, ...this.reservations];
 		this.applyFilters();
-		this.triggerToast(
-			'Reserva creada',
-			`La reserva de ${this.getNombre(newReservation)} fue registrada exitosamente.`,
-			'success'
-		);
 		this.paginaActual = 0;
 		this.loadReservations();
 	}
