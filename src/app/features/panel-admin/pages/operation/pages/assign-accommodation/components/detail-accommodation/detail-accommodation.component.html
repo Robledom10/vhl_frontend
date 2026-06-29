@@ -1,40 +1,59 @@
 <div class="modal-backdrop" *ngIf="isOpen" (click)="cerrar()"></div>
-<div class="modal-panel detalle-panel" *ngIf="isOpen && viaje" (click)="$event.stopPropagation()">
+<div class="modal-panel" *ngIf="isOpen && viaje" (click)="$event.stopPropagation()">
+
 	<div class="modal-header">
-		<h3><i class="fa-solid fa-eye" style="color:var(--color-primario);margin-right:10px;"></i>Detalle de alojamiento</h3>
-		<button class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
+		<button type="button" class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
 	</div>
-	<div class="detalle-paquete">
-		<span class="detalle-titulo">{{ viaje.titulo }}</span>
-		<span class="detalle-viaje-id">Viaje #{{ viaje.id }}</span>
+
+	<h2 class="modal-title">
+		Detalle <span>Alojamiento</span>
+	</h2>
+	<p class="modal-subtitle" *ngIf="viaje">
+		{{ viaje.titulo }} · Viaje #{{ viaje.id }}
+	</p>
+
+	<div class="form-grid">
+		<div class="form-group">
+			<div class="field-wrapper">
+				<input type="text" readonly [value]="viaje.viajeroNombre || '—'" class="input-readonly" />
+				<label class="active">Viajero</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="field-wrapper">
+				<input type="text" readonly [value]="viaje.hotel || '—'" class="input-readonly" />
+				<label class="active">Hotel / Hospedaje</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="field-wrapper">
+				<input type="text" readonly [value]="viaje.habitacion || '—'" class="input-readonly" />
+				<label class="active">Habitación</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="field-wrapper">
+				<input type="text" readonly [value]="viaje.direccion || '—'" class="input-readonly" />
+				<label class="active">Dirección</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="field-wrapper">
+				<input type="text" readonly [value]="viaje.alojamientoFechaIngreso | date:'dd/MM/yyyy'"
+					class="input-readonly" />
+				<label class="active">Check-in</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="field-wrapper">
+				<input type="text" readonly [value]="viaje.alojamientoFechaSalida | date:'dd/MM/yyyy'"
+					class="input-readonly" />
+				<label class="active">Check-out</label>
+			</div>
+		</div>
 	</div>
-	<div class="detalle-grid">
-		<div class="detalle-item">
-			<span class="detalle-label"><i class="fa-solid fa-user"></i> Viajero</span>
-			<span class="detalle-valor">{{ viaje.viajeroNombre || '—' }}</span>
-		</div>
-		<div class="detalle-item">
-			<span class="detalle-label"><i class="fa-solid fa-hotel"></i> Hotel / Hospedaje</span>
-			<span class="detalle-valor">{{ viaje.hotel || '—' }}</span>
-		</div>
-		<div class="detalle-item">
-			<span class="detalle-label"><i class="fa-solid fa-door-open"></i> Habitacion</span>
-			<span class="detalle-valor">{{ viaje.habitacion || '—' }}</span>
-		</div>
-		<div class="detalle-item">
-			<span class="detalle-label"><i class="fa-solid fa-location-dot"></i> Direccion</span>
-			<span class="detalle-valor">{{ viaje.direccion || '—' }}</span>
-		</div>
-		<div class="detalle-item">
-			<span class="detalle-label"><i class="fa-solid fa-right-to-bracket"></i> Check-in</span>
-			<span class="detalle-valor">{{ viaje.alojamientoFechaIngreso | date:'dd/MM/yyyy' }}</span>
-		</div>
-		<div class="detalle-item">
-			<span class="detalle-label"><i class="fa-solid fa-right-from-bracket"></i> Check-out</span>
-			<span class="detalle-valor">{{ viaje.alojamientoFechaSalida | date:'dd/MM/yyyy' }}</span>
-		</div>
-	</div>
-	<div class="detalle-actions">
-		<button class="btn-cerrar-detalle" (click)="cerrar()">Cerrar</button>
+
+	<div class="modal-actions">
+		<button type="button" class="btn-cancelar" (click)="cerrar()">Cerrar</button>
 	</div>
 </div>

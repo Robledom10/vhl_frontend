@@ -1,63 +1,134 @@
 <div class="modal-backdrop" *ngIf="isOpen" (click)="cerrar()"></div>
-<div class="modal-panel" *ngIf="isOpen">
+<div class="modal-panel" *ngIf="isOpen" (click)="onModalClick($event)">
+
+	<!-- HEADER -->
 	<div class="modal-header">
-		<h3>{{ editando ? 'Editar contacto de emergencia' : 'Nuevo contacto de emergencia' }}</h3>
-		<button class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
+		<button type="button" class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
 	</div>
+
+	<h2 class="modal-title">
+		{{ editando ? 'Editar' : 'Nuevo' }} <span>Contacto de Emergencia</span>
+	</h2>
 
 	<form [formGroup]="contactoForm" (ngSubmit)="guardar()">
 		<div class="form-grid">
+
+			<!-- USUARIO (solo si es nuevo) -->
 			<div class="form-group span-2" *ngIf="!editando">
-				<label>Usuario *</label>
-				<select (change)="onUsuarioChange($any($event.target).value)" [disabled]="cargandoUsuarios">
-					<option value="">{{ cargandoUsuarios ? 'Cargando usuarios...' : 'Seleccionar usuario...' }}</option>
-					<option *ngFor="let u of usuarios" [value]="u.id">{{ u.nombre }}</option>
-				</select>
-				<span class="error" *ngIf="contactoForm.get('nombreViajero')?.invalid && contactoForm.get('nombreViajero')?.touched">Selecciona un usuario</span>
+				<div class="custom-select-group">
+					<div class="custom-select" [class.open]="usuarioDropdownOpen"
+						[class.selected]="usuarioSeleccionadoId"
+						[class.invalid]="formSubmitted && contactoForm.get('nombreViajero')?.invalid"
+						(click)="toggleUsuarioDropdown()">
+						<div class="custom-select-value">{{ selectedUsuarioLabel || '' }}</div>
+						<i class="fa-solid fa-angle-down select-icon"></i>
+						<div class="custom-select-dropdown" *ngIf="usuarioDropdownOpen"
+							(click)="$event.stopPropagation()">
+							<div class="custom-option disabled" *ngIf="cargandoUsuarios">Cargando usuarios...</div>
+							<div class="custom-option" [class.active]="!usuarioSeleccionadoId"
+								(click)="onUsuarioChange(''); $event.stopPropagation()">
+								Sin usuario asignado
+							</div>
+							<div class="custom-option" *ngFor="let u of usuarios"
+								[class.active]="usuarioSeleccionadoId === u.id"
+								(click)="onUsuarioChange(u.id.toString()); $event.stopPropagation()">
+								{{ u.nombre }}
+							</div>
+						</div>
+					</div>
+					<label [class.active]="usuarioSeleccionadoId"
+						[class.label-error]="formSubmitted && contactoForm.get('nombreViajero')?.invalid">
+						Usuario
+					</label>
+					<span class="field-error" *ngIf="formSubmitted && contactoForm.get('nombreViajero')?.invalid">
+						Selecciona un usuario
+					</span>
+				</div>
 			</div>
 
+			<!-- NOMBRE VIAJERO (solo en edición) -->
 			<div class="form-group span-2" *ngIf="editando">
-				<label>Nombre del viajero</label>
-				<input type="text" formControlName="nombreViajero" class="input-readonly" readonly>
+				<div class="field-wrapper">
+					<input type="text" formControlName="nombreViajero" placeholder="Nombre del viajero"
+						class="input-readonly" readonly />
+					<label [class.active]="contactoForm.get('nombreViajero')?.value">Nombre del viajero</label>
+				</div>
 			</div>
 
+			<!-- NOMBRE DEL CONTACTO -->
 			<div class="form-group span-2">
-				<label>Nombre del contacto *</label>
-				<input type="text" formControlName="nombreContacto" placeholder="Nombre completo">
-				<span class="error"
-					*ngIf="contactoForm.get('nombreContacto')?.invalid && contactoForm.get('nombreContacto')?.touched">Campo
-					requerido (min. 3 caracteres)</span>
+				<div class="field-wrapper">
+					<input type="text" formControlName="nombreContacto" placeholder="Nombre del contacto"
+						[class.ng-invalid]="contactoForm.get('nombreContacto')?.invalid && contactoForm.get('nombreContacto')?.touched"
+						[class.ng-touched]="contactoForm.get('nombreContacto')?.touched" />
+					<label [class.active]="contactoForm.get('nombreContacto')?.value"
+						[class.label-error]="contactoForm.get('nombreContacto')?.invalid && contactoForm.get('nombreContacto')?.touched">
+						Nombre del contacto
+					</label>
+					<span class="field-error"
+						*ngIf="contactoForm.get('nombreContacto')?.invalid && contactoForm.get('nombreContacto')?.touched">
+						Campo requerido (mín. 3 caracteres)
+					</span>
+				</div>
 			</div>
 
+			<!-- RELACIÓN -->
 			<div class="form-group">
-				<label>Relacion *</label>
-				<input type="text" formControlName="relacion" placeholder="Ej: Padre, Madre, Amigo/a">
-				<span class="error"
-					*ngIf="contactoForm.get('relacion')?.invalid && contactoForm.get('relacion')?.touched">Campo
-					requerido</span>
+				<div class="field-wrapper">
+					<input type="text" formControlName="relacion" placeholder="Relación"
+						[class.ng-invalid]="contactoForm.get('relacion')?.invalid && contactoForm.get('relacion')?.touched"
+						[class.ng-touched]="contactoForm.get('relacion')?.touched" />
+					<label [class.active]="contactoForm.get('relacion')?.value"
+						[class.label-error]="contactoForm.get('relacion')?.invalid && contactoForm.get('relacion')?.touched">
+						Relación
+					</label>
+					<span class="field-error"
+						*ngIf="contactoForm.get('relacion')?.invalid && contactoForm.get('relacion')?.touched">
+						Campo requerido
+					</span>
+				</div>
 			</div>
 
+			<!-- TELÉFONO -->
 			<div class="form-group">
-				<label>Telefono principal *</label>
-				<input type="text" formControlName="telefono" placeholder="+57 300 000 0000">
-				<span class="error"
-					*ngIf="contactoForm.get('telefono')?.invalid && contactoForm.get('telefono')?.touched">Telefono
-					invalido</span>
+				<div class="field-wrapper">
+					<input type="text" formControlName="telefono" placeholder="Teléfono principal"
+						[class.ng-invalid]="contactoForm.get('telefono')?.invalid && contactoForm.get('telefono')?.touched"
+						[class.ng-touched]="contactoForm.get('telefono')?.touched" />
+					<label [class.active]="contactoForm.get('telefono')?.value"
+						[class.label-error]="contactoForm.get('telefono')?.invalid && contactoForm.get('telefono')?.touched">
+						Teléfono principal
+					</label>
+					<span class="field-error"
+						*ngIf="contactoForm.get('telefono')?.invalid && contactoForm.get('telefono')?.touched">
+						Teléfono inválido
+					</span>
+				</div>
 			</div>
 
+			<!-- CORREO -->
 			<div class="form-group span-2">
-				<label>Correo electronico (opcional)</label>
-				<input type="email" formControlName="correo" placeholder="contacto@email.com">
-				<span class="error"
-					*ngIf="contactoForm.get('correo')?.invalid && contactoForm.get('correo')?.touched">Correo
-					invalido</span>
+				<div class="field-wrapper">
+					<input type="email" formControlName="correo" placeholder="Correo electrónico"
+						[class.ng-invalid]="contactoForm.get('correo')?.invalid && contactoForm.get('correo')?.touched"
+						[class.ng-touched]="contactoForm.get('correo')?.touched" />
+					<label [class.active]="contactoForm.get('correo')?.value"
+						[class.label-error]="contactoForm.get('correo')?.invalid && contactoForm.get('correo')?.touched">
+						Correo electrónico (opcional)
+					</label>
+					<span class="field-error"
+						*ngIf="contactoForm.get('correo')?.invalid && contactoForm.get('correo')?.touched">
+						Correo inválido
+					</span>
+				</div>
 			</div>
+
 		</div>
 
 		<div class="modal-actions">
 			<button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
 			<button type="submit" class="btn-guardar" [disabled]="enviando">
-				{{ enviando ? 'Guardando...' : 'Guardar cambios' }}
+				{{ enviando ? 'Guardando...' : (editando ? 'Guardar cambios' : 'Guardar contacto') }}
 			</button>
 		</div>
 	</form>

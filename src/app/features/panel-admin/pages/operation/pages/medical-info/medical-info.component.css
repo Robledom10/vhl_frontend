@@ -298,7 +298,7 @@ table {
 
 thead th {
 	text-align: center;
-	font-size: 14px;
+	font-size: 15px;
 	font-weight: 500;
 	color: var(--color-primario);
 	padding: 0 14px;
@@ -318,7 +318,7 @@ tbody tr:hover {
 
 tbody td {
 	padding: 14px 12px;
-	font-size: 14px;
+	font-size: 15px;
 	color: var(--color-texto-secundario);
 	text-align: center;
 }
@@ -347,7 +347,7 @@ tbody td:last-child {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 13px;
+	font-size: 15px;
 	flex-shrink: 0;
 }
 
@@ -356,12 +356,12 @@ tbody td:last-child {
 	color: #ef4444;
 	padding: 4px 12px;
 	border-radius: 999px;
-	font-size: 13px;
+	font-size: 15px;
 	font-weight: 600;
 }
 
 .tag-condicion {
-	font-size: 12px;
+	font-size: 15px;
 	color: var(--color-texto-secundario);
 	padding: 3px 10px;
 	border-radius: 999px;
@@ -386,7 +386,7 @@ tbody td:last-child {
 	border-radius: 18px;
 	cursor: pointer;
 	font-family: "Outfit", sans-serif;
-	font-size: 13px;
+	font-size: 15px;
 	font-weight: 500;
 	transition: all 0.2s;
 	padding: 7px 16px;
@@ -414,14 +414,14 @@ tbody td:last-child {
 	text-align: center;
 	padding: 2rem;
 	color: var(--color-texto-secundario);
-	font-size: 14px;
+	font-size: 15px;
 }
 
 .empty {
 	text-align: center;
 	padding: 2.5rem;
 	color: var(--color-texto-secundario);
-	font-size: 14px;
+	font-size: 15px;
 	font-family: "Outfit", sans-serif;
 }
 
@@ -489,14 +489,14 @@ tbody td:last-child {
 }
 
 .cc-viajero-sub {
-	font-size: 12px;
+	font-size: 14px;
 	color: var(--color-texto-secundario);
 	font-family: "Outfit", sans-serif;
 }
 
 .cc-viaje-tag {
 	margin-left: auto;
-	font-size: 12px;
+	font-size: 14px;
 	font-weight: 500;
 	color: var(--color-primario);
 	background: rgba(63, 162, 219, 0.1);
@@ -525,7 +525,7 @@ tbody td:last-child {
 	align-items: center;
 	justify-content: space-between;
 	gap: 8px;
-	font-size: 13px;
+	font-size: 14px;
 }
 
 .cc-row-left {
@@ -544,13 +544,13 @@ tbody td:last-child {
 }
 
 .cc-row-label {
-	font-size: 13px;
+	font-size: 14px;
 	color: var(--color-texto-secundario);
 	font-family: "Outfit", sans-serif;
 }
 
 .cc-row-value {
-	font-size: 13px;
+	font-size: 14px;
 	color: var(--color-texto-principal);
 	text-align: right;
 	font-family: "Outfit", sans-serif;

@@ -8,7 +8,7 @@ import { OperacionesService } from '../../../../../../core/services/operaciones.
 import { AuthService } from '../../../../../../core/services/auth.service';
 import { PackageService } from '../../../../../../core/services/package.service';
 
-// ─── Modelos de front ────
+// ─── Modelos ─────────────────────────────────────────────────
 
 export interface Acompanante {
 	nombre: string;
@@ -53,7 +53,7 @@ export interface ViajeOption {
 	precio: number;
 }
 
-// ─── Animaciones ─────────────────────────────────────────────
+// ─── Animaciones ──────────────────────────────────────────────
 
 const slideIn = trigger('slideIn', [
 	transition(':enter', [
@@ -118,29 +118,133 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 	cargandoViajes = false;
 	errorViajes = false;
 
-	// -- Variables para autocompletar cliente --
-	documentoBusqueda: string = '';
-	nombreClienteSeleccionado: string = '';
-	apellidoCliente: string = '';
-	tipoDocumentoCliente: string = '';
-	telefonoCliente: string = '';
-	ciudadCliente: string = '';
-	correoCliente: string = '';
+	// ─── Cliente ────────────────────────────────────────────
+	documentoBusqueda = '';
+	nombreClienteSeleccionado = '';
+	apellidoCliente = '';
+	tipoDocumentoCliente = '';
+	telefonoCliente = '';
+	ciudadCliente = '';
+	correoCliente = '';
 	buscandoCliente = false;
 	errorCliente = false;
-	// ------------------------------------------
 
-	// ─── Confirmación ─────────────────────────────────────
+	// ─── Confirmación / Toast ────────────────────────────────
 	showConfirmModal = false;
 	pendingSolicitud: SolicitudReserva | null = null;
-
-	// ─── Toast ────────────────────────────────────────────
 	showToast = false;
 	toastTitle = '';
 	toastMsg = '';
 	toastType: 'success' | 'error' = 'success';
 
 	form: ReservationForm = this.emptyForm();
+
+	// =========================================================
+	// DATOS ESTÁTICOS para los custom selects
+	// =========================================================
+
+	tiposDocumento = [
+		{ value: 'CC', label: 'Cédula de ciudadanía' },
+		{ value: 'CE', label: 'Cédula extranjería' },
+		{ value: 'PA', label: 'Pasaporte' },
+		{ value: 'TI', label: 'Tarjeta de identidad' },
+		{ value: 'RC', label: 'Registro civil' },
+	];
+
+	tiposHabitacion = ['Individual', 'Doble', 'Triple', 'Familiar', 'Suite'];
+
+	solicitudesEspeciales = [
+		'Ninguna',
+		'Alimentación vegana',
+		'Alimentación vegetariana',
+		'Sin gluten',
+		'Silla de ruedas',
+		'Cama extra',
+		'Cuna para bebé',
+	];
+
+	// =========================================================
+	// DROPDOWN MANAGER — un único key activo a la vez
+	// =========================================================
+
+	private openDropdown: string | null = null;
+
+	toggleDropdown(key: string, event?: Event): void {
+		event?.stopPropagation();
+		this.openDropdown = this.openDropdown === key ? null : key;
+	}
+
+	isDropdownOpen(key: string): boolean {
+		return this.openDropdown === key;
+	}
+
+	closeDropdown(): void {
+		this.openDropdown = null;
+	}
+
+	// =========================================================
+	// CALENDARIO ACOMPAÑANTES
+	// =========================================================
+
+	openCalendarAcompanante = -1;  // índice del acompañante con calendario abierto; -1 = ninguno
+
+	toggleCalendarAcompanante(i: number, event?: Event): void {
+		event?.stopPropagation();
+		this.openCalendarAcompanante = this.openCalendarAcompanante === i ? -1 : i;
+		this.closeDropdown();
+	}
+
+	onFechaNacimientoSelected(i: number, date: string): void {
+		this.form.acompanantes[i].fechaNacimiento = date;
+		this.openCalendarAcompanante = -1;
+	}
+
+	// =========================================================
+	// SELECCIONES en los custom selects
+	// =========================================================
+
+	selectPersonas(n: number): void {
+		this.onPersonasChange(n);
+		this.form.personas = n;
+		this.closeDropdown();
+	}
+
+	selectTipoDocAcompanante(i: number, value: string): void {
+		this.form.acompanantes[i].tipoDocumento = value;
+		this.closeDropdown();
+	}
+
+	getTipoDocLabel(value: string): string {
+		return this.tiposDocumento.find(t => t.value === value)?.label ?? value;
+	}
+
+	getPaqueteLabel(id: number | ''): string {
+		return this.paquetesDisponibles.find(p => p.id === id)?.nombre ?? '';
+	}
+
+	getViajeLabel(id: number | ''): string {
+		const v = this.viajesDisponibles.find(v => v.id === id);
+		return v ? `${v.fechaSalida} → ${v.fechaRegreso}` : '';
+	}
+
+	// =========================================================
+	// CLICK HANDLER — cierra dropdowns/calendarios al clicar fuera
+	// =========================================================
+
+	onModalClick(event: Event): void {
+		event.stopPropagation();
+		const target = event.target as HTMLElement;
+		if (!target.closest('.custom-select') && !target.closest('.custom-select-dropdown')) {
+			this.openDropdown = null;
+		}
+		if (!target.closest('.cal-wrap') && !target.closest('app-custom-calendar')) {
+			this.openCalendarAcompanante = -1;
+		}
+	}
+
+	// =========================================================
+	// LIFECYCLE
+	// =========================================================
 
 	ngOnInit(): void {
 		this.cargarViajes();
@@ -159,20 +263,22 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 		}
 	}
 
-	// --- NUEVO MÉTODO PARA BUSCAR CLIENTE ---
+	// =========================================================
+	// CLIENTE
+	// =========================================================
+
 	buscarCliente(): void {
-		if (!this.documentoBusqueda || this.documentoBusqueda.trim() === '') {
+		if (!this.documentoBusqueda?.trim()) {
 			this.resetDatosCliente();
 			return;
 		}
-
 		this.buscandoCliente = true;
 		this.errorCliente = false;
 
 		this.authService.getUserByDocumento(this.documentoBusqueda.trim()).subscribe({
 			next: (usuario: any) => {
 				this.buscandoCliente = false;
-				if (usuario && usuario.id) {
+				if (usuario?.id) {
 					this.form.idUsuario = usuario.id;
 					this.nombreClienteSeleccionado = `${usuario.firstName ?? ''} ${usuario.lastName ?? ''}`.trim();
 					this.apellidoCliente = usuario.lastName ?? '';
@@ -189,7 +295,7 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 				this.buscandoCliente = false;
 				this.errorCliente = true;
 				this.resetDatosCliente();
-			}
+			},
 		});
 	}
 
@@ -202,7 +308,10 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 		this.ciudadCliente = '';
 		this.correoCliente = '';
 	}
-	// ----------------------------------------
+
+	// =========================================================
+	// VIAJES / PAQUETES
+	// =========================================================
 
 	cargarViajes(): void {
 		this.cargandoViajes = true;
@@ -220,15 +329,11 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 		}).subscribe({
 			next: ({ viajes, paquetes }) => {
 				try {
-					const viajesArray: any[] = Array.isArray(viajes) ? viajes : [];
-					const paquetesArray: any[] = Array.isArray(paquetes) ? paquetes : [];
-
-					const filtrados = viajesArray.filter(v => {
+					const filtrados = (viajes as any[]).filter(v => {
 						const e = (v?.estado ?? '').toUpperCase();
 						return e !== 'CANCELADO' && e !== 'FINALIZADO';
 					});
-
-					const paqueteMap = new Map(paquetesArray.map(p => [p.id, p]));
+					const paqueteMap = new Map((paquetes as any[]).map(p => [p.id, p]));
 
 					this.viajesDisponibles = filtrados.map(v => {
 						const pkg = (paqueteMap.get(v.idPaquete) ?? {}) as any;
@@ -243,13 +348,7 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 						};
 					});
 
-					this.paquetesDisponibles = paquetesArray.map(p => ({
-						id: p.id,
-						nombre: p.titulo,
-					}));
-
-					console.log('[ReservaForm] Paquetes cargados:', this.paquetesDisponibles.length);
-					console.log('[ReservaForm] Viajes cargados:', this.viajesDisponibles.length);
+					this.paquetesDisponibles = (paquetes as any[]).map(p => ({ id: p.id, nombre: p.titulo }));
 				} catch (err) {
 					console.error('[ReservaForm] Error procesando datos:', err);
 				} finally {
@@ -263,15 +362,23 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 		});
 	}
 
+	// =========================================================
+	// STEPS
+	// =========================================================
+
 	nextStep(): void {
 		this.submitted = true;
 		if (!this.validateStep(this.currentStep)) return;
 		this.submitted = false;
+		this.openDropdown = null;
+		this.openCalendarAcompanante = -1;
 		if (this.currentStep < 3) this.currentStep++;
 	}
 
 	prevStep(): void {
 		this.submitted = false;
+		this.openDropdown = null;
+		this.openCalendarAcompanante = -1;
 		if (this.currentStep > 1) this.currentStep--;
 	}
 
@@ -285,7 +392,6 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 			}
 			return true;
 		}
-
 		if (step === 2) {
 			return (
 				this.form.idViaje !== '' &&
@@ -295,17 +401,15 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 				!!this.form.tipoHabitacion
 			);
 		}
-
 		if (step === 3) {
-			return (
-				this.form.total !== '' &&
-				this.form.aceptaTerminos &&
-				this.form.aceptaPolitica
-			);
+			return this.form.total !== '' && this.form.aceptaTerminos && this.form.aceptaPolitica;
 		}
-
 		return true;
 	}
+
+	// =========================================================
+	// FORM CHANGES
+	// =========================================================
 
 	onPersonasChange(value: number | ''): void {
 		if (value === '' || Number(value) <= 1) {
@@ -315,9 +419,7 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 		const count = Number(value) - 1;
 		const current = this.form.acompanantes.length;
 		if (count > current) {
-			for (let i = current; i < count; i++) {
-				this.form.acompanantes.push(this.emptyAcompanante());
-			}
+			for (let i = current; i < count; i++) this.form.acompanantes.push(this.emptyAcompanante());
 		} else {
 			this.form.acompanantes = this.form.acompanantes.slice(0, count);
 		}
@@ -338,6 +440,7 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 	}
 
 	onViajeChange(idViaje: number | ''): void {
+		this.form.idViaje = idViaje;
 		if (!idViaje) {
 			this.form.paqueteNombre = '';
 			this.form.destino = '';
@@ -359,14 +462,9 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 	}
 
 	calcDuracion(): void {
-		if (!this.form.fechaSalida || !this.form.fechaRegreso) {
-			this.form.duracion = '';
-			return;
-		}
-		const salida = new Date(this.form.fechaSalida);
-		const regreso = new Date(this.form.fechaRegreso);
+		if (!this.form.fechaSalida || !this.form.fechaRegreso) { this.form.duracion = ''; return; }
 		const diff = Math.ceil(
-			(regreso.getTime() - salida.getTime()) / (1000 * 60 * 60 * 24)
+			(new Date(this.form.fechaRegreso).getTime() - new Date(this.form.fechaSalida).getTime()) / 86400000
 		);
 		this.form.duracion = diff > 0 ? `${diff} ${diff === 1 ? 'día' : 'días'}` : '';
 	}
@@ -379,6 +477,10 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 		this.form.contactosEmergencia.splice(i, 1);
 	}
 
+	// =========================================================
+	// CONFIRM / SAVE
+	// =========================================================
+
 	confirm(): void {
 		this.submitted = true;
 		if (!this.validateStep(3)) return;
@@ -389,7 +491,6 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 			return;
 		}
 
-		// Armar solicitud y abrir confirmación en vez de guardar directo
 		this.pendingSolicitud = {
 			idUsuario: Number(this.form.idUsuario),
 			idPaquete: viajeSeleccionado.idPaquete,
@@ -430,10 +531,10 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 			error: (err) => {
 				this.isSaving = false;
 				this.pendingSolicitud = null;
-				const msg = err?.error?.message || err?.message || 'Ocurrió un error al crear la reserva. Intenta de nuevo.';
+				const msg = err?.error?.message || err?.message || 'Ocurrió un error al crear la reserva.';
 				this.saveError = msg;
 				this.mostrarToast('Error al crear reserva', msg, 'error');
-			}
+			},
 		});
 	}
 
@@ -450,33 +551,24 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 		setTimeout(() => { this.showToast = false; }, 3500);
 	}
 
-	cancel(): void {
-		this.closed.emit();
-	}
+	cancel(): void { this.closed.emit(); }
 
 	onOverlayClick(event: MouseEvent): void {
-		if ((event.target as HTMLElement).classList.contains('modal-overlay')) {
-			this.cancel();
-		}
+		if ((event.target as HTMLElement).classList.contains('modal-overlay')) this.cancel();
 	}
 
-	/**
-	 * Convierte un valor de fecha (input date/datetime-local, p.ej. "2026-07-01" o
-	 * "2026-07-01T14:30") al formato LocalDateTime ISO ("2026-07-01T14:30:00")
-	 * que espera el backend.
-	 */
+	// =========================================================
+	// HELPERS
+	// =========================================================
+
 	private toLocalDateTime(fecha: string): string {
 		if (!fecha) return '';
 		if (fecha.includes('T')) {
-			// Asegura que tenga segundos: "2026-07-01T14:30" -> "2026-07-01T14:30:00"
-			const [datePart, timePart] = fecha.split('T');
-			const timeSegments = timePart.split(':');
-			while (timeSegments.length < 3) {
-				timeSegments.push('00');
-			}
-			return `${datePart}T${timeSegments.join(':')}`;
+			const [d, t] = fecha.split('T');
+			const segs = t.split(':');
+			while (segs.length < 3) segs.push('00');
+			return `${d}T${segs.join(':')}`;
 		}
-		// Solo fecha, sin hora -> media noche
 		return `${fecha}T00:00:00`;
 	}
 
@@ -500,27 +592,18 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 		this.showConfirmModal = false;
 		this.pendingSolicitud = null;
 		this.showToast = false;
-		this.saveError = '';
+		this.openDropdown = null;
+		this.openCalendarAcompanante = -1;
 	}
 
 	private emptyForm(): ReservationForm {
 		return {
-			idUsuario: '',
-			personas: '',
-			acompanantes: [],
+			idUsuario: '', personas: '', acompanantes: [],
 			contactosEmergencia: [this.emptyContacto()],
-			idViaje: '',
-			paqueteNombre: '',
-			destino: '',
-			fechaSalida: '',
-			fechaRegreso: '',
-			duracion: '',
-			tipoHabitacion: '',
-			solicitudEspecial: '',
-			notas: '',
-			total: '',
-			aceptaTerminos: false,
-			aceptaPolitica: false,
+			idViaje: '', paqueteNombre: '', destino: '',
+			fechaSalida: '', fechaRegreso: '', duracion: '',
+			tipoHabitacion: '', solicitudEspecial: '', notas: '',
+			total: '', aceptaTerminos: false, aceptaPolitica: false,
 		};
 	}
 

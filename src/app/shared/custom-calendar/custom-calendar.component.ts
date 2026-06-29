@@ -157,7 +157,8 @@ export class CustomCalendarComponent implements OnChanges {
 		].join('-');
 
 		this.dateSelected.emit(formattedDate);
-		this.closed.emit();
+
+		setTimeout(() => this.closed.emit(), 0);
 	}
 
 	isBirthSelected(day: number | null): boolean {
@@ -199,7 +200,7 @@ export class CustomCalendarComponent implements OnChanges {
 	@HostListener('document:click', ['$event'])
 	closeDropdowns(event: Event): void {
 		const target = event.target as HTMLElement;
-		const clickedInside = target.closest('app-custom-calendar');
+		const clickedInside = target.isConnected && target.closest('app-custom-calendar');
 
 		if (!clickedInside) {
 			this.showMonthSelector = false;

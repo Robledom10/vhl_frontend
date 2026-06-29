@@ -10,34 +10,56 @@
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+	margin-top: 32px;
 	z-index: 999;
 	background: white;
-	border-radius: 22px;
+	border-radius: 40px;
 	padding: 24px 28px;
+	width: min(560px, 92vw);
+	max-height: 85vh;
+	overflow-y: auto;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
 	box-shadow: 0 16px 48px rgba(0, 0, 0, 0.14);
 }
 
-.detalle-panel {
-	width: min(500px, 92vw);
+.modal-panel::-webkit-scrollbar {
+	display: none;
 }
 
 .modal-header {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 20px;
+	justify-content: flex-end;
+	margin-bottom: 4px;
 }
 
-.modal-header h3 {
-	font-size: 17px;
-	font-weight: 500;
-	color: var(--color-texto-principal);
-	margin: 0;
+.modal-title {
+	text-align: center;
+	font-size: var(--titulos-medianos);
+	font-weight: 700;
+	font-family: "Outfit", sans-serif;
+	color: #1e1e1e;
+	margin: 0 0 8px;
+	font-size: 35px;
+}
+
+.modal-title span {
+	color: var(--color-primario);
+}
+
+.modal-subtitle {
+	text-align: center;
+	font-size: 14px;
+	color: var(--color-texto-secundario);
+	margin: 0 0 24px;
+	font-family: "Outfit", sans-serif;
 }
 
 .btn-cerrar {
 	width: 34px;
 	height: 34px;
+	flex-shrink: 0;
 	border-radius: 50%;
 	border: 1px solid var(--bordes);
 	background: white;
@@ -46,6 +68,7 @@
 	align-items: center;
 	justify-content: center;
 	color: var(--color-texto-secundario);
+	font-size: 15px;
 	transition: all 0.2s;
 }
 
@@ -55,102 +78,91 @@
 	color: #ef4444;
 }
 
-.detalle-paquete {
-	background: rgba(63, 162, 219, 0.07);
-	border-radius: 16px;
-	padding: 16px 20px;
-	margin-bottom: 28px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	flex-wrap: wrap;
-	gap: 8px;
-}
-
-.detalle-titulo {
-	font-size: 15px;
-	font-weight: 500;
-	color: var(--color-texto-principal);
-}
-
-.detalle-viaje-id {
-	font-size: 13px;
-	color: var(--color-primario);
-	font-weight: 500;
-	background: rgba(63, 162, 219, 0.15);
-	padding: 3px 12px;
-	border-radius: 999px;
-}
-
-.detalle-grid {
+.form-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 20px;
+	gap: 18px;
 }
 
-.detalle-item {
+.form-group {
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
 }
 
-.detalle-item.span-2 {
+.form-group.span-2 {
 	grid-column: span 2;
 }
 
-.detalle-label {
-	font-size: 12px;
-	font-weight: 500;
-	color: var(--color-texto-secundario);
+.field-wrapper {
+	position: relative;
 	display: flex;
-	align-items: center;
-	gap: 6px;
+	flex-direction: column;
 }
 
-.detalle-label i {
+.field-wrapper label {
+	position: absolute;
+	top: -9px;
+	left: 12px;
+	font-size: 11px;
 	color: var(--color-primario);
-	font-size: 12px;
+	font-weight: 500;
+	pointer-events: none;
+	background: white;
+	padding: 0 4px;
+	z-index: 1;
 }
 
-.detalle-valor {
-	font-size: 15px;
-	font-weight: 400;
+.field-wrapper input {
+	height: 41px;
+	border-radius: 999px;
+	border: 1.5px solid #e8e8e8;
+	padding: 0 16px;
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	outline: none;
+	background: white;
 	color: var(--color-texto-principal);
-	background: #f9f9f9;
-	border-radius: 12px;
-	padding: 10px 16px;
+	width: 100%;
+	box-sizing: border-box;
 }
 
-.detalle-actions {
-	margin-top: 32px;
+.input-readonly {
+	background: #f8f8f8 !important;
+	color: var(--color-texto-secundario) !important;
+	cursor: default !important;
+	border-color: #e8e8e8 !important;
+}
+
+.modal-actions {
 	display: flex;
 	justify-content: flex-end;
+	margin-top: 24px;
 }
 
-.btn-cerrar-detalle {
-	height: 44px;
-	padding: 0 28px;
-	border-radius: 25px;
+.btn-cancelar {
+	height: 40px;
+	padding: 0 24px;
+	border-radius: 999px;
 	border: none;
 	background: var(--color-primario);
 	color: white;
 	cursor: pointer;
 	font-family: "Outfit", sans-serif;
-	font-size: 14px;
+	font-size: 15px;
 	font-weight: 500;
-	transition: all 0.2s;
+	transition: opacity 0.2s;
 }
 
-.btn-cerrar-detalle:hover {
-	opacity: 0.88;
+.btn-cancelar:hover {
+	opacity: 0.9;
 }
 
-@media (max-width: 600px) {
-	.detalle-grid {
+@media (max-width: 640px) {
+	.form-grid {
 		grid-template-columns: 1fr;
 	}
 
-	.detalle-item.span-2 {
+	.form-group.span-2 {
 		grid-column: span 1;
 	}
 }

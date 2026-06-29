@@ -24,11 +24,24 @@ export class FormAssignAccommodationComponent implements OnChanges {
 	@Output() saveFailed = new EventEmitter<string>();
 
 	enviando = false;
+	formSubmitted = false;
+
 	showCalendarCheckIn = false;
 	showCalendarCheckOut = false;
+
+	// Dropdowns
+	viajeDropdownOpen = false;
+	usuarioDropdownOpen = false;
+	proveedorDropdownOpen = false;
+
+	selectedViajeLabel = '';
+	selectedUsuarioLabel = '';
+	selectedProveedorLabel = '';
+	selectedProveedorId: number | null = null;
+
 	usuarioSeleccionadoId: number | null = null;
 
-	// Confirmación de guardado
+	// Confirmación
 	showConfirmModal = false;
 
 	alojamientoForm = this.fb.group({
@@ -52,6 +65,17 @@ export class FormAssignAccommodationComponent implements OnChanges {
 			this.showCalendarCheckIn = false;
 			this.showCalendarCheckOut = false;
 			this.usuarioSeleccionadoId = null;
+			this.formSubmitted = false;
+
+			// Reset dropdowns
+			this.viajeDropdownOpen = false;
+			this.usuarioDropdownOpen = false;
+			this.proveedorDropdownOpen = false;
+			this.selectedViajeLabel = '';
+			this.selectedUsuarioLabel = '';
+			this.selectedProveedorLabel = '';
+			this.selectedProveedorId = null;
+
 			this.alojamientoForm.reset();
 
 			if (this.viajeSeleccionado?.alojamientoAsignado) {
@@ -70,55 +94,136 @@ export class FormAssignAccommodationComponent implements OnChanges {
 		}
 	}
 
+	// ==============================
+	// DROPDOWNS
+	// ==============================
+
+	toggleViajeDropdown(): void {
+		this.viajeDropdownOpen = !this.viajeDropdownOpen;
+		this.usuarioDropdownOpen = false;
+		this.proveedorDropdownOpen = false;
+	}
+
+	toggleUsuarioDropdown(): void {
+		this.usuarioDropdownOpen = !this.usuarioDropdownOpen;
+		this.viajeDropdownOpen = false;
+		this.proveedorDropdownOpen = false;
+	}
+
+	toggleProveedorDropdown(): void {
+		this.proveedorDropdownOpen = !this.proveedorDropdownOpen;
+		this.viajeDropdownOpen = false;
+		this.usuarioDropdownOpen = false;
+	}
+
+	selectViaje(v: ViajeAlojamientoDisplay): void {
+		this.alojamientoForm.patchValue({ idViaje: String(v.id) });
+		this.selectedViajeLabel = v.nombre || v.titulo || '';
+		this.viajeDropdownOpen = false;
+	}
+
+	// ==============================
+	// USUARIO
+	// ==============================
+
 	onUsuarioChange(idStr: string): void {
 		const id = idStr ? +idStr : null;
 		this.usuarioSeleccionadoId = id;
+		this.usuarioDropdownOpen = false;
+
 		if (!id) {
+			this.selectedUsuarioLabel = '';
 			this.alojamientoForm.patchValue({ nombreViajero: '' });
 			return;
 		}
+
 		const usuario = this.usuarios.find(u => u.id === id);
 		if (usuario) {
-			this.alojamientoForm.patchValue({
-				nombreViajero: `${usuario.firstName} ${usuario.lastName}`.trim()
-			});
+			const nombre = `${usuario.firstName} ${usuario.lastName}`.trim();
+			this.selectedUsuarioLabel = nombre;
+			this.alojamientoForm.patchValue({ nombreViajero: nombre });
 		}
 	}
 
-	seleccionarProveedorAlojamiento(event: Event): void {
-		const id = Number((event.target as HTMLSelectElement).value);
-		if (!id) return;
-		const p = this.proveedores.find(x => x.id === id);
-		if (!p) return;
+	// ==============================
+	// PROVEEDOR
+	// ==============================
+
+	seleccionarProveedorAlojamiento2(p: RespuestaProveedor): void {
+		this.selectedProveedorId = p.id;
+		this.selectedProveedorLabel = p.nombre;
+		this.proveedorDropdownOpen = false;
 		this.alojamientoForm.patchValue({
 			nombreHotel: p.nombre,
 			direccion: p.direccion || '',
 		});
 	}
 
+	// Mantiene compatibilidad con el método original basado en evento nativo
+	seleccionarProveedorAlojamiento(event: Event): void {
+		const id = Number((event.target as HTMLSelectElement).value);
+		if (!id) return;
+		const p = this.proveedores.find(x => x.id === id);
+		if (p) this.seleccionarProveedorAlojamiento2(p);
+	}
+
+	clearProveedor(): void {
+		this.selectedProveedorId = null;
+		this.selectedProveedorLabel = '';
+		this.proveedorDropdownOpen = false;
+	}
+
+	// ==============================
+	// CALENDARIO
+	// ==============================
+
+	toggleCheckIn(event: Event): void {
+		event.stopPropagation();
+		this.showCalendarCheckIn = !this.showCalendarCheckIn;
+		this.showCalendarCheckOut = false;
+	}
+
+	toggleCheckOut(event: Event): void {
+		event.stopPropagation();
+		this.showCalendarCheckOut = !this.showCalendarCheckOut;
+		this.showCalendarCheckIn = false;
+	}
+
 	onCheckInSelected(date: string): void {
 		this.showCalendarCheckIn = false;
 		this.alojamientoForm.patchValue({ checkIn: date });
+		this.alojamientoForm.get('checkIn')?.markAsTouched();
 	}
 
 	onCheckOutSelected(date: string): void {
 		this.showCalendarCheckOut = false;
 		this.alojamientoForm.patchValue({ checkOut: date });
+		this.alojamientoForm.get('checkOut')?.markAsTouched();
 	}
 
-	cerrar(): void {
-		this.closed.emit();
+	// ==============================
+	// CLICK FUERA: cierra dropdowns
+	// ==============================
+
+	onModalClick(event: Event): void {
+		event.stopPropagation();
+		const target = event.target as HTMLElement;
+		if (!target.closest('.custom-select')) {
+			this.viajeDropdownOpen = false;
+			this.usuarioDropdownOpen = false;
+			this.proveedorDropdownOpen = false;
+		}
 	}
 
-	// =========================================
-	// VALIDAR Y ABRIR CONFIRMACIÓN
-	// =========================================
+	// ==============================
+	// GUARDAR
+	// ==============================
 
 	guardar(): void {
-		if (this.alojamientoForm.invalid) {
-			this.alojamientoForm.markAllAsTouched();
-			return;
-		}
+		this.formSubmitted = true;
+		this.alojamientoForm.markAllAsTouched();
+
+		if (this.alojamientoForm.invalid) return;
 
 		const idViaje = this.viajeSeleccionado?.id || Number(this.alojamientoForm.value.idViaje);
 		if (!idViaje) {
@@ -143,7 +248,6 @@ export class FormAssignAccommodationComponent implements OnChanges {
 
 		const v = this.alojamientoForm.value;
 		const idViaje = this.viajeSeleccionado?.id || Number(v.idViaje);
-
 		const idViajero = this.usuarioSeleccionadoId ?? (this.authSvc.getUser()?.id ?? 1);
 		const nombreViajero = (v.nombreViajero || '').trim() || null;
 
@@ -179,5 +283,13 @@ export class FormAssignAccommodationComponent implements OnChanges {
 				);
 			},
 		});
+	}
+
+	// ==============================
+	// CERRAR
+	// ==============================
+
+	cerrar(): void {
+		this.closed.emit();
 	}
 }
