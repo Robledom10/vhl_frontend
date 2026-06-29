@@ -460,9 +460,43 @@ tbody td:last-child {
 /* ACTION BUTTONS — same style as transport/accommodation */
 .actions {
 	display: flex;
-	gap: 6px;
-	justify-content: center;
 	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	white-space: nowrap;
+}
+
+.actions button {
+	border: none;
+	border-radius: 20px;
+	cursor: pointer;
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	transition: all 0.2s ease;
+	padding: 8px 16px;
+}
+
+.actions button:hover:not(:disabled) {
+	transform: translateY(-1px);
+}
+
+.actions .edit {
+	background: rgba(255, 193, 7, 0.3);
+	color: #c99700;
+}
+
+.actions .edit:hover {
+	background: rgba(255, 193, 7, 0.42);
+}
+
+.actions .del {
+	background: rgba(255, 59, 59, 0.12);
+	color: #ff3b3b;
+}
+
+.actions .del:hover {
+	background: rgba(255, 59, 59, 0.2);
 }
 
 .actions .ver {
@@ -474,239 +508,11 @@ tbody td:last-child {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border-radius: 10px;
-	border: none;
-	cursor: pointer;
-	font-size: 14px;
-	transition: background 0.2s;
+	border-radius: 12px;
 }
 
 .actions .ver:hover {
 	background: rgba(63, 162, 219, 0.22);
-}
-
-.actions .edit {
-	background: rgba(255, 160, 0, 0.12);
-	color: #c97a00;
-	width: 36px;
-	height: 36px;
-	padding: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: 10px;
-	border: none;
-	cursor: pointer;
-	font-size: 14px;
-	transition: background 0.2s;
-}
-
-.actions .edit:hover {
-	background: rgba(255, 160, 0, 0.22);
-}
-
-.actions .del {
-	background: rgba(239, 68, 68, 0.10);
-	color: #ef4444;
-	width: 36px;
-	height: 36px;
-	padding: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: 10px;
-	border: none;
-	cursor: pointer;
-	font-size: 14px;
-	transition: background 0.2s;
-}
-
-.actions .del:hover {
-	background: rgba(239, 68, 68, 0.20);
-}
-
-/* DETALLE PANEL */
-.detalle-panel {
-	width: min(560px, 94vw);
-	padding: 40px;
-}
-
-.detalle-paquete {
-	background: rgba(63, 162, 219, 0.07);
-	border-radius: 16px;
-	padding: 16px 20px;
-	margin-bottom: 28px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	flex-wrap: wrap;
-	gap: 8px;
-}
-
-.detalle-titulo {
-	font-size: 15px;
-	font-weight: 500;
-	color: var(--color-texto-principal);
-}
-
-.detalle-viaje-id {
-	font-size: 13px;
-	color: var(--color-primario);
-	font-weight: 500;
-	background: rgba(63, 162, 219, 0.15);
-	padding: 3px 12px;
-	border-radius: 999px;
-}
-
-.detalle-grid {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 20px;
-}
-
-.detalle-item {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-}
-
-.detalle-item.span-2 {
-	grid-column: span 2;
-}
-
-.detalle-label {
-	font-size: 12px;
-	font-weight: 500;
-	color: var(--color-texto-secundario);
-	display: flex;
-	align-items: center;
-	gap: 6px;
-}
-
-.detalle-label i {
-	color: var(--color-primario);
-	font-size: 12px;
-}
-
-.detalle-valor {
-	font-size: 15px;
-	font-weight: 400;
-	color: var(--color-texto-principal);
-	background: #f9f9f9;
-	border-radius: 12px;
-	padding: 10px 16px;
-}
-
-.detalle-actions {
-	margin-top: 32px;
-	display: flex;
-	justify-content: flex-end;
-}
-
-.btn-cerrar-detalle {
-	height: 44px;
-	padding: 0 28px;
-	border-radius: 25px;
-	border: none;
-	background: var(--color-primario);
-	color: white;
-	cursor: pointer;
-	font-family: "Outfit", sans-serif;
-	font-size: 14px;
-	font-weight: 500;
-	transition: all 0.2s;
-}
-
-.btn-cerrar-detalle:hover {
-	opacity: 0.88;
-}
-
-/* CONFIRM DELETE MODAL */
-.confirm-panel {
-	max-width: 420px !important;
-	text-align: center;
-	padding: 40px 36px !important;
-}
-
-.confirm-icon {
-	width: 64px;
-	height: 64px;
-	background: rgba(239, 68, 68, 0.10);
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin: 0 auto 20px;
-}
-
-.confirm-icon i {
-	font-size: 28px;
-	color: #ef4444;
-}
-
-.confirm-title {
-	font-size: 18px;
-	font-weight: 500;
-	color: var(--color-texto-principal);
-	margin: 0 0 12px;
-}
-
-.confirm-body {
-	font-size: 14px;
-	color: var(--color-texto-secundario);
-	margin: 0 0 12px;
-	line-height: 1.6;
-}
-
-.confirm-hint {
-	font-size: 12px;
-	color: #c99700;
-	background: rgba(255, 193, 7, 0.10);
-	border-radius: 10px;
-	padding: 10px 14px;
-	margin: 0 0 24px;
-	display: flex;
-	align-items: flex-start;
-	gap: 8px;
-	text-align: left;
-	line-height: 1.5;
-}
-
-.confirm-hint i {
-	flex-shrink: 0;
-	margin-top: 2px;
-}
-
-.confirm-actions {
-	display: flex;
-	gap: 12px;
-	justify-content: center;
-}
-
-.btn-eliminar-confirm {
-	height: 44px;
-	padding: 0 28px;
-	border-radius: 25px;
-	border: none;
-	background: #ef4444;
-	color: white;
-	cursor: pointer;
-	font-family: "Outfit", sans-serif;
-	font-size: 14px;
-	font-weight: 500;
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	transition: all 0.2s;
-}
-
-.btn-eliminar-confirm:hover:not(:disabled) {
-	background: #dc2626;
-}
-
-.btn-eliminar-confirm:disabled {
-	opacity: 0.6;
-	cursor: not-allowed;
 }
 
 @keyframes toastIn {

@@ -92,7 +92,6 @@
 					<th>Viajeros</th>
 					<th>Transporte</th>
 					<th>Alojamiento</th>
-					<th>Incidentes</th>
 					<th>Estado</th>
 					<th>Acciones</th>
 				</tr>
@@ -133,13 +132,6 @@
 						<span *ngIf="!fila.tieneViaje" class="estado-dot disabled">—</span>
 					</td>
 					<td>
-						<span *ngIf="fila.tieneViaje" class="incidente-badge link-cell"
-							[class.con-incidentes]="fila.incidentes > 0" (click)="ir('operaciones-incidentes')">
-							{{fila.incidentes}}
-						</span>
-						<span *ngIf="!fila.tieneViaje" class="incidente-badge disabled">—</span>
-					</td>
-					<td>
 						<span class="status" [class]="getEstadoClass(fila)">
 							{{ getEstadoLabel(fila.estado) }}
 						</span>
@@ -150,10 +142,10 @@
 								<i class="fa-regular fa-eye"></i>
 							</button>
 							<button class="edit" (click)="editarViaje(fila)" title="Editar">
-								<i class="fa-solid fa-pen"></i>
+								Editar
 							</button>
 							<button class="del" (click)="eliminarViajeRow(fila)" title="Eliminar">
-								<i class="fa-solid fa-trash"></i>
+								Eliminar
 							</button>
 						</div>
 						<ng-template #sinAcciones><span class="badge-num disabled">—</span></ng-template>
