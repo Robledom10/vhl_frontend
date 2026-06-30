@@ -384,6 +384,18 @@
 						</div>
 					</div>
 
+					<div class="contract-hint">
+						<p>Revisa tu contrato de reserva antes de confirmar:</p>
+						<div class="contract-btns">
+							<button type="button" class="btn-contract-preview" (click)="abrirContrato('preview')">
+								<i class="fa-regular fa-eye"></i> Previsualizar
+							</button>
+							<button type="button" class="btn-contract-download" (click)="abrirContrato('download')">
+								<i class="fa-solid fa-file-arrow-down"></i> Descargar PDF
+							</button>
+						</div>
+					</div>
+
 					<div class="terms-card">
 						<label class="checkbox-item">
 							<input type="checkbox" [(ngModel)]="acceptTerms">

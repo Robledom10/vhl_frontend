@@ -5,6 +5,7 @@ import { ReservationService, SolicitudReserva } from '../../core/services/reserv
 import { AuthService } from '../../core/services/auth.service';
 import { Viaje } from '../../features/panel-admin/models/operaciones.models';
 import { Subscription } from 'rxjs';
+import { DatosContrato, PdfService } from '../../services/pdf.service';
 
 @Component({
 	selector: 'app-reservation-wizard',
@@ -82,6 +83,7 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 		private authService: AuthService,
 		private reservationService: ReservationService,
 		private router: Router,
+		private pdfService: PdfService,
 	) {
 		const limite = new Date();
 		limite.setFullYear(limite.getFullYear() - 5);
@@ -517,6 +519,48 @@ export class ReservationWizardComponent implements OnInit, OnDestroy {
 			this.openDropdown = null;
 			this.showCalendarCompanion = null;
 		}
+	}
+
+	// ── Contrato PDF ──────────────────────────────────────────────────────
+
+	private buildDatosContrato(): DatosContrato {
+		const docLabel = this.documentTypes.find(d => d.value === this.holder.documentType)?.label ?? this.holder.documentType;
+		return {
+			titular: {
+				nombre: `${this.holder.firstName} ${this.holder.lastName}`,
+				tipoDocumento: docLabel,
+				numeroDocumento: this.holder.documentNumber,
+				telefono: this.holder.phone,
+				ciudad: this.holder.city,
+			},
+			paquete: {
+				nombre: this.package?.title ?? '',
+				destino: this.package?.destinations ?? '',
+				duracion: this.package?.duration ?? '',
+				lugarSalida: this.package?.departurePlace ?? '',
+			},
+			viaje: {
+				fechaSalida: this.selectedTrip?.fechaSalida ?? '',
+				fechaRegreso: this.selectedTrip?.fechaRegreso ?? '',
+			},
+			acompanantes: this.companions.map(c => {
+				const docType = this.documentTypes.find(d => d.value === c.documentType)?.label ?? c.documentType;
+				return { nombre: c.name, tipoDocumento: docType, documento: c.documentNumber, fechaNacimiento: c.birthDate };
+			}),
+			habitacion: this.selectedRoomType,
+			solicitudEspecial: this.selectedSpecialRequest,
+			notas: this.additionalNotes,
+			contactosEmergencia: this.emergencyContacts.map(c => ({
+				nombre: c.fullName, parentesco: c.relationship, telefono: c.phone,
+				correo: c.alternatePhone || undefined,
+			})),
+			total: this.totalPrice,
+			personas: this.travelers,
+		};
+	}
+
+	abrirContrato(action: 'preview' | 'download'): void {
+		this.pdfService.generateContratoPDF(this.buildDatosContrato(), action);
 	}
 
 	/**

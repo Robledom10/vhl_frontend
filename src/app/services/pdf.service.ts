@@ -6,6 +6,43 @@ const DARK    = '#123862';
 const GRAY    = '#6b7280';
 const BLACK   = '#1e1e1e';
 
+export interface DatosContrato {
+  titular: {
+    nombre: string;
+    tipoDocumento: string;
+    numeroDocumento: string;
+    telefono: string;
+    ciudad: string;
+  };
+  paquete: {
+    nombre: string;
+    destino: string;
+    duracion: string;
+    lugarSalida: string;
+  };
+  viaje: {
+    fechaSalida: string;
+    fechaRegreso: string;
+  };
+  acompanantes: {
+    nombre: string;
+    tipoDocumento: string;
+    documento: string;
+    fechaNacimiento: string;
+  }[];
+  habitacion: string;
+  solicitudEspecial: string;
+  notas: string;
+  contactosEmergencia: {
+    nombre: string;
+    parentesco: string;
+    telefono: string;
+    correo?: string;
+  }[];
+  total: number;
+  personas: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class PdfService {
 
@@ -254,5 +291,178 @@ export class PdfService {
     );
 
     doc.save('terminos-y-condiciones.pdf');
+  }
+
+  // ── Helpers exclusivos del contrato ──────────────────────────────────────
+
+  private formatFecha(iso: string): string {
+    if (!iso) return '—';
+    const d = new Date(iso.includes('T') ? iso : `${iso}T12:00:00`);
+    if (isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  }
+
+  private formatCOP(value: number): string {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency', currency: 'COP', minimumFractionDigits: 0
+    }).format(value);
+  }
+
+  private addDataTable(
+    doc: jsPDF,
+    title: string,
+    rows: { key: string; value: string }[],
+    y: number
+  ): number {
+    const margin  = 14;
+    const pageW   = doc.internal.pageSize.getWidth();
+    const pageH   = doc.internal.pageSize.getHeight();
+    const contentW = pageW - margin * 2;
+    const colW    = 68;
+    const footerY = pageH - 25;
+
+    if (y > footerY - 30) {
+      doc.addPage();
+      this.buildFooter(doc);
+      y = 20;
+    }
+
+    // Cabecera de sección (fondo azul oscuro)
+    doc.setFillColor(DARK);
+    doc.roundedRect(margin, y, contentW, 9, 2, 2, 'F');
+    doc.setTextColor('#ffffff');
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'bold');
+    doc.text(title.toUpperCase(), margin + 4, y + 6.2);
+    y += 12;
+
+    let alternate = false;
+    doc.setFontSize(9.5);
+
+    for (const row of rows) {
+      const valLines = doc.splitTextToSize(row.value || '—', contentW - colW - 6);
+      const rowH = Math.max(valLines.length * 5.5, 6) + 4;
+
+      if (y + rowH > footerY) {
+        doc.addPage();
+        this.buildFooter(doc);
+        y = 20;
+      }
+
+      if (alternate) {
+        doc.setFillColor('#f0f7fd');
+        doc.rect(margin, y - 1, contentW, rowH, 'F');
+      }
+      alternate = !alternate;
+
+      doc.setTextColor(GRAY);
+      doc.setFont('helvetica', 'bold');
+      doc.text(row.key, margin + 3, y + 4.5);
+
+      doc.setTextColor(BLACK);
+      doc.setFont('helvetica', 'normal');
+      doc.text(valLines, margin + colW, y + 4.5);
+
+      // Línea divisoria sutil
+      doc.setDrawColor('#e5eaf0');
+      doc.setLineWidth(0.2);
+      doc.line(margin, y + rowH - 1, margin + contentW, y + rowH - 1);
+
+      y += rowH;
+    }
+
+    return y + 6;
+  }
+
+  async generateContratoPDF(datos: DatosContrato, action: 'preview' | 'download' = 'download'): Promise<void> {
+    const doc  = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const logo = await this.loadLogo();
+    const pageW = doc.internal.pageSize.getWidth();
+
+    const hoy      = new Date();
+    const fechaHoy = hoy.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const refNum   = `VHL-${hoy.getFullYear()}${String(hoy.getMonth() + 1).padStart(2, '0')}${String(hoy.getDate()).padStart(2, '0')}-${String(hoy.getTime()).slice(-4)}`;
+
+    this.buildHeader(doc, logo, 'Contrato de Prestación de Servicios Turísticos');
+    this.buildFooter(doc);
+
+    let y = 70;
+
+    // Referencia y fecha (alineadas a la derecha)
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(GRAY);
+    doc.text(`Ref: ${refNum}`, pageW - 14, y, { align: 'right' });
+    y += 5;
+    doc.text(`Fecha de expedición: ${fechaHoy}`, pageW - 14, y, { align: 'right' });
+    y += 10;
+
+    // ── 1. DATOS DEL CLIENTE ─────────────────────────────────────────────
+    y = this.addDataTable(doc, '1. Datos del cliente', [
+      { key: 'Nombre completo',       value: datos.titular.nombre },
+      { key: 'Tipo de documento',     value: datos.titular.tipoDocumento },
+      { key: 'Número de documento',   value: datos.titular.numeroDocumento },
+      { key: 'Teléfono de contacto',  value: datos.titular.telefono },
+      { key: 'Ciudad de residencia',  value: datos.titular.ciudad },
+    ], y);
+
+    // ── 2. DETALLE DEL PAQUETE ──────────────────────────────────────────
+    y = this.addDataTable(doc, '2. Detalle del paquete', [
+      { key: 'Nombre del paquete', value: datos.paquete.nombre },
+      { key: 'Destino(s)',         value: datos.paquete.destino },
+      { key: 'Fecha de salida',    value: this.formatFecha(datos.viaje.fechaSalida) },
+      { key: 'Fecha de regreso',   value: this.formatFecha(datos.viaje.fechaRegreso) },
+      { key: 'Duración',           value: datos.paquete.duracion },
+      { key: 'Lugar de salida',    value: datos.paquete.lugarSalida || '—' },
+      { key: 'Número de viajeros', value: String(datos.personas) },
+    ], y);
+
+    // ── 3. VIAJEROS ──────────────────────────────────────────────────────
+    const filasViajeros: { key: string; value: string }[] = [
+      { key: 'Titular', value: `${datos.titular.nombre} — ${datos.titular.tipoDocumento} ${datos.titular.numeroDocumento}` },
+      ...datos.acompanantes.map((a, i) => ({
+        key: `Acompañante ${i + 1}`,
+        value: `${a.nombre} — ${a.tipoDocumento} ${a.documento}${a.fechaNacimiento ? ` — Nac: ${this.formatFecha(a.fechaNacimiento)}` : ''}`
+      }))
+    ];
+    y = this.addDataTable(doc, '3. Viajeros', filasViajeros, y);
+
+    // ── 4. SERVICIOS SOLICITADOS ─────────────────────────────────────────
+    y = this.addDataTable(doc, '4. Servicios solicitados', [
+      { key: 'Tipo de habitación',   value: datos.habitacion || '—' },
+      { key: 'Solicitud especial',   value: datos.solicitudEspecial || 'Ninguna' },
+      { key: 'Notas adicionales',    value: datos.notas || '—' },
+    ], y);
+
+    // ── 5. CONTACTOS DE EMERGENCIA ───────────────────────────────────────
+    const filasEmergencia = datos.contactosEmergencia.map((c, i) => ({
+      key: `Contacto ${i + 1}`,
+      value: `${c.nombre} (${c.parentesco}) — Tel: ${c.telefono}${c.correo ? ` — ${c.correo}` : ''}`
+    }));
+    y = this.addDataTable(doc, '5. Contactos de emergencia', filasEmergencia, y);
+
+    // ── 6. VALOR DEL SERVICIO ────────────────────────────────────────────
+    y = this.addDataTable(doc, '6. Valor del servicio', [
+      { key: 'Total a pagar',  value: this.formatCOP(datos.total) },
+      { key: 'Forma de pago',  value: 'Pasarela de pago Wompi (tarjeta débito / crédito)' },
+      { key: 'Nota',           value: 'La reserva quedará confirmada una vez se realice el pago.' },
+    ], y);
+
+    // ── 7. DECLARACIÓN Y ACEPTACIÓN ──────────────────────────────────────
+    const declaracion =
+      'Al descargar y/o firmar este contrato, el cliente declara haber leído, comprendido y aceptado en su ' +
+      'totalidad los Términos y Condiciones y la Política de Cancelación de Hernando Lopera Viajes y ' +
+      'Excursiones. Acepta que los pagos realizados no son reembolsables conforme a dichas políticas, y que ' +
+      'es su responsabilidad contar con la documentación requerida para el viaje.';
+
+    this.addAcceptanceBox(doc, declaracion, y);
+
+    if (action === 'preview') {
+      const blob = doc.output('blob');
+      const url  = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } else {
+      doc.save(`contrato-vhl-${refNum}.pdf`);
+    }
   }
 }

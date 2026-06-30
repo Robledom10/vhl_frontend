@@ -730,3 +730,57 @@
 .btn-primary:hover {
 	opacity: .9;
 }
+
+/* ==========================
+   CONTRATO PDF
+========================== */
+
+.contract-hint {
+	background: rgba(63, 162, 219, 0.07);
+	border: 1px solid rgba(63, 162, 219, 0.25);
+	border-radius: 18px;
+	padding: 18px 20px;
+	margin-bottom: 16px;
+}
+
+.contract-hint p {
+	margin: 0 0 12px;
+	font-size: 14px;
+	color: var(--color-texto-secundario, #6b7280);
+}
+
+.contract-btns {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.btn-contract-preview,
+.btn-contract-download {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	padding: 9px 18px;
+	border-radius: 28px;
+	border: none;
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: opacity .2s;
+}
+
+.btn-contract-preview {
+	background: rgba(63, 162, 219, 0.15);
+	color: #3fa2db;
+}
+
+.btn-contract-download {
+	background: #3fa2db;
+	color: #fff;
+}
+
+.btn-contract-preview:hover,
+.btn-contract-download:hover {
+	opacity: .85;
+}
