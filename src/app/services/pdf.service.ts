@@ -383,6 +383,131 @@ export class PdfService {
     return y + 6;
   }
 
+  private addAcceptanceBoxReturn(doc: jsPDF, text: string, y: number): number {
+    const margin   = 14;
+    const pageW    = doc.internal.pageSize.getWidth();
+    const pageH    = doc.internal.pageSize.getHeight();
+    const boxW     = pageW - margin * 2;
+    const lineH    = 5.5;
+    const padTop   = 10;
+    const padText  = 16;
+    const padBot   = 8;
+
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'normal');
+    const wrapped = doc.splitTextToSize(text, boxW - 10);
+    const boxH    = padTop + (padText - padTop) + wrapped.length * lineH + padBot;
+
+    if (y + boxH > pageH - 25) {
+      doc.addPage();
+      this.buildFooter(doc);
+      y = 20;
+    }
+
+    y += 4;
+    doc.setFillColor('#f0f9ff');
+    doc.setDrawColor(PRIMARY);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(margin, y, boxW, boxH, 3, 3, 'FD');
+
+    doc.setTextColor(DARK);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Aceptación:', margin + 4, y + 8);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(BLACK);
+    doc.text(wrapped, margin + 4, y + padText);
+
+    return y + boxH + 6;
+  }
+
+  private addFirmas(
+    doc: jsPDF,
+    nombreTitular: string,
+    tipoDoc: string,
+    numDoc: string,
+    y: number
+  ): void {
+    const margin  = 14;
+    const pageW   = doc.internal.pageSize.getWidth();
+    const pageH   = doc.internal.pageSize.getHeight();
+    const contentW = pageW - margin * 2;
+    const colW    = contentW / 2 - 6;
+    const lineY   = 22;
+    const boxH    = 52;
+
+    if (y + boxH > pageH - 25) {
+      doc.addPage();
+      this.buildFooter(doc);
+      y = 20;
+    }
+
+    y += 8;
+
+    // Cabecera de sección firmas
+    doc.setFillColor(PRIMARY);
+    doc.roundedRect(margin, y, contentW, 9, 2, 2, 'F');
+    doc.setTextColor('#ffffff');
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'bold');
+    doc.text('8. FIRMAS', margin + 4, y + 6.2);
+    y += 14;
+
+    const leftX  = margin;
+    const rightX = margin + colW + 12;
+
+    // ── Bloque TITULAR ──────────────────────────────
+    doc.setFillColor('#f8fbff');
+    doc.setDrawColor('#d1e8f7');
+    doc.setLineWidth(0.4);
+    doc.roundedRect(leftX, y, colW, boxH, 3, 3, 'FD');
+
+    doc.setTextColor(DARK);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Titular / Excursionista', leftX + colW / 2, y + 8, { align: 'center' });
+
+    // Línea de firma
+    doc.setDrawColor(BLACK);
+    doc.setLineWidth(0.5);
+    doc.line(leftX + 8, y + lineY, leftX + colW - 8, y + lineY);
+
+    doc.setTextColor(GRAY);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    const nombreWrapped = doc.splitTextToSize(nombreTitular, colW - 16);
+    doc.text(nombreWrapped, leftX + colW / 2, y + lineY + 6, { align: 'center' });
+    doc.text(`${tipoDoc}: ${numDoc}`, leftX + colW / 2, y + lineY + 12, { align: 'center' });
+
+    doc.setTextColor(GRAY);
+    doc.setFontSize(7.5);
+    doc.text('Fecha: _____ / _____ / _________', leftX + colW / 2, y + boxH - 6, { align: 'center' });
+
+    // ── Bloque AGENCIA ──────────────────────────────
+    doc.setFillColor('#f8fbff');
+    doc.setDrawColor('#d1e8f7');
+    doc.setLineWidth(0.4);
+    doc.roundedRect(rightX, y, colW, boxH, 3, 3, 'FD');
+
+    doc.setTextColor(DARK);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Representante de la Agencia', rightX + colW / 2, y + 8, { align: 'center' });
+
+    doc.setDrawColor(BLACK);
+    doc.setLineWidth(0.5);
+    doc.line(rightX + 8, y + lineY, rightX + colW - 8, y + lineY);
+
+    doc.setTextColor(GRAY);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.text('Hernando Lopera', rightX + colW / 2, y + lineY + 6, { align: 'center' });
+    doc.text('Hernando Lopera Viajes y Excursiones', rightX + colW / 2, y + lineY + 12, { align: 'center' });
+
+    doc.setFontSize(7.5);
+    doc.text('Fecha: _____ / _____ / _________', rightX + colW / 2, y + boxH - 6, { align: 'center' });
+  }
+
   async generateContratoPDF(datos: DatosContrato, action: 'preview' | 'download' = 'download'): Promise<void> {
     const doc  = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const logo = await this.loadLogo();
@@ -464,7 +589,10 @@ export class PdfService {
       'Excursiones. Acepta que los pagos realizados no son reembolsables conforme a dichas políticas, y que ' +
       'es su responsabilidad contar con la documentación requerida para el viaje.';
 
-    this.addAcceptanceBox(doc, declaracion, y);
+    y = this.addAcceptanceBoxReturn(doc, declaracion, y);
+
+    // ── 8. FIRMAS ────────────────────────────────────────────────────────
+    this.addFirmas(doc, datos.titular.nombre, datos.titular.tipoDocumento, datos.titular.numeroDocumento, y);
 
     if (action === 'preview') {
       const blob = doc.output('blob');
