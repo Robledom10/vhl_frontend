@@ -89,12 +89,6 @@ export class NavbarPanelAdminComponent {
 					roles: ['ADMIN', 'GUIDE']
 				},
 				{
-					icon: 'fa-regular fa-thumbs-up',
-					label: 'Comentarios',
-					route: '/panel-admin/packages-comments',
-					roles: ['ADMIN', 'GUIDE']
-				},
-				{
 					label: 'Proveedores',
 					route: '/panel-admin/packages-providers',
 					roles: ['ADMIN']
