@@ -1,7 +1,0 @@
-
-> vhl-frontend@0.0.0 start
-> ng serve --host=127.0.0.1 --port=4200
-
-Application bundle generation failed. [10.088 seconds]
-
-Watch mode enabled. Watching for file changes...
