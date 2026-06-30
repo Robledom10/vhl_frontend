@@ -10,7 +10,7 @@ import { MediaResponse, MediaService } from '../../../../../../core/services/med
 export class MediaUploadModalComponent implements OnChanges {
 	@Input() isOpen = false;
 	@Output() closed = new EventEmitter<boolean>();
-	@Output() notify = new EventEmitter<{ title: string; message: string; type: 'success' | 'error' | 'info' }>();
+	@Output() notify = new EventEmitter<{ title: string; message: string; type: 'success' | 'edit' | 'delete' | 'error' }>();
 	@Input() media: MediaResponse | null = null;
 	previews: string[] = [];
 	selectedFiles: File[] = [];

@@ -1,0 +1,157 @@
+<div class="terms-overlay" *ngIf="isOpen" (click)="onOverlayClick($event)">
+	<div class="terms-container">
+
+		<!-- HEADER -->
+		<div class="terms-header">
+			<div class="terms-header-icon">
+				<i class="fa-solid fa-file-contract"></i>
+			</div>
+			<div class="terms-header-text">
+				<h2>Términos y Condiciones</h2>
+				<span>Hernando Lopera Viajes y Excursiones</span>
+			</div>
+			<button class="terms-close-btn" (click)="close()">
+				<i class="fa-solid fa-xmark"></i>
+			</button>
+		</div>
+
+		<!-- BODY -->
+		<div class="terms-body">
+
+			<p class="terms-intro">
+				Al realizar la reserva y efectuar cualquier pago, el cliente declara haber leído,
+				comprendido y aceptado estos términos y condiciones en su totalidad.
+			</p>
+
+			<!-- 1. Reservas -->
+			<div class="terms-section">
+				<div class="section-header">
+					<div class="section-icon"><i class="fa-solid fa-calendar-check"></i></div>
+					<h3><span class="section-num">1</span> Reservas</h3>
+				</div>
+				<ul>
+					<li>Toda reserva se considera confirmada una vez se haya realizado el abono inicial.</li>
+					<li>El cliente es responsable de suministrar información personal veraz y completa.</li>
+				</ul>
+			</div>
+
+			<!-- 2. Pagos -->
+			<div class="terms-section">
+				<div class="section-header">
+					<div class="section-icon"><i class="fa-solid fa-credit-card"></i></div>
+					<h3><span class="section-num">2</span> Pagos</h3>
+				</div>
+				<ul>
+					<li>Los pagos deberán realizarse dentro de las fechas establecidas por la agencia.</li>
+				</ul>
+			</div>
+
+			<!-- 3. Cambios -->
+			<div class="terms-section">
+				<div class="section-header">
+					<div class="section-icon"><i class="fa-solid fa-arrows-rotate"></i></div>
+					<h3><span class="section-num">3</span> Cambios</h3>
+				</div>
+				<ul>
+					<li>Los cambios de fecha o nombre estarán sujetos a disponibilidad y podrán generar costos adicionales.</li>
+					<li>La agencia no garantiza que los proveedores acepten modificaciones.</li>
+				</ul>
+			</div>
+
+			<!-- 4. Documentación -->
+			<div class="terms-section">
+				<div class="section-header">
+					<div class="section-icon"><i class="fa-solid fa-id-card"></i></div>
+					<h3><span class="section-num">4</span> Documentación</h3>
+				</div>
+				<ul>
+					<li>Es responsabilidad del viajero contar con documento de identidad, pasaporte, visas, permisos para menores, vacunas y demás requisitos exigidos por las autoridades.</li>
+					<li>La agencia no será responsable por la negación de ingreso o salida debido a documentación incompleta o vencida.</li>
+				</ul>
+			</div>
+
+			<!-- 5. Equipaje -->
+			<div class="terms-section">
+				<div class="section-header">
+					<div class="section-icon"><i class="fa-solid fa-suitcase-rolling"></i></div>
+					<h3><span class="section-num">5</span> Equipaje</h3>
+				</div>
+				<ul>
+					<li>Cada proveedor establece sus propias políticas sobre equipaje permitido, peso y costos adicionales.</li>
+					<li>La agencia únicamente informa dichas condiciones, pero no define ni modifica estas políticas.</li>
+				</ul>
+			</div>
+
+			<!-- 6. Responsabilidad -->
+			<div class="terms-section">
+				<div class="section-header">
+					<div class="section-icon"><i class="fa-solid fa-shield-halved"></i></div>
+					<h3><span class="section-num">6</span> Responsabilidad</h3>
+				</div>
+				<ul>
+					<li>La agencia actúa como intermediaria entre el cliente y los prestadores de servicios turísticos.</li>
+					<li>No será responsable por retrasos, cancelaciones, cambios climáticos, desastres naturales, cierres de vías, huelgas, problemas de orden público o cualquier evento de fuerza mayor.</li>
+					<li>Tampoco responderá por pérdidas, robos, daños a equipaje o pertenencias personales durante el viaje.</li>
+				</ul>
+			</div>
+
+			<!-- 7. Comportamiento -->
+			<div class="terms-section">
+				<div class="section-header">
+					<div class="section-icon"><i class="fa-solid fa-users"></i></div>
+					<h3><span class="section-num">7</span> Comportamiento del Viajero</h3>
+				</div>
+				<ul>
+					<li>El viajero deberá mantener un comportamiento respetuoso con los demás pasajeros, el personal de la agencia y los proveedores.</li>
+					<li>La agencia podrá retirar del viaje a cualquier persona cuyo comportamiento represente un riesgo para el grupo, sin derecho a reembolso.</li>
+				</ul>
+			</div>
+
+			<!-- 8. Horarios -->
+			<div class="terms-section">
+				<div class="section-header">
+					<div class="section-icon"><i class="fa-solid fa-clock"></i></div>
+					<h3><span class="section-num">8</span> Horarios</h3>
+				</div>
+				<ul>
+					<li>Es obligación del viajero presentarse puntualmente en los lugares y horarios establecidos.</li>
+					<li>La agencia no asumirá costos por pérdida de servicios ocasionada por retrasos del cliente.</li>
+				</ul>
+			</div>
+
+			<!-- 9. Menores -->
+			<div class="terms-section">
+				<div class="section-header">
+					<div class="section-icon"><i class="fa-solid fa-child-reaching"></i></div>
+					<h3><span class="section-num">9</span> Menores de Edad</h3>
+				</div>
+				<ul>
+					<li>Todo menor deberá viajar acompañado por un adulto responsable y con la documentación requerida por la ley.</li>
+				</ul>
+			</div>
+
+			<!-- 10. Aceptación -->
+			<div class="terms-section last">
+				<div class="section-header">
+					<div class="section-icon"><i class="fa-solid fa-handshake"></i></div>
+					<h3><span class="section-num">10</span> Aceptación</h3>
+				</div>
+				<p>
+					Al realizar la reserva y efectuar cualquier pago, el cliente declara haber leído, comprendido y
+					aceptado estos términos y condiciones.
+				</p>
+				<p class="terms-update">Última actualización: junio de 2026.</p>
+			</div>
+
+		</div>
+
+		<!-- FOOTER -->
+		<div class="terms-footer">
+			<button class="terms-accept-btn" (click)="close()">
+				<i class="fa-solid fa-check"></i>
+				Entendido
+			</button>
+		</div>
+
+	</div>
+</div>

@@ -121,4 +121,10 @@ export class PackageService {
 			request
 		);
 	}
+
+	deleteComment(packageId: number, commentId: number) {
+		return this.http.delete<void>(
+			`${this.apiUrl}/${packageId}/comentarios/${commentId}`
+		);
+	}
 }

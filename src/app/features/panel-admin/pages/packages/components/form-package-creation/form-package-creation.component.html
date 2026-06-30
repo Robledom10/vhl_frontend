@@ -1,5 +1,8 @@
 <div class="modal-overlay" *ngIf="isOpen" (click)="closeModal()">
 	<div class="modal-container" (click)="$event.stopPropagation()">
+		<button class="close-btn" (click)="closeModal()">
+			<i class="fa-solid fa-xmark"></i>
+		</button>
 		<div class="modal-scroll">
 			<div class="modal-content">
 
@@ -479,5 +482,5 @@
 </app-confirm-modal>
 
 <!-- Toast -->
-<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage" [type]="toastType">
 </app-toast-notification>

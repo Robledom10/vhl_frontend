@@ -12,8 +12,6 @@ import { CommentsComponent } from './pages/packages/pages/comments/comments.comp
 import { ProfileComponent } from './pages/profile/profile.component';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
-import { ToastNotificationComponent } from '../../shared/toast-notification/toast-notification.component';
 import { EditUserRoleModalComponent } from './pages/users-roles/components/edit-user-role-modal/edit-user-role-modal.component';
 import { ViewUserModalComponent } from './pages/users-roles/components/view-user-modal/view-user-modal.component';
 import { CreateUserModalComponent } from './pages/users-roles/components/create-user-modal/create-user-modal.component';

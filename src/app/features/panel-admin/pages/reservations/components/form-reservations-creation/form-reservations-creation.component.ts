@@ -110,6 +110,8 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 	submitted = false;
 	isSaving = false;
 	saveError = '';
+	showTerms = false;
+	showCancellation = false;
 
 	viajesDisponibles: ViajeOption[] = [];
 	viajesFiltrados: ViajeOption[] = [];
@@ -128,6 +130,7 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 	correoCliente = '';
 	buscandoCliente = false;
 	errorCliente = false;
+	errorClienteMsg = 'Cliente no encontrado.';
 	errorSelfReservation = false;
 	// ------------------------------------------
 	// ─── Confirmación / Toast ────────────────────────────────
@@ -276,6 +279,7 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 		}
 		this.buscandoCliente = true;
 		this.errorCliente = false;
+		this.errorClienteMsg = 'Cliente no encontrado.';
 		this.errorSelfReservation = false;
 
 		this.authService.getUserByDocumento(this.documentoBusqueda.trim()).subscribe({
@@ -301,9 +305,12 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 					this.resetDatosCliente();
 				}
 			},
-			error: () => {
+			error: (err) => {
 				this.buscandoCliente = false;
 				this.errorCliente = true;
+				this.errorClienteMsg = err?.status === 500
+					? 'Error del servidor. Intente nuevamente.'
+					: 'Cliente no encontrado.';
 				this.resetDatosCliente();
 			},
 		});
@@ -597,6 +604,7 @@ export class FormReservationsCreationComponent implements OnChanges, OnInit {
 		this.correoCliente = '';
 		this.buscandoCliente = false;
 		this.errorCliente = false;
+		this.errorClienteMsg = 'Cliente no encontrado.';
 		this.errorSelfReservation = false;
 		this.selectedPaqueteId = '';
 		this.viajesFiltrados = [];
