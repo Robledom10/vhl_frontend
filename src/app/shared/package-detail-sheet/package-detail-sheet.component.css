@@ -442,6 +442,51 @@
 	background: rgba(63, 162, 219, 0.2);
 }
 
+.delete-review-btn {
+	width: 36px;
+	height: 36px;
+	border: none;
+	border-radius: 50%;
+	background: rgba(219, 63, 63, 0.12);
+	color: #db3f3f;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: .2s;
+}
+
+.delete-review-btn:hover {
+	transform: translateY(-1px);
+	background: rgba(219, 63, 63, 0.2);
+}
+
+.delete-review-btn:disabled {
+	opacity: .5;
+	cursor: not-allowed;
+	transform: none;
+}
+
+.word-counter {
+	display: block;
+	margin-top: 6px;
+	font-size: 13px;
+	color: var(--color-texto-secundario);
+	text-align: right;
+}
+
+.word-counter.over-limit {
+	color: #db3f3f;
+	font-weight: 600;
+}
+
+.comment-btn:disabled {
+	opacity: .55;
+	cursor: not-allowed;
+	transform: none;
+	box-shadow: none;
+}
+
 .edit-comment-form {
 	display: flex;
 	flex-direction: column;

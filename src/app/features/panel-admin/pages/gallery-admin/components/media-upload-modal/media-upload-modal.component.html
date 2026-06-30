@@ -1,5 +1,8 @@
 <div class="modal-overlay" *ngIf="isOpen" (click)="close()">
 	<div class="modal-container" (click)="$event.stopPropagation()">
+		<button class="close-btn" (click)="close()">
+			<i class="fa-solid fa-xmark"></i>
+		</button>
 		<div class="modal-scroll">
 			<div class="modal-content">
 

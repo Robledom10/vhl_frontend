@@ -1,0 +1,125 @@
+/* Hace que el elemento host sea transparente al flex del hero-search */
+:host {
+  display: contents;
+}
+
+/* ── Estilos heredados del hero-search ── */
+.search-item {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.search-item .item-icon {
+  font-size: 22px;
+  color: #3fa2db;
+  border-radius: 100%;
+  background-color: var(--color-fondo-iconos);
+  padding: 12px 10px;
+}
+
+.search-item div {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-label {
+  font-size: 18px;
+  color: var(--color-texto-principal);
+}
+
+.search-value {
+  font-size: 16px;
+  color: var(--color-texto-secundario);
+}
+
+.search-divider {
+  width: 1px;
+  height: 36px;
+  background: var(--color-iconos);
+}
+
+.search-btn {
+  background: var(--color-primario);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 40px;
+  font-size: 17px;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+  width: auto;
+  margin: 0;
+  font-family: "Outfit", sans-serif;
+}
+
+.search-btn:hover {
+  box-shadow: 0 4px 12px rgba(63, 162, 219, 0.4);
+}
+
+@media (min-width: 921px) and (max-width: 1100px) {
+  .search-item { gap: 14px; }
+  .search-label { font-size: 16px; }
+  .search-value { font-size: 14px; }
+  .search-btn { padding: 11px 24px; }
+}
+
+@media (max-width: 920px) {
+  .search-divider { display: none; }
+  .search-item { flex: 1 1 220px; }
+  .search-btn { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .search-item { gap: 14px; flex-basis: 100%; }
+  .search-item .item-icon { font-size: 18px; padding: 10px 9px; }
+  .search-label { font-size: 16px; }
+  .search-value { font-size: 14px; }
+}
+
+/* Skeleton loader */
+.skeleton-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--skeleton-bg, rgba(255,255,255,0.15));
+  animation: shimmer 1.4s infinite;
+}
+
+.skeleton-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.skeleton-line {
+  display: block;
+  height: 12px;
+  border-radius: 6px;
+  background: var(--skeleton-bg, rgba(255,255,255,0.15));
+  animation: shimmer 1.4s infinite;
+}
+
+.skeleton-line.short  { width: 70px; }
+.skeleton-line.long   { width: 130px; }
+
+.skeleton-btn {
+  width: 100px;
+  height: 42px;
+  border-radius: 999px;
+  background: var(--skeleton-bg, rgba(255,255,255,0.15));
+  animation: shimmer 1.4s infinite;
+  border: none;
+}
+
+@keyframes shimmer {
+  0%   { opacity: 0.5; }
+  50%  { opacity: 1;   }
+  100% { opacity: 0.5; }
+}
+
+/* Botón deshabilitado */
+.search-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

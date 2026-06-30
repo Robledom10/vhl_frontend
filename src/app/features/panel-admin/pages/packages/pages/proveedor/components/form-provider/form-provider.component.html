@@ -1,7 +1,9 @@
 <div class="modal-overlay" *ngIf="isOpen" (click)="closeModal()">
 	<div class="modal-container" (click)="onModalClick($event)">
 		<div class="modal-content">
-
+			<button class="close-btn" (click)="closeModal()">
+				<i class="fa-solid fa-xmark"></i>
+			</button>
 			<h2 class="modal-title">
 				{{ mode === 'edit' ? 'Editar' : mode === 'view' ? 'Ver' : 'Crear' }}
 				<span>Proveedor</span>

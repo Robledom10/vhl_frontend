@@ -8,6 +8,7 @@ import { LoginFormComponent } from './pages/login/components/login-form/login-fo
 import { RegisterFormComponent } from './pages/register/components/register-form/register-form.component';
 import { LoginTypesComponent } from './components/login-types/login-types.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
 
@@ -23,7 +24,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 	imports: [
 		CommonModule,
 		AuthRoutingModule,
-		ReactiveFormsModule
+		ReactiveFormsModule,
+		SharedModule
 	]
 })
 export class AuthModule { }

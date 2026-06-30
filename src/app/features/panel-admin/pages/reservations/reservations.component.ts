@@ -247,9 +247,9 @@ export class ReservationsComponent implements OnInit {
 			() => this.reservationService.confirmar(reservation.id).subscribe({
 				next: (updated) => {
 					this.replaceReservation(updated);
-					this.triggerToast('Reserva confirmada', `La reserva de ${this.getNombre(updated)} fue confirmada exitosamente.`, 'success');
+					this.showFeedbackToast('Reserva confirmada', `La reserva de ${this.getNombre(updated)} fue confirmada exitosamente.`, 'success');
 				},
-				error: () => this.triggerToast('Error', 'No se pudo confirmar la reserva.', 'error'),
+				error: () => this.showFeedbackToast('Error', 'No se pudo confirmar la reserva.', 'error'),
 			})
 		);
 	}
@@ -267,9 +267,9 @@ export class ReservationsComponent implements OnInit {
 			() => this.reservationService.reactivar(reservation.id).subscribe({
 				next: (updated) => {
 					this.replaceReservation(updated);
-					this.triggerToast('Reserva reactivada', `La reserva de ${this.getNombre(updated)} fue reactivada.`, 'success');
+					this.showFeedbackToast('Reserva reactivada', `La reserva de ${this.getNombre(updated)} fue reactivada.`, 'success');
 				},
-				error: () => this.triggerToast('Error', 'No se pudo reactivar la reserva.', 'error'),
+				error: () => this.showFeedbackToast('Error', 'No se pudo reactivar la reserva.', 'error'),
 			})
 		);
 	}
@@ -298,14 +298,14 @@ export class ReservationsComponent implements OnInit {
 		this.reservationService.cancelar(this.selectedReservation.id).subscribe({
 			next: (updated) => {
 				this.replaceReservation(updated);
-				this.triggerToast('Reserva cancelada', `La reserva de ${nombre} fue cancelada.`, 'delete');
+				this.showFeedbackToast('Reserva cancelada', `La reserva de ${nombre} fue cancelada.`, 'delete');
 			},
-			error: () => this.triggerToast('Error', 'No se pudo cancelar la reserva.', 'error'),
+			error: () => this.showFeedbackToast('Error', 'No se pudo cancelar la reserva.', 'error'),
 		});
 	}
 
 	// ─── Toast ────────────────────────────────────────────
-	private triggerToast(title: string, message: string, type: 'success' | 'edit' | 'delete' | 'error'): void {
+	private showFeedbackToast(title: string, message: string, type: 'success' | 'edit' | 'delete' | 'error'): void {
 		this.toastTitle = title;
 		this.toastMessage = message;
 		this.toastType = type;
@@ -359,6 +359,11 @@ export class ReservationsComponent implements OnInit {
 		this.closeCreateModal();
 		this.reservations = [newReservation, ...this.reservations];
 		this.applyFilters();
+		this.showFeedbackToast(
+			'Reserva creada',
+			`La reserva de ${this.getNombre(newReservation)} fue registrada exitosamente.`,
+			'success'
+		);
 		this.paginaActual = 0;
 		this.loadReservations();
 	}

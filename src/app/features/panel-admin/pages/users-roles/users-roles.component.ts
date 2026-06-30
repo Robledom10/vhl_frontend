@@ -29,6 +29,9 @@ export class UsersRolesComponent {
 	statusAction = '';
 
 	showToast = false;
+	toastTitle = '';
+	toastMessage = '';
+	toastType: 'success' | 'edit' | 'delete' | 'error' = 'success';
 
 	showEditModal = false;
 
@@ -173,19 +176,19 @@ export class UsersRolesComponent {
 
 		request.subscribe({
 			next: () => {
-				this.selectedUser!.status =
-					this.selectedUser!.status === 'Activo' ? 'Inactivo' : 'Activo';
-
+				const wasActive = this.selectedUser!.status === 'Activo';
+				this.selectedUser!.status = wasActive ? 'Inactivo' : 'Activo';
 				this.showStatusModal = false;
-				this.showToast = true;
-
-				setTimeout(() => {
-					this.showToast = false;
-				}, 3000);
+				this.showFeedbackToast(
+					wasActive ? 'Usuario desactivado' : 'Usuario activado',
+					`El usuario ${this.selectedUser!.name} fue ${wasActive ? 'desactivado' : 'activado'} correctamente.`,
+					wasActive ? 'delete' : 'success'
+				);
 			},
 
 			error: (err) => {
 				console.error(err);
+				this.showFeedbackToast('Ocurrió un error', 'No se pudo cambiar el estado del usuario.', 'error');
 			},
 		});
 	}
@@ -242,6 +245,14 @@ export class UsersRolesComponent {
 	closeCreateModal(): void {
 		this.showCreateModal = false;
 		document.body.style.overflow = 'auto';
+	}
+
+	private showFeedbackToast(title: string, message: string, type: 'success' | 'edit' | 'delete' | 'error' = 'success'): void {
+		this.toastTitle = title;
+		this.toastMessage = message;
+		this.toastType = type;
+		this.showToast = true;
+		setTimeout(() => { this.showToast = false; }, 3000);
 	}
 
 	@HostListener('document:click', ['$event'])

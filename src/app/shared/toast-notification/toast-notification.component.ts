@@ -9,4 +9,5 @@ export class ToastNotificationComponent {
 	@Input() show = false;
 	@Input() title = '';
 	@Input() message = '';
+	@Input() type: 'success' | 'edit' | 'delete' | 'error' = 'success';
 }
