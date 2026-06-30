@@ -158,11 +158,22 @@ export class PdfService {
   }
 
   private addAcceptanceBox(doc: jsPDF, text: string, y: number): void {
-    const margin  = 14;
-    const pageW   = doc.internal.pageSize.getWidth();
-    const pageH   = doc.internal.pageSize.getHeight();
+    const margin   = 14;
+    const pageW    = doc.internal.pageSize.getWidth();
+    const pageH    = doc.internal.pageSize.getHeight();
+    const boxW     = pageW - margin * 2;
+    const lineH    = 5.5;
+    const padTop   = 10;
+    const padLabel = 8;
+    const padText  = 16;
+    const padBot   = 8;
 
-    if (y > pageH - 50) {
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'normal');
+    const wrapped = doc.splitTextToSize(text, boxW - 10);
+    const boxH    = padTop + (padText - padTop) + wrapped.length * lineH + padBot;
+
+    if (y + boxH > pageH - 25) {
       doc.addPage();
       this.buildFooter(doc);
       y = 20;
@@ -172,17 +183,15 @@ export class PdfService {
     doc.setFillColor('#f0f9ff');
     doc.setDrawColor(PRIMARY);
     doc.setLineWidth(0.5);
-    doc.roundedRect(margin, y, pageW - margin * 2, 24, 3, 3, 'FD');
+    doc.roundedRect(margin, y, boxW, boxH, 3, 3, 'FD');
 
     doc.setTextColor(DARK);
-    doc.setFontSize(9.5);
     doc.setFont('helvetica', 'bold');
-    doc.text('Aceptación:', margin + 4, y + 8);
+    doc.text('Aceptación:', margin + 4, y + padLabel);
 
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(BLACK);
-    const wrapped = doc.splitTextToSize(text, pageW - margin * 2 - 10);
-    doc.text(wrapped, margin + 4, y + 16);
+    doc.text(wrapped, margin + 4, y + padText);
   }
 
   async generateCancelacionPDF(): Promise<void> {
@@ -327,8 +336,8 @@ export class PdfService {
       y = 20;
     }
 
-    // Cabecera de sección (fondo azul oscuro)
-    doc.setFillColor(DARK);
+    // Cabecera de sección (fondo azul claro igual al banner)
+    doc.setFillColor(PRIMARY);
     doc.roundedRect(margin, y, contentW, 9, 2, 2, 'F');
     doc.setTextColor('#ffffff');
     doc.setFontSize(9.5);
