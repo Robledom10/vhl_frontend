@@ -162,13 +162,10 @@
 	user-select: none;
 }
 
-.custom-select:hover {
-	transform: translateY(-1px);
+.custom-select:hover,
+.custom-select.open {
 	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-}
-
-.custom-select.selected {
-	color: var(--color-texto-principal);
+	border-color: var(--color-primario);
 }
 
 .custom-select-value {
@@ -180,7 +177,7 @@
 }
 
 .select-icon {
-	font-size: 11px;
+	font-size: 12px;
 	color: var(--color-texto-secundario);
 	transition: transform 0.25s ease;
 	flex-shrink: 0;
@@ -188,6 +185,15 @@
 
 .custom-select.open .select-icon {
 	transform: rotate(180deg);
+	color: var(--color-primario);
+}
+
+.custom-select:hover .select-icon {
+	color: var(--color-primario);
+}
+
+.custom-select.invalid .select-icon {
+	color: #ef4444;
 }
 
 .custom-select-dropdown {

@@ -1,0 +1,45 @@
+<!-- Comentarios reales con slider -->
+<ng-container *ngIf="comentarios.length > 0; else fallback">
+
+	<div class="slider-grid" [class.visible]="visible" [class.hidden]="!visible">
+		<div class="t-card" *ngFor="let c of visibles">
+			<span class="quote">❞</span>
+			<div class="t-header">
+				<div class="avatar">{{ iniciales(c.autor) }}</div>
+				<div>
+					<p class="t-name">{{ c.autor }}</p>
+					<p class="t-role">{{ c.paqueteNombre }}</p>
+				</div>
+			</div>
+			<p class="t-text">{{ c.comentario }}</p>
+			<div class="t-stars">
+				<span *ngFor="let s of stars(5)">
+					<i [class]="s <= c.puntaje ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
+				</span>
+			</div>
+		</div>
+	</div>
+
+
+</ng-container>
+
+<!-- Fallback estático mientras no hay comentarios -->
+<ng-template #fallback>
+	<div class="t-card static-card">
+		<span class="quote">❞</span>
+		<div class="t-header">
+			<div class="t-img">
+				<img src="https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1777933201/Día_7-37_zgbob5.jpg"
+					alt="Manuel Quintero" />
+			</div>
+			<div>
+				<p class="t-name">Manuel Quintero</p>
+				<p class="t-role">Excursionista 2025</p>
+			</div>
+		</div>
+		<p class="t-text">Una experiencia inolvidable, llena de momentos únicos, paisajes increíbles y recuerdos que quedarán para siempre.</p>
+		<div class="t-stars">
+			<span *ngFor="let s of [1,2,3,4,5]"><i class="fa-solid fa-star"></i></span>
+		</div>
+	</div>
+</ng-template>

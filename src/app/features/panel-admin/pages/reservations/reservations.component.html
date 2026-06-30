@@ -40,14 +40,40 @@
 			<div class="filter-dropdown" [class.open]="openFilter === 'fecha'">
 				<button class="filter-btn" (click)="toggleFilter('fecha')">
 					<i class="fa-solid fa-filter"></i>
-					<span>Fecha</span>
+					<span>{{ fechaFiltroLabel }}</span>
 					<i class="fa-solid fa-chevron-down chevron"></i>
 				</button>
-				<div class="dropdown-menu dropdown-date">
+
+				<div class="dropdown-menu dropdown-date" (click)="$event.stopPropagation()">
 					<label>Desde</label>
-					<input type="date" [(ngModel)]="dateFrom" (change)="applyFilters()" />
+					<div class="date-trigger-wrapper">
+						<button type="button" class="date-trigger-btn" (click)="toggleDateCalendar('from', $event)">
+							<i class="fa-regular fa-calendar"></i>
+							<span>{{ dateFrom ? formatDateDisplay(dateFrom) : 'Seleccionar' }}</span>
+						</button>
+
+						<app-custom-calendar [isOpen]="openDateCalendar === 'from'" [selectedDate]="dateFrom"
+							[maxSelectableDate]="dateTo" (dateSelected)="onDateFromSelected($event)"
+							(closed)="openDateCalendar = null">
+						</app-custom-calendar>
+					</div>
+
 					<label>Hasta</label>
-					<input type="date" [(ngModel)]="dateTo" (change)="applyFilters()" />
+					<div class="date-trigger-wrapper">
+						<button type="button" class="date-trigger-btn" (click)="toggleDateCalendar('to', $event)">
+							<i class="fa-regular fa-calendar"></i>
+							<span>{{ dateTo ? formatDateDisplay(dateTo) : 'Seleccionar' }}</span>
+						</button>
+
+						<app-custom-calendar [isOpen]="openDateCalendar === 'to'" [selectedDate]="dateTo"
+							[minSelectableDate]="dateFrom" (dateSelected)="onDateToSelected($event)"
+							(closed)="openDateCalendar = null">
+						</app-custom-calendar>
+					</div>
+
+					<button type="button" class="date-clear-btn" *ngIf="dateFrom || dateTo" (click)="clearDateFilter()">
+						<i class="fa-solid fa-xmark"></i> Limpiar fechas
+					</button>
 				</div>
 			</div>
 
@@ -199,7 +225,7 @@
 </app-confirm-modal>
 
 <!-- TOAST -->
-<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage" [type]="toastType">
 </app-toast-notification>
 
 <!-- MODAL CREAR USUARIO (para flujo de usuario nuevo) -->

@@ -31,6 +31,30 @@
 	flex-direction: column;
 }
 
+.close-btn {
+	position: absolute;
+	top: 20px;
+	right: 24px;
+	width: 38px;
+	height: 38px;
+	border-radius: 50%;
+	border: none;
+	background: #f5f5f5;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #666;
+	font-size: 16px;
+	z-index: 10;
+	transition: background 0.2s, color 0.2s;
+}
+
+.close-btn:hover {
+	background: #e8e8e8;
+	color: #222;
+}
+
 /* =========================================================
    MODAL SCROLL
 ========================================================= */
@@ -211,6 +235,87 @@
 }
 
 /* =========================================================
+   INPUT NÚMERO DOCUMENTO (sin field-wrapper, directo en form-group)
+   — mismos estilos pill + label flotante que el resto
+========================================================= */
+
+.form-group>input[type="text"],
+.form-group>input[type="email"],
+.form-group>input[type="tel"],
+.form-group>input[type="number"] {
+	width: 100%;
+	height: 41px;
+	border-radius: 999px;
+	border: 1.5px solid #e8e8e8;
+	padding: 0 16px;
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	outline: none;
+	transition: border-color 0.2s;
+	background: white;
+	color: var(--color-texto-principal, #1f1f1f);
+	box-sizing: border-box;
+}
+
+.form-group>input[type="text"]::placeholder,
+.form-group>input[type="email"]::placeholder,
+.form-group>input[type="tel"]::placeholder {
+	color: transparent;
+	opacity: 0;
+}
+
+.form-group>input[type="text"]:focus,
+.form-group>input[type="email"]:focus {
+	border-color: var(--color-primario);
+}
+
+/* Borde azul cuando tiene valor */
+.form-group>input[type="text"]:not(:placeholder-shown):not(.ng-invalid):not([disabled]),
+.form-group>input[type="text"][value]:not([value=""]):not(.ng-invalid) {
+	border-color: var(--color-primario);
+}
+
+/* Borde rojo cuando es inválido */
+.form-group>input.ng-invalid.ng-touched,
+.form-group>input.invalid {
+	border-color: #ef4444 !important;
+}
+
+/* Label flotante del input directo */
+.form-group>input+label {
+	position: absolute;
+	top: 11px;
+	left: 16px;
+	font-size: 14px;
+	color: var(--color-texto-secundario, #9aa0b2);
+	pointer-events: none;
+	transition: all 0.18s ease;
+	background: white;
+	padding: 0 4px;
+	z-index: 1;
+	font-family: "Outfit", sans-serif;
+	white-space: nowrap;
+}
+
+.form-group>input:focus+label,
+.form-group>input:not(:placeholder-shown)+label {
+	top: -8px;
+	left: 12px;
+	font-size: 12px;
+	color: var(--color-primario);
+	font-weight: 500;
+}
+
+.form-group>input.ng-invalid.ng-touched+label,
+.form-group>input.invalid+label {
+	color: #ef4444 !important;
+	top: -8px;
+	left: 12px;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+/* =========================================================
    FIELD WRAPPER — floating label
 ========================================================= */
 
@@ -235,7 +340,7 @@
 	white-space: nowrap;
 }
 
-/* Label flotado: con valor o con foco */
+/* Label flotado */
 .field-wrapper input:focus~label,
 .field-wrapper input:not(:placeholder-shown)~label,
 .field-wrapper textarea:focus~label,
@@ -257,7 +362,7 @@
 }
 
 /* =========================================================
-   INPUTS
+   INPUTS (dentro de field-wrapper)
 ========================================================= */
 
 .field-wrapper input,
@@ -276,11 +381,7 @@
 	width: 100%;
 }
 
-.field-wrapper input::placeholder {
-	color: transparent;
-	opacity: 0;
-}
-
+.field-wrapper input::placeholder,
 .field-wrapper textarea::placeholder {
 	color: transparent;
 	opacity: 0;
@@ -290,13 +391,11 @@
 	border-color: var(--color-primario);
 }
 
-/* Borde azul cuando tiene valor */
 .field-wrapper input:not(:placeholder-shown):not(.ng-invalid),
 .field-wrapper input[value]:not([value=""]):not(.ng-invalid) {
 	border-color: var(--color-primario);
 }
 
-/* Error state */
 .field-wrapper input.ng-invalid.ng-touched {
 	border-color: #ef4444;
 }
@@ -305,7 +404,6 @@
 	color: #ef4444;
 }
 
-/* Readonly */
 .readonly-input {
 	background: #f7f9fc !important;
 	color: #8090a8 !important;
@@ -344,11 +442,21 @@
 	font-family: "Outfit", sans-serif;
 }
 
+.error-msg {
+	position: absolute;
+	left: 16px;
+	top: 46px;
+	font-size: 12px;
+	color: #ef4444;
+	font-family: "Outfit", sans-serif;
+}
+
 .status-msg {
+	position: absolute;
+	left: 16px;
+	top: 46px;
 	font-size: 12px;
 	color: #666;
-	padding-left: 6px;
-	margin-top: 4px;
 	font-family: "Outfit", sans-serif;
 }
 
@@ -439,6 +547,16 @@
 
 .custom-select.open .select-icon {
 	transform: rotate(180deg);
+	color: var(--color-primario);
+}
+
+.custom-select:hover .select-icon,
+.custom-select.selected .select-icon {
+	color: var(--color-primario);
+}
+
+.custom-select.invalid .select-icon {
+	color: #ef4444;
 }
 
 .custom-select-dropdown {
@@ -499,12 +617,13 @@
 	position: relative;
 }
 
+/* ─── mismo border-radius pill que los inputs del modal ─── */
 .cal-trigger {
 	width: 100%;
 	cursor: pointer !important;
 	padding-right: 44px !important;
 	box-sizing: border-box;
-	border-radius: 10px;
+	border-radius: 999px !important;
 }
 
 .cal-trigger.filled {
@@ -515,17 +634,29 @@
 	border-color: #ef4444 !important;
 }
 
+/* Ícono cambia a azul cuando el campo tiene valor (filled) */
+.cal-wrap:has(.cal-trigger.filled) .cal-icon {
+	color: var(--color-primario);
+}
+
+/* Ícono cambia a rojo cuando el campo es inválido */
+.cal-wrap:has(.cal-trigger.ng-invalid.ng-touched) .cal-icon {
+	color: #ef4444;
+}
+
 .cal-icon {
 	position: absolute;
 	right: 16px;
 	top: 50%;
 	transform: translateY(-50%);
 	font-size: 15px;
-	color: var(--color-primario);
+	color: var(--color-texto-secundario, #9aa0b2);
 	pointer-events: none;
 	z-index: 2;
+	transition: color 0.2s;
 }
 
+/* Clase explícita para error (mantiene compatibilidad con el HTML existente) */
 .cal-icon-error {
 	color: #ef4444 !important;
 }
@@ -955,4 +1086,16 @@
 	.modal-title {
 		font-size: 26px;
 	}
+}
+
+.terms-link-btn {
+	background: none;
+	border: none;
+	padding: 0;
+	font-size: inherit;
+	font-family: inherit;
+	color: var(--color-primario);
+	cursor: pointer;
+	text-decoration: underline;
+	text-underline-offset: 2px;
 }

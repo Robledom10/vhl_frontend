@@ -168,7 +168,7 @@
 	<app-media-upload-modal [isOpen]="showModal" [media]="selectedMedia" (closed)="closeModal($event)" (notify)="onMediaNotification($event)">
 	</app-media-upload-modal>
 
-	<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
+	<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage" [type]="toastType">
 	</app-toast-notification>
 
 	<app-confirm-modal [isOpen]="showDeleteModal" title="Eliminar archivo"

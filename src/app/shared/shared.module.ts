@@ -10,9 +10,12 @@ import { PackageDetailSheetComponent } from './package-detail-sheet/package-deta
 import { CustomCalendarComponent } from './custom-calendar/custom-calendar.component';
 import { ReservationWizardComponent } from './reservation-wizard/reservation-wizard.component';
 import { StatsSectionComponent } from './stats-section/stats-section.component';
-import { ToastNotificationComponent } from './toast-notification/toast-notification.component';
+import { NextTripBannerComponent } from './next-trip-banner/next-trip-banner.component';
+import { TestimonialSliderComponent } from './testimonial-slider/testimonial-slider.component';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
-import { PanelAdminModule } from '../features/panel-admin/panel-admin.module';
+import { ToastNotificationComponent } from './toast-notification/toast-notification.component';
+import { TermsModalComponent } from './terms-modal/terms-modal.component';
+import { CancellationModalComponent } from './cancellation-modal/cancellation-modal.component';
 
 @NgModule({
 	declarations: [
@@ -24,8 +27,12 @@ import { PanelAdminModule } from '../features/panel-admin/panel-admin.module';
 		CustomCalendarComponent,
 		ReservationWizardComponent,
 		StatsSectionComponent,
+		NextTripBannerComponent,
+		TestimonialSliderComponent,
+		ConfirmModalComponent,
 		ToastNotificationComponent,
-		ConfirmModalComponent
+		TermsModalComponent,
+		CancellationModalComponent,
 	],
 	imports: [
 		CommonModule,
@@ -41,8 +48,12 @@ import { PanelAdminModule } from '../features/panel-admin/panel-admin.module';
 		CustomCalendarComponent,
 		ReservationWizardComponent,
 		StatsSectionComponent,
+		NextTripBannerComponent,
+		TestimonialSliderComponent,
+		ConfirmModalComponent,
 		ToastNotificationComponent,
-		ConfirmModalComponent
+		TermsModalComponent,
+		CancellationModalComponent,
 	],
 })
 export class SharedModule { }

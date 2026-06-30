@@ -35,8 +35,9 @@ export class AuthInterceptor implements HttpInterceptor {
 
 		return next.handle(authReq).pipe(
 			catchError((error: HttpErrorResponse) => {
-				// SOLO manejar 401 en endpoints protegidos
-				if (error.status === 401 && !isAuthRequest) {
+				// Solo intentar refresh si había un token (sesión expirada)
+				// Si no había token, el usuario simplemente no está logueado → no tocar la sesión
+				if (error.status === 401 && !isAuthRequest && token) {
 					return this.handle401Error(authReq, next);
 				}
 

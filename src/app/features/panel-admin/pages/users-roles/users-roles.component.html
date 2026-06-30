@@ -132,8 +132,7 @@
 
 <!-- TOAST -->
 
-<app-toast-notification [show]="showToast" type="success" title="Usuario desactivado"
-	[message]="'El usuario ' + selectedUser?.name + ' fue desactivado correctamente.'">
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage" [type]="toastType">
 </app-toast-notification>
 
 <!-- MODAL EDITAR ROL -->

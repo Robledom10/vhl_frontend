@@ -7,6 +7,9 @@ import { PdfService } from '../../services/pdf.service';
 	styleUrls: ['./footer.component.css'],
 })
 export class FooterComponent {
+	showTerms = false;
+	showCancellation = false;
+
 	constructor(private pdfService: PdfService) {}
 
 	openPoliticaCancelacion(): void {

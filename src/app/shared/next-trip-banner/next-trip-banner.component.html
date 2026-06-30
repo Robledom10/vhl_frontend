@@ -1,0 +1,72 @@
+<!-- Viaje próximo cargado -->
+<ng-container *ngIf="!cargando && proximoViaje">
+  <div class="search-item">
+    <div class="item-icon">
+      <i class="fa-regular fa-map"></i>
+    </div>
+    <div>
+      <span class="search-label">Destino</span>
+      <span class="search-value">{{ destino }}</span>
+    </div>
+  </div>
+
+  <div class="search-divider"></div>
+
+  <div class="search-item">
+    <div class="item-icon">
+      <i class="fa-regular fa-calendar"></i>
+    </div>
+    <div>
+      <span class="search-label">Próxima salida</span>
+      <span class="search-value">{{ fechaFormateada }}</span>
+    </div>
+  </div>
+
+  <button class="search-btn" (click)="onVerMasInfo()" [disabled]="!paquete">
+    Más Info
+  </button>
+</ng-container>
+
+<!-- Skeleton mientras carga -->
+<ng-container *ngIf="cargando">
+  <div class="search-item skeleton">
+    <div class="item-icon skeleton-icon"></div>
+    <div class="skeleton-text">
+      <span class="skeleton-line short"></span>
+      <span class="skeleton-line long"></span>
+    </div>
+  </div>
+  <div class="search-divider"></div>
+  <div class="search-item skeleton">
+    <div class="item-icon skeleton-icon"></div>
+    <div class="skeleton-text">
+      <span class="skeleton-line short"></span>
+      <span class="skeleton-line long"></span>
+    </div>
+  </div>
+  <div class="search-btn skeleton-btn"></div>
+</ng-container>
+
+<!-- Sin viajes próximos -->
+<ng-container *ngIf="!cargando && !proximoViaje">
+  <div class="search-item">
+    <div class="item-icon">
+      <i class="fa-regular fa-map"></i>
+    </div>
+    <div>
+      <span class="search-label">Destino</span>
+      <span class="search-value">Sin viajes próximos</span>
+    </div>
+  </div>
+  <div class="search-divider"></div>
+  <div class="search-item">
+    <div class="item-icon">
+      <i class="fa-regular fa-calendar"></i>
+    </div>
+    <div>
+      <span class="search-label">Próxima salida</span>
+      <span class="search-value">—</span>
+    </div>
+  </div>
+  <button class="search-btn" disabled>Más Info</button>
+</ng-container>

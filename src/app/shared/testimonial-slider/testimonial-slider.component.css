@@ -1,0 +1,143 @@
+/* ── Grid de tarjetas ─────────────────────────────────── */
+.slider-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 16px;
+	transition: opacity 0.42s ease, transform 0.42s ease;
+}
+
+.slider-grid.visible {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.slider-grid.hidden {
+	opacity: 0;
+	transform: translateY(12px);
+}
+
+/* ── Tarjeta ──────────────────────────────────────────── */
+.t-card {
+	background: var(--color-fondo-navegador);
+	border-radius: 16px;
+	padding: 22px;
+	position: relative;
+	box-shadow: 0 4px 20px rgba(13, 27, 42, 0.10);
+	overflow: visible;
+}
+
+.static-card {
+	/* igual que t-card, sin animación propia */
+}
+
+.quote {
+	position: absolute;
+	top: -36px;
+	right: 16px;
+	font-size: 110px;
+	color: var(--color-primario-claro);
+	line-height: 1;
+	pointer-events: none;
+	z-index: 0;
+}
+
+/* El contenido siempre por encima de la comilla decorativa */
+.t-header,
+.t-text,
+.t-stars {
+	position: relative;
+	z-index: 1;
+}
+
+/* ── Cabecera ─────────────────────────────────────────── */
+.t-header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 14px;
+	padding-bottom: 10px;
+	border-bottom: 2px solid var(--bordes);
+}
+
+.avatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background: var(--color-primario);
+	color: #fff;
+	font-size: 14px;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.t-img {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	overflow: hidden;
+	flex-shrink: 0;
+}
+
+.t-img img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.t-name {
+	font-size: 18px;
+	font-weight: 600;
+	color: var(--color-texto-principal);
+	margin: 0;
+}
+
+.t-role {
+	font-size: 14px;
+	color: var(--color-texto-secundario);
+	margin: 2px 0 0;
+}
+
+/* ── Texto y estrellas ────────────────────────────────── */
+.t-text {
+	font-size: 15px;
+	color: var(--color-texto-secundario);
+	line-height: 1.7;
+	margin: 0 0 14px;
+}
+
+.t-stars {
+	display: flex;
+	gap: 3px;
+}
+
+.t-stars span {
+	font-size: 16px;
+	color: #f4a822;
+}
+
+/* ── Dots ─────────────────────────────────────────────── */
+.dots {
+	display: flex;
+	gap: 8px;
+	margin-top: 18px;
+}
+
+.dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 999px;
+	border: none;
+	background: var(--color-iconos);
+	cursor: pointer;
+	padding: 0;
+	transition: background 0.3s ease, width 0.3s ease, transform 0.3s ease;
+}
+
+.dot-active {
+	background: var(--color-primario);
+	width: 22px;
+	transform: none;
+}

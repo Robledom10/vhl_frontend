@@ -25,6 +25,7 @@ export class FormPackageCreationComponent implements OnInit, OnChanges {
 	showToast = false;
 	toastTitle = '';
 	toastMessage = '';
+	toastType: 'success' | 'edit' | 'delete' | 'error' = 'success';
 
 	// Acción pendiente
 	private pendingRequest: SolicitudPaqueteTuristico | null = null;
@@ -318,9 +319,10 @@ export class FormPackageCreationComponent implements OnInit, OnChanges {
 				next: () => {
 					this.enviando = false;
 
-					this.showToastNotification(
+					this.showFeedbackToast(
 						this.mode === 'edit' ? 'Paquete actualizado' : 'Paquete creado',
-						this.mode === 'edit' ? 'El paquete se actualizó correctamente.' : 'El paquete se creó correctamente.'
+						this.mode === 'edit' ? 'El paquete se actualizó correctamente.' : 'El paquete se creó correctamente.',
+						this.mode === 'edit' ? 'edit' : 'success'
 					);
 
 					setTimeout(() => {
@@ -335,31 +337,23 @@ export class FormPackageCreationComponent implements OnInit, OnChanges {
 				error: (err) => {
 					this.enviando = false;
 					console.error(this.mode === 'edit' ? 'Error actualizando paquete:' : 'Error creando paquete:', err);
-					this.showToastNotification(
-						'Error',
-						err.error?.message || 'No fue posible guardar el paquete.'
-					);
+					this.showFeedbackToast('Error', err.error?.message || 'No fue posible guardar el paquete.', 'error');
 				}
 			});
 
 		} catch (err) {
 			this.enviando = false;
 			console.error('Error subiendo imágenes:', err);
-			this.showToastNotification(
-				'Error al subir imágenes',
-				'Ocurrió un problema al subir las imágenes. Intenta nuevamente.'
-			);
+			this.showFeedbackToast('Error al subir imágenes', 'Ocurrió un problema al subir las imágenes. Intenta nuevamente.', 'error');
 		}
 	}
 
-	showToastNotification(title: string, message: string) {
+	private showFeedbackToast(title: string, message: string, type: 'success' | 'edit' | 'delete' | 'error' = 'success'): void {
 		this.toastTitle = title;
 		this.toastMessage = message;
+		this.toastType = type;
 		this.showToast = true;
-
-		setTimeout(() => {
-			this.showToast = false;
-		}, 3000);
+		setTimeout(() => { this.showToast = false; }, 3000);
 	}
 
 	closeModal() {

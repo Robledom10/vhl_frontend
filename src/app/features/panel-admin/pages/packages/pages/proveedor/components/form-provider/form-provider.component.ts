@@ -15,12 +15,57 @@ export class FormProviderComponent implements OnChanges {
 	@Input() provider: RespuestaProveedor | null = null;
 	@Output() closed = new EventEmitter<void>();
 	@Output() saved = new EventEmitter<{ nombre: string }>();
+
 	loading = false;
 	errorMsg = '';
 	showConfirmModal = false;
 	pendingRequest: SolicitudProveedor | null = null;
 
+	// ==============================
+	// DATOS ESTÁTICOS
+	// ==============================
+
+	tiposProveedor = ['Hotel', 'Transporte'];
 	tiposVehiculo = ['Bus', 'Avión', 'Van', 'Minibus', 'Lancha', 'Otro'];
+
+	// ==============================
+	// DROPDOWN MANAGER
+	// ==============================
+
+	private openDropdown: string | null = null;
+
+	toggleDropdown(key: string): void {
+		if (this.mode === 'view') return;
+		this.openDropdown = this.openDropdown === key ? null : key;
+	}
+
+	isDropdownOpen(key: string): boolean {
+		return this.openDropdown === key;
+	}
+
+	selectTipoProveedor(value: string): void {
+		this.providerForm.patchValue({ tipoProveedor: value });
+		this.providerForm.get('tipoProveedor')?.markAsTouched();
+		this.openDropdown = null;
+	}
+
+	selectTipoVehiculo(value: string): void {
+		this.providerForm.patchValue({ tipoVehiculo: value });
+		this.openDropdown = null;
+	}
+
+	/** Cierra el dropdown al hacer clic fuera de él */
+	onModalClick(event: Event): void {
+		event.stopPropagation();
+		const target = event.target as HTMLElement;
+		if (!target.closest('.custom-select')) {
+			this.openDropdown = null;
+		}
+	}
+
+	// ==============================
+	// FORM
+	// ==============================
 
 	constructor(
 		private fb: FormBuilder,
@@ -38,27 +83,27 @@ export class FormProviderComponent implements OnChanges {
 		conductor: [''],
 		telefonoConductor: [''],
 		capacidad: [null as number | null],
+		// Hotel
 		direccion: [''],
-		// General
 		notas: [''],
 	});
 
-	get tipo(): string {
-		return this.providerForm.get('tipoProveedor')?.value || '';
-	}
-
+	get tipo(): string { return this.providerForm.get('tipoProveedor')?.value || ''; }
 	get esTransporte(): boolean { return this.tipo === 'Transporte'; }
 	get esHotel(): boolean { return this.tipo === 'Hotel'; }
 
+	// ==============================
+	// LIFECYCLE
+	// ==============================
+
 	ngOnChanges(changes: SimpleChanges): void {
-		// Cuando se abre en modo create → limpiar siempre
 		if (changes['isOpen'] && this.isOpen && this.mode === 'create') {
 			this.providerForm.reset();
 			this.errorMsg = '';
 			this.pendingRequest = null;
+			this.openDropdown = null;
 		}
 
-		// Cuando llega un proveedor para editar → cargar datos
 		if (changes['provider'] && this.provider && this.mode !== 'create') {
 			this.providerForm.patchValue({
 				nombre: this.provider.nombre,
@@ -74,9 +119,9 @@ export class FormProviderComponent implements OnChanges {
 				notas: this.provider.notas ?? '',
 			});
 			this.errorMsg = '';
+			this.openDropdown = null;
 		}
 
-		// Modo view → deshabilitar; otros → habilitar
 		if (changes['mode']) {
 			if (this.mode === 'view') {
 				this.providerForm.disable();
@@ -86,11 +131,16 @@ export class FormProviderComponent implements OnChanges {
 		}
 	}
 
+	// ==============================
+	// SUBMIT
+	// ==============================
+
 	closeModal(): void {
 		this.providerForm.reset();
 		this.errorMsg = '';
 		this.pendingRequest = null;
 		this.showConfirmModal = false;
+		this.openDropdown = null;
 		this.closed.emit();
 	}
 
@@ -136,7 +186,7 @@ export class FormProviderComponent implements OnChanges {
 				error: (error) => {
 					this.loading = false;
 					this.errorMsg = error?.error?.mensaje || error?.error?.message || 'Error al crear el proveedor. Intenta de nuevo.';
-				}
+				},
 			});
 			return;
 		}
@@ -151,7 +201,7 @@ export class FormProviderComponent implements OnChanges {
 				error: (error) => {
 					this.loading = false;
 					this.errorMsg = error?.error?.mensaje || error?.error?.message || 'Error al actualizar el proveedor. Intenta de nuevo.';
-				}
+				},
 			});
 		}
 	}

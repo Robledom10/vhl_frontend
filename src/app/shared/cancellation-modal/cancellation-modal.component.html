@@ -1,0 +1,94 @@
+<div class="terms-overlay" *ngIf="isOpen" (click)="onOverlayClick($event)">
+	<div class="terms-container">
+
+		<!-- HEADER -->
+		<div class="terms-header">
+			<div class="terms-header-icon">
+				<i class="fa-solid fa-ban"></i>
+			</div>
+			<div class="terms-header-text">
+				<h2>Política de Cancelaciones</h2>
+				<span>Hernando Lopera Viajes y Excursiones</span>
+			</div>
+			<button class="terms-close-btn" (click)="close()">
+				<i class="fa-solid fa-xmark"></i>
+			</button>
+		</div>
+
+		<!-- BODY -->
+		<div class="terms-body">
+
+			<p class="terms-intro">
+				Antes de realizar su reserva, le pedimos leer detenidamente nuestra política de cancelaciones.
+				Al efectuar cualquier pago, el cliente acepta estas condiciones en su totalidad.
+			</p>
+
+			<!-- 1. Cancelaciones y Reembolsos -->
+			<div class="terms-section">
+				<div class="section-header">
+					<div class="section-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+					<h3><span class="section-num">1</span> Cancelaciones y Reembolsos</h3>
+				</div>
+				<ul>
+					<li>Los pagos realizados <strong>no son reembolsables</strong> bajo ninguna circunstancia.</li>
+					<li>Una vez confirmada la reserva con el abono inicial, no se realizarán devoluciones de ningún valor pagado.</li>
+					<li>En caso de cancelación voluntaria por parte del cliente, se perderá la totalidad del valor abonado.</li>
+					<li>La agencia podrá ofrecer alternativas de reprogramación sujetas a disponibilidad, sin que esto implique la obligación de reembolso.</li>
+				</ul>
+			</div>
+
+			<!-- 2. Cancelación por parte de la agencia -->
+			<div class="terms-section">
+				<div class="section-header">
+					<div class="section-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+					<h3><span class="section-num">2</span> Cancelación por parte de la Agencia</h3>
+				</div>
+				<ul>
+					<li>En caso de que la agencia cancele el servicio por causas imputables a ella, se acordará con el cliente una reprogramación o el valor pagado será utilizado como abono para un viaje futuro.</li>
+					<li>Eventos de fuerza mayor (desastres naturales, cierres de vías, orden público) no obligan a la agencia a efectuar reembolsos.</li>
+				</ul>
+			</div>
+
+			<!-- 3. No Show -->
+			<div class="terms-section">
+				<div class="section-header">
+					<div class="section-icon"><i class="fa-solid fa-user-slash"></i></div>
+					<h3><span class="section-num">3</span> Política de No Presentación (No Show)</h3>
+				</div>
+				<p>
+					Si el viajero no se presenta en la fecha, hora o lugar de salida establecidos, se entenderá
+					como cancelación voluntaria. En este caso:
+				</p>
+				<ul>
+					<li>No habrá derecho a reembolso de ningún valor abonado.</li>
+					<li>No se garantiza la reprogramación del servicio ni la disponibilidad en fechas posteriores.</li>
+					<li>La agencia no asumirá costos adicionales derivados de la no presentación del cliente.</li>
+				</ul>
+			</div>
+
+			<!-- 4. Cambios de Fecha -->
+			<div class="terms-section last">
+				<div class="section-header">
+					<div class="section-icon"><i class="fa-solid fa-calendar-xmark"></i></div>
+					<h3><span class="section-num">4</span> Cambios de Fecha</h3>
+				</div>
+				<ul>
+					<li>Los cambios de fecha estarán sujetos a disponibilidad y podrán generar costos adicionales.</li>
+					<li>Toda solicitud de cambio deberá realizarse con al menos 72 horas de anticipación a la fecha de salida.</li>
+					<li>La agencia no garantiza que los proveedores externos acepten modificaciones una vez confirmado el servicio.</li>
+				</ul>
+				<p class="terms-update">Última actualización: junio de 2026.</p>
+			</div>
+
+		</div>
+
+		<!-- FOOTER -->
+		<div class="terms-footer">
+			<button class="terms-accept-btn" (click)="close()">
+				<i class="fa-solid fa-check"></i>
+				Entendido
+			</button>
+		</div>
+
+	</div>
+</div>

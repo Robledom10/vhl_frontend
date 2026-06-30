@@ -200,26 +200,8 @@
 			<strong>Inspira a otros</strong> con tu experiencia
 		</h2>
 
-		<!-- Card testimonio -->
-		<div class="testimonial-card">
-			<span class="quote-icon">❞</span>
-			<div class="testimonial-header">
-				<div class="testimonial-header-img">
-					<img src="https://res.cloudinary.com/dqcviyp18/image/upload/f_auto,q_auto:best,dpr_auto,c_fill,w_900,ar_4:5/v1777933201/Día_7-37_zgbob5.jpg"
-						alt="Manuel Quintero" />
-				</div>
-				<div>
-					<p class="testimonial-name">Manuel Quintero</p>
-					<p class="testimonial-role">Excursionista 2025</p>
-				</div>
-			</div>
-			<p class="testimonial-text">
-				Una experiencia inolvidable, llena de momentos únicos, paisajes increíbles y recuerdos que quedarán para siempre.
-			</p>
-			<div class="stars">
-				<span *ngFor="let s of [1,2,3,4,5]"><i class="fa-solid fa-star"></i></span>
-			</div>
-		</div>
+		<!-- Componente de comentarios (slider de testimonios reales) -->
+		<app-testimonial-slider></app-testimonial-slider>
 	</div>
 
 	<!-- Columna derecha: imagen única -->

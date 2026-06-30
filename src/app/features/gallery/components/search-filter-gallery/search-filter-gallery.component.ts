@@ -17,6 +17,7 @@ export class SearchFilterGalleryComponent {
 	@Input() activityOptions: string[] = [];
 
 	@Output() search = new EventEmitter<SearchFilters>();
+	@Output() yearChange = new EventEmitter<number | null>();
 
 	selectedYear: number | null = null;
 	selectedSite = 'Todos';
@@ -59,11 +60,13 @@ export class SearchFilterGalleryComponent {
 	selectYear(year: number): void {
 		this.selectedYear = year;
 		this.calendarOpen = false;
+		this.yearChange.emit(year);
 	}
 
 	clearDate(): void {
 		this.selectedYear = null;
 		this.calendarOpen = false;
+		this.yearChange.emit(null);
 	}
 
 	selectOption(type: 'site' | 'act', value: string): void {

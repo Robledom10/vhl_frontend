@@ -30,7 +30,7 @@ export class GalleryAdminComponent implements OnInit {
 	showToast = false;
 	toastTitle = '';
 	toastMessage = '';
-	toastType: 'success' | 'error' | 'info' = 'success';
+	toastType: 'success' | 'edit' | 'delete' | 'error' = 'success';
 
 	//   Para eliminar una imagen
 	showDeleteModal = false;
@@ -221,7 +221,7 @@ export class GalleryAdminComponent implements OnInit {
 				this.showDeleteModal = false;
 				document.body.style.overflow = '';
 
-				this.showToastNotification(
+				this.showFeedbackToast(
 					'Archivo eliminado',
 					'El archivo fue eliminado correctamente.',
 					'success'
@@ -233,7 +233,7 @@ export class GalleryAdminComponent implements OnInit {
 
 			error: (err) => {
 				console.error(err);
-				this.showToastNotification(
+				this.showFeedbackToast(
 					'Error al eliminar',
 					'No se pudo eliminar el archivo. Intenta nuevamente.',
 					'error'
@@ -242,19 +242,16 @@ export class GalleryAdminComponent implements OnInit {
 		});
 	}
 
-	showToastNotification(title: string, message: string, type: 'success' | 'error' | 'info' = 'success'): void {
+	private showFeedbackToast(title: string, message: string, type: 'success' | 'edit' | 'delete' | 'error' = 'success'): void {
 		this.toastTitle = title;
 		this.toastMessage = message;
 		this.toastType = type;
 		this.showToast = true;
-
-		setTimeout(() => {
-			this.showToast = false;
-		}, 3000);
+		setTimeout(() => { this.showToast = false; }, 3000);
 	}
 
-	onMediaNotification(event: { title: string; message: string; type: 'success' | 'error' | 'info' }): void {
-		this.showToastNotification(event.title, event.message, event.type);
+	onMediaNotification(event: { title: string; message: string; type: 'success' | 'edit' | 'delete' | 'error' }): void {
+		this.showFeedbackToast(event.title, event.message, event.type);
 	}
 
 	closeAllDropdowns(): void {
