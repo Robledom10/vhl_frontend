@@ -19,30 +19,22 @@
 		<div class="footer-col">
 			<h4 class="footer-title">Atención al Cliente</h4>
 			<ul class="footer-links">
-				<li><a routerLink="/contacto">Contáctanos</a></li>
-				<li><a routerLink="/faq">Preguntas Frecuentes</a></li>
-				<li><a routerLink="/reservas">Reservas</a></li>
-				<li><a routerLink="/metodos-pago">Métodos de Pago</a></li>
-				<li><a routerLink="/cancelacion">Política de Cancelación</a></li>
+				<li>
+					<a class="pdf-link" (click)="openPoliticaCancelacion()">
+						Política de Cancelación
+					</a>
+				</li>
+				<li>
+					<a class="pdf-link" (click)="openTerminosCondiciones()">
+						Términos y Condiciones
+					</a>
+				</li>
 			</ul>
 		</div>
 
 		<!-- Mantente Conectado -->
-		<div class="footer-col footer-newsletter">
+		<div class="footer-col footer-social">
 			<h4 class="footer-title">Mantente Conectado</h4>
-			<p class="footer-desc">Recibe ofertas exclusivas en tu correo.</p>
-
-			<div class="newsletter-input">
-				<input type="email" placeholder="Correo Electrónico" [(ngModel)]="email" />
-				<button (click)="onSubscribe()">
-					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-						stroke-width="2.2">
-						<path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" />
-					</svg>
-				</button>
-			</div>
-
-			<!-- Redes sociales -->
 			<div class="social-links">
 				<a href="#" target="_blank" class="social-btn" aria-label="WhatsApp">
 					<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -69,6 +61,15 @@
 	<!-- Línea y copyright -->
 	<div class="footer-bottom">
 		<hr class="footer-divider" />
-		<p class="footer-copy">&copy; 2026 Hernando Lopera. Todos los derechos reservados.</p>
+		<p class="footer-copy">
+			&copy; 2026 Hernando Lopera. Todos los derechos reservados.
+			<span class="footer-separator">·</span>
+			<button class="terms-link" (click)="showTerms = true">Términos y Condiciones</button>
+			<span class="footer-separator">·</span>
+			<button class="terms-link" (click)="showCancellation = true">Política de Cancelaciones</button>
+		</p>
 	</div>
 </footer>
+
+<app-terms-modal [isOpen]="showTerms" (closed)="showTerms = false"></app-terms-modal>
+<app-cancellation-modal [isOpen]="showCancellation" (closed)="showCancellation = false"></app-cancellation-modal>

@@ -17,6 +17,7 @@ export class RegisterFormComponent {
 	errorMessage: string | null = null;
 	isLoading: boolean = false;
 	currentStep: number = 1;
+	showTerms = false;
 
 	documentDropdownOpen = false;
 

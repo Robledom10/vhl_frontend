@@ -4,6 +4,7 @@ import { RespuestaComentarioPaquete } from './models/comments.model';
 import { AuthService } from '../../core/services/auth.service';
 import { OperacionesService } from '../../core/services/operaciones.service';
 import { Viaje } from '../../features/panel-admin/models/operaciones.models';
+import { Router } from '@angular/router';
 
 export interface InfoRow {
 	label: string;
@@ -50,12 +51,26 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 	private scrollY = 0;
 	private closeTimer: ReturnType<typeof setTimeout> | null = null;
 
+	readonly maxCaracteres = 150;
+
 	selectedRating = 5;
 	newComment = '';
 	editingCommentId: number | null = null;
 	editCommentText = '';
 	editRating = 5;
 	savingEdit = false;
+	deletingCommentId: number | null = null;
+
+	// Modal de confirmación de borrado
+	showDeleteModal = false;
+	commentToDelete: RespuestaComentarioPaquete | null = null;
+
+	// Toast de feedback
+	showToast = false;
+	toastTitle = '';
+	toastMessage = '';
+	toastType: 'success' | 'edit' | 'delete' | 'error' = 'success';
+	private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
 	// Modal de reserva
 	wizardOpen = false;
@@ -70,42 +85,50 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 	viajeSeleccionado: Viaje | null = null;
 
 	constructor(
-		private elementRef: ElementRef,
 		private packageService: PackageService,
 		private authService: AuthService,
-		private operacionesService: OperacionesService
+		private operacionesService: OperacionesService,
+		private router: Router
 	) { }
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if (!changes['isOpen']) return;
-		if (this.isOpen) {
-			if (this.closeTimer) {
-				clearTimeout(this.closeTimer);
-				this.closeTimer = null;
+		if (changes['isOpen']) {
+			if (this.isOpen) {
+				if (this.closeTimer) {
+					clearTimeout(this.closeTimer);
+					this.closeTimer = null;
+				}
+
+				if (this.package?.id) {
+					this.loadComments();
+					this.loadTrips();
+				}
+
+				this.visible = true;
+				this.travelers = 1;
+
+				setTimeout(() => {
+					this.animating = true;
+				}, 10);
+
+				this.blockScroll();
+			} else {
+				this.animating = false;
+				this.closeTimer = setTimeout(() => { this.visible = false; this.closeTimer = null; }, 420);
+				this.restoreScroll();
 			}
-
-			if (this.package?.id) {
-				this.loadComments();
-				this.loadTrips();
-			}
-
-			this.visible = true;
-			this.travelers = 1;
-
-			setTimeout(() => {
-				this.animating = true;
-			}, 10);
-
-			this.blockScroll();
-		} else {
-			this.animating = false;
-			this.closeTimer = setTimeout(() => { this.visible = false; this.closeTimer = null; }, 420);
-			this.restoreScroll();
+		} else if (changes['package'] && this.isOpen && this.package?.id) {
+			this.loadComments();
+			this.loadTrips();
 		}
 	}
 
 	ngOnDestroy(): void {
 		this.restoreScroll();
+
+		if (this.toastTimer) {
+			clearTimeout(this.toastTimer);
+		}
 	}
 
 	loadTrips(): void {
@@ -291,6 +314,10 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 			return;
 		}
 
+		if (this.newCommentChars > this.maxCaracteres) {
+			return;
+		}
+
 		const request = {
 			comentario: this.newComment,
 			puntaje: this.selectedRating
@@ -334,6 +361,10 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 			return;
 		}
 
+		if (this.editCommentChars > this.maxCaracteres) {
+			return;
+		}
+
 		this.savingEdit = true;
 
 		this.packageService
@@ -358,6 +389,74 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 					console.error(error);
 				}
 			});
+	}
+
+	askDeleteComment(comment: RespuestaComentarioPaquete): void {
+		if (this.deletingCommentId !== null) {
+			return;
+		}
+
+		this.commentToDelete = comment;
+		this.showDeleteModal = true;
+	}
+
+	closeDeleteModal(): void {
+		this.showDeleteModal = false;
+		this.commentToDelete = null;
+	}
+
+	confirmDeleteComment(): void {
+		const comment = this.commentToDelete;
+
+		if (!this.package?.id || !comment) {
+			return;
+		}
+
+		this.showDeleteModal = false;
+		this.deletingCommentId = comment.id;
+
+		this.packageService
+			.deleteComment(this.package.id, comment.id)
+			.subscribe({
+				next: () => {
+					this.comments = this.comments.filter(item => item.id !== comment.id);
+
+					if (this.editingCommentId === comment.id) {
+						this.cancelEditComment();
+					}
+
+					this.deletingCommentId = null;
+					this.commentToDelete = null;
+					this.showFeedbackToast('Comentario eliminado', 'Tu comentario se eliminó correctamente.', 'delete');
+				},
+				error: error => {
+					this.deletingCommentId = null;
+					this.commentToDelete = null;
+					console.error(error);
+					this.showFeedbackToast('Ocurrió un error', 'No se pudo eliminar tu comentario, inténtalo de nuevo.', 'error');
+				}
+			});
+	}
+
+	private showFeedbackToast(title: string, message: string, type: 'success' | 'edit' | 'delete' | 'error' = 'success'): void {
+		this.toastTitle = title;
+		this.toastMessage = message;
+		this.toastType = type;
+		this.showToast = true;
+
+		if (this.toastTimer) {
+			clearTimeout(this.toastTimer);
+		}
+
+		this.toastTimer = setTimeout(() => { this.showToast = false; }, 3000);
+	}
+
+	get newCommentChars(): number {
+		return this.newComment.trim().length;
+	}
+
+	get editCommentChars(): number {
+		return this.editCommentText.trim().length;
 	}
 
 	canEditComment(comment: RespuestaComentarioPaquete): boolean {
@@ -412,6 +511,16 @@ export class PackageDetailSheetComponent implements OnChanges, OnDestroy {
 
 			return null;
 		}
+	}
+
+	/** Sin cupos O sin viajes disponibles */
+	get sinDisponibilidad(): boolean {
+		return (this.package?.spotsAvailable ?? 0) === 0 || this.viajesDisponibles.length === 0;
+	}
+
+	irARegistro(): void {
+		this.close();
+		this.router.navigate(['/auth/register']);
 	}
 
 	// HostListener

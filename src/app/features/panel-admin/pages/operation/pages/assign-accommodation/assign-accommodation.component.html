@@ -5,7 +5,10 @@
 			<h2 class="page-title">Asignar <span>Alojamiento</span></h2>
 			<p class="page-subtitle">Gestiona el alojamiento asignado a cada viajero por viaje</p>
 		</div>
-		<button class="btn-nuevo" (click)="abrirNuevo()">+ Asignar alojamiento</button>
+		<button class="btn-nuevo" (click)="abrirNuevo()">
+			<i class="fa-solid fa-plus"></i>
+			<span>Asignar alojamiento</span>
+		</button>
 	</div>
 
 	<!-- PROVEEDORES DISPONIBLES -->
@@ -16,14 +19,25 @@
 		</div>
 		<div class="proveedores-grid">
 			<div class="proveedor-card" *ngFor="let p of proveedoresAlojamiento">
-				<div class="pc-icon-wrap pc-hotel"><i class="fa-solid fa-hotel"></i></div>
+				<div class="pc-icon-wrap pc-hotel">
+					<i class="fa-solid fa-hotel"></i>
+				</div>
 				<div class="pc-info">
-					<div class="pc-nombre">{{ p.nombre }}</div>
-					<div class="pc-detalle" *ngIf="p.direccion"><i class="fa-solid fa-location-dot"></i> {{ p.direccion
-						}}</div>
-					<div class="pc-detalle" *ngIf="p.telefono"><i class="fa-solid fa-phone"></i> {{ p.telefono }}</div>
-					<div class="pc-detalle" *ngIf="p.correo"><i class="fa-regular fa-envelope"></i> {{ p.correo }}</div>
-					<div class="pc-detalle" *ngIf="p.notas"><i class="fa-solid fa-note-sticky"></i> {{ p.notas }}</div>
+					<div class="pc-nombre">
+						{{ p.nombre }}
+					</div>
+					<div class="pc-detalle" *ngIf="p.direccion">
+						<i class="fa-solid fa-location-dot"></i> {{ p.direccion}}
+					</div>
+					<div class="pc-detalle" *ngIf="p.telefono">
+						<i class="fa-solid fa-phone"></i> {{ p.telefono }}
+					</div>
+					<div class="pc-detalle" *ngIf="p.correo">
+						<i class="fa-regular fa-envelope"></i> {{ p.correo }}
+					</div>
+					<div class="pc-detalle" *ngIf="p.notas">
+						<i class="fa-solid fa-note-sticky"></i> {{ p.notas }}
+					</div>
 				</div>
 				<button class="pc-btn" (click)="asignarDesdeProveedor(p)">Asignar a viaje</button>
 			</div>
@@ -33,6 +47,12 @@
 	<div class="section-title">
 		<i class="fa-solid fa-bed"></i>
 		<h3>Viajes y estado de alojamiento</h3>
+		<div class="search-box">
+			<input type="text" placeholder="Buscar" [(ngModel)]="search">
+			<button>
+				<i class="fa-solid fa-magnifying-glass"></i>
+			</button>
+		</div>
 	</div>
 
 	<div class="table-container">
@@ -42,14 +62,14 @@
 					<th>Paquete</th>
 					<th>Viajero</th>
 					<th>Hotel</th>
-					<th>Habitacion</th>
-					<th>Direccion</th>
+					<th>Habitación</th>
+					<th>Dirección</th>
 					<th>Estado</th>
-					<th>Accion</th>
+					<th>Acción</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr *ngFor="let viaje of viajes" [class.fila-sin-viaje]="!viaje.tieneViaje">
+				<tr *ngFor="let viaje of viajesPaginados" [class.fila-sin-viaje]="!viaje.tieneViaje">
 					<td>
 						<div class="paquete-nombre">{{ viaje.titulo }}</div>
 						<small class="viaje-id" *ngIf="viaje.tieneViaje">Viaje #{{ viaje.id }}</small>
@@ -68,7 +88,7 @@
 					<td>
 						<div class="actions" *ngIf="viaje.tieneViaje">
 							<button class="ver" *ngIf="viaje.alojamientoAsignado" (click)="verDetalle(viaje)">
-								<i class="fa-solid fa-eye"></i>
+								<i class="fa-regular fa-eye"></i>
 							</button>
 							<button [class]="viaje.alojamientoAsignado ? 'edit' : 'assign'"
 								(click)="seleccionarViaje(viaje)">
@@ -86,6 +106,33 @@
 				</tr>
 			</tbody>
 		</table>
+	</div>
+
+	<!-- PAGINACIÓN -->
+	<div class="pagination-bar" *ngIf="totalPaginas > 1">
+		<span class="pagination-info">
+			{{ totalElementos }} viajes · Página {{ paginaActual + 1 }} de {{ totalPaginas }}
+		</span>
+		<div class="pagination-controls">
+			<button class="page-btn" [disabled]="paginaActual === 0" (click)="cambiarPagina(0)">
+				<i class="fa-solid fa-angles-left"></i>
+			</button>
+			<button class="page-btn" [disabled]="paginaActual === 0" (click)="cambiarPagina(paginaActual - 1)">
+				<i class="fa-solid fa-chevron-left"></i>
+			</button>
+			<button *ngFor="let p of paginas" class="page-btn" [class.active]="p === paginaActual"
+				(click)="cambiarPagina(p)">
+				{{ p + 1 }}
+			</button>
+			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1"
+				(click)="cambiarPagina(paginaActual + 1)">
+				<i class="fa-solid fa-chevron-right"></i>
+			</button>
+			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1"
+				(click)="cambiarPagina(totalPaginas - 1)">
+				<i class="fa-solid fa-angles-right"></i>
+			</button>
+		</div>
 	</div>
 </div>
 

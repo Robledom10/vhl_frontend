@@ -1,5 +1,7 @@
-<div class="modal-backdrop" *ngIf="isOpen" (click)="cerrar()"></div>
-<div class="modal-panel" *ngIf="isOpen">
+<div class="modal-overlay" *ngIf="isOpen" (click)="cerrar()">
+<div class="modal-panel" *ngIf="isOpen" (click)="onModalClick($event)">
+
+	<!-- HEADER -->
 	<div class="modal-header">
 		<div class="modal-title-wrap">
 			<div class="modal-icon-wrap med-icon-sm"><i class="fa-solid fa-heart-pulse"></i></div>
@@ -10,62 +12,129 @@
 
 	<form [formGroup]="medForm" (ngSubmit)="guardar()">
 		<div class="form-grid">
+
+			<!-- USUARIO (solo si es nuevo) -->
 			<div class="form-group span-2" *ngIf="!editandoMedico">
-				<label>Usuario *</label>
-				<select (change)="onUsuarioChange($any($event.target).value)" [disabled]="cargandoUsuarios">
-					<option value="">{{ cargandoUsuarios ? 'Cargando usuarios...' : 'Seleccionar usuario...' }}</option>
-					<option *ngFor="let u of usuarios" [value]="u.id">{{ u.nombre }}</option>
-				</select>
-				<span class="error" *ngIf="medForm.get('nombreViajero')?.invalid && medForm.get('nombreViajero')?.touched">Selecciona un usuario</span>
+				<div class="custom-select-group">
+					<div class="custom-select" [class.open]="usuarioDropdownOpen"
+						[class.selected]="usuarioSeleccionadoId"
+						[class.invalid]="formSubmitted && medForm.get('nombreViajero')?.invalid"
+						(click)="toggleUsuarioDropdown()">
+						<div class="custom-select-value">{{ selectedUsuarioLabel || '' }}</div>
+						<i class="fa-solid fa-angle-down select-icon"></i>
+						<div class="custom-select-dropdown" *ngIf="usuarioDropdownOpen"
+							(click)="$event.stopPropagation()">
+							<div class="custom-option disabled" *ngIf="cargandoUsuarios">Cargando usuarios...</div>
+							<div class="custom-option" [class.active]="!usuarioSeleccionadoId"
+								(click)="onUsuarioChange(''); $event.stopPropagation()">
+								Sin usuario asignado
+							</div>
+							<div class="custom-option" *ngFor="let u of usuarios"
+								[class.active]="usuarioSeleccionadoId === u.id"
+								(click)="onUsuarioChange(u.id.toString()); $event.stopPropagation()">
+								{{ u.nombre }}
+							</div>
+						</div>
+					</div>
+					<label [class.active]="usuarioSeleccionadoId"
+						[class.label-error]="formSubmitted && medForm.get('nombreViajero')?.invalid">
+						Usuario
+					</label>
+					<span class="field-error" *ngIf="formSubmitted && medForm.get('nombreViajero')?.invalid">
+						Selecciona un usuario
+					</span>
+				</div>
 			</div>
 
+			<!-- NOMBRE VIAJERO (solo en edición) -->
 			<div class="form-group span-2" *ngIf="editandoMedico">
-				<label>Nombre del viajero</label>
-				<input type="text" formControlName="nombreViajero" class="input-readonly" readonly>
+				<div class="field-wrapper">
+					<input type="text" formControlName="nombreViajero" placeholder="Nombre del viajero"
+						class="input-readonly" readonly />
+					<label [class.active]="medForm.get('nombreViajero')?.value">Nombre del viajero</label>
+				</div>
 			</div>
 
+			<!-- TIPO DE SANGRE -->
 			<div class="form-group">
-				<label>Tipo de sangre *</label>
-				<select formControlName="tipoSangre">
-					<option value="">Seleccionar...</option>
-					<option *ngFor="let g of gruposSanguineos" [value]="g">{{ g }}</option>
-				</select>
-				<span class="error"
-					*ngIf="medForm.get('tipoSangre')?.invalid && medForm.get('tipoSangre')?.touched">Campo
-					requerido</span>
+				<div class="custom-select-group">
+					<div class="custom-select" [class.open]="tipoSangreDropdownOpen"
+						[class.selected]="medForm.get('tipoSangre')?.value"
+						[class.invalid]="medForm.get('tipoSangre')?.invalid && medForm.get('tipoSangre')?.touched"
+						(click)="toggleTipoSangreDropdown()">
+						<div class="custom-select-value">{{ medForm.get('tipoSangre')?.value || '' }}</div>
+						<i class="fa-solid fa-angle-down select-icon"></i>
+						<div class="custom-select-dropdown" *ngIf="tipoSangreDropdownOpen"
+							(click)="$event.stopPropagation()">
+							<div class="custom-option" *ngFor="let g of gruposSanguineos"
+								[class.active]="medForm.get('tipoSangre')?.value === g"
+								(click)="selectTipoSangre(g); $event.stopPropagation()">
+								{{ g }}
+							</div>
+						</div>
+					</div>
+					<label [class.active]="medForm.get('tipoSangre')?.value"
+						[class.label-error]="medForm.get('tipoSangre')?.invalid && medForm.get('tipoSangre')?.touched">
+						Tipo de sangre
+					</label>
+					<span class="field-error"
+						*ngIf="medForm.get('tipoSangre')?.invalid && medForm.get('tipoSangre')?.touched">
+						Campo requerido
+					</span>
+				</div>
 			</div>
 
+			<!-- TELÉFONO MÉDICO -->
 			<div class="form-group">
-				<label>Teléfono médico</label>
-				<input type="text" formControlName="telefonoMedico" placeholder="+57 300 000 0000">
-				<span class="error"
-					*ngIf="medForm.get('telefonoMedico')?.invalid && medForm.get('telefonoMedico')?.touched">Formato
-					inválido</span>
+				<div class="field-wrapper">
+					<input type="text" formControlName="telefonoMedico" placeholder="Teléfono médico"
+						[class.ng-invalid]="medForm.get('telefonoMedico')?.invalid && medForm.get('telefonoMedico')?.touched"
+						[class.ng-touched]="medForm.get('telefonoMedico')?.touched" />
+					<label [class.active]="medForm.get('telefonoMedico')?.value"
+						[class.label-error]="medForm.get('telefonoMedico')?.invalid && medForm.get('telefonoMedico')?.touched">
+						Teléfono médico
+					</label>
+					<span class="field-error"
+						*ngIf="medForm.get('telefonoMedico')?.invalid && medForm.get('telefonoMedico')?.touched">
+						Formato inválido
+					</span>
+				</div>
 			</div>
 
+			<!-- ALERGIAS -->
 			<div class="form-group span-2">
-				<label>Alergias</label>
-				<input type="text" formControlName="alergias" placeholder='Ej: Polen, mariscos o "Ninguna"'>
+				<div class="field-wrapper">
+					<input type="text" formControlName="alergias" placeholder='Alergias' />
+					<label [class.active]="medForm.get('alergias')?.value">Alergias</label>
+				</div>
 			</div>
 
+			<!-- MEDICAMENTOS -->
 			<div class="form-group span-2">
-				<label>Medicamentos</label>
-				<input type="text" formControlName="medicamentos" placeholder='Ej: Metformina o "Ninguno"'>
+				<div class="field-wrapper">
+					<input type="text" formControlName="medicamentos" placeholder='Medicamentos' />
+					<label [class.active]="medForm.get('medicamentos')?.value">Medicamentos</label>
+				</div>
 			</div>
 
+			<!-- CONDICIONES MÉDICAS -->
 			<div class="form-group span-2">
-				<label>Condiciones médicas</label>
-				<input type="text" formControlName="condiciones" placeholder='Ej: Diabetes tipo 2 o "Ninguna"'>
+				<div class="field-wrapper">
+					<input type="text" formControlName="condiciones" placeholder='Condiciones médicas' />
+					<label [class.active]="medForm.get('condiciones')?.value">Condiciones médicas</label>
+				</div>
 			</div>
+
 		</div>
 
 		<div class="modal-actions">
 			<button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
 			<button type="submit" class="btn-guardar" [disabled]="enviando">
-				{{ enviando ? 'Guardando...' : 'Guardar registro' }}
+				{{ enviando ? 'Guardando...' : (editandoMedico ? 'Guardar cambios' : 'Guardar registro') }}
 			</button>
 		</div>
 	</form>
+</div>
 </div>
 
 <app-confirm-modal [isOpen]="showConfirmModal"

@@ -329,7 +329,7 @@ form {
 }
 
 /* =========================
-	PASSWORD
+  PASSWORD
 ========================= */
 
 .form-group-password {
@@ -347,10 +347,47 @@ form {
 	opacity: 0.6;
 }
 
+/* Por defecto: ojo abierto visible, ojo tachado oculto */
+.form-group-password .fa-eye {
+	display: block;
+}
+
+.form-group-password .fa-eye-slash {
+	display: none;
+}
+
+/* Cuando el input es type="text" (contraseña visible): invertir iconos */
+.form-group-password input[type="text"]~.fa-eye {
+	display: none;
+}
+
+.form-group-password input[type="text"]~.fa-eye-slash {
+	display: block;
+}
+
+/* Color azul cuando el campo es válido o está focused */
+.form-group-password input:focus~.fa-eye,
+.form-group-password input:focus~.fa-eye-slash {
+	color: var(--color-primario);
+	opacity: 1;
+}
+
+.form-group-password input.ng-valid.ng-touched~.fa-eye,
+.form-group-password input.ng-valid.ng-touched~.fa-eye-slash {
+	color: var(--color-primario);
+	opacity: 1;
+}
+
+/* Color rojo cuando el campo es inválido y tocado */
+.form-group-password input.ng-invalid.ng-touched~.fa-eye,
+.form-group-password input.ng-invalid.ng-touched~.fa-eye-slash {
+	color: var(--color-error);
+	opacity: 1;
+}
+
 .form-group-password .fa-eye:hover,
 .form-group-password .fa-eye-slash:hover {
 	opacity: 1;
-	color: var(--color-primario);
 }
 
 /* =========================

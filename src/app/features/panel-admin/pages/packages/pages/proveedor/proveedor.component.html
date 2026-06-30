@@ -1,4 +1,4 @@
-<div class="users-container">
+<div class="proveedor-container">
 
 	<!-- TOP BAR -->
 	<div class="top-bar">
@@ -86,8 +86,6 @@
 
 					<!-- ACCIONES -->
 					<td>
-						<!-- ACCIONES -->
-					<td>
 						<div class="actions">
 							<button class="view" (click)="openViewModal(proveedor)" title="Ver proveedor">
 								<i class="fa-regular fa-eye"></i>
@@ -150,5 +148,5 @@
 	(closed)="closeDeleteModal()">
 </app-confirm-modal>
 
-<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage" [type]="toastType">
 </app-toast-notification>

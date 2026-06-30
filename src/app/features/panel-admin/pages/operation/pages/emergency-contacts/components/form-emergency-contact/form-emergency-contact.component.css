@@ -1,42 +1,64 @@
-.modal-backdrop {
-	position: fixed;
-	inset: 0;
-	background: rgba(0, 0, 0, 0.35);
-	z-index: 998;
+/* ==============================
+   BACKDROP & PANEL
+   ============================== */
+.modal-panel {
+	width: 100%;
+	background: white;
+	border-radius: 45px;
+	max-width: min(560px, 92vw);
+	max-height: 85vh;
+	display: flex;
+	flex-direction: column;
+	padding: 24px 28px;
+	overflow-y: auto;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
 }
 
-.modal-panel {
+.modal-overlay {
 	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	z-index: 999;
-	background: white;
-	border-radius: 28px;
-	padding: 40px;
-	width: min(580px, 94vw);
-	max-height: 90vh;
-	overflow-y: auto;
-	box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+	inset: 0;
+	background: rgba(15, 23, 42, .45);
+	backdrop-filter: blur(6px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
 }
+
+.modal-panel::-webkit-scrollbar {
+	display: none;
+}
+
+/* ==============================
+   HEADER
+   ============================== */
 
 .modal-header {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 30px;
+	justify-content: flex-end;
+	margin-bottom: 4px;
 }
 
-.modal-header h3 {
-	font-size: 17px;
-	font-weight: 500;
-	color: var(--color-texto-principal);
-	margin: 0;
+.modal-title {
+	text-align: center;
+	font-size: var(--titulos-medianos);
+	font-weight: 700;
+	font-family: "Outfit", sans-serif;
+	color: #1e1e1e;
+	margin-bottom: 24px;
+	font-size: 28px;
+}
+
+.modal-title span {
+	color: var(--color-primario);
 }
 
 .btn-cerrar {
 	width: 34px;
 	height: 34px;
+	flex-shrink: 0;
 	border-radius: 50%;
 	border: 1px solid var(--bordes);
 	background: white;
@@ -45,6 +67,7 @@
 	align-items: center;
 	justify-content: center;
 	color: var(--color-texto-secundario);
+	font-size: 15px;
 	transition: all 0.2s;
 }
 
@@ -54,77 +77,252 @@
 	color: #ef4444;
 }
 
+/* ==============================
+   GRID
+   ============================== */
+
 .form-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 20px;
+	gap: 18px;
 }
 
 .form-group {
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
 }
 
 .form-group.span-2 {
 	grid-column: span 2;
 }
 
-.form-group label {
-	font-size: 13px;
-	font-weight: 500;
-	color: var(--color-texto-secundario);
-	padding-left: 6px;
+/* ==============================
+   FIELD WRAPPER — floating label
+   ============================== */
+
+.field-wrapper {
+	position: relative;
+	display: flex;
+	flex-direction: column;
 }
 
-.form-group input,
-.form-group select {
-	height: 52px;
-	border-radius: 25px;
+.field-wrapper label,
+.custom-select-group label {
+	position: absolute;
+	top: 11px;
+	left: 16px;
+	font-size: 14px;
+	color: var(--color-texto-secundario);
+	pointer-events: none;
+	transition: all 0.18s ease;
+	background: white;
+	padding: 0 4px;
+	z-index: 1;
+}
+
+.field-wrapper input:focus~label,
+.field-wrapper input:not(:placeholder-shown)~label,
+.field-wrapper label.active,
+.custom-select-group label.active {
+	top: -9px;
+	left: 12px;
+	font-size: 11px;
+	color: var(--color-primario);
+	font-weight: 500;
+}
+
+.field-wrapper label.label-error,
+.custom-select-group label.label-error {
+	color: #ef4444 !important;
+}
+
+/* ==============================
+   INPUTS
+   ============================== */
+
+.field-wrapper input {
+	height: 41px;
+	border-radius: 999px;
 	border: 1.5px solid #e8e8e8;
-	padding: 0 22px;
+	padding: 0 16px;
 	font-family: "Outfit", sans-serif;
-	font-size: 15px;
+	font-size: 14px;
 	outline: none;
 	transition: border-color 0.2s;
 	background: white;
+	color: var(--color-texto-principal);
 }
 
-.form-group input:focus,
-.form-group select:focus {
+.field-wrapper input:focus {
 	border-color: var(--color-primario);
+}
+
+.field-wrapper input:not(:placeholder-shown):not(.ng-invalid) {
+	border-color: var(--color-primario);
+}
+
+.field-wrapper input.ng-invalid.ng-touched {
+	border-color: #ef4444;
+}
+
+.field-wrapper input.ng-invalid.ng-touched~label {
+	color: #ef4444;
 }
 
 .input-readonly {
 	background: #f8f8f8 !important;
 	color: var(--color-texto-secundario) !important;
-	cursor: default;
+	cursor: default !important;
 }
 
-.error {
+/* ==============================
+   ERROR SPAN
+   ============================== */
+
+.field-error {
 	font-size: 12px;
 	color: #ef4444;
 	padding-left: 6px;
+	margin-top: 4px;
 }
+
+/* ==============================
+   CUSTOM SELECT
+   ============================== */
+
+.custom-select-group {
+	position: relative;
+}
+
+.custom-select {
+	height: 41px;
+	border-radius: 999px;
+	border: 1.5px solid #e8e8e8;
+	padding: 0 16px;
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	position: relative;
+	transition: border-color 0.2s;
+	background: white;
+	user-select: none;
+}
+
+.custom-select:hover,
+.custom-select.open {
+	border-color: var(--color-primario);
+}
+
+.custom-select.selected {
+	border-color: var(--color-primario);
+}
+
+.custom-select.invalid {
+	border-color: #ef4444;
+}
+
+.custom-select.invalid~label {
+	color: #ef4444 !important;
+}
+
+.custom-select-value {
+	flex: 1;
+	color: var(--color-texto-principal);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	min-height: 20px;
+}
+
+.select-icon {
+	font-size: 12px;
+	color: var(--color-texto-secundario);
+	transition: transform 0.2s;
+	margin-left: 8px;
+}
+
+.custom-select.open .select-icon {
+	transform: rotate(180deg);
+	color: var(--color-primario);
+}
+
+.custom-select:hover .select-icon,
+.custom-select.selected .select-icon {
+	color: var(--color-primario);
+}
+
+.custom-select.invalid .select-icon {
+	color: #ef4444;
+}
+
+.custom-select-dropdown {
+	position: absolute;
+	top: calc(100% + 6px);
+	left: 0;
+	right: 0;
+	background: white;
+	border: 1.5px solid #e8e8e8;
+	border-radius: 18px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+	z-index: 9999;
+	max-height: 200px;
+	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: rgba(63, 162, 219, 0.28) transparent;
+	padding: 8px;
+}
+
+.custom-option {
+	padding: 10px 16px;
+	font-size: 15px;
+	color: var(--color-texto-principal);
+	cursor: pointer;
+	transition: background 0.15s;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	border-radius: 12px;
+}
+
+.custom-option:hover {
+	background: rgba(63, 162, 219, 0.08);
+}
+
+.custom-option.active {
+	background: rgba(63, 162, 219, 0.12);
+	color: var(--color-primario);
+	font-weight: 500;
+}
+
+.custom-option.disabled {
+	color: #aaa;
+	cursor: not-allowed;
+}
+
+/* ==============================
+   ACTIONS
+   ============================== */
 
 .modal-actions {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	gap: 12px;
-	margin-top: 32px;
+	margin-top: 20px;
 }
 
 .btn-cancelar {
-	height: 46px;
-	padding: 0 28px;
-	border-radius: 25px;
+	height: 40px;
+	padding: 0 20px;
+	border-radius: 999px;
 	border: none;
 	background: #ef4444;
 	color: white;
 	cursor: pointer;
 	font-family: "Outfit", sans-serif;
-	font-size: 14px;
+	font-size: 15px;
 	font-weight: 500;
 	transition: all 0.2s;
 }
@@ -134,15 +332,15 @@
 }
 
 .btn-guardar {
-	height: 46px;
-	padding: 0 32px;
-	border-radius: 25px;
+	height: 40px;
+	padding: 0 24px;
+	border-radius: 999px;
 	border: none;
 	background: var(--color-primario);
 	color: white;
 	cursor: pointer;
 	font-family: "Outfit", sans-serif;
-	font-size: 14px;
+	font-size: 15px;
 	font-weight: 500;
 	transition: all 0.2s;
 }
@@ -155,6 +353,10 @@
 	opacity: 0.6;
 	cursor: not-allowed;
 }
+
+/* ==============================
+   RESPONSIVE
+   ============================== */
 
 @media (max-width: 600px) {
 	.form-grid {

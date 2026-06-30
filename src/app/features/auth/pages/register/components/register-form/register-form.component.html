@@ -137,12 +137,17 @@
 				<input type="checkbox" id="terms" name="terms" formControlName="terms"
 					[class.ng-invalid]="f.terms.invalid && f.terms.touched" [class.ng-touched]="f.terms.touched"
 					required />
-				<label for="terms">Aceptar términos y condiciones</label>
+				<label for="terms">
+					Acepto los
+					<button type="button" class="terms-link-btn" (click)="showTerms = true">términos y condiciones</button>
+				</label>
 
 				<span *ngIf="submitted && f.terms.invalid">
 					Debes aceptar los términos
 				</span>
 			</div>
+
+			<app-terms-modal [isOpen]="showTerms" (closed)="showTerms = false"></app-terms-modal>
 
 			<div class="buttons-row">
 				<button type="button" class="btn-back" (click)="prevStep()">

@@ -1,120 +1,229 @@
-<div class="modal-backdrop" *ngIf="isOpen" (click)="cerrar()"></div>
-<div class="modal-panel" *ngIf="isOpen" (click)="$event.stopPropagation()">
-	<div class="modal-header">
-		<h3>Asignar alojamiento<span *ngIf="viajeSeleccionado"> &mdash; {{ viajeSeleccionado.titulo }}</span></h3>
-		<button class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
+<div class="modal-overlay" *ngIf="isOpen" (click)="cerrar()">
+	<div class="modal-panel" *ngIf="isOpen" (click)="onModalClick($event)">
+
+		<!-- HEADER -->
+		<div class="modal-header">
+			<button type="button" class="btn-cerrar" (click)="cerrar()">&#x2715;</button>
+		</div>
+
+		<h2 class="modal-title">
+			{{ editandoId ? 'Editar' : 'Asignar' }} <span>Alojamiento</span>
+			<span *ngIf="viajeSeleccionado" class="modal-title-sub"> - {{ viajeSeleccionado.titulo }}</span>
+		</h2>
+
+		<form [formGroup]="alojamientoForm" (ngSubmit)="guardar()">
+			<div class="form-grid">
+
+				<!-- VIAJE (solo si no hay viajeSeleccionado) -->
+				<div class="form-group span-2" *ngIf="!viajeSeleccionado">
+					<div class="custom-select-group">
+						<div class="custom-select" [class.open]="viajeDropdownOpen"
+							[class.selected]="alojamientoForm.get('idViaje')?.value"
+							[class.invalid]="formSubmitted && alojamientoForm.get('idViaje')?.invalid"
+							(click)="toggleViajeDropdown()">
+							<div class="custom-select-value">
+								{{ selectedViajeLabel || '' }}
+							</div>
+							<i class="fa-solid fa-angle-down select-icon"></i>
+							<div class="custom-select-dropdown" *ngIf="viajeDropdownOpen"
+								(click)="$event.stopPropagation()">
+								<ng-container *ngFor="let v of viajes">
+									<div class="custom-option" *ngIf="v.tieneViaje"
+										[class.active]="alojamientoForm.get('idViaje')?.value == v.id"
+										(click)="selectViaje(v); $event.stopPropagation()">
+										{{ v.nombre }}
+									</div>
+									<div class="custom-option disabled" *ngIf="!v.tieneViaje">
+										{{ v.titulo }} — (Sin viaje creado)
+									</div>
+								</ng-container>
+							</div>
+						</div>
+						<label [class.active]="alojamientoForm.get('idViaje')?.value"
+							[class.label-error]="formSubmitted && alojamientoForm.get('idViaje')?.invalid">
+							Viaje
+						</label>
+						<span class="field-error" *ngIf="formSubmitted && alojamientoForm.get('idViaje')?.invalid">
+							Selecciona un viaje
+						</span>
+					</div>
+				</div>
+
+				<!-- USUARIO (solo si no es edición) -->
+				<div class="form-group span-2" *ngIf="!editandoId">
+					<div class="custom-select-group">
+						<div class="custom-select" [class.open]="usuarioDropdownOpen"
+							[class.selected]="usuarioSeleccionadoId" (click)="toggleUsuarioDropdown()">
+							<div class="custom-select-value">
+								{{ selectedUsuarioLabel || '' }}
+							</div>
+							<i class="fa-solid fa-angle-down select-icon"></i>
+							<div class="custom-select-dropdown" *ngIf="usuarioDropdownOpen"
+								(click)="$event.stopPropagation()">
+								<div class="custom-option" [class.active]="!usuarioSeleccionadoId"
+									(click)="onUsuarioChange(''); $event.stopPropagation()">
+									Sin usuario asignado
+								</div>
+								<div class="custom-option" *ngFor="let u of usuarios"
+									[class.active]="usuarioSeleccionadoId === u.id"
+									(click)="onUsuarioChange(u.id.toString()); $event.stopPropagation()">
+									{{ u.firstName }} {{ u.lastName }}
+								</div>
+							</div>
+						</div>
+						<label [class.active]="usuarioSeleccionadoId">Usuario</label>
+					</div>
+				</div>
+
+				<!-- NOMBRE VIAJERO (solo en edición) -->
+				<div class="form-group span-2" *ngIf="editandoId">
+					<div class="field-wrapper">
+						<input type="text" formControlName="nombreViajero" placeholder="Nombre del viajero"
+							class="input-readonly" readonly />
+						<label [class.active]="alojamientoForm.get('nombreViajero')?.value">Nombre del viajero</label>
+					</div>
+				</div>
+
+				<!-- PROVEEDOR -->
+				<div class="form-group span-2" *ngIf="proveedores.length > 0">
+					<div class="custom-select-group">
+						<div class="custom-select proveedor-select" [class.open]="proveedorDropdownOpen"
+							[class.selected]="selectedProveedorId" (click)="toggleProveedorDropdown()">
+							<div class="custom-select-value">
+								{{ selectedProveedorLabel || '' }}
+							</div>
+							<i class="fa-solid fa-angle-down select-icon"></i>
+							<div class="custom-select-dropdown" *ngIf="proveedorDropdownOpen"
+								(click)="$event.stopPropagation()">
+								<div class="custom-option" [class.active]="!selectedProveedorId"
+									(click)="clearProveedor(); $event.stopPropagation()">
+									Sin proveedor
+								</div>
+								<div class="custom-option" *ngFor="let p of proveedores"
+									[class.active]="selectedProveedorId === p.id"
+									(click)="seleccionarProveedorAlojamiento2(p); $event.stopPropagation()">
+									{{ p.nombre }}{{ p.direccion ? ' · ' + p.direccion : '' }}{{ p.telefono ? ' · Tel: '
+									+
+									p.telefono : '' }}
+								</div>
+							</div>
+						</div>
+						<label [class.active]="selectedProveedorId">Proveedor registrado</label>
+					</div>
+				</div>
+
+				<!-- HOTEL -->
+				<div class="form-group">
+					<div class="field-wrapper">
+						<input type="text" formControlName="nombreHotel" placeholder="Hotel / Hospedaje"
+							[class.ng-invalid]="formSubmitted && alojamientoForm.get('nombreHotel')?.invalid"
+							[class.ng-touched]="alojamientoForm.get('nombreHotel')?.touched" />
+						<label [class.active]="alojamientoForm.get('nombreHotel')?.value"
+							[class.label-error]="formSubmitted && alojamientoForm.get('nombreHotel')?.invalid">
+							Hotel / Hospedaje
+						</label>
+						<span class="field-error" *ngIf="formSubmitted && alojamientoForm.get('nombreHotel')?.invalid">
+							Campo requerido (mín. 3 caracteres)
+						</span>
+					</div>
+				</div>
+
+				<!-- HABITACIÓN -->
+				<div class="form-group">
+					<div class="field-wrapper">
+						<input type="text" formControlName="habitacion" placeholder="Tipo de habitación"
+							[class.ng-invalid]="formSubmitted && alojamientoForm.get('habitacion')?.invalid"
+							[class.ng-touched]="alojamientoForm.get('habitacion')?.touched" />
+						<label [class.active]="alojamientoForm.get('habitacion')?.value"
+							[class.label-error]="formSubmitted && alojamientoForm.get('habitacion')?.invalid">
+							Tipo de habitación
+						</label>
+						<span class="field-error" *ngIf="formSubmitted && alojamientoForm.get('habitacion')?.invalid">
+							Campo requerido
+						</span>
+					</div>
+				</div>
+
+				<!-- DIRECCIÓN -->
+				<div class="form-group span-2">
+					<div class="field-wrapper">
+						<input type="text" formControlName="direccion" placeholder="Dirección"
+							[class.ng-invalid]="formSubmitted && alojamientoForm.get('direccion')?.invalid"
+							[class.ng-touched]="alojamientoForm.get('direccion')?.touched" />
+						<label [class.active]="alojamientoForm.get('direccion')?.value"
+							[class.label-error]="formSubmitted && alojamientoForm.get('direccion')?.invalid">
+							Dirección
+						</label>
+						<span class="field-error" *ngIf="formSubmitted && alojamientoForm.get('direccion')?.invalid">
+							Campo requerido
+						</span>
+					</div>
+				</div>
+
+				<!-- CHECK-IN -->
+				<div class="form-group">
+					<div class="field-wrapper">
+						<div class="cal-wrap">
+							<input type="text" readonly placeholder="Check-in"
+								[value]="alojamientoForm.get('checkIn')?.value | date:'dd/MM/yyyy'"
+								(click)="toggleCheckIn($event)" class="cal-trigger"
+								[class.filled]="alojamientoForm.get('checkIn')?.value"
+								[class.ng-invalid]="formSubmitted && alojamientoForm.get('checkIn')?.invalid"
+								[class.ng-touched]="alojamientoForm.get('checkIn')?.touched" />
+							<label [class.active]="alojamientoForm.get('checkIn')?.value"
+								[class.label-error]="formSubmitted && alojamientoForm.get('checkIn')?.invalid">
+								Check-in
+							</label>
+							<i class="fa-regular fa-calendar cal-icon"
+								[class.cal-icon-error]="formSubmitted && alojamientoForm.get('checkIn')?.invalid"></i>
+							<app-custom-calendar *ngIf="showCalendarCheckIn" [isOpen]="showCalendarCheckIn"
+								[selectedDate]="alojamientoForm.get('checkIn')?.value || ''"
+								(dateSelected)="onCheckInSelected($event)" (closed)="showCalendarCheckIn = false">
+							</app-custom-calendar>
+						</div>
+						<span class="field-error" *ngIf="formSubmitted && alojamientoForm.get('checkIn')?.invalid">
+							Fecha requerida
+						</span>
+					</div>
+				</div>
+
+				<!-- CHECK-OUT -->
+				<div class="form-group">
+					<div class="field-wrapper">
+						<div class="cal-wrap cal-wrap-right">
+							<input type="text" readonly placeholder="Check-out"
+								[value]="alojamientoForm.get('checkOut')?.value | date:'dd/MM/yyyy'"
+								(click)="toggleCheckOut($event)" class="cal-trigger"
+								[class.filled]="alojamientoForm.get('checkOut')?.value"
+								[class.ng-invalid]="formSubmitted && alojamientoForm.get('checkOut')?.invalid"
+								[class.ng-touched]="alojamientoForm.get('checkOut')?.touched" />
+							<label [class.active]="alojamientoForm.get('checkOut')?.value"
+								[class.label-error]="formSubmitted && alojamientoForm.get('checkOut')?.invalid">
+								Check-out *
+							</label>
+							<i class="fa-regular fa-calendar cal-icon"
+								[class.cal-icon-error]="formSubmitted && alojamientoForm.get('checkOut')?.invalid"></i>
+							<app-custom-calendar *ngIf="showCalendarCheckOut" [isOpen]="showCalendarCheckOut"
+								[selectedDate]="alojamientoForm.get('checkOut')?.value || ''"
+								(dateSelected)="onCheckOutSelected($event)" (closed)="showCalendarCheckOut = false">
+							</app-custom-calendar>
+						</div>
+						<span class="field-error" *ngIf="formSubmitted && alojamientoForm.get('checkOut')?.invalid">
+							Fecha requerida
+						</span>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="modal-actions">
+				<button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
+				<button type="submit" class="btn-guardar" [disabled]="enviando">
+					{{ enviando ? 'Guardando...' : (editandoId ? 'Guardar cambios' : 'Guardar asignación') }}
+				</button>
+			</div>
+		</form>
 	</div>
-
-	<form [formGroup]="alojamientoForm" (ngSubmit)="guardar()">
-		<div class="form-grid">
-			<div class="form-group span-2" *ngIf="!viajeSeleccionado">
-				<label>Viaje *</label>
-				<select formControlName="idViaje">
-					<option value="">Seleccionar viaje...</option>
-					<ng-container *ngFor="let v of viajes">
-						<option *ngIf="v.tieneViaje" [value]="v.id">{{ v.nombre }}</option>
-						<option *ngIf="!v.tieneViaje" disabled>{{ v.titulo }} — (Sin viaje creado)</option>
-					</ng-container>
-				</select>
-			</div>
-
-			<div class="form-group span-2" *ngIf="!editandoId">
-				<label>Usuario</label>
-				<select (change)="onUsuarioChange($any($event.target).value)">
-					<option value="">Seleccionar usuario (opcional)...</option>
-					<option *ngFor="let u of usuarios" [value]="u.id">{{ u.firstName }} {{ u.lastName }}</option>
-				</select>
-			</div>
-
-			<div class="form-group span-2" *ngIf="editandoId">
-				<label>Nombre del viajero</label>
-				<input type="text" formControlName="nombreViajero" class="input-readonly" readonly>
-			</div>
-
-			<div class="form-group span-2" *ngIf="proveedores.length > 0">
-				<label>Proveedor registrado</label>
-				<select class="proveedor-select" (change)="seleccionarProveedorAlojamiento($event)">
-					<option value="">Seleccionar proveedor (opcional)...</option>
-					<option *ngFor="let p of proveedores" [value]="p.id">
-						{{ p.nombre }}{{ p.direccion ? ' · ' + p.direccion : '' }}{{ p.telefono ? ' · Tel: ' +
-						p.telefono : '' }}
-					</option>
-				</select>
-			</div>
-
-			<div class="form-group">
-				<label>Hotel / Hospedaje *</label>
-				<input type="text" formControlName="nombreHotel" placeholder="Ej: Hotel Caribe Royal">
-				<span class="error"
-					*ngIf="alojamientoForm.get('nombreHotel')?.invalid && alojamientoForm.get('nombreHotel')?.touched">
-					Campo requerido (min. 3 caracteres)
-				</span>
-			</div>
-
-			<div class="form-group">
-				<label>Tipo de habitacion *</label>
-				<input type="text" formControlName="habitacion" placeholder="Ej: Doble, Suite, Individual">
-				<span class="error"
-					*ngIf="alojamientoForm.get('habitacion')?.invalid && alojamientoForm.get('habitacion')?.touched">
-					Campo requerido
-				</span>
-			</div>
-
-			<div class="form-group">
-				<label>Direccion *</label>
-				<input type="text" formControlName="direccion" placeholder="Ej: Cra. 1 # 17-21, Santa Marta">
-				<span class="error"
-					*ngIf="alojamientoForm.get('direccion')?.invalid && alojamientoForm.get('direccion')?.touched">
-					Campo requerido
-				</span>
-			</div>
-
-			<div class="form-group">
-				<label>Check-in *</label>
-				<div class="cal-wrap">
-					<input type="text" readonly placeholder="Seleccionar fecha"
-						[value]="alojamientoForm.get('checkIn')?.value | date:'dd/MM/yyyy'"
-						(click)="showCalendarCheckIn = !showCalendarCheckIn; $event.stopPropagation()"
-						class="cal-trigger">
-					<i class="fa-regular fa-calendar cal-icon"></i>
-					<app-custom-calendar *ngIf="showCalendarCheckIn" [isOpen]="showCalendarCheckIn"
-						[selectedDate]="alojamientoForm.get('checkIn')?.value || ''"
-						(dateSelected)="onCheckInSelected($event)" (closed)="showCalendarCheckIn = false">
-					</app-custom-calendar>
-				</div>
-				<span class="error"
-					*ngIf="alojamientoForm.get('checkIn')?.invalid && alojamientoForm.get('checkIn')?.touched">
-					Fecha requerida
-				</span>
-			</div>
-
-			<div class="form-group">
-				<label>Check-out *</label>
-				<div class="cal-wrap cal-wrap-right">
-					<input type="text" readonly placeholder="Seleccionar fecha"
-						[value]="alojamientoForm.get('checkOut')?.value | date:'dd/MM/yyyy'"
-						(click)="showCalendarCheckOut = !showCalendarCheckOut; $event.stopPropagation()"
-						class="cal-trigger">
-					<i class="fa-regular fa-calendar cal-icon"></i>
-					<app-custom-calendar *ngIf="showCalendarCheckOut" [isOpen]="showCalendarCheckOut"
-						[selectedDate]="alojamientoForm.get('checkOut')?.value || ''"
-						(dateSelected)="onCheckOutSelected($event)" (closed)="showCalendarCheckOut = false">
-					</app-custom-calendar>
-				</div>
-				<span class="error"
-					*ngIf="alojamientoForm.get('checkOut')?.invalid && alojamientoForm.get('checkOut')?.touched">
-					Fecha requerida
-				</span>
-			</div>
-		</div>
-
-		<div class="modal-actions">
-			<button type="button" class="btn-cancelar" (click)="cerrar()">Cancelar</button>
-			<button type="submit" class="btn-guardar" [disabled]="enviando">
-				{{ enviando ? 'Guardando...' : 'Guardar asignacion' }}
-			</button>
-		</div>
-	</form>
 </div>
 
 <app-confirm-modal [isOpen]="showConfirmModal" [title]="editandoId ? 'Actualizar alojamiento' : 'Asignar alojamiento'"

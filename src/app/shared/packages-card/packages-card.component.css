@@ -142,28 +142,6 @@
 	}
 }
 
-/* ===== Wishlist ===== */
-.wishlist-btn {
-	position: absolute;
-	top: 14px;
-	left: 14px;
-	width: 34px;
-	height: 34px;
-	background: rgba(255, 255, 255, 0.9);
-	border-radius: 50%;
-	border: none;
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	transition: transform 0.2s;
-	backdrop-filter: blur(6px);
-}
-
-.wishlist-btn:hover {
-	transform: scale(1.15);
-}
-
 /* ===== Body ===== */
 .card-body {
 	padding: 20px;
@@ -269,6 +247,51 @@
 	cursor: not-allowed;
 }
 
+/* ===== Banner filtros activos ===== */
+.active-filters-banner {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	background: #eaf5fd;
+	border: 1px solid #b5dff5;
+	border-radius: 12px;
+	padding: 12px 20px;
+	margin-bottom: 32px;
+	font-size: 14px;
+	color: #1a6fa3;
+	font-family: "Outfit", sans-serif;
+}
+
+.active-filters-banner i.fa-filter {
+	font-size: 13px;
+	color: #3fa2db;
+}
+
+.active-filters-banner span {
+	flex: 1;
+	font-weight: 500;
+}
+
+.clear-filters-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	color: #3fa2db;
+	font-weight: 600;
+	text-decoration: none;
+	font-size: 13px;
+	padding: 5px 14px;
+	border-radius: 50px;
+	border: 1px solid #3fa2db;
+	transition: all 0.2s ease;
+	white-space: nowrap;
+}
+
+.clear-filters-link:hover {
+	background: #3fa2db;
+	color: #fff;
+}
+
 @media (max-width: 1279px) {
 	.packages-grid {
 		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -331,6 +354,21 @@
 
 	.btn-reserve,
 	.btn-view-all {
+		width: 100%;
+		justify-content: center;
+	}
+
+	.active-filters-banner {
+		flex-wrap: wrap;
+		gap: 8px;
+		padding: 10px 14px;
+	}
+
+	.active-filters-banner span {
+		flex: 1 1 100%;
+	}
+
+	.clear-filters-link {
 		width: 100%;
 		justify-content: center;
 	}

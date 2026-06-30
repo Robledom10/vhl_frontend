@@ -1,5 +1,14 @@
 <section class="packages-section">
 
+	<!-- Banner filtros activos -->
+	<div class="active-filters-banner" *ngIf="hayFiltrosActivos && !isLoading">
+		<i class="fa-solid fa-filter"></i>
+		<span>Mostrando resultados filtrados</span>
+		<a routerLink="/packages" [queryParams]="{}" class="clear-filters-link">
+			<i class="fa-solid fa-xmark"></i> Limpiar filtros
+		</a>
+	</div>
+
 	<!-- Estado de carga -->
 	<div class="pkg-loading" *ngIf="isLoading">
 		<div class="spinner"></div>
@@ -28,15 +37,6 @@
 					<i class="fa-solid fa-star"></i>
 					{{ pkg.rating }}
 				</div>
-
-				<!-- Botón favorito -->
-				<button class="wishlist-btn" [class.liked]="isLiked(pkg.id)" (click)="toggleLike(pkg.id, $event)">
-					<svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-						[attr.fill]="isLiked(pkg.id) ? '#ff6b6b' : 'none'" stroke="#ff6b6b" stroke-width="2.2">
-						<path
-							d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06 a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-					</svg>
-				</button>
 			</div>
 
 			<!-- Cuerpo -->

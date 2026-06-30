@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, AbstractControlOptions, Validators } from '@angular/forms';
 import { AuthService } from '../../../../../../core/services/auth.service';
 import { passwordMatchValidator, strongPasswordValidator } from '../../../../../../core/validators/custom.validators';
@@ -35,6 +35,9 @@ export class CreateUserModalComponent {
 	showConfirmCreateModal = false;
 	showErrorModal = false;
 	showToast = false;
+	toastTitle = '';
+	toastMessage = '';
+	toastType: 'success' | 'edit' | 'delete' | 'error' = 'success';
 	errorMessage = '';
 
 	constructor(
@@ -143,26 +146,26 @@ export class CreateUserModalComponent {
 		this.authService.register(request).subscribe({
 			next: () => {
 				this.isLoading = false;
-				this.showToast = true;
 				this.created.emit();
 				this.userCreated.emit({
 					firstName: formValue.firstName!,
 					lastName: formValue.lastName!,
 					documentNumber: formValue.documentNumber!,
 				});
+				this.showFeedbackToast('Usuario creado', `El usuario ${formValue.firstName} ${formValue.lastName} fue creado correctamente.`, 'success');
 
 				setTimeout(() => {
-					this.showToast = false;
 					this.closeModal();
-				}, 2500);
+				}, 3000);
 			},
 
 			error: (err) => {
-				console.error(err);
 				this.isLoading = false;
-				this.errorMessage =
-					err?.message || err?.error?.message || 'No se pudo crear el usuario';
-
+				if (err?.status === 409) {
+					this.errorMessage = 'Ya existe un usuario registrado con ese correo o número de documento.';
+				} else {
+					this.errorMessage = err?.message || err?.error?.message || 'No se pudo crear el usuario. Intente nuevamente.';
+				}
 				this.showErrorModal = true;
 			},
 		});
@@ -170,6 +173,13 @@ export class CreateUserModalComponent {
 
 	closeConfirmCreateModal(): void {
 		this.showConfirmCreateModal = false;
+	}
+
+	togglePasswordVisibility(inputId: string): void {
+		const input = document.getElementById(inputId) as HTMLInputElement;
+		if (input) {
+			input.type = input.type === 'password' ? 'text' : 'password';
+		}
 	}
 
 	// =========================
@@ -217,5 +227,13 @@ export class CreateUserModalComponent {
 
 	closeErrorModal(): void {
 		this.showErrorModal = false;
+	}
+
+	private showFeedbackToast(title: string, message: string, type: 'success' | 'edit' | 'delete' | 'error' = 'success'): void {
+		this.toastTitle = title;
+		this.toastMessage = message;
+		this.toastType = type;
+		this.showToast = true;
+		setTimeout(() => { this.showToast = false; }, 3000);
 	}
 }

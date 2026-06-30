@@ -24,9 +24,13 @@ export class AppComponent {
 					.googleLogin(credential)
 					.subscribe({
 						next: () => {
-							this.router.navigate(
-								['/home']
-							);
+							const user = this.authService.getUser();
+							const role = user?.role;
+							if (role === 'ADMIN' || role === 'GUIDE') {
+								this.router.navigate(['/panel-admin/control-panel']);
+							} else {
+								this.router.navigate(['/home']);
+							}
 						},
 						error: (err) => {
 							console.error(
@@ -40,6 +44,7 @@ export class AppComponent {
 	}
 
 	get showChatbot(): boolean {
-		return !this.router.url.includes('panel-admin');
+		const url = this.router.url;
+		return !url.includes('panel-admin') && !url.includes('/auth/');
 	}
 }

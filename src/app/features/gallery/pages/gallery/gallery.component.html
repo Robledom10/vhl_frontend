@@ -3,9 +3,20 @@
 </app-filter-gallery>
 
 <div class="gallery-container">
-	<div class="photo-item" *ngFor="let item of media">
+	<div class="photo-item" *ngFor="let item of media; let i = index" (click)="openLightbox(item, i)">
 		<img [src]="item.url" [alt]="item.excursion" />
 	</div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox-overlay" *ngIf="lightboxOpen" (click)="closeLightbox()">
+	<button class="lightbox-close" (click)="closeLightbox()">&#10005;</button>
+	<button class="lightbox-nav lightbox-prev" (click)="$event.stopPropagation(); prevImage()">&#8249;</button>
+	<div class="lightbox-content" (click)="$event.stopPropagation()">
+		<img [src]="lightboxImage" [alt]="lightboxAlt" />
+		<p class="lightbox-caption" *ngIf="lightboxAlt">{{ lightboxAlt }}</p>
+	</div>
+	<button class="lightbox-nav lightbox-next" (click)="$event.stopPropagation(); nextImage()">&#8250;</button>
 </div>
 
 <app-footer></app-footer>

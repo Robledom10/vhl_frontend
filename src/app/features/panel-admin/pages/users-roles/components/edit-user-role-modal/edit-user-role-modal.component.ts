@@ -26,6 +26,9 @@ export class EditUserRoleModalComponent implements OnChanges {
 	showErrorModal = false;
 
 	showToast = false;
+	toastTitle = '';
+	toastMessage = '';
+	toastType: 'success' | 'edit' | 'delete' | 'error' = 'success';
 
 	errorMessage = '';
 
@@ -127,14 +130,11 @@ export class EditUserRoleModalComponent implements OnChanges {
 				};
 
 				this.updated.emit(updatedUser);
-
-				this.showToast = true;
+				this.showFeedbackToast('Rol actualizado', `El rol de ${this.user?.name} fue actualizado correctamente.`, 'edit');
 
 				setTimeout(() => {
-					this.showToast = false;
-
 					this.closeModal();
-				}, 2500);
+				}, 3000);
 			},
 
 			error: (err) => {
@@ -160,5 +160,13 @@ export class EditUserRoleModalComponent implements OnChanges {
 
 	closeErrorModal(): void {
 		this.showErrorModal = false;
+	}
+
+	private showFeedbackToast(title: string, message: string, type: 'success' | 'edit' | 'delete' | 'error' = 'success'): void {
+		this.toastTitle = title;
+		this.toastMessage = message;
+		this.toastType = type;
+		this.showToast = true;
+		setTimeout(() => { this.showToast = false; }, 3000);
 	}
 }

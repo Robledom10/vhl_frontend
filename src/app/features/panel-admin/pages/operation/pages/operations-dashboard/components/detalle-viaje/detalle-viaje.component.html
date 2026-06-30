@@ -1,108 +1,87 @@
-<div class="modal-backdrop" (click)="cerrar.emit()"></div>
-<div class="modal-panel detalle-panel">
-	<div class="modal-header">
-		<h3>
-			<i class="fa-solid fa-route detalle-icon"></i>
-			Detalle del viaje
-		</h3>
+<div class="modal-overlay" (click)="cerrar.emit()">
+	<div class="modal-panel" (click)="$event.stopPropagation()">
 
-		<button type="button" class="btn-cerrar" (click)="cerrar.emit()">
-			&#10005;
-		</button>
-	</div>
-
-	<div class="detalle-paquete">
-		<span class="detalle-titulo">
-			{{ viaje?.paqueteTitulo }}
-		</span>
-
-		<span class="detalle-viaje-id">
-			Viaje #{{ viaje?.idViaje }}
-		</span>
-	</div>
-
-	<div class="detalle-grid">
-		<div class="detalle-item">
-			<span class="detalle-label">
-				<i class="fa-solid fa-map-location-dot"></i>
-				Destino
-			</span>
-
-			<span class="detalle-valor">
-				{{ viaje?.paqueteDestino || '—' }}
-			</span>
+		<!-- HEADER -->
+		<div class="modal-header">
+			<button type="button" class="btn-cerrar" (click)="cerrar.emit()">&#x2715;</button>
 		</div>
 
-		<div class="detalle-item">
-			<span class="detalle-label">
-				<i class="fa-solid fa-circle-dot"></i>
-				Estado
-			</span>
+		<h2 class="modal-title">
+			Detalle <span>Viaje #{{ viaje?.idViaje }}</span>
+		</h2>
 
-			<span class="detalle-valor">
-				{{ estadoLabel }}
-			</span>
+		<!-- PAQUETE -->
+		<div class="detalle-paquete">
+			<i class="fa-solid fa-route paquete-icon"></i>
+			<span class="paquete-titulo">{{ viaje?.paqueteTitulo || '—' }}</span>
 		</div>
 
-		<div class="detalle-item span-2">
-			<span class="detalle-label">
-				<i class="fa-solid fa-calendar-days"></i>
-				Fecha de salida
-			</span>
+		<!-- GRID DE DATOS -->
+		<div class="detalle-grid">
 
-			<span class="detalle-valor">
-				{{ viaje?.fechaSalida ? (viaje?.fechaSalida | date:'dd/MM/yyyy HH:mm') : '—' }}
-			</span>
+			<div class="detalle-item">
+				<span class="detalle-label">
+					<i class="fa-solid fa-map-location-dot"></i> Destino
+				</span>
+				<span class="detalle-valor">{{ viaje?.paqueteDestino || '—' }}</span>
+			</div>
+
+			<div class="detalle-item">
+				<span class="detalle-label">
+					<i class="fa-solid fa-circle-dot"></i> Estado
+				</span>
+				<span class="detalle-valor">
+					<span class="estado-badge" [ngClass]="'estado-' + viaje?.estado">
+						{{ estadoLabel }}
+					</span>
+				</span>
+			</div>
+
+			<div class="detalle-item span-2">
+				<span class="detalle-label">
+					<i class="fa-solid fa-calendar-days"></i> Fecha de salida
+				</span>
+				<span class="detalle-valor">
+					{{ viaje?.fechaSalida ? (viaje?.fechaSalida | date:'dd/MM/yyyy HH:mm') : '—' }}
+				</span>
+			</div>
+
+			<div class="detalle-item">
+				<span class="detalle-label">
+					<i class="fa-solid fa-users"></i> Viajeros registrados
+				</span>
+				<span class="detalle-valor detalle-num">{{ viaje?.viajerosRegistrados ?? '—' }}</span>
+			</div>
+
+			<div class="detalle-item">
+				<span class="detalle-label">
+					<i class="fa-solid fa-bus-simple"></i> Transportes asignados
+				</span>
+				<span class="detalle-valor detalle-num">{{ viaje?.transportesAsignados ?? '—' }}</span>
+			</div>
+
+			<div class="detalle-item">
+				<span class="detalle-label">
+					<i class="fa-solid fa-bed"></i> Alojamientos asignados
+				</span>
+				<span class="detalle-valor detalle-num">{{ viaje?.alojamientosAsignados ?? '—' }}</span>
+			</div>
+
+			<div class="detalle-item">
+				<span class="detalle-label">
+					<i class="fa-solid fa-triangle-exclamation"></i> Incidentes
+				</span>
+				<span class="detalle-valor detalle-num" [class.incidente-alert]="viaje?.incidentes > 0">
+					{{ viaje?.incidentes ?? '—' }}
+				</span>
+			</div>
+
 		</div>
 
-		<div class="detalle-item">
-			<span class="detalle-label">
-				<i class="fa-solid fa-users"></i>
-				Viajeros registrados
-			</span>
-
-			<span class="detalle-valor">
-				{{ viaje?.viajerosRegistrados }}
-			</span>
+		<!-- ACTIONS -->
+		<div class="modal-actions">
+			<button type="button" class="btn-cancelar" (click)="cerrar.emit()">Cerrar</button>
 		</div>
 
-		<div class="detalle-item">
-			<span class="detalle-label">
-				<i class="fa-solid fa-bus-simple"></i>
-				Transportes asignados
-			</span>
-
-			<span class="detalle-valor">
-				{{ viaje?.transportesAsignados }}
-			</span>
-		</div>
-
-		<div class="detalle-item">
-			<span class="detalle-label">
-				<i class="fa-solid fa-bed"></i>
-				Alojamientos asignados
-			</span>
-
-			<span class="detalle-valor">
-				{{ viaje?.alojamientosAsignados }}
-			</span>
-		</div>
-
-		<div class="detalle-item">
-			<span class="detalle-label">
-				<i class="fa-solid fa-triangle-exclamation"></i>
-				Incidentes
-			</span>
-
-			<span class="detalle-valor">
-				{{ viaje?.incidentes }}
-			</span>
-		</div>
-	</div>
-
-	<div class="detalle-actions">
-		<button class="btn-cerrar-detalle" (click)="cerrar.emit()">
-			Cerrar
-		</button>
 	</div>
 </div>

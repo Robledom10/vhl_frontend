@@ -83,7 +83,7 @@ export class PackagesComponent implements OnInit {
 		this.toastType = type;
 		this.showToast = true;
 
-		setTimeout(() => { this.showToast = false; }, 3200);
+		setTimeout(() => { this.showToast = false; }, 3000);
 	}
 
 	private showErrorToast(message: string): void {
@@ -198,6 +198,18 @@ export class PackagesComponent implements OnInit {
 
 	closeDetail(): void {
 		this.sheetOpen = false;
+	}
+
+	reactivarPaquete(pkg: AdminPackage): void {
+		this.packageService.reactivarPackage(pkg.id).subscribe({
+			next: () => {
+				this.showFeedbackToast('Paquete reactivado', `El paquete ${pkg.name} fue reactivado correctamente.`, 'edit');
+				this.cargarPaquetes();
+			},
+			error: () => {
+				this.showErrorToast(`No se pudo reactivar el paquete ${pkg.name}.`);
+			}
+		});
 	}
 
 	openDeleteModal(pkg: AdminPackage): void {

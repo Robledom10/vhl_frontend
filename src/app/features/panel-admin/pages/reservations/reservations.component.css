@@ -142,7 +142,8 @@
 
 .dropdown-date {
 	padding: 14px;
-	gap: 6px;
+	gap: 8px;
+	min-width: 260px;
 }
 
 .dropdown-date label {
@@ -155,20 +156,72 @@
 	margin-top: 4px;
 }
 
-.dropdown-date input[type="date"] {
-	width: 100%;
-	padding: 8px 10px;
-	border: 1px solid #e5e5e5;
-	border-radius: 10px;
-	font-family: "Outfit", sans-serif;
-	font-size: 13px;
-	color: var(--color-texto-principal);
-	outline: none;
-	transition: border 0.2s ease;
+.dropdown-date label:first-child {
+	margin-top: 0;
 }
 
-.dropdown-date input[type="date"]:focus {
+.date-trigger-wrapper {
+	position: relative;
+}
+
+.date-trigger-btn {
+	width: 100%;
+	height: 42px;
+	padding: 0 16px;
+	border: 1px solid var(--bordes);
+	border-radius: 21px;
+	background: white;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	cursor: pointer;
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	color: var(--color-texto-principal);
+	transition: all 0.25s ease;
+}
+
+.date-trigger-btn:hover {
 	border-color: var(--color-primario);
+	transform: translateY(-1px);
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.date-trigger-btn i {
+	font-size: 13px;
+	color: var(--color-primario);
+	flex-shrink: 0;
+}
+
+.date-trigger-wrapper app-custom-calendar {
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 200;
+}
+
+.date-clear-btn {
+	margin-top: 6px;
+	height: 38px;
+	border: none;
+	background: rgba(255, 59, 59, 0.1);
+	color: #ff3b3b;
+	border-radius: 19px;
+	font-family: "Outfit", sans-serif;
+	font-size: 13px;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.date-clear-btn:hover {
+	background: rgba(255, 59, 59, 0.18);
+	transform: translateY(-1px);
 }
 
 /* =========================
@@ -348,6 +401,11 @@ tbody td:last-child {
 	color: #ff3b3b;
 }
 
+.status.pasada {
+	background: rgba(63, 162, 219, 0.12);
+	color: var(--color-primario);
+}
+
 /* =========================
 	ACTIONS
 ========================= */
@@ -444,58 +502,61 @@ tbody td:last-child {
 }
 
 /* =========================
-	PAGINACIÓN
+   PAGINACIÓN
 ========================= */
 
 .pagination-bar {
 	display: flex;
+	flex-direction: column;
 	align-items: center;
-	justify-content: space-between;
-	gap: 16px;
-	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 8px;
 }
 
 .pagination-info {
 	font-size: 13px;
-	color: #6b7280;
+	color: var(--color-texto-secundario);
+	font-family: "Outfit", sans-serif;
 }
 
 .pagination-controls {
 	display: flex;
 	align-items: center;
-	gap: 4px;
+	gap: 8px;
 }
 
 .page-btn {
-	min-width: 36px;
+	width: 36px;
 	height: 36px;
-	padding: 0 10px;
-	border: 1px solid #e5e7eb;
-	border-radius: 8px;
-	background: #fff;
-	color: #374151;
-	font-size: 13px;
+	border-radius: 12px;
+	border: 1px solid var(--bordes);
+	background: white;
+	color: var(--color-texto-secundario);
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	font-weight: 500;
 	cursor: pointer;
-	transition: all 0.15s;
+	transition: all 0.2s ease;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	padding: 0;
 }
 
 .page-btn:hover:not(:disabled) {
-	background: #f0f9ff;
-	border-color: #3fa2db;
-	color: #3fa2db;
+	background: rgba(63, 162, 219, 0.08);
+	color: var(--color-primario);
+	border-color: var(--color-primario);
+	transform: translateY(-1px);
 }
 
 .page-btn.active {
-	background: #3fa2db;
-	border-color: #3fa2db;
-	color: #fff;
-	font-weight: 600;
+	background: var(--color-primario);
+	color: white;
+	border-color: var(--color-primario);
 }
 
 .page-btn:disabled {
-	opacity: 0.4;
+	opacity: 0.35;
 	cursor: not-allowed;
 }

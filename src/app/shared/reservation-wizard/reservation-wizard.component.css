@@ -218,6 +218,17 @@
 	pointer-events: none;
 }
 
+/* =========================
+	INPUT LLENO/FOCUS = AZUL (igual comportamiento que el label)
+========================= */
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group input:not(:placeholder-shown),
+.form-group textarea:not(:placeholder-shown) {
+	border-color: var(--color-primario);
+}
+
 .form-group input:focus+label,
 .form-group input:not(:placeholder-shown)+label,
 .form-group textarea:focus+label,
@@ -225,6 +236,77 @@
 	top: -8px;
 	font-size: 12px;
 	color: var(--color-primario);
+}
+
+/* El input readonly del calendario no tiene placeholder real, así que
+   usamos una clase auxiliar para replicar el mismo comportamiento */
+.cal-trigger {
+	cursor: pointer;
+}
+
+.cal-wrap {
+	position: relative;
+}
+
+.cal-icon {
+	position: absolute;
+	right: 16px;
+	top: 14px;
+	color: #7c8b9a;
+	pointer-events: none;
+}
+
+.cal-wrap .cal-trigger:focus,
+.cal-wrap label.active~.cal-trigger,
+.cal-wrap input.cal-trigger:not(:placeholder-shown) {
+	border-color: var(--color-primario);
+}
+
+.cal-wrap input.cal-trigger:focus~.cal-icon {
+	color: var(--color-primario);
+}
+
+.cal-wrap label.active~.cal-icon {
+	color: var(--color-primario);
+}
+
+.cal-wrap label.active {
+	top: -8px;
+	font-size: 12px;
+	color: var(--color-primario);
+}
+
+/* =========================
+	INVÁLIDO (prioridad sobre el azul)
+========================= */
+
+.form-group input.invalid,
+.form-group textarea.invalid,
+.custom-select.invalid,
+.cal-wrap input.invalid {
+	border-color: #ff3b3b !important;
+}
+
+.form-group input.invalid+label,
+.cal-wrap input.invalid+label,
+.cal-wrap input.invalid~.cal-icon {
+	color: #ff3b3b !important;
+}
+
+.form-group .error {
+	display: block;
+	margin-top: 6px;
+	font-size: 12px;
+	color: #ff3b3b;
+	padding-left: 6px;
+}
+
+.step-error {
+	display: block;
+	margin: -8px 0 16px;
+	font-size: 13px;
+	color: #ff3b3b;
+	padding-left: 6px;
 }
 
 /* ==========================
@@ -272,6 +354,15 @@
 .custom-select.open .select-icon {
 	transform: rotate(180deg);
 	color: var(--color-primario);
+}
+
+.custom-select:hover .select-icon,
+.custom-select.selected .select-icon {
+	color: var(--color-primario);
+}
+
+.custom-select.invalid .select-icon {
+	color: #ef4444;
 }
 
 .custom-select-group label {
@@ -543,6 +634,18 @@
 	background: #fafcff;
 }
 
+.terms-link-btn {
+	background: none;
+	border: none;
+	padding: 0;
+	font-size: inherit;
+	font-family: inherit;
+	color: var(--color-primario);
+	cursor: pointer;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
 .total-highlight {
 	margin-top: 25px;
 	padding-top: 20px;
@@ -647,4 +750,58 @@
 
 .btn-primary:hover {
 	opacity: .9;
+}
+
+/* ==========================
+   CONTRATO PDF
+========================== */
+
+.contract-hint {
+	background: rgba(63, 162, 219, 0.07);
+	border: 1px solid rgba(63, 162, 219, 0.25);
+	border-radius: 18px;
+	padding: 18px 20px;
+	margin-bottom: 16px;
+}
+
+.contract-hint p {
+	margin: 0 0 12px;
+	font-size: 14px;
+	color: var(--color-texto-secundario, #6b7280);
+}
+
+.contract-btns {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.btn-contract-preview,
+.btn-contract-download {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	padding: 9px 18px;
+	border-radius: 28px;
+	border: none;
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: opacity .2s;
+}
+
+.btn-contract-preview {
+	background: rgba(63, 162, 219, 0.15);
+	color: #3fa2db;
+}
+
+.btn-contract-download {
+	background: #3fa2db;
+	color: #fff;
+}
+
+.btn-contract-preview:hover,
+.btn-contract-download:hover {
+	opacity: .85;
 }

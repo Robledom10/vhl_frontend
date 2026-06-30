@@ -192,6 +192,17 @@ form {
 	opacity: 1;
 }
 
+.custom-select:hover .select-icon,
+.custom-select.selected .select-icon {
+	color: var(--color-primario);
+	opacity: 1;
+}
+
+.custom-select.invalid .select-icon {
+	color: #ef4444;
+	opacity: 1;
+}
+
 /* =========================
    LABEL SELECT
 ========================= */

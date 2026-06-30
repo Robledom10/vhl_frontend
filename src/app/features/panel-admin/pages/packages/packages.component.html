@@ -92,9 +92,12 @@
 							<button class="view" (click)="openDetail(item); $event.stopPropagation()">
 								<i class="fa-regular fa-eye"></i>
 							</button>
-							<button class="edit" (click)="openEditModal(item); $event.stopPropagation()">Editar</button>
-							<button class="delete"
-								(click)="openDeleteModal(item); $event.stopPropagation()">Eliminar</button>
+							<button *ngIf="item.status === 'activo'" class="edit" (click)="openEditModal(item); $event.stopPropagation()">Editar</button>
+							<button *ngIf="item.status === 'inactivo'" class="reactivar"
+								(click)="reactivarPaquete(item); $event.stopPropagation()">Reactivar</button>
+							<button class="delete" (click)="openDeleteModal(item); $event.stopPropagation()">
+								{{ item.status === 'activo' ? 'Desactivar' : 'Eliminar' }}
+							</button>
 						</div>
 					</td>
 				</tr>
@@ -148,7 +151,7 @@
 	(confirmed)="confirmDelete()" (closed)="closeDeleteModal()">
 </app-confirm-modal>
 
-<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage" [type]="toastType">
 </app-toast-notification>
 
 <app-form-package-creation [isOpen]="showCreateModal" [mode]="editingPackage ? 'edit' : 'create'"

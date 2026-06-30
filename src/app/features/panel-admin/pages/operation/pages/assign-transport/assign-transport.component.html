@@ -15,14 +15,28 @@
 		</div>
 		<div class="proveedores-grid">
 			<div class="proveedor-card" *ngFor="let p of proveedoresTransporte">
-				<div class="pc-icon-wrap pc-transporte"><i class="fa-solid fa-bus"></i></div>
+				<div class="pc-icon-wrap pc-transporte">
+					<i class="fa-solid fa-bus"></i>
+				</div>
 				<div class="pc-info">
-					<div class="pc-nombre">{{ p.nombre }}</div>
-					<div class="pc-detalle" *ngIf="p.tipoVehiculo"><i class="fa-solid fa-car"></i> {{ p.tipoVehiculo }}</div>
-					<div class="pc-detalle" *ngIf="p.placa"><i class="fa-solid fa-id-card"></i> {{ p.placa }}</div>
-					<div class="pc-detalle" *ngIf="p.conductor"><i class="fa-solid fa-user-tie"></i> {{ p.conductor }}</div>
-					<div class="pc-detalle" *ngIf="p.capacidad"><i class="fa-solid fa-users"></i> {{ p.capacidad }} personas</div>
-					<div class="pc-detalle" *ngIf="p.telefono"><i class="fa-solid fa-phone"></i> {{ p.telefono }}</div>
+					<div class="pc-nombre">
+						{{ p.nombre }}
+					</div>
+					<div class="pc-detalle" *ngIf="p.tipoVehiculo">
+						<i class="fa-solid fa-car"></i> {{ p.tipoVehiculo }}
+					</div>
+					<div class="pc-detalle" *ngIf="p.placa">
+						<i class="fa-solid fa-id-card"></i> {{ p.placa }}
+					</div>
+					<div class="pc-detalle" *ngIf="p.conductor">
+						<i class="fa-solid fa-user-tie"></i> {{ p.conductor }}
+					</div>
+					<div class="pc-detalle" *ngIf="p.capacidad">
+						<i class="fa-solid fa-users"></i> {{ p.capacidad }} personas
+					</div>
+					<div class="pc-detalle" *ngIf="p.telefono">
+						<i class="fa-solid fa-phone"></i> {{ p.telefono }}
+					</div>
 				</div>
 				<button class="pc-btn" (click)="asignarDesdeProveedor(p)">Asignar a viaje</button>
 			</div>
@@ -33,13 +47,12 @@
 	<div class="section-title">
 		<i class="fa-solid fa-bus-simple"></i>
 		<h3>Viajes y estado de transporte</h3>
-	</div>
-
-	<div class="search-box">
-		<input type="text" placeholder="Buscar" [(ngModel)]="search">
-		<button>
-			<i class="fa-solid fa-magnifying-glass"></i>
-		</button>
+		<div class="search-box">
+			<input type="text" placeholder="Buscar" [(ngModel)]="search">
+			<button>
+				<i class="fa-solid fa-magnifying-glass"></i>
+			</button>
+		</div>
 	</div>
 
 	<div class="table-container">
@@ -52,11 +65,11 @@
 					<th>Conductor</th>
 					<th>Placa</th>
 					<th>Estado</th>
-					<th>Accion</th>
+					<th>Acción</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr *ngFor="let viaje of viajesFiltrados" [class.fila-sin-viaje]="!viaje.tieneViaje">
+				<tr *ngFor="let viaje of viajesPaginados" [class.fila-sin-viaje]="!viaje.tieneViaje">
 					<td>
 						<div class="paquete-nombre">{{ viaje.titulo }}</div>
 						<small class="viaje-id" *ngIf="viaje.tieneViaje">Viaje #{{ viaje.id }}</small>
@@ -66,8 +79,7 @@
 					<td>{{ viaje.transporteAsignado ? (viaje.transportes[0].conductor || '—') : '—' }}</td>
 					<td>{{ viaje.transporteAsignado ? (viaje.transportes[0].placa || '—') : '—' }}</td>
 					<td>
-						<span *ngIf="viaje.tieneViaje" class="estado-dot"
-							[class.ok]="viaje.transporteAsignado"
+						<span *ngIf="viaje.tieneViaje" class="estado-dot" [class.ok]="viaje.transporteAsignado"
 							[class.pendiente]="!viaje.transporteAsignado">
 							{{ viaje.transporteAsignado ? 'Asignado' : 'Pendiente' }}
 						</span>
@@ -76,9 +88,10 @@
 					<td>
 						<div class="actions" *ngIf="viaje.tieneViaje">
 							<button class="ver" *ngIf="viaje.transporteAsignado" (click)="verDetalle(viaje)">
-								<i class="fa-solid fa-eye"></i>
+								<i class="fa-regular fa-eye"></i>
 							</button>
-							<button [class]="viaje.transporteAsignado ? 'edit' : 'assign'" (click)="seleccionarViaje(viaje)">
+							<button [class]="viaje.transporteAsignado ? 'edit' : 'assign'"
+								(click)="seleccionarViaje(viaje)">
 								{{ viaje.transporteAsignado ? 'Editar' : 'Asignar' }}
 							</button>
 							<button class="del" *ngIf="viaje.transporteAsignado" (click)="eliminar(viaje)">
@@ -95,30 +108,49 @@
 		</table>
 	</div>
 
-	<div class="toast-notification" [ngClass]="toastType" *ngIf="showToast">
-		<i class="toast-icon"
-			[class]="toastType === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
-		<span class="toast-msg">{{ toastMsg }}</span>
+	<!-- PAGINACIÓN -->
+	<div class="pagination-bar" *ngIf="totalPaginas > 1">
+		<span class="pagination-info">
+			{{ totalElementos }} viajes · Página {{ paginaActual + 1 }} de {{ totalPaginas }}
+		</span>
+		<div class="pagination-controls">
+			<button class="page-btn" [disabled]="paginaActual === 0" (click)="cambiarPagina(0)">
+				<i class="fa-solid fa-angles-left"></i>
+			</button>
+			<button class="page-btn" [disabled]="paginaActual === 0" (click)="cambiarPagina(paginaActual - 1)">
+				<i class="fa-solid fa-chevron-left"></i>
+			</button>
+			<button *ngFor="let p of paginas" class="page-btn" [class.active]="p === paginaActual"
+				(click)="cambiarPagina(p)">
+				{{ p + 1 }}
+			</button>
+			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1"
+				(click)="cambiarPagina(paginaActual + 1)">
+				<i class="fa-solid fa-chevron-right"></i>
+			</button>
+			<button class="page-btn" [disabled]="paginaActual === totalPaginas - 1"
+				(click)="cambiarPagina(totalPaginas - 1)">
+				<i class="fa-solid fa-angles-right"></i>
+			</button>
+		</div>
 	</div>
-
 </div>
 
 <!-- FORMULARIO MODAL -->
-<app-form-assign-transport
-	[isOpen]="showForm"
-	[viajes]="viajes"
-	[viajeSeleccionado]="viajeSeleccionado"
-	[editandoTransporteId]="editandoTransporteId"
-	[proveedores]="proveedoresTransporte"
-	[preloadData]="formPreload"
-	(closed)="cerrarForm()"
-	(saved)="onFormSaved($event)"
-	(saveFailed)="onFormFailed($event)">
+<app-form-assign-transport [isOpen]="showForm" [viajes]="viajes" [viajeSeleccionado]="viajeSeleccionado"
+	[editandoTransporteId]="editandoTransporteId" [proveedores]="proveedoresTransporte" [preloadData]="formPreload"
+	(closed)="cerrarForm()" (saved)="onFormSaved($event)" (saveFailed)="onFormFailed($event)">
 </app-form-assign-transport>
 
 <!-- MODAL DETALLE -->
-<app-detail-transport
-	[isOpen]="showDetalle"
-	[viaje]="viajeDetalle"
-	(closed)="cerrarDetalle()">
+<app-detail-transport [isOpen]="showDetalle" [viaje]="viajeDetalle" (closed)="cerrarDetalle()">
 </app-detail-transport>
+
+<app-confirm-modal [isOpen]="showDeleteModal" title="Eliminar transporte"
+	[message]="viajeAEliminar ? ('Esta acción eliminará permanentemente el transporte asignado a ' + viajeAEliminar.titulo + '.') : ''"
+	confirmText="Eliminar" cancelText="Cancelar" icon="fa-solid fa-triangle-exclamation" confirmColor="#ff3b3b"
+	iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b" (confirmed)="confirmarEliminar()"
+	(closed)="cerrarDeleteModal()">
+</app-confirm-modal>
+
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMsg"></app-toast-notification>

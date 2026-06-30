@@ -1,0 +1,16 @@
+<div class="toast" *ngIf="show">
+	<div class="toast-content" [ngClass]="'toast-' + type">
+		<div class="toast-icon-wrapper">
+			<i class="fa-solid"
+				[class.fa-circle-check]="type === 'success'"
+				[class.fa-pen-to-square]="type === 'edit'"
+				[class.fa-trash]="type === 'delete'"
+				[class.fa-circle-xmark]="type === 'error'">
+			</i>
+		</div>
+		<div class="toast-body">
+			<h4>{{ title }}</h4>
+			<p *ngIf="message">{{ message }}</p>
+		</div>
+	</div>
+</div>

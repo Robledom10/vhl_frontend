@@ -5,7 +5,7 @@ import { minimumAgeValidator } from '../../../../core/validators/custom.validato
 import colombiaData from '../../../../../assets/data/colombia.json';
 import { ReservationService } from '../../../../core/services/reservation.service';
 import { Reservation } from '../reservations/models/reservations.models';
-import { PaymentService } from '../../../../core/services/payments.service.service';
+import { PaymentService } from '../../../../core/services/payments.service';
 
 export interface Documento {
 	id?: number;
@@ -59,7 +59,9 @@ export class ProfileComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.loadProfile();
-		this.loadReservations();
+		if (this.isClient) {
+			this.loadReservations();
+		}
 
 		this.departments = colombiaData.colombia.map((item) => item.departamento);
 	}
@@ -89,6 +91,10 @@ export class ProfileComponent implements OnInit {
 
 	get user() {
 		return this.authService.getUser();
+	}
+
+	get isClient(): boolean {
+		return this.user?.role === 'CLIENT';
 	}
 
 	get displayRole(): string | null {

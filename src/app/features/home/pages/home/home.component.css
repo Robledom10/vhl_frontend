@@ -1516,6 +1516,7 @@
 	.map {
 		margin: 30px auto 52px;
 	}
+<<<<<<< HEAD
 }
 
 /* Ajuste final del hero: mantiene el diseno original en desktop y ordena las imagenes en responsive. */
@@ -1776,3 +1777,6 @@
 		right: 20px;
 	}
 }
+=======
+}
+>>>>>>> 196eecf9ba3a327101ddd2f66be571ea8eb97428

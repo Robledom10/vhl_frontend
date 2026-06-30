@@ -19,9 +19,14 @@ export class FormEmergencyContactComponent implements OnChanges {
 	@Output() saveFailed = new EventEmitter<string>();
 
 	enviando = false;
+	formSubmitted = false;
 	cargandoUsuarios = false;
 	usuarios: { id: number; nombre: string }[] = [];
 	usuarioSeleccionadoId: number | null = null;
+
+	// Dropdown state
+	usuarioDropdownOpen = false;
+	selectedUsuarioLabel = '';
 
 	// Confirmación de guardado
 	showConfirmModal = false;
@@ -38,6 +43,10 @@ export class FormEmergencyContactComponent implements OnChanges {
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes['isOpen']?.currentValue === true) {
+			this.formSubmitted = false;
+			this.usuarioDropdownOpen = false;
+			this.selectedUsuarioLabel = '';
+
 			if (this.editando) {
 				this.contactoForm.patchValue({
 					nombreViajero: this.editando.nombreViajero || '',
@@ -46,6 +55,11 @@ export class FormEmergencyContactComponent implements OnChanges {
 					telefono: this.editando.telefono,
 					correo: this.editando.correo,
 				});
+				// Si el contacto no tiene viajero asignado, cargar selector para que el admin lo asigne
+				if (!this.editando.idViajero) {
+					this.usuarioSeleccionadoId = null;
+					this.cargarUsuarios();
+				}
 			} else {
 				this.contactoForm.reset();
 				this.usuarioSeleccionadoId = null;
@@ -70,26 +84,47 @@ export class FormEmergencyContactComponent implements OnChanges {
 		});
 	}
 
+	// ==============================
+	// DROPDOWN
+	// ==============================
+
+	toggleUsuarioDropdown(): void {
+		this.usuarioDropdownOpen = !this.usuarioDropdownOpen;
+	}
+
 	onUsuarioChange(idStr: string): void {
 		const id = idStr ? +idStr : null;
 		this.usuarioSeleccionadoId = id;
+		this.usuarioDropdownOpen = false;
+
 		if (!id) {
+			this.selectedUsuarioLabel = '';
 			this.contactoForm.patchValue({ nombreViajero: '' });
 			return;
 		}
 		const usuario = this.usuarios.find(u => u.id === id);
 		if (usuario) {
+			this.selectedUsuarioLabel = usuario.nombre;
 			this.contactoForm.patchValue({ nombreViajero: usuario.nombre });
+		}
+	}
+
+	onModalClick(event: Event): void {
+		event.stopPropagation();
+		const target = event.target as HTMLElement;
+		if (!target.closest('.custom-select')) {
+			this.usuarioDropdownOpen = false;
 		}
 	}
 
 	cerrar(): void { this.closed.emit(); }
 
-	// =========================================
-	// VALIDAR Y ABRIR CONFIRMACIÓN
-	// =========================================
+	// ==============================
+	// GUARDAR
+	// ==============================
 
 	guardar(): void {
+		this.formSubmitted = true;
 		if (this.contactoForm.invalid) {
 			this.contactoForm.markAllAsTouched();
 			return;
@@ -111,7 +146,9 @@ export class FormEmergencyContactComponent implements OnChanges {
 
 		const v = this.contactoForm.value;
 		const idViaje = this.idViajeSeleccionado || 1;
-		const idViajero = this.editando ? this.editando.idViajero : (this.usuarioSeleccionadoId ?? 1);
+		const idViajero = this.editando
+			? (this.editando.idViajero || this.usuarioSeleccionadoId || 0)
+			: (this.usuarioSeleccionadoId ?? 1);
 		const body = {
 			idViaje,
 			nombre: v.nombreContacto || '',
@@ -122,7 +159,9 @@ export class FormEmergencyContactComponent implements OnChanges {
 		};
 
 		const request$ = this.editando
-			? this.svc.actualizarContacto(this.editando.idViajero, this.editando.id, body)
+			? (this.editando.fromReserva
+				? this.svc.actualizarContactoDeReserva(this.editando.id, body)
+				: this.svc.actualizarContacto(this.editando.idViajero, this.editando.id, body))
 			: this.svc.registrarContacto(idViajero, body);
 
 		request$.subscribe({

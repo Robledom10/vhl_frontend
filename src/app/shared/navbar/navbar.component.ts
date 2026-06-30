@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-navbar',
@@ -10,7 +11,7 @@ export class NavbarComponent {
 	dropdownOpen = false;
 	menuOpen = false;
 
-	constructor(public authService: AuthService) { }
+	constructor(public authService: AuthService, private router: Router) { }
 
 	toggleMobileMenu(event: Event) {
 		event.stopPropagation();
@@ -32,10 +33,10 @@ export class NavbarComponent {
 	logout() {
 		this.authService.logout().subscribe({
 			next: () => {
-				console.log('Sesión cerrada');
+				this.router.navigate(['/home']);
 			},
-			error: (err) => {
-				console.error('Error logout', err);
+			error: () => {
+				this.router.navigate(['/home']);
 			},
 		});
 	}
@@ -59,6 +60,19 @@ export class NavbarComponent {
 		};
 
 		return roleMap[role] || role;
+	}
+
+	get isAdminOrGuide(): boolean {
+		const role = this.user?.role;
+		return role === 'ADMIN' || role === 'GUIDE';
+	}
+
+	get profileRoute(): string {
+		const role = this.user?.role;
+		if (role === 'ADMIN' || role === 'GUIDE') {
+			return '/panel-admin/control-panel';
+		}
+		return '/panel-admin/profile';
 	}
 
 	@HostListener('document:click')

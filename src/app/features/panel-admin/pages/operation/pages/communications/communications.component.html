@@ -1,42 +1,68 @@
 <div class="operaciones-container">
 
 	<div class="page-header">
-		<div>
-			<h2 class="page-title">Centro de <span>Comunicaciones</span></h2>
-			<p class="page-subtitle">Envia mensajes a viajeros de forma grupal o individual</p>
+		<div class="page-title-group">
+			<div class="page-title-icon">
+				<i class="fa-solid fa-paper-plane"></i>
+			</div>
+			<div>
+				<h2 class="page-title">Centro de <span>Comunicaciones</span></h2>
+				<p class="page-subtitle">Envía mensajes a viajeros de forma grupal o individual</p>
+			</div>
 		</div>
 		<button class="btn-nuevo" (click)="abrir()" [disabled]="!idViajeSeleccionado">
-			<i class="fa-solid fa-paper-plane"></i> Nuevo mensaje
+			<i class="fa-solid fa-paper-plane"></i> <span>Nuevo mensaje</span>
 		</button>
 	</div>
 
 	<!-- FILTROS -->
 	<div class="filtros-bar">
 
-		<!-- FILTRO PAQUETE -->
+		<!-- FILTRO PAQUETE — custom select -->
 		<div class="filtro-group">
 			<label class="filtro-label">
 				<i class="fa-solid fa-box-open"></i> Paquete
 			</label>
-			<select class="filtro-select" (change)="onPaqueteChange($event)">
-				<option value="">Seleccionar paquete...</option>
-				<option *ngFor="let p of paquetes" [value]="p.id">{{ p.titulo }}</option>
-			</select>
+			<div class="custom-select-wrapper" (click)="$event.stopPropagation()">
+				<div class="custom-select" [class.open]="paqueteDropdownOpen" [class.selected]="idPaqueteSeleccionado"
+					(click)="togglePaqueteDropdown($event)">
+					<span class="custom-select-value">{{ paqueteSeleccionadoLabel }}</span>
+					<i class="fa-solid fa-chevron-down select-icon"></i>
+				</div>
+				<div class="custom-select-dropdown" *ngIf="paqueteDropdownOpen">
+					<div class="custom-option" [class.active]="!idPaqueteSeleccionado"
+						(click)="seleccionarPaquete(null)">
+						Seleccionar paquete...
+					</div>
+					<div class="custom-option" *ngFor="let p of paquetes"
+						[class.active]="p.id === idPaqueteSeleccionado" (click)="seleccionarPaquete(p.id)">
+						{{ p.titulo }}
+					</div>
+				</div>
+			</div>
 		</div>
 
-		<!-- FILTRO VIAJE (requiere paquete) -->
+		<!-- FILTRO VIAJE — custom select (requiere paquete) -->
 		<div class="filtro-group">
 			<label class="filtro-label">
 				<i class="fa-solid fa-plane-departure"></i> Viaje
 			</label>
-			<select class="filtro-select" (change)="onViajeChange($event)" [disabled]="!idPaqueteSeleccionado">
-				<option value="">{{ idPaqueteSeleccionado ? 'Seleccionar viaje...' : 'Primero selecciona un paquete' }}
-				</option>
-				<option *ngFor="let v of viajesFiltrados" [value]="v.id">
-					Viaje #{{ v.id }} &middot; {{ v.fechaSalida | date:'dd/MM/yyyy' }} → {{ v.fechaRegreso |
-					date:'dd/MM/yyyy' }}
-				</option>
-			</select>
+			<div class="custom-select-wrapper" (click)="$event.stopPropagation()">
+				<div class="custom-select" [class.open]="viajeDropdownOpen" [class.selected]="idViajeSeleccionado"
+					[class.disabled]="!idPaqueteSeleccionado" (click)="toggleViajeDropdown($event)">
+					<span class="custom-select-value">{{ viajeSeleccionadoLabel }}</span>
+					<i class="fa-solid fa-chevron-down select-icon"></i>
+				</div>
+				<div class="custom-select-dropdown" *ngIf="viajeDropdownOpen">
+					<div class="custom-option" [class.active]="!idViajeSeleccionado" (click)="seleccionarViaje(null)">
+						Seleccionar viaje...
+					</div>
+					<div class="custom-option" *ngFor="let v of viajesFiltrados"
+						[class.active]="v.id === idViajeSeleccionado" (click)="seleccionarViaje(v.id)">
+						{{ getViajeLabel(v) }}
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<!-- FILTRO PAGO -->
@@ -91,12 +117,10 @@
 	</div>
 
 	<div class="empty-state" *ngIf="!idViajeSeleccionado">
-		<i class="fa-solid fa-filter"></i>
 		<p>Selecciona un paquete y luego un viaje para ver las comunicaciones.</p>
 	</div>
 
 	<div class="empty-state" *ngIf="idViajeSeleccionado && comunicaciones.length === 0">
-		<i class="fa-solid fa-inbox"></i>
 		<p>No hay mensajes enviados para este viaje.</p>
 	</div>
 
@@ -111,16 +135,16 @@
 					<p class="com-sub">{{ c.totalDestinatarios }} destinatarios &middot; Viaje #{{ c.idViaje }}</p>
 				</div>
 				<div class="com-right">
-					<span class="com-tipo" [ngClass]="c.canal === 'WHATSAPP' ? 'whatsapp' : 'gmail'">{{ c.canal
-						}}</span>
+					<span class="com-tipo" [ngClass]="c.canal === 'WHATSAPP' ? 'whatsapp' : 'gmail'">
+						{{ c.canal}}</span>
 					<span class="com-fecha">{{ c.fechaEnvio | date:'dd/MM/yyyy' }}</span>
 				</div>
 				<div class="com-actions">
 					<button class="com-btn-edit" (click)="editar(c)" title="Editar">
-						<i class="fa-solid fa-pen"></i>
+						Editar
 					</button>
 					<button class="com-btn-del" (click)="eliminar(c)" title="Eliminar">
-						<i class="fa-solid fa-trash"></i>
+						Eliminar
 					</button>
 				</div>
 			</div>

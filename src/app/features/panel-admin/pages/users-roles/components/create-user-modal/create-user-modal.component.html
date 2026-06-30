@@ -15,7 +15,6 @@
 			<div *ngIf="currentStep === 1">
 
 				<div class="form-group">
-
 					<input type="text" formControlName="firstName" placeholder="Nombre"
 						[class.ng-invalid]="step1Submitted && f.firstName.errors?.['required']"
 						[class.ng-touched]="f.firstName.touched" />
@@ -29,11 +28,9 @@
 					<span *ngIf="f.firstName.touched && f.firstName.errors?.['minlength']">
 						El nombre debe tener al menos 3 caracteres
 					</span>
-
 				</div>
 
 				<div class="form-group">
-
 					<input type="text" formControlName="lastName" placeholder="Apellido"
 						[class.ng-invalid]="step1Submitted && f.lastName.errors?.['required']"
 						[class.ng-touched]="f.lastName.touched" />
@@ -43,11 +40,9 @@
 					<span *ngIf="step1Submitted && f.lastName.errors?.['required']">
 						El apellido es obligatorio
 					</span>
-
 				</div>
 
 				<div class="form-group">
-
 					<input type="email" formControlName="email" placeholder="Correo"
 						[class.ng-invalid]="step1Submitted && f.email.invalid" [class.ng-touched]="f.email.touched" />
 
@@ -56,30 +51,23 @@
 					<span *ngIf="step1Submitted && f.email.errors?.['required']">El correo es obligatorio</span>
 
 					<span *ngIf="step1Submitted && f.email.errors?.['email']">Correo inválido</span>
-
 				</div>
 
 				<div class="form-group">
-
 					<input type="tel" formControlName="phone" placeholder="Teléfono"
-						[class.ng-touched]="f.phone.touched" />
+						[class.ng-touched]="f.phone.touched" [class.ng-invalid]="f.phone.invalid"/>
 
 					<label>Teléfono (opcional)</label>
 
 					<span *ngIf="f.phone.touched && f.phone.errors?.['pattern']">
 						Formato inválido (Ej: +57 300 123 4567)
 					</span>
-
 				</div>
 
 				<div class="modal-actions">
-
 					<button type="button" class="btn-cancel" (click)="closeModal()">Cancelar</button>
-
 					<button type="button" class="btn-save" (click)="nextStep()">Continuar</button>
-
 				</div>
-
 			</div>
 
 			<!-- PASO 2 -->
@@ -134,18 +122,19 @@
 							*ngIf="f.documentNumber.touched && (f.documentNumber.errors?.['minlength'] || f.documentNumber.errors?.['maxlength'])">
 							Número inválido
 						</span>
-
 					</div>
-
 				</div>
 
+				<!-- Password -->
 				<div class="form-group form-group-password">
-
 					<input type="password" id="password" formControlName="password" placeholder="Contraseña"
 						[class.ng-invalid]="step2Submitted && f.password.invalid"
 						[class.ng-touched]="f.password.touched" />
 
 					<label>Contraseña</label>
+
+					<i class="fa-regular fa-eye" (click)="togglePasswordVisibility('password')"></i>
+					<i class="fa-regular fa-eye-slash" (click)="togglePasswordVisibility('password')"></i>
 
 					<span *ngIf="step2Submitted && f.password.errors?.['required']">
 						La contraseña es obligatoria
@@ -154,15 +143,18 @@
 					<span *ngIf="f.password.touched && !f.password.errors?.['required'] && f.password.invalid">
 						Debe tener 8 caracteres, mayúscula, número y símbolo
 					</span>
-
 				</div>
 
+				<!-- Confirm Password -->
 				<div class="form-group form-group-password">
-
-					<input type="password" formControlName="confirmPassword" placeholder="Confirmar contraseña"
-						[class.ng-invalid]="step2Submitted &&(f.confirmPassword.errors?.['required'] || registerForm.errors?.['mismatch'])" />
+					<input type="password" id="confirmPassword" formControlName="confirmPassword"
+						placeholder="Confirmar contraseña"
+						[class.ng-invalid]="step2Submitted && (f.confirmPassword.errors?.['required'] || registerForm.errors?.['mismatch'])" />
 
 					<label>Confirmar contraseña</label>
+
+					<i class="fa-regular fa-eye" (click)="togglePasswordVisibility('confirmPassword')"></i>
+					<i class="fa-regular fa-eye-slash" (click)="togglePasswordVisibility('confirmPassword')"></i>
 
 					<span *ngIf="registerForm.errors?.['mismatch'] && f.confirmPassword.touched">
 						Las contraseñas no coinciden
@@ -202,5 +194,5 @@
 
 <!-- TOAST -->
 
-<app-toast-notification [show]="showToast" title="Usuario creado" message="El usuario fue registrado correctamente.">
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage" [type]="toastType">
 </app-toast-notification>

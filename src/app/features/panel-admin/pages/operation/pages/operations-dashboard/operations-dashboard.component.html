@@ -1,72 +1,85 @@
 <div class="operaciones-container">
 
-	<div class="page-header">
-		<div>
-			<h2 class="page-title">Dashboard <span>Operativo</span></h2>
-			<p class="page-subtitle">Resumen del estado operativo de todos los
-				paquetes turísticos</p>
+	<div class="header-panel">
+
+		<div class="page-header">
+			<div class="page-title-group">
+				<div class="page-title-icon">
+					<i class="fa-solid fa-route"></i>
+				</div>
+				<div>
+					<h2 class="page-title">Dashboard <span>Operativo</span></h2>
+					<p class="page-subtitle">Resumen del estado operativo de todos los paquetes turísticos</p>
+				</div>
+			</div>
+
+			<div class="header-actions">
+				<button class="btn-nuevo-viaje" (click)="abrirNuevoViaje()">
+					<i class="fa-solid fa-plus"></i> Nuevo viaje
+				</button>
+			</div>
 		</div>
-		<div class="header-actions">
-			<button class="btn-nuevo-viaje" (click)="abrirNuevoViaje()">
-				<i class="fa-solid fa-plus"></i> Nuevo viaje
-			</button>
+
+		<div class="header-divider"></div>
+
+		<div class="kpi-grid">
+			<div class="kpi-card kpi-clickable" (click)="ir('operaciones-check-in')" title="Ver check-ins">
+				<div class="kpi-icon blue">
+					<i class="fa-solid fa-users"></i>
+				</div>
+				<div class="kpi-info">
+					<span class="kpi-value">{{ totalViajeros }}</span>
+					<span class="kpi-label">Viajeros totales</span>
+				</div>
+				<i class="fa-solid fa-arrow-right kpi-arrow"></i>
+			</div>
+
+			<div class="kpi-card kpi-clickable" (click)="ir('operaciones-transporte')" title="Gestionar transporte">
+				<div class="kpi-icon green">
+					<i class="fa-solid fa-bus-simple"></i>
+				</div>
+				<div class="kpi-info">
+					<span class="kpi-value">{{ transportesAsignados }}/{{ totalViajesActivos }}</span>
+					<span class="kpi-label">Transportes asignados</span>
+				</div>
+				<i class="fa-solid fa-arrow-right kpi-arrow"></i>
+			</div>
+
+			<div class="kpi-card kpi-clickable" (click)="ir('operaciones-alojamiento')" title="Gestionar alojamiento">
+				<div class="kpi-icon teal">
+					<i class="fa-solid fa-bed"></i>
+				</div>
+				<div class="kpi-info">
+					<span class="kpi-value">{{ alojamientosAsignados }}/{{ totalViajesActivos }}</span>
+					<span class="kpi-label">Alojamientos asignados</span>
+				</div>
+				<i class="fa-solid fa-arrow-right kpi-arrow"></i>
+			</div>
+
+			<!-- <div class="kpi-card kpi-clickable" (click)="ir('operaciones-incidentes')" title="Ver incidentes">
+				<div class="kpi-icon red">
+					<i class="fa-solid fa-triangle-exclamation"></i>
+				</div>
+				<div class="kpi-info">
+					<span class="kpi-value">{{ totalIncidentes }}</span>
+					<span class="kpi-label">Incidentes registrados</span>
+				</div>
+				<i class="fa-solid fa-arrow-right kpi-arrow"></i>
+			</div> -->
 		</div>
+
 	</div>
 
-	<!-- KPI CARDS -->
-	<div class="kpi-grid">
-		<div class="kpi-card kpi-clickable" (click)="ir('operaciones-check-in')" title="Ver check-ins">
-			<div class="kpi-icon blue">
-				<i class="fa-solid fa-users"></i>
-			</div>
-			<div class="kpi-info">
-				<span class="kpi-value">{{ totalViajeros }}</span>
-				<span class="kpi-label">Viajeros totales</span>
-			</div>
-			<i class="fa-solid fa-arrow-right kpi-arrow"></i>
-		</div>
-
-		<div class="kpi-card kpi-clickable" (click)="ir('operaciones-transporte')" title="Gestionar transporte">
-			<div class="kpi-icon green">
-				<i class="fa-solid fa-bus-simple"></i>
-			</div>
-			<div class="kpi-info">
-				<span class="kpi-value">{{ transportesAsignados }}/{{ totalViajesActivos
-					}}</span>
-				<span class="kpi-label">Transportes asignados</span>
-			</div>
-			<i class="fa-solid fa-arrow-right kpi-arrow"></i>
-		</div>
-
-		<div class="kpi-card kpi-clickable" (click)="ir('operaciones-alojamiento')" title="Gestionar alojamiento">
-			<div class="kpi-icon teal">
-				<i class="fa-solid fa-bed"></i>
-			</div>
-			<div class="kpi-info">
-				<span class="kpi-value">
-					{{ alojamientosAsignados }}/{{ totalViajesActivos }}
-				</span>
-				<span class="kpi-label">Alojamientos asignados</span>
-			</div>
-			<i class="fa-solid fa-arrow-right kpi-arrow"></i>
-		</div>
-
-		<div class="kpi-card kpi-clickable" (click)="ir('operaciones-incidentes')" title="Ver incidentes">
-			<div class="kpi-icon red">
-				<i class="fa-solid fa-triangle-exclamation"></i>
-			</div>
-			<div class="kpi-info">
-				<span class="kpi-value">{{ totalIncidentes }}</span>
-				<span class="kpi-label">Incidentes registrados</span>
-			</div>
-			<i class="fa-solid fa-arrow-right kpi-arrow"></i>
-		</div>
-	</div>
-
-	<!-- TABLA PAQUETES + VIAJES -->
+	<!-- TÍTULO DE SECCIÓN — separado del panel, con más jerarquía visual -->
 	<div class="section-title">
-		<i class="fa-solid fa-route"></i>
-		<h3>Paquetes turísticos y seguimiento operativo</h3>
+		<div class="section-title-left">
+			<i class="fa-solid fa-plane-departure"></i>
+			<div>
+				<h3>Viajes y seguimiento operativo</h3>
+				<span class="section-subtitle">Crea, edita y supervisa cada viaje asociado a un paquete</span>
+			</div>
+		</div>
+		<span class="section-count">{{ totalElementos }} viajes</span>
 	</div>
 
 	<div class="table-container">
@@ -79,7 +92,6 @@
 					<th>Viajeros</th>
 					<th>Transporte</th>
 					<th>Alojamiento</th>
-					<th>Incidentes</th>
 					<th>Estado</th>
 					<th>Acciones</th>
 				</tr>
@@ -120,13 +132,6 @@
 						<span *ngIf="!fila.tieneViaje" class="estado-dot disabled">—</span>
 					</td>
 					<td>
-						<span *ngIf="fila.tieneViaje" class="incidente-badge link-cell"
-							[class.con-incidentes]="fila.incidentes > 0" (click)="ir('operaciones-incidentes')">
-							{{fila.incidentes}}
-						</span>
-						<span *ngIf="!fila.tieneViaje" class="incidente-badge disabled">—</span>
-					</td>
-					<td>
 						<span class="status" [class]="getEstadoClass(fila)">
 							{{ getEstadoLabel(fila.estado) }}
 						</span>
@@ -137,10 +142,10 @@
 								<i class="fa-regular fa-eye"></i>
 							</button>
 							<button class="edit" (click)="editarViaje(fila)" title="Editar">
-								<i class="fa-solid fa-pen"></i>
+								Editar
 							</button>
 							<button class="del" (click)="eliminarViajeRow(fila)" title="Eliminar">
-								<i class="fa-solid fa-trash"></i>
+								Eliminar
 							</button>
 						</div>
 						<ng-template #sinAcciones><span class="badge-num disabled">—</span></ng-template>
