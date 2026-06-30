@@ -142,7 +142,8 @@
 
 .dropdown-date {
 	padding: 14px;
-	gap: 6px;
+	gap: 8px;
+	min-width: 260px;
 }
 
 .dropdown-date label {
@@ -155,20 +156,72 @@
 	margin-top: 4px;
 }
 
-.dropdown-date input[type="date"] {
-	width: 100%;
-	padding: 8px 10px;
-	border: 1px solid #e5e5e5;
-	border-radius: 10px;
-	font-family: "Outfit", sans-serif;
-	font-size: 13px;
-	color: var(--color-texto-principal);
-	outline: none;
-	transition: border 0.2s ease;
+.dropdown-date label:first-child {
+	margin-top: 0;
 }
 
-.dropdown-date input[type="date"]:focus {
+.date-trigger-wrapper {
+	position: relative;
+}
+
+.date-trigger-btn {
+	width: 100%;
+	height: 42px;
+	padding: 0 16px;
+	border: 1px solid var(--bordes);
+	border-radius: 21px;
+	background: white;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	cursor: pointer;
+	font-family: "Outfit", sans-serif;
+	font-size: 14px;
+	color: var(--color-texto-principal);
+	transition: all 0.25s ease;
+}
+
+.date-trigger-btn:hover {
 	border-color: var(--color-primario);
+	transform: translateY(-1px);
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.date-trigger-btn i {
+	font-size: 13px;
+	color: var(--color-primario);
+	flex-shrink: 0;
+}
+
+.date-trigger-wrapper app-custom-calendar {
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 200;
+}
+
+.date-clear-btn {
+	margin-top: 6px;
+	height: 38px;
+	border: none;
+	background: rgba(255, 59, 59, 0.1);
+	color: #ff3b3b;
+	border-radius: 19px;
+	font-family: "Outfit", sans-serif;
+	font-size: 13px;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.date-clear-btn:hover {
+	background: rgba(255, 59, 59, 0.18);
+	transform: translateY(-1px);
 }
 
 /* =========================
@@ -348,7 +401,7 @@ tbody td:last-child {
 	color: #ff3b3b;
 }
 
-.status.pasada{
+.status.pasada {
 	background: rgba(63, 162, 219, 0.12);
 	color: var(--color-primario);
 }

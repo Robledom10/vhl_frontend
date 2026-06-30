@@ -39,7 +39,11 @@
 								(blur)="mode === 'existing' && buscarCliente()"
 								(keyup.enter)="mode === 'existing' && buscarCliente()"
 								[class.invalid]="submitted && !form.idUsuario">
-							<label for="docUsuario">Número de documento</label>
+
+							<label for="docUsuario">
+								Número de documento
+							</label>
+
 							<span *ngIf="buscandoCliente" class="status-msg">
 								<i class="fa-solid fa-spinner fa-spin"></i> Buscando...
 							</span>

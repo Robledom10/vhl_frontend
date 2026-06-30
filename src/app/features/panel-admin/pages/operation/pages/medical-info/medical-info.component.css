@@ -133,9 +133,10 @@
 	user-select: none;
 }
 
-.custom-select:hover {
-	transform: translateY(-1px);
+.custom-select:hover,
+.custom-select.open {
 	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+	border-color: var(--color-primario);
 }
 
 .custom-select.selected {
@@ -160,6 +161,11 @@
 
 .custom-select.open .select-icon {
 	transform: rotate(180deg);
+	color: var(--color-primario);
+}
+
+.custom-select:hover .select-icon {
+	color: var(--color-primario);
 }
 
 .custom-select-dropdown {

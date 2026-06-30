@@ -6,6 +6,43 @@ const DARK    = '#123862';
 const GRAY    = '#6b7280';
 const BLACK   = '#1e1e1e';
 
+export interface DatosContrato {
+  titular: {
+    nombre: string;
+    tipoDocumento: string;
+    numeroDocumento: string;
+    telefono: string;
+    ciudad: string;
+  };
+  paquete: {
+    nombre: string;
+    destino: string;
+    duracion: string;
+    lugarSalida: string;
+  };
+  viaje: {
+    fechaSalida: string;
+    fechaRegreso: string;
+  };
+  acompanantes: {
+    nombre: string;
+    tipoDocumento: string;
+    documento: string;
+    fechaNacimiento: string;
+  }[];
+  habitacion: string;
+  solicitudEspecial: string;
+  notas: string;
+  contactosEmergencia: {
+    nombre: string;
+    parentesco: string;
+    telefono: string;
+    correo?: string;
+  }[];
+  total: number;
+  personas: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class PdfService {
 
@@ -121,11 +158,22 @@ export class PdfService {
   }
 
   private addAcceptanceBox(doc: jsPDF, text: string, y: number): void {
-    const margin  = 14;
-    const pageW   = doc.internal.pageSize.getWidth();
-    const pageH   = doc.internal.pageSize.getHeight();
+    const margin   = 14;
+    const pageW    = doc.internal.pageSize.getWidth();
+    const pageH    = doc.internal.pageSize.getHeight();
+    const boxW     = pageW - margin * 2;
+    const lineH    = 5.5;
+    const padTop   = 10;
+    const padLabel = 8;
+    const padText  = 16;
+    const padBot   = 8;
 
-    if (y > pageH - 50) {
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'normal');
+    const wrapped = doc.splitTextToSize(text, boxW - 10);
+    const boxH    = padTop + (padText - padTop) + wrapped.length * lineH + padBot;
+
+    if (y + boxH > pageH - 25) {
       doc.addPage();
       this.buildFooter(doc);
       y = 20;
@@ -135,17 +183,15 @@ export class PdfService {
     doc.setFillColor('#f0f9ff');
     doc.setDrawColor(PRIMARY);
     doc.setLineWidth(0.5);
-    doc.roundedRect(margin, y, pageW - margin * 2, 24, 3, 3, 'FD');
+    doc.roundedRect(margin, y, boxW, boxH, 3, 3, 'FD');
 
     doc.setTextColor(DARK);
-    doc.setFontSize(9.5);
     doc.setFont('helvetica', 'bold');
-    doc.text('Aceptación:', margin + 4, y + 8);
+    doc.text('Aceptación:', margin + 4, y + padLabel);
 
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(BLACK);
-    const wrapped = doc.splitTextToSize(text, pageW - margin * 2 - 10);
-    doc.text(wrapped, margin + 4, y + 16);
+    doc.text(wrapped, margin + 4, y + padText);
   }
 
   async generateCancelacionPDF(): Promise<void> {
@@ -254,5 +300,306 @@ export class PdfService {
     );
 
     doc.save('terminos-y-condiciones.pdf');
+  }
+
+  // ── Helpers exclusivos del contrato ──────────────────────────────────────
+
+  private formatFecha(iso: string): string {
+    if (!iso) return '—';
+    const d = new Date(iso.includes('T') ? iso : `${iso}T12:00:00`);
+    if (isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  }
+
+  private formatCOP(value: number): string {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency', currency: 'COP', minimumFractionDigits: 0
+    }).format(value);
+  }
+
+  private addDataTable(
+    doc: jsPDF,
+    title: string,
+    rows: { key: string; value: string }[],
+    y: number
+  ): number {
+    const margin  = 14;
+    const pageW   = doc.internal.pageSize.getWidth();
+    const pageH   = doc.internal.pageSize.getHeight();
+    const contentW = pageW - margin * 2;
+    const colW    = 68;
+    const footerY = pageH - 25;
+
+    if (y > footerY - 30) {
+      doc.addPage();
+      this.buildFooter(doc);
+      y = 20;
+    }
+
+    // Cabecera de sección (fondo azul claro igual al banner)
+    doc.setFillColor(PRIMARY);
+    doc.roundedRect(margin, y, contentW, 9, 2, 2, 'F');
+    doc.setTextColor('#ffffff');
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'bold');
+    doc.text(title.toUpperCase(), margin + 4, y + 6.2);
+    y += 12;
+
+    let alternate = false;
+    doc.setFontSize(9.5);
+
+    for (const row of rows) {
+      const valLines = doc.splitTextToSize(row.value || '—', contentW - colW - 6);
+      const rowH = Math.max(valLines.length * 5.5, 6) + 4;
+
+      if (y + rowH > footerY) {
+        doc.addPage();
+        this.buildFooter(doc);
+        y = 20;
+      }
+
+      if (alternate) {
+        doc.setFillColor('#f0f7fd');
+        doc.rect(margin, y - 1, contentW, rowH, 'F');
+      }
+      alternate = !alternate;
+
+      doc.setTextColor(GRAY);
+      doc.setFont('helvetica', 'bold');
+      doc.text(row.key, margin + 3, y + 4.5);
+
+      doc.setTextColor(BLACK);
+      doc.setFont('helvetica', 'normal');
+      doc.text(valLines, margin + colW, y + 4.5);
+
+      // Línea divisoria sutil
+      doc.setDrawColor('#e5eaf0');
+      doc.setLineWidth(0.2);
+      doc.line(margin, y + rowH - 1, margin + contentW, y + rowH - 1);
+
+      y += rowH;
+    }
+
+    return y + 6;
+  }
+
+  private addAcceptanceBoxReturn(doc: jsPDF, text: string, y: number): number {
+    const margin   = 14;
+    const pageW    = doc.internal.pageSize.getWidth();
+    const pageH    = doc.internal.pageSize.getHeight();
+    const boxW     = pageW - margin * 2;
+    const lineH    = 5.5;
+    const padTop   = 10;
+    const padText  = 16;
+    const padBot   = 8;
+
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'normal');
+    const wrapped = doc.splitTextToSize(text, boxW - 10);
+    const boxH    = padTop + (padText - padTop) + wrapped.length * lineH + padBot;
+
+    if (y + boxH > pageH - 25) {
+      doc.addPage();
+      this.buildFooter(doc);
+      y = 20;
+    }
+
+    y += 4;
+    doc.setFillColor('#f0f9ff');
+    doc.setDrawColor(PRIMARY);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(margin, y, boxW, boxH, 3, 3, 'FD');
+
+    doc.setTextColor(DARK);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Aceptación:', margin + 4, y + 8);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(BLACK);
+    doc.text(wrapped, margin + 4, y + padText);
+
+    return y + boxH + 6;
+  }
+
+  private addFirmas(
+    doc: jsPDF,
+    nombreTitular: string,
+    tipoDoc: string,
+    numDoc: string,
+    y: number
+  ): void {
+    const margin  = 14;
+    const pageW   = doc.internal.pageSize.getWidth();
+    const pageH   = doc.internal.pageSize.getHeight();
+    const contentW = pageW - margin * 2;
+    const colW    = contentW / 2 - 6;
+    const lineY   = 22;
+    const boxH    = 52;
+
+    if (y + boxH > pageH - 25) {
+      doc.addPage();
+      this.buildFooter(doc);
+      y = 20;
+    }
+
+    y += 8;
+
+    // Cabecera de sección firmas
+    doc.setFillColor(PRIMARY);
+    doc.roundedRect(margin, y, contentW, 9, 2, 2, 'F');
+    doc.setTextColor('#ffffff');
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'bold');
+    doc.text('8. FIRMAS', margin + 4, y + 6.2);
+    y += 14;
+
+    const leftX  = margin;
+    const rightX = margin + colW + 12;
+
+    // ── Bloque TITULAR ──────────────────────────────
+    doc.setFillColor('#f8fbff');
+    doc.setDrawColor('#d1e8f7');
+    doc.setLineWidth(0.4);
+    doc.roundedRect(leftX, y, colW, boxH, 3, 3, 'FD');
+
+    doc.setTextColor(DARK);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Titular / Excursionista', leftX + colW / 2, y + 8, { align: 'center' });
+
+    // Línea de firma
+    doc.setDrawColor(BLACK);
+    doc.setLineWidth(0.5);
+    doc.line(leftX + 8, y + lineY, leftX + colW - 8, y + lineY);
+
+    doc.setTextColor(GRAY);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    const nombreWrapped = doc.splitTextToSize(nombreTitular, colW - 16);
+    doc.text(nombreWrapped, leftX + colW / 2, y + lineY + 6, { align: 'center' });
+    doc.text(`${tipoDoc}: ${numDoc}`, leftX + colW / 2, y + lineY + 12, { align: 'center' });
+
+    doc.setTextColor(GRAY);
+    doc.setFontSize(7.5);
+    doc.text('Fecha: _____ / _____ / _________', leftX + colW / 2, y + boxH - 6, { align: 'center' });
+
+    // ── Bloque AGENCIA ──────────────────────────────
+    doc.setFillColor('#f8fbff');
+    doc.setDrawColor('#d1e8f7');
+    doc.setLineWidth(0.4);
+    doc.roundedRect(rightX, y, colW, boxH, 3, 3, 'FD');
+
+    doc.setTextColor(DARK);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Representante de la Agencia', rightX + colW / 2, y + 8, { align: 'center' });
+
+    doc.setDrawColor(BLACK);
+    doc.setLineWidth(0.5);
+    doc.line(rightX + 8, y + lineY, rightX + colW - 8, y + lineY);
+
+    doc.setTextColor(GRAY);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.text('Hernando Lopera', rightX + colW / 2, y + lineY + 6, { align: 'center' });
+    doc.text('Hernando Lopera Viajes y Excursiones', rightX + colW / 2, y + lineY + 12, { align: 'center' });
+
+    doc.setFontSize(7.5);
+    doc.text('Fecha: _____ / _____ / _________', rightX + colW / 2, y + boxH - 6, { align: 'center' });
+  }
+
+  async generateContratoPDF(datos: DatosContrato, action: 'preview' | 'download' = 'download'): Promise<void> {
+    const doc  = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const logo = await this.loadLogo();
+    const pageW = doc.internal.pageSize.getWidth();
+
+    const hoy      = new Date();
+    const fechaHoy = hoy.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const refNum   = `VHL-${hoy.getFullYear()}${String(hoy.getMonth() + 1).padStart(2, '0')}${String(hoy.getDate()).padStart(2, '0')}-${String(hoy.getTime()).slice(-4)}`;
+
+    this.buildHeader(doc, logo, 'Contrato de Prestación de Servicios Turísticos');
+    this.buildFooter(doc);
+
+    let y = 70;
+
+    // Referencia y fecha (alineadas a la derecha)
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(GRAY);
+    doc.text(`Ref: ${refNum}`, pageW - 14, y, { align: 'right' });
+    y += 5;
+    doc.text(`Fecha de expedición: ${fechaHoy}`, pageW - 14, y, { align: 'right' });
+    y += 10;
+
+    // ── 1. DATOS DEL CLIENTE ─────────────────────────────────────────────
+    y = this.addDataTable(doc, '1. Datos del cliente', [
+      { key: 'Nombre completo',       value: datos.titular.nombre },
+      { key: 'Tipo de documento',     value: datos.titular.tipoDocumento },
+      { key: 'Número de documento',   value: datos.titular.numeroDocumento },
+      { key: 'Teléfono de contacto',  value: datos.titular.telefono },
+      { key: 'Ciudad de residencia',  value: datos.titular.ciudad },
+    ], y);
+
+    // ── 2. DETALLE DEL PAQUETE ──────────────────────────────────────────
+    y = this.addDataTable(doc, '2. Detalle del paquete', [
+      { key: 'Nombre del paquete', value: datos.paquete.nombre },
+      { key: 'Destino(s)',         value: datos.paquete.destino },
+      { key: 'Fecha de salida',    value: this.formatFecha(datos.viaje.fechaSalida) },
+      { key: 'Fecha de regreso',   value: this.formatFecha(datos.viaje.fechaRegreso) },
+      { key: 'Duración',           value: datos.paquete.duracion },
+      { key: 'Lugar de salida',    value: datos.paquete.lugarSalida || '—' },
+      { key: 'Número de viajeros', value: String(datos.personas) },
+    ], y);
+
+    // ── 3. VIAJEROS ──────────────────────────────────────────────────────
+    const filasViajeros: { key: string; value: string }[] = [
+      { key: 'Titular', value: `${datos.titular.nombre} — ${datos.titular.tipoDocumento} ${datos.titular.numeroDocumento}` },
+      ...datos.acompanantes.map((a, i) => ({
+        key: `Acompañante ${i + 1}`,
+        value: `${a.nombre} — ${a.tipoDocumento} ${a.documento}${a.fechaNacimiento ? ` — Nac: ${this.formatFecha(a.fechaNacimiento)}` : ''}`
+      }))
+    ];
+    y = this.addDataTable(doc, '3. Viajeros', filasViajeros, y);
+
+    // ── 4. SERVICIOS SOLICITADOS ─────────────────────────────────────────
+    y = this.addDataTable(doc, '4. Servicios solicitados', [
+      { key: 'Tipo de habitación',   value: datos.habitacion || '—' },
+      { key: 'Solicitud especial',   value: datos.solicitudEspecial || 'Ninguna' },
+      { key: 'Notas adicionales',    value: datos.notas || '—' },
+    ], y);
+
+    // ── 5. CONTACTOS DE EMERGENCIA ───────────────────────────────────────
+    const filasEmergencia = datos.contactosEmergencia.map((c, i) => ({
+      key: `Contacto ${i + 1}`,
+      value: `${c.nombre} (${c.parentesco}) — Tel: ${c.telefono}${c.correo ? ` — ${c.correo}` : ''}`
+    }));
+    y = this.addDataTable(doc, '5. Contactos de emergencia', filasEmergencia, y);
+
+    // ── 6. VALOR DEL SERVICIO ────────────────────────────────────────────
+    y = this.addDataTable(doc, '6. Valor del servicio', [
+      { key: 'Total a pagar',  value: this.formatCOP(datos.total) },
+      { key: 'Forma de pago',  value: 'Pasarela de pago Wompi (tarjeta débito / crédito)' },
+      { key: 'Nota',           value: 'La reserva quedará confirmada una vez se realice el pago.' },
+    ], y);
+
+    // ── 7. DECLARACIÓN Y ACEPTACIÓN ──────────────────────────────────────
+    const declaracion =
+      'Al descargar y/o firmar este contrato, el cliente declara haber leído, comprendido y aceptado en su ' +
+      'totalidad los Términos y Condiciones y la Política de Cancelación de Hernando Lopera Viajes y ' +
+      'Excursiones. Acepta que los pagos realizados no son reembolsables conforme a dichas políticas, y que ' +
+      'es su responsabilidad contar con la documentación requerida para el viaje.';
+
+    y = this.addAcceptanceBoxReturn(doc, declaracion, y);
+
+    // ── 8. FIRMAS ────────────────────────────────────────────────────────
+    this.addFirmas(doc, datos.titular.nombre, datos.titular.tipoDocumento, datos.titular.numeroDocumento, y);
+
+    if (action === 'preview') {
+      const blob = doc.output('blob');
+      const url  = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } else {
+      doc.save(`contrato-vhl-${refNum}.pdf`);
+    }
   }
 }

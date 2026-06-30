@@ -1,5 +1,5 @@
 <div class="modal-overlay" *ngIf="isOpen" (click)="closeModal()">
-	<div class="modal-container" (click)="$event.stopPropagation()">
+	<div class="modal-container" (click)="onModalClick($event)">
 		<div class="modal-content">
 			<button class="close-btn" (click)="closeModal()">
 				<i class="fa-solid fa-xmark"></i>
@@ -16,107 +16,206 @@
 
 					<!-- NOMBRE -->
 					<div class="form-group">
-						<input type="text" placeholder=" " formControlName="nombre"
-							[class.ng-invalid]="providerForm.get('nombre')?.invalid && providerForm.get('nombre')?.touched">
-						<label>Nombre del proveedor</label>
-						<span *ngIf="providerForm.get('nombre')?.touched">
-							<ng-container *ngIf="providerForm.get('nombre')?.errors?.['required']">El nombre es
-								obligatorio</ng-container>
-							<ng-container *ngIf="providerForm.get('nombre')?.errors?.['minlength']">Mínimo 3
-								caracteres</ng-container>
-							<ng-container *ngIf="providerForm.get('nombre')?.errors?.['maxlength']">Máximo 80
-								caracteres</ng-container>
-						</span>
+						<div class="field-wrapper">
+							<input type="text" placeholder="Nombre del proveedor" formControlName="nombre"
+								[class.ng-invalid]="providerForm.get('nombre')?.invalid && providerForm.get('nombre')?.touched"
+								[class.ng-touched]="providerForm.get('nombre')?.touched" />
+							<label [class.active]="providerForm.get('nombre')?.value"
+								[class.label-error]="providerForm.get('nombre')?.invalid && providerForm.get('nombre')?.touched">
+								Nombre del proveedor
+							</label>
+							<span class="field-error" *ngIf="providerForm.get('nombre')?.touched">
+								<ng-container *ngIf="providerForm.get('nombre')?.errors?.['required']">
+									El nombre es obligatorio
+								</ng-container>
+								<ng-container *ngIf="providerForm.get('nombre')?.errors?.['minlength']">
+									Mínimo 3 caracteres
+								</ng-container>
+								<ng-container *ngIf="providerForm.get('nombre')?.errors?.['maxlength']">
+									Máximo 80 caracteres
+								</ng-container>
+							</span>
+						</div>
 					</div>
 
-					<!-- TIPO -->
+					<!-- TIPO DE PROVEEDOR — custom select -->
 					<div class="form-group">
-						<select formControlName="tipoProveedor"
-							[class.ng-invalid]="providerForm.get('tipoProveedor')?.invalid && providerForm.get('tipoProveedor')?.touched">
-							<option value="" disabled selected></option>
-							<option value="Hotel">Hotel</option>
-							<option value="Transporte">Transporte</option>
-						</select>
-						<label>Tipo de proveedor</label>
-						<span
-							*ngIf="providerForm.get('tipoProveedor')?.errors?.['required'] && providerForm.get('tipoProveedor')?.touched">
-							Seleccione un tipo
-						</span>
+						<div class="custom-select-group">
+							<div class="custom-select" [class.open]="isDropdownOpen('tipoProveedor')"
+								[class.selected]="providerForm.get('tipoProveedor')?.value"
+								[class.invalid]="providerForm.get('tipoProveedor')?.invalid && providerForm.get('tipoProveedor')?.touched"
+								(click)="toggleDropdown('tipoProveedor')">
+								<div class="custom-select-value">
+									{{ providerForm.get('tipoProveedor')?.value || '' }}
+								</div>
+								<i class="fa-solid fa-angle-down select-icon"></i>
+								<div class="custom-select-dropdown" *ngIf="isDropdownOpen('tipoProveedor')"
+									(click)="$event.stopPropagation()">
+									<div class="custom-option" *ngFor="let t of tiposProveedor"
+										[class.active]="providerForm.get('tipoProveedor')?.value === t"
+										(click)="selectTipoProveedor(t); $event.stopPropagation()">
+										{{ t }}
+									</div>
+								</div>
+							</div>
+							<label
+								[class.active]="providerForm.get('tipoProveedor')?.value || isDropdownOpen('tipoProveedor')"
+								[class.label-error]="providerForm.get('tipoProveedor')?.invalid && providerForm.get('tipoProveedor')?.touched">
+								Tipo de proveedor
+							</label>
+							<span class="field-error"
+								*ngIf="providerForm.get('tipoProveedor')?.errors?.['required'] && providerForm.get('tipoProveedor')?.touched">
+								Seleccione un tipo
+							</span>
+						</div>
 					</div>
 
 					<!-- CORREO -->
 					<div class="form-group">
-						<input type="email" placeholder=" " formControlName="correo"
-							[class.ng-invalid]="providerForm.get('correo')?.invalid && providerForm.get('correo')?.touched">
-						<label>Correo electrónico</label>
-						<span *ngIf="providerForm.get('correo')?.touched">
-							<ng-container *ngIf="providerForm.get('correo')?.errors?.['required']">El correo es
-								obligatorio</ng-container>
-							<ng-container *ngIf="providerForm.get('correo')?.errors?.['email']">Correo
-								inválido</ng-container>
-						</span>
+						<div class="field-wrapper">
+							<input type="email" placeholder="Correo electrónico" formControlName="correo"
+								[class.ng-invalid]="providerForm.get('correo')?.invalid && providerForm.get('correo')?.touched"
+								[class.ng-touched]="providerForm.get('correo')?.touched" />
+							<label [class.active]="providerForm.get('correo')?.value"
+								[class.label-error]="providerForm.get('correo')?.invalid && providerForm.get('correo')?.touched">
+								Correo electrónico
+							</label>
+							<span class="field-error" *ngIf="providerForm.get('correo')?.touched">
+								<ng-container *ngIf="providerForm.get('correo')?.errors?.['required']">El correo es
+									obligatorio</ng-container>
+								<ng-container *ngIf="providerForm.get('correo')?.errors?.['email']">Correo
+									inválido</ng-container>
+							</span>
+						</div>
 					</div>
 
 					<!-- TELÉFONO -->
 					<div class="form-group">
-						<input type="text" placeholder=" " formControlName="telefono"
-							[class.ng-invalid]="providerForm.get('telefono')?.invalid && providerForm.get('telefono')?.touched">
-						<label>Teléfono</label>
-						<span *ngIf="providerForm.get('telefono')?.touched">
-							<ng-container *ngIf="providerForm.get('telefono')?.errors?.['required']">El teléfono es
-								obligatorio</ng-container>
-							<ng-container *ngIf="providerForm.get('telefono')?.errors?.['pattern']">Solo números (7-15
-								dígitos)</ng-container>
-						</span>
+						<div class="field-wrapper">
+							<input type="text" placeholder="Teléfono" formControlName="telefono"
+								[class.ng-invalid]="providerForm.get('telefono')?.invalid && providerForm.get('telefono')?.touched"
+								[class.ng-touched]="providerForm.get('telefono')?.touched" />
+							<label [class.active]="providerForm.get('telefono')?.value"
+								[class.label-error]="providerForm.get('telefono')?.invalid && providerForm.get('telefono')?.touched">
+								Teléfono
+							</label>
+							<span class="field-error" *ngIf="providerForm.get('telefono')?.touched">
+								<ng-container *ngIf="providerForm.get('telefono')?.errors?.['required']">El teléfono es
+									obligatorio</ng-container>
+								<ng-container *ngIf="providerForm.get('telefono')?.errors?.['pattern']">Solo números
+									(7 - 15 dígitos)</ng-container>
+							</span>
+						</div>
 					</div>
 
 					<!-- ===== CAMPOS TRANSPORTE ===== -->
 					<ng-container *ngIf="esTransporte">
-						<div class="section-label">
+
+						<div class="section-divider">
 							<i class="fa-solid fa-bus"></i> Datos del vehículo
 						</div>
+
 						<div class="form-row">
+
+							<!-- TIPO DE VEHÍCULO — custom select -->
 							<div class="form-group">
-								<select formControlName="tipoVehiculo">
-									<option value="" disabled selected></option>
-									<option *ngFor="let t of tiposVehiculo" [value]="t">{{ t }}</option>
-								</select>
-								<label>Tipo de vehículo</label>
+								<div class="custom-select-group">
+									<div class="custom-select" [class.open]="isDropdownOpen('tipoVehiculo')"
+										[class.selected]="providerForm.get('tipoVehiculo')?.value"
+										(click)="toggleDropdown('tipoVehiculo')">
+										<div class="custom-select-value">
+											{{ providerForm.get('tipoVehiculo')?.value || '' }}
+										</div>
+										<i class="fa-solid fa-angle-down select-icon"></i>
+										<div class="custom-select-dropdown" *ngIf="isDropdownOpen('tipoVehiculo')"
+											(click)="$event.stopPropagation()">
+											<div class="custom-option" *ngFor="let t of tiposVehiculo"
+												[class.active]="providerForm.get('tipoVehiculo')?.value === t"
+												(click)="selectTipoVehiculo(t); $event.stopPropagation()">
+												{{ t }}
+											</div>
+										</div>
+									</div>
+									<label
+										[class.active]="providerForm.get('tipoVehiculo')?.value || isDropdownOpen('tipoVehiculo')">
+										Tipo de vehículo
+									</label>
+								</div>
 							</div>
+
+							<!-- PLACA -->
 							<div class="form-group">
-								<input type="text" placeholder=" " formControlName="placa">
-								<label>Placa</label>
+								<div class="field-wrapper">
+									<input type="text" placeholder="Placa" formControlName="placa" />
+									<label [class.active]="providerForm.get('placa')?.value">Placa</label>
+								</div>
 							</div>
+
 						</div>
+
 						<div class="form-row">
+
+							<!-- CONDUCTOR -->
 							<div class="form-group">
-								<input type="text" placeholder=" " formControlName="conductor">
-								<label>Nombre del conductor</label>
+								<div class="field-wrapper">
+									<input type="text" placeholder="Nombre del conductor" formControlName="conductor" />
+									<label [class.active]="providerForm.get('conductor')?.value">
+										Nombre del conductor
+									</label>
+								</div>
 							</div>
+
+							<!-- TELÉFONO CONDUCTOR -->
 							<div class="form-group">
-								<input type="text" placeholder=" " formControlName="telefonoConductor">
-								<label>Teléfono conductor</label>
+								<div class="field-wrapper">
+									<input type="text" placeholder="Teléfono conductor"
+										formControlName="telefonoConductor" />
+									<label [class.active]="providerForm.get('telefonoConductor')?.value">
+										Teléfono conductor
+									</label>
+								</div>
 							</div>
+
 						</div>
+
+						<!-- CAPACIDAD -->
 						<div class="form-group">
-							<input type="number" placeholder=" " formControlName="capacidad" min="1">
-							<label>Capacidad (personas)</label>
+							<div class="field-wrapper">
+								<input type="number" placeholder="Capacidad (personas)" formControlName="capacidad"
+									min="1" />
+								<label [class.active]="providerForm.get('capacidad')?.value">Capacidad
+									(personas)</label>
+							</div>
 						</div>
+
 					</ng-container>
 
 					<!-- ===== CAMPOS HOTEL ===== -->
 					<ng-container *ngIf="esHotel">
-						<div class="section-label">
+
+						<div class="section-divider">
 							<i class="fa-solid fa-hotel"></i> Datos del alojamiento
 						</div>
+
+						<!-- DIRECCIÓN -->
 						<div class="form-group">
-							<input type="text" placeholder=" " formControlName="direccion">
-							<label>Dirección</label>
+							<div class="field-wrapper">
+								<input type="text" placeholder="Dirección" formControlName="direccion" />
+								<label [class.active]="providerForm.get('direccion')?.value">Dirección</label>
+							</div>
 						</div>
+
+						<!-- NOTAS -->
 						<div class="form-group">
-							<input type="text" placeholder=" " formControlName="notas">
-							<label>Notas / Información adicional</label>
+							<div class="field-wrapper">
+								<input type="text" placeholder="Notas / Información adicional"
+									formControlName="notas" />
+								<label [class.active]="providerForm.get('notas')?.value">
+									Notas / Información adicional
+								</label>
+							</div>
 						</div>
+
 					</ng-container>
 
 				</form>
@@ -124,6 +223,7 @@
 				<div class="error-msg" *ngIf="errorMsg">
 					<i class="fa-solid fa-circle-exclamation"></i> {{ errorMsg }}
 				</div>
+
 			</div>
 
 			<div class="buttons">
@@ -133,6 +233,7 @@
 					{{ loading ? 'Guardando...' : mode === 'edit' ? 'Actualizar proveedor' : 'Crear proveedor' }}
 				</button>
 			</div>
+
 		</div>
 	</div>
 </div>

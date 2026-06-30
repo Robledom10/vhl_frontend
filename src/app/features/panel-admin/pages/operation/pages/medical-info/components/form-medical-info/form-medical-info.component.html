@@ -38,7 +38,7 @@
 					</div>
 					<label [class.active]="usuarioSeleccionadoId"
 						[class.label-error]="formSubmitted && medForm.get('nombreViajero')?.invalid">
-						Usuario *
+						Usuario
 					</label>
 					<span class="field-error" *ngIf="formSubmitted && medForm.get('nombreViajero')?.invalid">
 						Selecciona un usuario
@@ -75,7 +75,7 @@
 					</div>
 					<label [class.active]="medForm.get('tipoSangre')?.value"
 						[class.label-error]="medForm.get('tipoSangre')?.invalid && medForm.get('tipoSangre')?.touched">
-						Tipo de sangre *
+						Tipo de sangre
 					</label>
 					<span class="field-error"
 						*ngIf="medForm.get('tipoSangre')?.invalid && medForm.get('tipoSangre')?.touched">

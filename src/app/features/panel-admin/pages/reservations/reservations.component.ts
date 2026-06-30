@@ -40,6 +40,9 @@ export class ReservationsComponent implements OnInit {
 	dateFrom = '';
 	dateTo = '';
 
+	// ─── Filtro de fecha (calendario custom) ──────────────────
+	openDateCalendar: 'from' | 'to' | null = null;
+
 	// ─── Confirmaciones ───────────────────────────────────
 	showConfirmModal = false;
 	confirmModalTitle = '';
@@ -120,6 +123,41 @@ export class ReservationsComponent implements OnInit {
 	}
 
 	// ─── Filtros ──────────────────────────────────────────
+
+	toggleDateCalendar(which: 'from' | 'to', event: MouseEvent): void {
+		event.stopPropagation();
+		this.openDateCalendar = this.openDateCalendar === which ? null : which;
+	}
+
+	onDateFromSelected(date: string): void {
+		this.dateFrom = date;
+		this.openDateCalendar = null;
+		this.applyFilters();
+	}
+
+	onDateToSelected(date: string): void {
+		this.dateTo = date;
+		this.openDateCalendar = null;
+		this.applyFilters();
+	}
+
+	clearDateFilter(): void {
+		this.dateFrom = '';
+		this.dateTo = '';
+		this.applyFilters();
+	}
+
+	formatDateDisplay(date: string): string {
+		const [year, month, day] = date.split('-');
+		return `${day}/${month}/${year}`;
+	}
+
+	get fechaFiltroLabel(): string {
+		if (this.dateFrom && this.dateTo) return `${this.formatDateDisplay(this.dateFrom)} - ${this.formatDateDisplay(this.dateTo)}`;
+		if (this.dateFrom) return `Desde ${this.formatDateDisplay(this.dateFrom)}`;
+		if (this.dateTo) return `Hasta ${this.formatDateDisplay(this.dateTo)}`;
+		return 'Fecha';
+	}
 
 	buildFilterOptions(): void {
 		this.destinoOptions = [...new Set(this.reservations.map(r => r.destino))];
