@@ -36,10 +36,16 @@
 						Visa
 					</div>
 
-					<div class="custom-option" [class.active]="selectedType === 'vacuna'"
-						(click)="selectType('vacuna', 'Carnet de vacuna')">
+					<div class="custom-option" [class.active]="selectedType === 'contrato'"
+						(click)="selectType('contrato', 'Contrato')">
 
-						Carnet de vacuna
+						Contrato
+					</div>
+
+					<div class="custom-option" [class.active]="selectedType === 'permiso_menor'"
+						(click)="selectType('permiso_menor', 'Permiso Menor')">
+
+						Permiso Menor
 					</div>
 
 				</div>
