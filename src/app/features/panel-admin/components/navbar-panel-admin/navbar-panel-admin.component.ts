@@ -63,20 +63,20 @@ export class NavbarPanelAdminComponent {
 			icon: 'fa-solid fa-table-columns',
 			label: 'Panel de control',
 			route: '/panel-admin/control-panel',
-			roles: ['ADMIN', 'GUIDE']
+			roles: ['ADMIN']
 		},
 		{
 			icon: 'fa-solid fa-users',
 			label: 'Usuario y Roles',
 			route: '/panel-admin/users-roles',
-			roles: ['ADMIN', 'GUIDE']
+			roles: ['ADMIN']
 		},
 		// 🔥 MENU DESPLEGABLE
 		{
 			icon: 'fa-solid fa-briefcase',
 			label: 'Paquetes',
 			open: false,
-			roles: ['ADMIN', 'GUIDE'],
+			roles: ['ADMIN'],
 			children: [
 				{
 					label: 'Paquetes',
@@ -97,7 +97,7 @@ export class NavbarPanelAdminComponent {
 				{
 					label: 'Proveedores',
 					route: '/panel-admin/packages-providers',
-					roles: ['ADMIN', 'GUIDE']
+					roles: ['ADMIN']
 				},
 			],
 		},
