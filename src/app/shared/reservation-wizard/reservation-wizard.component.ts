@@ -5,7 +5,7 @@ import { ReservationService, SolicitudReserva } from '../../core/services/reserv
 import { AuthService } from '../../core/services/auth.service';
 import { Viaje } from '../../features/panel-admin/models/operaciones.models';
 import { Subscription } from 'rxjs';
-import { DatosContrato, PdfService } from '../../services/pdf.service';
+import { DatosContrato, PdfService } from '../../core/services/pdf.service';
 
 @Component({
 	selector: 'app-reservation-wizard',

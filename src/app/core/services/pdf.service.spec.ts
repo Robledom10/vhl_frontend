@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { PdfService } from '../../services/pdf.service';
+import { PdfService } from './pdf.service';
 
 describe('PdfService', () => {
 	let service: PdfService;
