@@ -76,7 +76,7 @@ export class NavbarPanelAdminComponent {
 			icon: 'fa-solid fa-briefcase',
 			label: 'Paquetes',
 			open: false,
-			roles: ['ADMIN'],
+			roles: ['ADMIN', 'GUIDE'],
 			children: [
 				{
 					label: 'Paquetes',

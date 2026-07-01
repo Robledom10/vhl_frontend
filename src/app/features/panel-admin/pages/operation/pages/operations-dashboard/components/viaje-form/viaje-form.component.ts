@@ -272,6 +272,7 @@ export class ViajeFormComponent implements OnInit, OnChanges {
 		const usuario = this.authService.getUser();
 		if (!usuario?.id) {
 			this.errorMsg = 'No se pudo obtener el usuario activo.';
+			this.showConfirm = false;
 			return;
 		}
 
@@ -280,6 +281,7 @@ export class ViajeFormComponent implements OnInit, OnChanges {
 
 		if (!paquete) {
 			this.errorMsg = 'Paquete inválido.';
+			this.showConfirm = false;
 			return;
 		}
 
@@ -299,14 +301,13 @@ export class ViajeFormComponent implements OnInit, OnChanges {
 		}).subscribe({
 			next: () => {
 				this.enviando = false;
-				this.mostrarToast('Viaje creado', 'El viaje fue creado correctamente.');
-				setTimeout(() => {
-					this.crear.emit();
-					this.resetFormulario();
-				}, 900);
+				this.showConfirm = false;
+				this.crear.emit();
+				this.resetFormulario();
 			},
 			error: (err) => {
 				this.enviando = false;
+				this.showConfirm = false;
 				this.errorMsg = err?.error?.mensaje ?? err?.error?.message ?? 'Error al crear el viaje.';
 				this.mostrarToast('Error', this.errorMsg);
 			}

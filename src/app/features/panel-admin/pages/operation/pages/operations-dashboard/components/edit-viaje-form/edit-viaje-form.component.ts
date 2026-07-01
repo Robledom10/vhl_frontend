@@ -228,6 +228,7 @@ export class EditViajeFormComponent implements OnInit, OnChanges {
 		const usuario = this.authService.getUser();
 		if (!usuario?.id) {
 			this.errorMsg = 'No se pudo obtener el usuario activo.';
+			this.showConfirm = false;
 			return;
 		}
 
@@ -244,11 +245,12 @@ export class EditViajeFormComponent implements OnInit, OnChanges {
 		}).subscribe({
 			next: () => {
 				this.enviando = false;
-				this.mostrarToast('Viaje actualizado', 'Los cambios fueron guardados correctamente.');
-				setTimeout(() => this.guardarCambios.emit(), 900);
+				this.showConfirm = false;
+				this.guardarCambios.emit();
 			},
 			error: (err) => {
 				this.enviando = false;
+				this.showConfirm = false;
 				this.errorMsg = err?.error?.mensaje ?? err?.error?.message ?? 'Error al actualizar el viaje.';
 				this.mostrarToast('Error', this.errorMsg);
 			}
