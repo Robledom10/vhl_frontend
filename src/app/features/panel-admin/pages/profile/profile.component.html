@@ -3,7 +3,8 @@
 	<div class="profile-header">
 
 		<div class="image-profile">
-			<img [src]="'https://ui-avatars.com/api/?name=' + user?.firstName + '&background=3fa2db&color=fff&size=120'" alt="user" class="user-avatar" />
+			<img [src]="'https://ui-avatars.com/api/?name=' + user?.firstName + '&background=3fa2db&color=fff&size=120'"
+				alt="user" class="user-avatar" />
 		</div>
 
 		<div class="profile-info">
@@ -190,21 +191,22 @@
 								<i class="fa-regular fa-eye"></i>
 							</button>
 
-							<button class="upload" *ngIf="item.estado === 'Pendiente'" (click)="openUploadModal(item)">
+							<button class="upload" *ngIf="canUploadDocuments(item)" (click)="openUploadModal(item)">
 								<i class="fa-solid fa-file-arrow-up"></i>
 								Subir
 							</button>
 
-							<button class="upload disabled" disabled>
-								{{ getDocumentStatus(item) }}
+							<button class="upload disabled" disabled [ngClass]="getDocumentStatusClass()"
+								title="Documentos aprobados: {{ approvedUserDocuments }}/{{ totalUserDocuments }}">
+								{{ getDocumentStatusLabel() }}
 							</button>
 
-							<button class="pay" (click)="payReservation(item)">
+							<button class="pay" *ngIf="canPay(item)" (click)="payReservation(item)">
 								<i class="fa-solid fa-credit-card"></i>
 								Pagar
 							</button>
 
-							<button class="cancel">
+							<button class="cancel" *ngIf="canCancel(item)" (click)="openCancelReservation(item)">
 								Cancelar
 							</button>
 						</div>
@@ -229,6 +231,17 @@
 	</div>
 </div>
 
+<!-- Modal detalles de reserva -->
+
+<app-reservation-detail-sheet [isOpen]="sheetOpen" [reservation]="selectedReservation"
+	(closed)="closeDetail()"></app-reservation-detail-sheet>
+
+<!-- Modal subir documentos -->
+
+<app-upload-document-modal [isOpen]="showUploadModal" [userId]="user?.id"
+	[reservationId]="selectedReservationUpload?.id" (closed)="closeUploadModal()" (uploaded)="closeUploadModal()">
+</app-upload-document-modal>
+
 <app-confirm-modal [isOpen]="showConfirmModal" title="Guardar cambios"
 	message="¿Estás seguro de que deseas actualizar la información de tu perfil?" confirmText="Sí, guardar"
 	cancelText="Cancelar" icon="fa-solid fa-circle-question" confirmColor="var(--color-primario)"
@@ -236,18 +249,19 @@
 	(closed)="closeConfirmModal()">
 </app-confirm-modal>
 
-<!-- Modal notificación  -->
+<!-- Modal de cancelar reserva -->
 
-<app-toast-notification [show]="showSuccessToast" title="Perfil actualizado"
-	message="La información fue actualizada correctamente.">
-</app-toast-notification>
-
-<!-- Modal de error -->
-
-<app-confirm-modal [isOpen]="showErrorModal" title="Error" [message]="errorMessage" confirmText="Entendido" cancelText
-	icon="fa-solid fa-circle-xmark" confirmColor="#ff3b3b" iconBg="rgba(255, 59, 59, 0.12)" iconColor="#ff3b3b"
-	(confirmed)="showErrorModal = false" (closed)="showErrorModal = false">
+<app-confirm-modal [isOpen]="showCancelReservationModal" title="Cancelar reserva"
+	message="¿Estás seguro de que deseas cancelar esta reserva? Esta acción no se puede deshacer."
+	confirmText="Sí, cancelar" cancelText="Volver" icon="fa-solid fa-triangle-exclamation" confirmColor="#dc3545"
+	iconBg="rgba(220, 53, 69, 0.12)" iconColor="#dc3545" (confirmed)="confirmCancelReservation()"
+	(closed)="closeCancelReservationModal()">
 </app-confirm-modal>
+
+<!-- Toast único para todas las notificaciones del perfil -->
+
+<app-toast-notification [show]="showToast" [title]="toastTitle" [message]="toastMessage">
+</app-toast-notification>
 
 <!-- Modal detalles de reserva -->
 
@@ -255,5 +269,5 @@
 	(closed)="closeDetail()"></app-reservation-detail-sheet>
 
 <app-upload-document-modal [isOpen]="showUploadModal" [userId]="user?.id"
-	[reservationId]="selectedReservationUpload?.id" (closed)="closeUploadModal()" (uploaded)="closeUploadModal()">
+	[reservationId]="selectedReservationUpload?.id" (closed)="closeUploadModal()" (uploaded)="onDocumentUploaded()">
 </app-upload-document-modal>
