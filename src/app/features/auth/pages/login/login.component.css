@@ -13,6 +13,12 @@
 	min-width: 0; /* evita desbordes raros */
 }
 
+@media(max-width: 1279px) {
+	.body app-auth-banner {
+		display: none;
+	}
+}
+
 @media (max-width: 920px) {
 	.body {
 		width: 100%;
