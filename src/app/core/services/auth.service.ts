@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
-import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../../features/auth/models/auth.model';
+import { ForgotPasswordRequest, LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, ResetPasswordRequest } from '../../features/auth/models/auth.model';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 
@@ -214,6 +214,28 @@ export class AuthService {
 			withCredentials: true,
 			headers: { Authorization: `Bearer ${this.getToken()}` },
 		});
+	}
+
+	// =========================
+	// FORGOT PASSWORD
+	// =========================
+	forgotPassword(request: ForgotPasswordRequest) {
+		return this.http
+			.post<{ message: string; status: number }>(`${this.apiUrl}/forgot-password`, request, {
+				withCredentials: true,
+			})
+			.pipe(catchError(this.handleError));
+	}
+
+	// =========================
+	// RESET PASSWORD
+	// =========================
+	resetPassword(request: ResetPasswordRequest) {
+		return this.http
+			.post<{ message: string; status: number }>(`${this.apiUrl}/reset-password`, request, {
+				withCredentials: true,
+			})
+			.pipe(catchError(this.handleError));
 	}
 
 	// =========================
