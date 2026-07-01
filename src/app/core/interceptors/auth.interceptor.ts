@@ -19,7 +19,9 @@ export class AuthInterceptor implements HttpInterceptor {
 			req.url.includes('/auth/register') ||
 			req.url.includes('/auth/tokens/refresh') ||
 			req.url.includes('/auth/tokens/logout') ||
-			req.url.includes('/auth/google-login'); // 👈 Añadido por seguridad para tu flujo de Google
+			req.url.includes('/auth/google-login') ||
+			req.url.includes('/auth/forgot-password') ||
+			req.url.includes('/auth/reset-password');
 
 		// 1. Clonamos la petición inicial agregando SIEMPRE la cabecera para ngrok
 		let authReq = req.clone({

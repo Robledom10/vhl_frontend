@@ -9,6 +9,10 @@ import { RegisterFormComponent } from './pages/register/components/register-form
 import { LoginTypesComponent } from './components/login-types/login-types.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { ForgotPasswordFormComponent } from './pages/forgot-password/components/forgot-password-form/forgot-password-form.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
+import { ResetPasswordFormComponent } from './pages/reset-password/components/reset-password-form/reset-password-form.component';
 
 @NgModule({
 
@@ -18,7 +22,11 @@ import { SharedModule } from '../../shared/shared.module';
 		LoginFormComponent,
 		RegisterFormComponent,
 		AuthBannerComponent,
-		LoginTypesComponent
+		LoginTypesComponent,
+		ForgotPasswordComponent,
+		ForgotPasswordFormComponent,
+		ResetPasswordComponent,
+		ResetPasswordFormComponent
 	],
 
 	imports: [
